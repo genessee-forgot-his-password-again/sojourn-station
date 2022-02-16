@@ -456,7 +456,20 @@ var/global/excelsior_last_draft = 0
 		/obj/item/storage/firstaid/surgery/traitor = 1,
 		/obj/item/computer_hardware/hard_drive/portable/design/onestar/stockparts = 1,
 		/obj/item/computer_hardware/hard_drive/portable/design/ex_parts = 1,
-		/obj/item/computer_hardware/hard_drive/portable/design/ex_cells = 1
+		/obj/item/computer_hardware/hard_drive/portable/design/ex_cells = 1,
+		/obj/item/storage/backpack/holding/bst = 1,
+		/obj/item/storage/belt/holding = 1,
+		/obj/item/storage/pouch/holding = 1,
+		/obj/item/cell/large/greyson = 1,
+		/obj/item/cell/medium/greyson = 1,
+		/obj/item/cell/small/greyson = 1,
+		/obj/item/tool/crowbar/bs = 1,
+		/obj/item/tool/screwdriver/bs = 1,
+		/obj/item/tool/multitool/bs = 1,
+		/obj/item/tool/wrench/bs = 1,
+		/obj/item/tool/weldingtool/bs = 1,
+		/obj/item/tool/wirecutters/bs = 1,
+		/obj/item/tool/shovel/onestar_shovel = 1
 		)
 	entropy_value = 0
 	
@@ -542,4 +555,3 @@ var/global/excelsior_last_draft = 0
 		/obj/item/clothing/suit/space/void/SCAF = 1,
 		/obj/item/clothing/suit/space/void/merc = 1
 		)
-	entropy_value = 0
