@@ -436,10 +436,10 @@ var/global/excelsior_last_draft = 0
 		MATERIAL_GOLD = list("amount" = 100, "price" = 1),
 		MATERIAL_URANIUM = list("amount" = 100, "price" = 1),
 		MATERIAL_DIAMOND = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASMA = list("amount" = 100, "price = 1),
-		MATERIAL_TITANIUM = list("amount" = 100, "price = 1),
-		MATERIAL_PLASMAGLASS = list("amount" = 100, "price = 1),
-		MATERIAL_DURASTEEL = list("amount" = 100, "price = 1)
+		MATERIAL_PLASMA = list("amount" = 100, "price" = 1),
+		MATERIAL_TITANIUM = list("amount" = 100, "price" = 1),
+		MATERIAL_PLASMAGLASS = list("amount" = 100, "price" = 1),
+		MATERIAL_DURASTEEL = list("amount" = 100, "price" = 1)
 		)
 
 	list/parts_list = list(
