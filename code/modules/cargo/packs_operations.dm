@@ -50,3 +50,34 @@
 	cost = 200
 	crate_name = "metal foam grenades crate"
 	group = "Operations"
+	
+/datum/supply_pack/cash
+	name = "Economic Stimulus Crate"
+	contains = list(/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000,
+					/obj/item/spacecash/bundle/c1000)
+	cost = 100
+	crate_name = "cash crate"
+	group = "Operations"

@@ -413,3 +413,145 @@ var/global/excelsior_last_draft = 0
 	if(excelsior_energy < reinforcements_cost)
 		return FALSE
 	return TRUE
+	
+/obj/machinery/complant_teleporter/admin
+	name = "bluespace remnants general auto-synth"
+	desc = "A fabricator which creates a variety of general-use objects for a few volts of energy. This machine is a very advanced - and very valuable - technology."
+	icon = 'icons/obj/machines/excelsior/blackshield_teleporter.dmi'
+	icon_state = "idle"
+	use_power = IDLE_POWER_USE
+	idle_power_usage = 1
+	active_power_usage = 5
+
+	max_energy = 1000
+	energy_gain = 100
+	
+	list/materials_list = list(
+		MATERIAL_STEEL = list("amount" = 100, "price" = 1),
+		MATERIAL_WOOD = list("amount" = 100, "price" = 1),
+		MATERIAL_PLASTIC = list("amount" = 100, "price" = 1),
+		MATERIAL_GLASS = list("amount" = 100, "price" = 1),
+		MATERIAL_SILVER = list("amount" = 100, "price" = 1),
+		MATERIAL_PLASTEEL = list("amount" = 100, "price" = 1),
+		MATERIAL_GOLD = list("amount" = 100, "price" = 1),
+		MATERIAL_URANIUM = list("amount" = 100, "price" = 1),
+		MATERIAL_DIAMOND = list("amount" = 100, "price" = 1),
+		MATERIAL_PLASMA = list("amount" = 100, "price" = 1),
+		MATERIAL_TITANIUM = list("amount" = 100, "price" = 1),
+		MATERIAL_PLASMAGLASS = list("amount" = 100, "price" = 1),
+		MATERIAL_DURASTEEL = list("amount" = 100, "price" = 1)
+		)
+
+	list/parts_list = list(
+		/obj/item/stock_parts/capacitor/alien_capacitor = 1,
+		/obj/item/stock_parts/scanning_module/alien = 1,
+		/obj/item/stock_parts/manipulator/alien = 1,
+		/obj/item/stock_parts/micro_laser/alien = 1,
+		/obj/item/stock_parts/matter_bin/alien = 1,
+		/obj/item/stock_parts/console_screen = 1,
+		/obj/item/device/defib_kit/compact = 1,
+		/obj/item/storage/firstaid/combat = 1,
+		/obj/item/storage/firstaid/toxin = 1,
+		/obj/item/storage/firstaid/adv = 1,
+		/obj/item/storage/firstaid/surgery/traitor = 1,
+		/obj/item/computer_hardware/hard_drive/portable/design/onestar/stockparts = 1,
+		/obj/item/computer_hardware/hard_drive/portable/design/ex_parts = 1,
+		/obj/item/computer_hardware/hard_drive/portable/design/ex_cells = 1,
+		/obj/item/storage/backpack/holding/bst = 1,
+		/obj/item/storage/belt/holding = 1,
+		/obj/item/storage/pouch/holding = 1,
+		/obj/item/cell/large/greyson = 1,
+		/obj/item/cell/medium/greyson = 1,
+		/obj/item/cell/small/greyson = 1,
+		/obj/item/tool/crowbar/bs = 1,
+		/obj/item/tool/screwdriver/bs = 1,
+		/obj/item/tool/multitool/bs = 1,
+		/obj/item/tool/wrench/bs = 1,
+		/obj/item/tool/weldingtool/bs = 1,
+		/obj/item/tool/wirecutters/bs = 1,
+		/obj/item/tool/shovel/onestar_shovel = 1
+		)
+	entropy_value = 0
+	
+/obj/machinery/complant_teleporter/admin/armory
+	name = "bluespace remnants armory synthesizer"
+	desc = "A fabricator which creates various military equipment in exchange for a few volts of energy. This machine is a very advanced - and very valuable - technology."
+	
+	list/materials_list = list(
+		)
+
+	list/parts_list = list(
+		/obj/item/computer_hardware/hard_drive/portable/design/excelsior_weapons = 1,
+		/obj/item/tool/knife/boot = 1,
+		/obj/item/tool/knife/tacknife = 1,
+		/obj/item/tool/knife/dagger = 1,
+		/obj/item/melee/energy/sword = 1,
+		/obj/item/melee/energy/sword/sabre/dagger = 1,
+		/obj/item/grenade/frag = 1,
+		/obj/item/grenade/frag/stinger = 1,
+		/obj/item/grenade/explosive = 1,
+		/obj/item/grenade/flashbang = 1,
+		/obj/item/gun/projectile/shotgun/pump/combat = 1,
+		/obj/item/gun/projectile/shotgun/pump = 1,
+		/obj/item/gun/projectile/automatic/riot_autoshotgun = 1,
+		/obj/item/gun/projectile/shotgun/doublebarrel = 1,
+		/obj/item/gun/projectile/shotgun/pump/gladstone = 1,
+		/obj/item/gun/projectile/automatic/c20r = 1,
+		/obj/item/gun/projectile/automatic/ak47/sa = 1,
+		/obj/item/gun/projectile/automatic/nordwind = 1,
+		/obj/item/gun/projectile/automatic/nordwind/strelki = 1,
+		/obj/item/gun/projectile/automatic/luger = 1,
+		/obj/item/gun/projectile/automatic/straylight = 1,
+		/obj/item/gun/projectile/automatic/slaught_o_matic = 1,
+		/obj/item/gun/projectile/mk58 = 1,
+		/obj/item/gun/projectile/colt = 1,
+		/obj/item/gun/projectile/colt/ten = 1,
+		/obj/item/ammo_magazine/pistol_35 = 1,
+		/obj/item/ammo_magazine/pistol_35/scrap = 1,
+		/obj/item/ammo_magazine/pistol_35/highvelocity = 1,
+		/obj/item/ammo_magazine/pistol_35/lethal = 1,
+		/obj/item/ammo_magazine/highcap_pistol_35 = 1,
+		/obj/item/ammo_magazine/highcap_pistol_35/highvelocity = 1,
+		/obj/item/ammo_magazine/highcap_pistol_35/lethal = 1,
+		/obj/item/ammo_magazine/smg_35 = 1,
+		/obj/item/ammo_magazine/smg_35/hv = 1,
+		/obj/item/ammo_magazine/smg_35/lethal = 1,
+		/obj/item/ammo_magazine/magnum_40 = 1,
+		/obj/item/ammo_magazine/magnum_40/hv = 1,
+		/obj/item/ammo_magazine/magnum_40/lethal = 1,
+		/obj/item/ammo_magazine/magnum_40/old = 1,
+		/obj/item/ammo_magazine/rifle_75 = 1,
+		/obj/item/ammo_magazine/rifle_75/highvelocity = 1,
+		/obj/item/ammo_magazine/rifle_75/lethal = 1,
+		/obj/item/ammo_magazine/rifle_75/scrap = 1,
+		/obj/item/ammo_magazine/ammobox/shotgun = 1,
+		/obj/item/ammo_magazine/ammobox/shotgun/buckshot = 1,
+		/obj/item/ammo_magazine/ammobox/shotgun/scrap_pellet = 1,
+		/obj/item/ammo_magazine/ammobox/shotgun/scrap_slug = 1,
+		/obj/item/ammo_magazine/ammobox/pistol_35 = 1,
+		/obj/item/ammo_magazine/ammobox/pistol_35/scrap = 1,
+		/obj/item/ammo_magazine/ammobox/pistol_35/hv = 1,
+		/obj/item/ammo_magazine/ammobox/pistol_35/lethal = 1,
+		/obj/item/ammo_magazine/ammobox/pistol_35/laser = 1,
+		/obj/item/ammo_magazine/ammobox/pistol_35/biomatter = 1,
+		/obj/item/ammo_magazine/ammobox/magnum_40 = 1,
+		/obj/item/ammo_magazine/ammobox/magnum_40/scrap = 1,
+		/obj/item/ammo_magazine/ammobox/magnum_40/hv = 1,
+		/obj/item/ammo_magazine/ammobox/magnum_40/lethal = 1,
+		/obj/item/ammo_magazine/ammobox/magnum_40/laser = 1,
+		/obj/item/ammo_magazine/ammobox/magnum_40/biomatter = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75 = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75/hv = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75/lethal = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75_small = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75_small/hv = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75_small/scrap = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75_small/lethal = 1,
+		/obj/item/ammo_magazine/ammobox/rifle_75_small/laser = 1,
+		/obj/item/clothing/suit/space/void/mining = 1,
+		/obj/item/clothing/suit/space/void/medical = 1,
+		/obj/item/clothing/suit/space/void/security = 1,
+		/obj/item/clothing/suit/space/void/security/odst/mil = 1,
+		/obj/item/clothing/suit/space/void/SCAF = 1,
+		/obj/item/clothing/suit/space/void/merc = 1
+		)
