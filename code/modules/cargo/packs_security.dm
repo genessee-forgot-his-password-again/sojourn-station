@@ -440,3 +440,52 @@
 	containertype = /obj/structure/closet/crate/serbcrate_gray
 	crate_name = "Void Wolf Emporer Crate"
 	group = "Xanorath Syndicate"
+	
+/datum/supply_pack/pistol_35_pack
+	name = "Standard BLR Muniti-Kit"
+	contains = list(/obj/item/gun/projectile/mk58,
+					/obj/item/gun/projectile/mk58,
+					/obj/item/gun/projectile/mk58,
+					/obj/item/gun/projectile/mk58,
+					/obj/item/gun/projectile/mk58,
+					/obj/item/gun/projectile/automatic/ak47/sa,
+					/obj/item/gun/projectile/automatic/ak47/sa,
+					/obj/item/gun/projectile/automatic/ak47/sa,
+					/obj/item/gun/projectile/automatic/ak47/sa
+					/obj/item/gun/projectile/automatic/ak47/sa,
+					/obj/item/gun/projectile/automatic/ak47/sa,
+					/obj/item/gun/projectile/automatic/ak47/sa,
+					/obj/item/gun/projectile/automatic/ak47/sa,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/ammobox/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/ammo_magazine/pistol_35,
+					/obj/item/clothing/suit/space/void/assault,
+					/obj/item/clothing/suit/space/void/assault,
+					/obj/item/clothing/suit/space/void/assault,
+					/obj/item/clothing/suit/space/void/assault,
+					) 
+	cost = 50
+	containertype = /obj/structure/closet/crate/secure/weapon
+	crate_name = "35 Pistol Pack Weapons Crate"
+	group = "Enforcement"
