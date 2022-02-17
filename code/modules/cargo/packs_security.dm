@@ -441,7 +441,7 @@
 	crate_name = "Void Wolf Emporer Crate"
 	group = "Xanorath Syndicate"
 	
-/datum/supply_pack/pistol_35_pack
+/datum/supply_pack/admin_armory
 	name = "Standard BLR Muniti-Kit"
 	contains = list(/obj/item/gun/projectile/mk58,
 					/obj/item/gun/projectile/mk58,
