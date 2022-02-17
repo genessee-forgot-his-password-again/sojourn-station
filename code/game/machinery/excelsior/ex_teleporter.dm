@@ -426,7 +426,7 @@ var/global/excelsior_last_draft = 0
 	max_energy = 1000
 	energy_gain = 100
 	
-	list/materials_list = list(
+	materials_list = list(
 		MATERIAL_STEEL = list("amount" = 100, "price" = 1),
 		MATERIAL_WOOD = list("amount" = 100, "price" = 1),
 		MATERIAL_PLASTIC = list("amount" = 100, "price" = 1),
@@ -442,7 +442,7 @@ var/global/excelsior_last_draft = 0
 		MATERIAL_DURASTEEL = list("amount" = 100, "price" = 1)
 		)
 
-	list/parts_list = list(
+	parts_list = list(
 		/obj/item/stock_parts/capacitor/alien_capacitor = 1,
 		/obj/item/stock_parts/scanning_module/alien = 1,
 		/obj/item/stock_parts/manipulator/alien = 1,
@@ -477,10 +477,10 @@ var/global/excelsior_last_draft = 0
 	name = "bluespace remnants armory synthesizer"
 	desc = "A fabricator which creates various military equipment in exchange for a few volts of energy. This machine is a very advanced - and very valuable - technology."
 	
-	list/materials_list = list(
+	materials_list = list(
 		)
 
-	list/parts_list = list(
+	parts_list = list(
 		/obj/item/computer_hardware/hard_drive/portable/design/excelsior_weapons = 1,
 		/obj/item/tool/knife/boot = 1,
 		/obj/item/tool/knife/tacknife = 1,
