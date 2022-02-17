@@ -275,7 +275,7 @@
 	containertype = /obj/structure/closet/crate
 	group = "Miscellaneous"
 	
-/datum/supply_pack/pizzasurprise
+/datum/supply_pack/admin_food
 	name = "BSR Standard Ration Kit"
 	contains = list(/obj/item/reagent_containers/food/snacks/openable/can,
 					/obj/item/reagent_containers/food/snacks/openable/can,
