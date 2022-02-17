@@ -566,7 +566,7 @@
 					/obj/item/cell/small/greyson,
 					/obj/item/cell/small/greyson,
 					/obj/item/cell/small/greyson,
-					/obj/item/cell/small/greyson
+					/obj/item/cell/small/greyson,
 					/obj/item/reagent_containers/food/snacks/openable/can,
 					/obj/item/reagent_containers/food/snacks/openable/can,
 					/obj/item/reagent_containers/food/snacks/openable/can,
@@ -648,7 +648,7 @@
 					/obj/item/reagent_containers/food/snacks/openable/candy,
 					/obj/item/reagent_containers/food/snacks/openable/candy
 					) 
-	cost = 50
+	cost = 100
 	containertype = /obj/structure/closet/crate/secure/weapon
 	crate_name = "bluespace remnants enforcer box"
 	group = "Enforcement"
