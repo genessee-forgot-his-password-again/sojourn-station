@@ -438,7 +438,7 @@ var/global/excelsior_last_draft = 0
 		MATERIAL_DIAMOND = list("amount" = 500, "price" = 1),
 		MATERIAL_PLASMA = list("amount" = 500, "price" = 1),
 		MATERIAL_PLATINUM = list("amount" = 500, "price" = 1),
-		MATERIAL_PLASMAGLASS = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASMAGLASS = list("amount" = 500, "price" = 1)
 		)
 
 	parts_list = list(
