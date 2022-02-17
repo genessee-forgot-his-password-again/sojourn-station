@@ -427,19 +427,18 @@ var/global/excelsior_last_draft = 0
 	energy_gain = 100
 	
 	materials_list = list(
-		MATERIAL_STEEL = list("amount" = 100, "price" = 1),
-		MATERIAL_WOOD = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASTIC = list("amount" = 100, "price" = 1),
-		MATERIAL_GLASS = list("amount" = 100, "price" = 1),
-		MATERIAL_SILVER = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASTEEL = list("amount" = 100, "price" = 1),
-		MATERIAL_GOLD = list("amount" = 100, "price" = 1),
-		MATERIAL_URANIUM = list("amount" = 100, "price" = 1),
-		MATERIAL_DIAMOND = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASMA = list("amount" = 100, "price" = 1),
-		MATERIAL_TITANIUM = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASMAGLASS = list("amount" = 100, "price" = 1),
-		MATERIAL_DURASTEEL = list("amount" = 100, "price" = 1)
+		MATERIAL_STEEL = list("amount" = 500, "price" = 1),
+		MATERIAL_WOOD = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASTIC = list("amount" = 500, "price" = 1),
+		MATERIAL_GLASS = list("amount" = 500, "price" = 1),
+		MATERIAL_SILVER = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASTEEL = list("amount" = 500, "price" = 1),
+		MATERIAL_GOLD = list("amount" = 500, "price" = 1),
+		MATERIAL_URANIUM = list("amount" = 500, "price" = 1),
+		MATERIAL_DIAMOND = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASMA = list("amount" = 500, "price" = 1),
+		MATERIAL_PLATINUM = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASMAGLASS = list("amount" = 500, "price" = 1),
 		)
 
 	parts_list = list(
