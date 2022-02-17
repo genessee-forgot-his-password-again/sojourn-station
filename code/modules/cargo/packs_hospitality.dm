@@ -274,3 +274,15 @@
 	crate_name = "Nanotrasen boombox crate"
 	containertype = /obj/structure/closet/crate
 	group = "Miscellaneous"
+	
+/datum/supply_pack/pizzasurprise
+	name = "BSR Standard Ration Kit"
+	contains = list(/obj/random/junkfood/onlypizza,
+					/obj/random/junkfood/onlypizza,
+					/obj/random/junkfood/onlypizza,
+					/obj/random/junkfood/onlypizza,
+					/obj/random/junkfood/onlypizza)
+	cost = 10
+	containertype = /obj/structure/closet/crate/freezer
+	crate_name = "bluespace remnants ration box"
+	group = "Hospitality"
