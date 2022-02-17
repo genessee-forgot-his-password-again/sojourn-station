@@ -461,7 +461,7 @@
 					/obj/item/gun/projectile/automatic/ak47/sa,
 					/obj/item/gun/projectile/automatic/ak47/sa,
 					/obj/item/gun/projectile/automatic/ak47/sa,
-					/obj/item/gun/projectile/automatic/ak47/sa
+					/obj/item/gun/projectile/automatic/ak47/sa,
 					/obj/item/gun/projectile/automatic/ak47/sa,
 					/obj/item/gun/projectile/automatic/ak47/sa,
 					/obj/item/gun/projectile/automatic/ak47/sa,
