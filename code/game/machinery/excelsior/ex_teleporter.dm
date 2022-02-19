@@ -162,16 +162,16 @@ var/global/excelsior_last_draft = 0
 				return
 
  /**
-  * The ui_interact proc is used to open and update Nano UIs
-  * If ui_interact is not used then the UI will not update correctly
-  * ui_interact is currently defined for /atom/movable
+  * The nano_ui_interact proc is used to open and update Nano UIs
+  * If nano_ui_interact is not used then the UI will not update correctly
+  * nano_ui_interact is currently defined for /atom/movable
   *
   * @param user /mob The mob who is interacting with this ui
   * @param ui_key string A string key to use for this ui. Allows for multiple unique uis on one obj/mob (defaut value "main")
   *
   * @return nothing
   */
-/obj/machinery/complant_teleporter/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS)
+/obj/machinery/complant_teleporter/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS)
 	if(stat & (BROKEN|NOPOWER)) return
 	if(user.stat || user.restrained()) return
 
@@ -310,7 +310,7 @@ var/global/excelsior_last_draft = 0
 	if(stat & BROKEN)
 		return
 	current_user = user
-	ui_interact(user)
+	nano_ui_interact(user)
 
 /obj/machinery/complant_teleporter/affect_grab(var/mob/user, var/mob/target)
 	try_put_inside(target, user)
@@ -426,23 +426,22 @@ var/global/excelsior_last_draft = 0
 	max_energy = 1000
 	energy_gain = 100
 	
-	list/materials_list = list(
-		MATERIAL_STEEL = list("amount" = 100, "price" = 1),
-		MATERIAL_WOOD = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASTIC = list("amount" = 100, "price" = 1),
-		MATERIAL_GLASS = list("amount" = 100, "price" = 1),
-		MATERIAL_SILVER = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASTEEL = list("amount" = 100, "price" = 1),
-		MATERIAL_GOLD = list("amount" = 100, "price" = 1),
-		MATERIAL_URANIUM = list("amount" = 100, "price" = 1),
-		MATERIAL_DIAMOND = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASMA = list("amount" = 100, "price" = 1),
-		MATERIAL_TITANIUM = list("amount" = 100, "price" = 1),
-		MATERIAL_PLASMAGLASS = list("amount" = 100, "price" = 1),
-		MATERIAL_DURASTEEL = list("amount" = 100, "price" = 1)
+	materials_list = list(
+		MATERIAL_STEEL = list("amount" = 500, "price" = 1),
+		MATERIAL_WOOD = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASTIC = list("amount" = 500, "price" = 1),
+		MATERIAL_GLASS = list("amount" = 500, "price" = 1),
+		MATERIAL_SILVER = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASTEEL = list("amount" = 500, "price" = 1),
+		MATERIAL_GOLD = list("amount" = 500, "price" = 1),
+		MATERIAL_URANIUM = list("amount" = 500, "price" = 1),
+		MATERIAL_DIAMOND = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASMA = list("amount" = 500, "price" = 1),
+		MATERIAL_PLATINUM = list("amount" = 500, "price" = 1),
+		MATERIAL_PLASMAGLASS = list("amount" = 500, "price" = 1)
 		)
 
-	list/parts_list = list(
+	parts_list = list(
 		/obj/item/stock_parts/capacitor/alien_capacitor = 1,
 		/obj/item/stock_parts/scanning_module/alien = 1,
 		/obj/item/stock_parts/manipulator/alien = 1,
@@ -477,10 +476,10 @@ var/global/excelsior_last_draft = 0
 	name = "bluespace remnants armory synthesizer"
 	desc = "A fabricator which creates various military equipment in exchange for a few volts of energy. This machine is a very advanced - and very valuable - technology."
 	
-	list/materials_list = list(
+	materials_list = list(
 		)
 
-	list/parts_list = list(
+	parts_list = list(
 		/obj/item/computer_hardware/hard_drive/portable/design/excelsior_weapons = 1,
 		/obj/item/tool/knife/boot = 1,
 		/obj/item/tool/knife/tacknife = 1,
