@@ -1193,3 +1193,30 @@ obj/item/clothing/suit/armor/commander/marshal_coat_ss
 			speed_boost_ready = TRUE
 			if(user.head && istype(user.head, matching_helmet))
 				to_chat(usr, SPAN_WARNING("[user.head] beeps: 'Capacitors have been recharged.'"))
+
+/obj/item/clothing/suit/armor/specialsuit
+	name = "SRO heavy armor"
+	desc = "An advanced heavy armor set designed for tough operations."
+	icon_state = "special_suit"
+	item_state = "specil_suit"
+	w_class = ITEM_SIZE_BULKY
+	gas_transfer_coefficient = 0.9
+	permeability_coefficient = 0.9
+	siemens_coefficient = 0.5
+	item_flags = THICKMATERIAL|DRAG_AND_DROP_UNEQUIP|COVER_PREVENT_MANIPULATION|EQUIP_SOUNDS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	slowdown = 0.9
+	max_upgrades = 0 // No upgrades for this one
+	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
+	armor = list(
+		melee = 70,
+		bullet = 60,
+		energy = 50,
+		bomb = 50,
+		bio = 30,
+		rad = 0
+	)
+	equip_delay = 3 SECONDS
+	price_tag = 3500

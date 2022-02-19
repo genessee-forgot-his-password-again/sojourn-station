@@ -1054,6 +1054,8 @@
 		speaker_enabled = TRUE
 		report_health_alerts()
 
-
-
-
+/obj/item/clothing/head/helmet/specialsuit
+	name = "SRO helmet"
+	desc = "Advanced helmet, meant for heavy-duty operations."
+	icon_state = "special_suit"
+	armor = list(melee = 50, bullet = 60,energy = 40, bomb = 40, bio = 20, rad = 0)
