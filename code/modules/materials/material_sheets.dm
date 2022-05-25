@@ -47,7 +47,14 @@
 
 	matter = material.get_matter()
 	update_strings()
-
+/*
+/obj/item/stack/material/get_matter()
+	. = list()
+	if(matter)
+		for(var/i in matter)
+			matter[i] = amount
+		. = matter
+*/
 /obj/item/stack/material/attack_self(mob/living/user)
 	user.craft_menu()
 
@@ -321,6 +328,9 @@
 	rand_min = 2
 	rand_max = 7
 
+/obj/item/stack/material/cloth/soteria
+	amount = 4
+
 /obj/item/stack/material/silk
 	name = "silk"
 	icon_state = "sheet_silk_bundle"
@@ -426,3 +436,17 @@
 
 /obj/item/stack/material/compressed_matter/full
 	amount = 120
+
+/obj/item/stack/material/ameridian
+	name = "ameridian shard"
+	desc = "A weird green crystal that seems to grow on its own."
+	singular_name = "ameridian crystal"
+	icon = 'icons/obj/ameridian.dmi'
+	icon_state = "ameridian_crystal_item"
+	default_type = MATERIAL_AMERIDIAN
+	novariants = TRUE
+	price_tag = 50 // Ameridian mining is extremly dangerous and very profitable
+	max_amount = 360
+
+/obj/item/stack/material/ameridian/full
+	amount = 360

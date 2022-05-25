@@ -124,8 +124,8 @@
 
 
 /obj/machinery/smelter/proc/result_materials(obj/O)
-	if(istype(O, /obj/item/ore))
-		var/obj/item/ore/ore = O
+	if(istype(O, /obj/item/stack/ore))
+		var/obj/item/stack/ore/ore = O
 		var/ore/data = ore_data[ore.material]
 		if(data.smelts_to)
 			return list(data.smelts_to = 1)
@@ -138,7 +138,7 @@
 	if(istype(smelting, /obj/item/stack))
 		return 30
 
-	if(istype(smelting, /obj/item/ore))
+	if(istype(smelting, /obj/item/stack/ore))
 		return 20
 
 	if(istype(smelting, /obj/item/material/shard))
@@ -160,8 +160,7 @@
 	// Sanity check: avoid an infinite loop in eject_all_material when trying to drop an invalid material
 	if(!stack_type)
 		stored_material[material] = 0
-		crash_with("Attempted to drop an invalid material: [material]")
-		return
+		CRASH("Attempted to drop an invalid material: [material]")
 
 	var/ejected_amount = min(initial(stack_type.max_amount), round(stored_material[material]), storage_capacity)
 	var/obj/item/stack/material/S = new stack_type(src, ejected_amount)

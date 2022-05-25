@@ -1,3 +1,4 @@
+/* Commented out due to a metric fuckton of runtimes -R4d6
 /mob/living/carbon/superior_animal/ambusher
 	name = "Genetic Atrocity" //todo potentially add better sfx
 	desc = "An experiment taken too far. Its flesh stretches and distorts in ways you wish weren't possible. Spindly, mutated spider legs twist from its body, it appears to be in utter agony."
@@ -50,7 +51,7 @@
 /mob/living/carbon/superior_animal/ambusher/Life()
 	. = ..()
 	heal_overall_damage(0.1,0.1)
-	if (src.z >= 6)
+	if (src.z >= 4)
 		visible_message(SPAN_WARNING("\red The [src] suddenly collapses, its skin bubbles under the warm sunlight!"))
 		gib()
 		return
@@ -127,3 +128,4 @@
 	new /mob/living/carbon/superior_animal/ambusher/injured(src.loc)
 	visible_message(SPAN_WARNING("\red The [src] drops from the ceiling, disoriented and heavily injured!"))
 	qdel(src)
+*/

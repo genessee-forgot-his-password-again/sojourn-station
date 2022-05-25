@@ -1,5 +1,9 @@
 #define chemical_dispenser_ENERGY_COST (CHEM_SYNTH_ENERGY * CELLRATE) //How many cell charge do we use per unit of chemical?
-#define BOTTLE_SPRITES list("bottle") //list of available bottle sprites
+#define BOTTLE_SPRITES list("bottle" , "potion", "tincture") //list of available bottle sprites
+#define SYRETTE_SPRITES list("syrette", "syrette_red", "syrette_orange", \
+"syrette_yellow", "syrette_green", "syrette_cyan", "syrette_blue", "syrette_magenta", \
+"syrette_spacealine", "syrette_hyperzine", "syrette_fun", "syrette_fun1", "syrette_antitox", \
+"syrette_inopravoline", "syrette_dexalinplus", "syrette_tricord", "syrette_quickclot") //list of available syrette sprites
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,19 +92,19 @@
 	SSnano.update_uis(src) // update all UIs attached to src
 
 /obj/machinery/chemical_dispenser/proc/hacked(mob/user)
-	..()
+	//..()
 	if(!hackedcheck)
 		to_chat(user, "You change the mode from 'Safe' to 'Unsafe'.")
 		dispensable_reagents += hacked_reagents
 		SSnano.update_uis(src)
-		hackedcheck = FALSE
+		hackedcheck = TRUE
 		return
 
 	else
 		to_chat(user, "You change the mode from 'Unsafe' to 'Safe'.")
 		dispensable_reagents -= hacked_reagents
 		SSnano.update_uis(src)
-		hackedcheck = TRUE
+		hackedcheck = FALSE
 		return
 
 
@@ -216,7 +220,7 @@
 	if(default_part_replacement(I, user))
 		return
 
-	if(!user.stats?.getPerk(PERK_MEDICAL_EXPERT) && !usr.stat_check(STAT_BIO, STAT_LEVEL_BASIC) && !simple_machinery && !usr.stat_check(STAT_COG, 30)) //Are we missing the perk AND to low on bio? Needs 15 bio so 30 to bypass
+	if(!user.stats?.getPerk(PERK_NERD) && !user.stats?.getPerk(PERK_MEDICAL_EXPERT) && !usr.stat_check(STAT_BIO, STAT_LEVEL_BASIC) && !simple_machinery && !usr.stat_check(STAT_COG, 30)) //Are we missing the perk AND to low on bio? Needs 15 bio so 30 to bypass
 		to_chat(usr, SPAN_WARNING("Your biological understanding isn't enough to use this."))
 		return
 
@@ -240,7 +244,7 @@
 /obj/machinery/chemical_dispenser/attack_hand(mob/living/user)
 	if(stat & BROKEN)
 		return
-	if(!user.stats?.getPerk(PERK_MEDICAL_EXPERT) && !usr.stat_check(STAT_BIO, STAT_LEVEL_BASIC) && !simple_machinery && !usr.stat_check(STAT_COG, 30)) //Are we missing the perk AND to low on bio? Needs 15 bio so 30 to bypass
+	if(!user.stats?.getPerk(PERK_NERD) && !user.stats?.getPerk(PERK_MEDICAL_EXPERT) && !usr.stat_check(STAT_BIO, STAT_LEVEL_BASIC) && !simple_machinery && !usr.stat_check(STAT_COG, 30)) //Are we missing the perk AND to low on bio? Needs 15 bio so 30 to bypass
 		to_chat(usr, SPAN_WARNING("Your biological understanding isn't enough to use this."))
 		return
 	nano_ui_interact(user)
@@ -258,14 +262,14 @@
 	simple_machinery = TRUE
 	level0 = list(
 		"water","ice","icetea","icegreentea","cola","spacemountainwind","dr_gibb","space_up",
-		"tonic","sodawater","lemon_lime","sugar","orangejuice","limejuice","lemonjuice", "pineapplejuice")
+		"tonic","sodawater","lemon_lime","sugar","orangejuice","limejuice","lemonjuice", "pineapplejuice", "berryjuice","grapesoda","watermelonjuice")
 
 	level1 = list("capsaicin", "carbon")
-	level2 = list("banana", "berryjuice")
+	level2 = list("banana")
 	level3 = list("soymilk") //Commie stock part gives this
 	level4 = list("enzyme")
 
-	hacked_reagents = list("thirteenloko","grapesoda")
+	hacked_reagents = list("thirteenloko")
 	circuit = /obj/item/circuitboard/chemical_dispenser/soda
 
 /obj/machinery/chemical_dispenser/soda/hacked(mob/user)
@@ -273,13 +277,13 @@
 		to_chat(user, "You change the mode from 'McNano' to 'Pizza King'.")
 		dispensable_reagents += hacked_reagents
 		SSnano.update_uis(src)
-		hackedcheck = FALSE
+		hackedcheck = TRUE
 		return
 	else
 		to_chat(user, "You change the mode from 'Pizza King' to 'McNano'.")
 		dispensable_reagents -= hacked_reagents
 		SSnano.update_uis(src)
-		hackedcheck = TRUE
+		hackedcheck = FALSE
 		return
 
 /obj/machinery/chemical_dispenser/soda/update_icon()
@@ -303,12 +307,12 @@
 	density = FALSE
 	simple_machinery = TRUE
 	level0 = list(
-		"coffee","cream","tea","greentea","sugar","hot_coco","espresso")
+		"coffee","cream","tea","greentea","sugar","hot_coco","espresso","milk")
 	hacked_reagents = list("ice")
 	level1 = list("cappuccino","coco")
 	level2 = list("macchiato")
 	level3 = list("soymilk") //Commie stock part gives this
-	level4 = list("milk","kahlua")
+	level4 = list("kahlua")
 	circuit = /obj/item/circuitboard/chemical_dispenser/coffee_master
 
 /obj/machinery/chemical_dispenser/beer
@@ -332,7 +336,7 @@
 	level3 = list("alliescocktail") //Commie stock part gives this
 	level4 = list("enzyme")
 
-	hacked_reagents = list("goldschlager","patron","watermelonjuice","berryjuice")
+	hacked_reagents = list("goldschlager","patron","berryjuice")
 	circuit = /obj/item/circuitboard/chemical_dispenser/beer
 
 /obj/machinery/chemical_dispenser/beer/hacked(mob/user)
@@ -340,13 +344,13 @@
 		to_chat(user, "You disable the 'cheap bastards' lock, enabling hidden and very expensive boozes.")
 		dispensable_reagents += hacked_reagents
 		SSnano.update_uis(src)
-		hackedcheck = FALSE
+		hackedcheck = TRUE
 		return
 	else
 		to_chat(user, "You re-enable the 'cheap bastards' lock, disabling hidden and very expensive boozes.")
 		dispensable_reagents -= hacked_reagents
 		SSnano.update_uis(src)
-		hackedcheck = TRUE
+		hackedcheck = FALSE
 		return
 
 /obj/machinery/chemical_dispenser/meds_admin_debug

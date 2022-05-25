@@ -104,7 +104,7 @@ default behaviour is:
 				now_pushing = FALSE
 				return
 
-			tmob.LAssailant = src
+			tmob.LAssailant_weakref = WEAKREF(src)
 
 		now_pushing = FALSE
 		spawn(0)
@@ -583,78 +583,101 @@ default behaviour is:
 		for(var/mob/living/carbon/slime/M in view(1,src))
 			M.UpdateFeed(src)
 
-
-
-
 /mob/living/verb/lay_down()
 	set name = "Rest"
 	set category = "IC"
 
-	if(resting && unstack)
-		unstack = FALSE
-		if((livmomentum <= 0) && do_after(src, (src.stats.getPerk(PERK_PARKOUR) ? 0.3 SECONDS : 0.7 SECONDS), null, 0, 1, INCAPACITATION_DEFAULT, immobile = 0))
+	if(is_busy)
+		return FALSE
+
+	var/mob/living/carbon/human/H = ishuman(src) ? src : null
+
+
+	if(resting)
+		is_busy = TRUE
+
+		if(do_after(src, (stats.getPerk(PERK_PARKOUR) ? 0.2 SECONDS : 0.4 SECONDS), null, 0, 1, INCAPACITATION_DEFAULT, immobile = 0))
 			resting = FALSE
-			unstack = TRUE
-			to_chat(src, "<span class='notice'>You are now [resting ? "resting" : "getting up"].</span>")
+			to_chat(src, SPAN_NOTICE("You are now getting up."))
 			update_lying_buckled_and_verb_status()
-		else
-			unstack = TRUE
-	else if (!resting)
-		var/client/C = src.client
-		var/speed = movement_delay()
+
+		is_busy = FALSE
+
+	else if(H && H.momentum_speed && !(istype(loc, /turf/space) || grabbed_by.len))
+		H.dive()
+
+	else
 		resting = TRUE
-		var/_dir = C.true_dir
-		if(ishuman(src) && !weakened && (_dir))// If true_dir = 0(src isn't moving), doesn't proc
-			var/mob/living/carbon/human/H = src
+		to_chat(src, SPAN_NOTICE("You are now resting."))
+		update_lying_buckled_and_verb_status()
+
+/mob/living/carbon/human/proc/dive()
+	var/client/C = client
+	resting = TRUE
+	var/_dir = C.true_dir
+
 //The sanity! - SoJ edits
-			if(H.handcuffed || H.legcuffed)
-				to_chat(H, SPAN_NOTICE("You cant dive well cuffed!"))
-				return
+	var/_hunger = (MOB_BASE_MAX_HUNGER - nutrition)
+	if(_hunger >= 250) //Will be shown on overlay as orange nutrition
+		to_chat(src, SPAN_WARNING("You weakly slump down!")) //You fall down because the rest still procs; a huge disadvantage
+		return
 
-			if(H.grabbed_by.len)
-				to_chat(H, SPAN_NOTICE("You cant dive well grappled!"))
-				return
+	if(ishuman(src) && !weakened && (_dir))// If true_dir = 0(src isn't moving), doesn't proc.
+		var/mob/living/carbon/human/H = src
+		if(H.handcuffed || H.legcuffed)
+			to_chat(H, SPAN_NOTICE("You cant dive well cuffed!"))
+			return
 
-			if(H.stat != CONSCIOUS)
-				to_chat(H, SPAN_NOTICE("You cant dive well not awake!"))
-				return
+		if(H.grabbed_by.len)
+			to_chat(H, SPAN_NOTICE("You cant dive well grappled!"))
+			return
 
-			if(buckled)
-				to_chat(H, SPAN_NOTICE("You cant dive well buckled!"))
-				return
+		if(H.stat != CONSCIOUS)
+			to_chat(H, SPAN_NOTICE("You cant dive well not awake!"))
+			return
 
-			if(40 >= health)
-				to_chat(H, SPAN_NOTICE("Your to hurt to dive!"))
-				return
+		if(buckled)
+			to_chat(H, SPAN_NOTICE("You cant dive well buckled!"))
+			return
+
+		if(40 >= health)
+			to_chat(H, SPAN_NOTICE("Your to hurt to dive!"))
+			return
 //End of SoJ edits
-			livmomentum = 5 // Set momentum value as soon as possible for stopSliding to work better
-			to_chat(H, SPAN_NOTICE("You dive onwards!"))
-			pass_flags += PASSTABLE // Jump over them!
-			H.allow_spin = FALSE
-			var/is_jump = FALSE
-			if(istype(get_step(H, dir), /turf/simulated/open))
-				is_jump = TRUE
-			H.throw_at(get_edge_target_turf(H, dir), 2 + is_jump, 1)// "Diving"; if you dive over a table, your momentum is set to 0. If you dive over space, you are thrown a tile further.
-			update_lying_buckled_and_verb_status()
-			pass_flags -= PASSTABLE // Jumpn't over them anymore!
-			H.allow_spin = TRUE
-			sleep(2)
-			C.mloop = 1
-			while(livmomentum > 0 && C.true_dir)
-				H.Move(get_step(H.loc, dir),dir)
-				livmomentum = (livmomentum - speed)
-				sleep(world.tick_lag + 1)
-			C.mloop = 0
-		else
-			to_chat(src, "<span class='notice'>You are now [resting ? "resting" : "getting up"].</span>")
-			update_lying_buckled_and_verb_status()
+	if(!weakened && _dir)// If true_dir = 0(src isn't moving), doesn't proc.
+		nutrition -= 25 //SOJ EDIT: WE TAKE HUNER
+		if(momentum_dir == _dir)
+			livmomentum = momentum_speed // Set momentum value as soon as possible for stopSliding to work better
+		var/range = 1 //checks for move intent; dive one tile further if on run intent
+
+		// Diving
+		to_chat(src, SPAN_NOTICE("You dive onwards!"))
+		pass_flags += PASSTABLE // Jump over them!
+		allow_spin = FALSE
+		if(istype(get_step(src, _dir), /turf/simulated/open))
+			range++
+		if(momentum_speed > 4)
+			range++
+		throw_at(get_edge_target_turf(src, _dir), range, 1) // If you dive over a table, your momentum is set to 0. If you dive over space, you are thrown 1 tile further.
+		update_lying_buckled_and_verb_status()
+		pass_flags -= PASSTABLE // Jumpn't over them anymore!
+		allow_spin = TRUE
+
+		// Slide
+		sleep(1.5)
+		C.mloop = 1
+		while(livmomentum > 0 && C.true_dir)
+			Move(get_step(loc, _dir),dir)
+			livmomentum--
+			sleep(world.tick_lag + 0.5)
+		C.mloop = 0
 
 /mob/living/simple_animal/spiderbot/is_allowed_vent_crawl_item(var/obj/item/carried_item)
 	if(carried_item == held_item)
 		return FALSE
 	return ..()
 
-mob/living/carbon/human/verb/stopSliding()
+/mob/living/carbon/human/verb/stopSliding()
 	set hidden = 1
 	set instant = 1
 	livmomentum = 0
@@ -796,9 +819,9 @@ mob/living/carbon/human/verb/stopSliding()
 		// them, so don't bother checking that explicitly.
 
 		if(!iscarbon(src))
-			M.LAssailant = null
+			M.LAssailant_weakref = null
 		else
-			M.LAssailant = usr
+			M.LAssailant_weakref = WEAKREF(usr)
 
 	else if(isobj(AM))
 		var/obj/I = AM
@@ -860,6 +883,10 @@ mob/living/carbon/human/verb/stopSliding()
 /mob/living/Destroy()
 	qdel(stats)
 	stats = null
+
+	unnatural_mutations.holder = null //causes a GC failure if we qdel-and it seems its not SUPPOSED to qdel, oddly
+
+	update_z(null)
 	return ..()
 
 /mob/living/proc/vomit()

@@ -8,17 +8,11 @@
 	offer_limit = 20
 	base_income = 1600
 	wealth = 0
-	secret_inv_threshold = 2000
+	hidden_inv_threshold = 2000
 	recommendation_threshold = 4000
 	stations_recommended = list("oddities", "anomalies")
 	recommendations_needed = 1
-	assortiment = list(
-		"Design Disks" = list(
-			/obj/item/computer_hardware/hard_drive/portable/design/components = custom_good_name("Artificer's ARK-034 Components"),
-			/obj/item/computer_hardware/hard_drive/portable/design/adv_tools = custom_good_name("Artificer's IJIRO-451 Advanced Tools"),
-			/obj/item/computer_hardware/hard_drive/portable/design/circuits = custom_good_name("Artificer's ESPO-830 Circuits"),
-			/obj/item/computer_hardware/hard_drive/portable/design/logistics = custom_good_name("Artificer's LAT-018 Logistics")
-		),
+	inventory = list(
 		"Reinforcement Mods" = list(
 			/obj/item/tool_upgrade/reinforcement/stick = custom_good_amount_range(list(1, 5)),
 			/obj/item/tool_upgrade/reinforcement/heatsink = custom_good_amount_range(list(1, 5)),
@@ -55,7 +49,7 @@
 			/obj/item/tool_upgrade/augment/hydraulic = custom_good_amount_range(list(1, 5))
 		)
 	)
-	secret_inventory = list(
+	hidden_inventory = list(
 		"Silent Mods" = list(
 			/obj/item/tool_upgrade/augment/dampener = custom_good_amount_range(list(1, 3)),
 			/obj/item/tool_upgrade/refinement/vibcompensator = custom_good_amount_range(list(1, 2))

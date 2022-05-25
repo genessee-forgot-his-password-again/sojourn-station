@@ -45,9 +45,9 @@
 /datum/reagent/organic/nutriment/affect_ingest(var/mob/living/carbon/M, var/alien, var/effect_multiplier)
 	if(ishuman(M))
 		if(M.stats.getPerk(PERK_HERBIVORE))
-			nutriment_factor = nutriment_factor += 2
-		else if(M.stats.getPerk(PERK_CARNIVORE))
-			nutriment_factor = nutriment_factor -= 4
+			nutriment_factor = 7
+		if(M.stats.getPerk(PERK_CARNIVORE))
+			nutriment_factor = 1
 
 	// Small bodymass, more effect from lower volume.
 	M.adjustNutrition(nutriment_factor * (issmall(M) ? effect_multiplier * 2 : effect_multiplier)) // For hunger and fatness
@@ -73,11 +73,13 @@
 /datum/reagent/organic/nutriment/protein/affect_ingest(var/mob/living/carbon/M, var/alien, var/effect_multiplier)
 	if(ishuman(M))
 		if(M.stats.getPerk(PERK_CARNIVORE))
-			nutriment_factor = nutriment_factor += 6
-		else if(M.stats.getPerk(PERK_HERBIVORE))
-			nutriment_factor = nutriment_factor -= 6
+			nutriment_factor = 7
+		if(M.stats.getPerk(PERK_HERBIVORE))
+			nutriment_factor = 1
 
-	return ..()
+	// Small bodymass, more effect from lower volume.
+	M.adjustNutrition(nutriment_factor * (issmall(M) ? effect_multiplier * 2 : effect_multiplier)) // For hunger and fatness
+	M.add_chemical_effect(CE_BLOODRESTORE, 0.1 * (issmall(M) ? effect_multiplier * 2 : effect_multiplier))
 
 /datum/reagent/organic/nutriment/preservatives
 	name = "Preservatives"
@@ -194,7 +196,7 @@
 	name = "Corn Oil"
 	id = "cornoil"
 	description = "An oil derived from various types of corn."
-	taste_description = "slime"
+	taste_description = "oil"
 	taste_mult = 0.1
 	reagent_state = LIQUID
 	nutriment_factor = 8
@@ -280,7 +282,7 @@
 
 /datum/reagent/organic/nutriment/hot_ramen/affect_ingest(mob/living/carbon/M, alien, effect_multiplier)
 	..()
-	M.bodytemperature += 5 * TEMPERATURE_DAMAGE_COEFFICIENT
+	M.bodytemperature += 1.5 * TEMPERATURE_DAMAGE_COEFFICIENT
 
 
 /datum/reagent/organic/nutriment/hell_ramen
@@ -295,7 +297,7 @@
 
 /datum/reagent/organic/nutriment/hell_ramen/affect_ingest(mob/living/carbon/M, alien, effect_multiplier)
 	..()
-	M.bodytemperature += 10 * TEMPERATURE_DAMAGE_COEFFICIENT
+	M.bodytemperature += 5 * TEMPERATURE_DAMAGE_COEFFICIENT
 
 /datum/reagent/organic/nothing
 	name = "Nothing"
@@ -312,7 +314,7 @@
 /datum/reagent/other/sodiumchloride
 	name = "Table Salt"
 	id = "sodiumchloride"
-	description = "A salt made of sodium chloride. Commonly used to season food."
+	description = "Sodium chloride, most commonly known as salt. Commonly used to season food."
 	taste_description = "salt"
 	reagent_state = SOLID
 	color = "#FFFFFF"
@@ -344,13 +346,13 @@
 	name = "Frost Oil"
 	id = "frostoil"
 	description = "A special oil that noticeably chills the body. Extracted from Ice Peppers."
-	taste_description = "mint"
+	taste_description = "oily mint"
 	taste_mult = 1.5
 	reagent_state = LIQUID
 	color = "#B31008"
 
 /datum/reagent/organic/frostoil/affect_blood(mob/living/carbon/M, alien, effect_multiplier)
-	M.bodytemperature = max(M.bodytemperature - 10 * TEMPERATURE_DAMAGE_COEFFICIENT, 0)
+	M.bodytemperature = max(M.bodytemperature - 5 * TEMPERATURE_DAMAGE_COEFFICIENT, 0)
 	if(prob(1))
 		M.emote("shiver")
 	if(isslime(M))
@@ -785,7 +787,7 @@
 	adj_dizzy = -2
 	adj_drowsy = -1
 	adj_sleepy = -3
-	adj_temp = 20
+	adj_temp = 10
 
 	glass_unique_appearance = TRUE
 	glass_icon_state = "teaglass"
@@ -845,7 +847,7 @@
 	adj_dizzy = -5
 	adj_drowsy = -3
 	adj_sleepy = -2
-	adj_temp = 25
+	adj_temp = 10
 	overdose = 45
 
 	glass_unique_appearance = TRUE
@@ -878,11 +880,19 @@
 	description = "A strong coffee made by passing nearly boiling water through coffee seeds at high pressure."
 	taste_description = "bitter coffee"
 	taste_mult = 1
+	overdose = 40
 	color = "#664300d3"
+	adj_dizzy = -10
+	adj_drowsy = -5
+	adj_sleepy = -5 // Stronger than coffee
 
 	glass_icon_state = "espresso"
 	glass_name = "shot of espresso"
 	glass_desc = "A strong coffee made by passing nearly boiling water through coffee seeds at high pressure."
+
+/datum/reagent/drink/coffee/espresso/overdose(mob/living/carbon/M, alien)
+	M.make_jittery(10) // Stronger coffee, stronger consequences
+	M.add_chemical_effect(CE_PULSE, 2)
 
 /datum/reagent/drink/coffee/icecoffee
 	name = "Iced Coffee"
@@ -1026,6 +1036,47 @@
 	glass_name = "mocaccino"
 	glass_desc = "Espresso with hot milk and chocolate."
 	glass_center_of_mass = list("x"=15, "y"=9)
+
+/datum/reagent/drink/coffee/atomicoffee // CDDA reference - Seb
+	name = "Atomic coffee"
+	id = "atomicoffee"
+	description = "Every possible microgram of caffeine and flavor has been carefully extracted for your enjoyment, using the power of the atom. The perfect drink for those that wish to stay awake for days."
+	taste_description = "liquid tar"
+	color =  "#393815" // rgb: 57, 56, 21
+	overdose = 31 // A whole cup and a unit more.
+
+	glass_icon_state = "atomicoffee"
+	glass_name = "Atomic Coffee"
+	glass_desc = "A glass of atomically compressed pure caffeine, perfect to stay awake for days fighting off the inevitable cataclysm."
+	glass_center_of_mass = list("x"=15, "y"=9)
+
+/datum/reagent/drink/coffee/atomicoffee/affect_ingest(mob/living/carbon/M, alien, effect_multiplier)
+	..()
+	M.add_chemical_effect(CE_PULSE, 2) // Watch out for that heart!
+	M.dizziness = 0
+	M.stuttering = 0
+	M.confused = 0
+	M.slurring = 0
+	M.drowsyness = 0 // The ultimate sober up drink
+	M.sleeping = 0 // SLEEPISFORTHEWEAKWHONEEDSTOSLEEP
+
+/datum/reagent/drink/coffee/atomicoffee/overdose(mob/living/carbon/M, alien)
+
+	if(ishuman(M))
+		var/mob/living/carbon/human/H = M
+		var/obj/item/organ/internal/heart/C = H.random_organ_by_process(OP_HEART) // I said to watch out!!
+		if(istype(C))
+			if(C.is_bruised())
+				M.adjustOxyLoss(0.1)
+			else if(C.is_broken())
+				M.adjustOxyLoss(0.3)
+				M.paralysis = max(M.paralysis, 5) // HEART ATTACK!
+				M.add_chemical_effect(CE_NOPULSE, 1)
+	M.add_chemical_effect(CE_SPEEDBOOST, 0.9) // Fry_consumes_100_cups_of_coffee.gif
+	M.make_jittery(20) // Except he's not calm!
+	M.adjustToxLoss(0.1) // An alternative to getting irradiated, nobody wants that.
+
+
 
 /datum/reagent/drink/coffee/sromshine
 	name = "Sromshine"
@@ -2140,7 +2191,7 @@
 	taste_description = "refreshingly cold"
 	color = "#664300d0"
 	strength = 20
-	adj_temp = -20
+	adj_temp = -10
 	targ_temp = 270
 
 	glass_icon_state = "iced_beerglass"
@@ -2393,7 +2444,7 @@
 	taste_description = "hot and spice"
 	color = "#004166d0"
 	strength = 5
-	adj_temp = 50
+	adj_temp = 25
 	targ_temp = 360
 
 	glass_unique_appearance = TRUE
@@ -2661,16 +2712,33 @@
 	description = "Refreshing rum and citrus. Time for a tropical get away."
 	taste_description = "refreshing citrus and rum"
 	color = "#d1ff49d0" // rgb(209, 255, 73
+	glass_icon_state = "daiquiri"
 	strength = 25
 
+	glass_unique_appearance = TRUE
 	glass_name = "Daiquiri"
-	glass_desc = "Refreshing rum and citrus. Time for a tropical get away."
+	glass_desc = "Refreshing rum and citrus. Time for a tropical getaway."
+
+/datum/reagent/ethanol/daiquiri_strawberry
+	name = "Daiquiri Pink"
+	id = "daiquiri_strawberry"
+	description = "Refreshing rum and strawberry juice. Time for a tropical get away, even if its too fruity."
+	taste_description = "refreshing strawberry and rum"
+	color = "#d1ff49d0" // rgb(209, 255, 73
+	glass_unique_appearance = TRUE
+	glass_icon_state = "daiquiristrawberry"
+	strength = 23 //Washed down with FLAVOUR
+
+	glass_name = "Daiquiri Pink"
+	glass_desc = "Refreshing rum and strawberry juice. Time for a tropical get away, even if its too fruity."
 
 /datum/reagent/ethanol/whiskeysour
 	name = "Whiskey Sour"
 	id = "whiskeysour"
 	description = "A smokey, refreshing lemon whiskey."
 	taste_description = "smoke and citrus"
+	glass_icon_state = "whiskeysour"
+	glass_unique_appearance = TRUE
 	color = "#a0692ed0" // rgb(160, 105, 46)
 	strength = 20
 
@@ -2694,9 +2762,11 @@
 	id = "balloon"
 	description = "A strange drink invented in the aerostats of Venus."
 	taste_description = "strange alcohol"
+	glass_icon_state = "balloon"
 	color = "#FAEBD7d0"
 	strength = 66
 
+	glass_unique_appearance = TRUE
 	glass_name = "Balloon"
 	glass_desc = "A strange drink invented in the aerostats of Venus."
 
@@ -2837,3 +2907,252 @@
 	glass_icon_state = "antidepresant"
 	glass_name = "Antidepressant"
 	glass_desc = "A Bright red cocktail, chill as an empty chimney, yet bright and soothing as a smile. Non-alcoholic. A soul lightener, you can't stay sad at the taste of this."
+
+
+/datum/reagent/drink/blendedmint
+	name = "Blended Mint"
+	id = "blendedmint"
+	description = "A common condiment to mix with cocktails or other foods. It's just a cup of leaves innit."
+	taste_description = "dry mint leaves"
+	taste_mult = 0.5
+	color = "#98CD49"
+
+
+	glass_icon_state = "booger"
+	glass_name = "blended mint leaves"
+	glass_desc = "Very dry and bland, but with a minty aftertaste! Not the best thing to be \"drinking\" though."
+
+/datum/reagent/drink/cinnamonpowder
+	name = "Cinnamon Powder"
+	id = "cinnamonpowder"
+	description = "A common condiment to mix with milkshakes or desserts. Not to be used for challenges."
+	taste_description = "dry cinnamon powder"
+	taste_mult = 0.5
+	color = "#D78F5F"
+
+
+	glass_icon_state = "glass_brown"
+	glass_name = "cinnamon powder"
+	glass_desc = "Pure grinded up cinnamon powder. Delicious when used as a condiment, but a cough hazard when taken by itself."
+
+/datum/reagent/drink/blueberryjuice
+	name = "Blueberry Juice"
+	id = "blueberryjuice"
+	description = "Used to mix with cocktails, milkshakes or if you just want some refreshing blueberry juice."
+	taste_description = "fresh fruity blueberry"
+	taste_mult = 1.1
+	color = "#4D0121"
+
+	glass_icon_state = "grapejuice"
+	glass_name = "blueberry juice"
+	glass_desc = "Rather simple when it comes to fruit juices, but still refreshing!"
+
+/datum/reagent/drink/strawberryjuice
+	name = "Strawberry Juice"
+	id = "strawberryjuice"
+	description = "Used to mix with cocktails, milkshakes or if you just want some sweet refreshing strawberry juice."
+	taste_description = "sweet fruity strawberry"
+	taste_mult = 1.1
+	color = "#C20032"
+
+	glass_icon_state = "berryjuice"
+	glass_name = "strawberry juice"
+	glass_desc = "Sweet and sugary, but also very refreshing!"
+
+//SoJ based drinks
+
+
+/datum/reagent/ethanol/southern_saki
+	name = "Southern Sake"
+	id = "southern_saki"
+	description = "Best served warm and in a shallow bowl for lapping."
+	taste_description = "unbearable bitterness"
+	color = "#F9F9F9" // rgb(98, 98, 98)
+	strength = 50 //rice wine stronk
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "sake"
+	glass_name = "Southern Sake"
+	glass_desc = "Best served warm and in a shallow bowl for lapping."
+
+/datum/reagent/ethanol/nothern_mead
+	name = "Nothern Mead"
+	id = "nothern_mead"
+	description = "Said to make even the strongest of accents all the more unintelligible."
+	taste_description = "robust hops and carbon"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 140 //stronk
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "tankardlidfull"
+	glass_name = "Nothern Mead"
+	glass_desc = "Said to make even the strongest of accents all the more unintelligible."
+
+/datum/reagent/ethanol/life_line
+	name = "Life Line"
+	id = "life_line"
+	description = "A perfect drink for mass casualties."
+	taste_description = "liquid painkillers"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 35 //weak painkiller
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "lifeline"
+	glass_name = "Life Line"
+	glass_desc = "A perfect drink for mass casualties."
+
+/datum/reagent/ethanol/posicell
+	name = "Posicell"
+	id = "posicell"
+	description = "The only drink that is shockingly annoying to make in and out of the house."
+	taste_description = "rouge hardware and annoyed labcoats"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 60
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "posicell"
+	glass_name = "Posicell"
+	glass_desc = "The only drink that is shockingly annoying to make in and out of the house."
+
+/datum/reagent/ethanol/nickle_n_dime
+	name = "Nickel And Dime"
+	id = "nickle_n_dime"
+	description = "For those with a rich taste."
+	taste_description = "Nothing." //Nothing
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 120
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "nickleanddime"
+	glass_name = "Nickle And Dime"
+	glass_desc = "For those with a rich taste."
+
+/datum/reagent/ethanol/arcscrewdriver
+	name = "Arc screwdriver"
+	id = "arcscrewdriver"
+	description = "For one a regular one doesn't cut it."
+	taste_description = "electrooptic discussion"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 75
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "arcscrewdriver"
+	glass_name = "Arc screwdriver"
+	glass_desc = "For one a regular one doesn't cut it."
+
+/datum/reagent/ethanol/whiskey_rocks
+	name = "Whiskey Rocks"
+	id = "whiske_rocks"
+	description = "Whiskey but for people that like things cold and watered down."
+	taste_description = "cold classic"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 23
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "noirbase"
+	glass_name = "Whiskey Rocks"
+	glass_desc = "Whiskey but for people that like things cold and watered down."
+
+/datum/reagent/ethanol/nior
+	name = "Noir"
+	id = "noir"
+	description = "For when things aren't always black and white."
+	taste_description = "a cold case"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 38 //.38 subnose if only!
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "nior"
+	glass_name = "Noir"
+	glass_desc = "For when things aren't always black and white."
+
+/datum/reagent/ethanol/duress
+	name = "Duress"
+	id = "duress"
+	description = "A good way to get people talking."
+	taste_description = "stunglove fibers"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 40 //Same amount as a stubbaton
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "buzzkill"
+	glass_name = "Duress"
+	glass_desc = "A good way to get people talking."
+
+/datum/reagent/ethanol/ocular
+	name = "Ocular"
+	id = "ocular"
+	description = "Don't make eye contact, a favorite of the Mar qua."
+	taste_description = "fresh mint and inspiration"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 30
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "marquadrink"
+	glass_name = "Ocular"
+	glass_desc = "Don't make eye contact, a favorite of the Mar qua."
+
+/datum/reagent/ethanol/saint_pio
+	name = "Saint Pio"
+	id = "saint_pio"
+	description = "An absolutely perfect choice."
+	taste_description = "a crusade of flavors"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 50
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "saint_pio"
+	glass_name = "Saint Pio"
+	glass_desc = "An absolutely perfect choice."
+
+/datum/reagent/ethanol/rusty_special
+	name = "Rusty Special"
+	id = "rusty_special"
+	description = "Both Barrels."
+	taste_description = "pellets of iron dancing in smooth whiskey"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 60
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "buckshot"
+	glass_name = "Rusty Special"
+	glass_desc = "Both Barrels."
+
+/datum/reagent/ethanol/western_escargot
+	name = "Western Escargot"
+	id = "western_escargot"
+	description = "The kinda slugs a free man can appreciate."
+	taste_description = "an explosion of flavors and a nice kick on its aftertaste"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 60
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "slug"
+	glass_name = "Western Escargot"
+	glass_desc = "The kinda slugs a free man can appreciate."
+
+/datum/reagent/ethanol/prospie
+	name = "Prospie"
+	id = "prospie"
+	description = "Tastes how it looks, like it's namesake"
+	taste_description = "a mix of blood sweets and tears."
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 60
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "prospie"
+	glass_name = "Prospie"
+	glass_desc = "Tastes how it looks, like it's namesake."
+
+/datum/reagent/ethanol/friendlyfire
+	name = "Friendly Fire"
+	id = "friendlyfire"
+	description = "Watch your back when you take a swig."
+	taste_description = "002"
+	color = "#E0CE8A" // rgb(88, 81, 54)
+	strength = 60
+
+	glass_unique_appearance = TRUE
+	glass_icon_state = "friendlyfire"
+	glass_name = "Friendly Fire"
+	glass_desc = "Watch your back when you take a swig."

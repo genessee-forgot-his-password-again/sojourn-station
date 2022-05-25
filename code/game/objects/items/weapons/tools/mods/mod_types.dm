@@ -24,7 +24,7 @@
 		UPGRADE_FORCE_MOD = 1
 		)
 
-	I.required_qualities = list(QUALITY_BOLT_TURNING,QUALITY_PRYING, QUALITY_SAWING,QUALITY_SHOVELING,QUALITY_DIGGING,QUALITY_EXCAVATION)
+	I.required_qualities = list(QUALITY_BOLT_TURNING, QUALITY_PRYING, QUALITY_SAWING, QUALITY_SHOVELING, QUALITY_DIGGING, QUALITY_EXCAVATION)
 	I.prefix = "braced"
 
 //Heatsink can be attached to any tool that uses fuel or power
@@ -88,7 +88,7 @@
 	GUN_UPGRADE_RECOIL = 0.85,
 	UPGRADE_BULK = 1
 	)
-	I.required_qualities = list(QUALITY_CUTTING,QUALITY_DRILLING, QUALITY_SAWING, QUALITY_DIGGING, QUALITY_EXCAVATION, QUALITY_WELDING, QUALITY_HAMMERING)
+	I.required_qualities = list(QUALITY_CUTTING,QUALITY_DRILLING, QUALITY_SAWING, QUALITY_DIGGING, QUALITY_EXCAVATION, QUALITY_WELDING, QUALITY_HAMMERING, QUALITY_BONE_SETTING)
 	I.prefix = "shielded"
 
 // Plasmablock can be attached to any tool that uses fuel or power
@@ -131,14 +131,14 @@
 	UPGRADE_DEGRADATION_MULT = 0.7,
 	UPGRADE_HEALTH_THRESHOLD = 5
 	)
-	I.required_qualities = list(QUALITY_CUTTING,QUALITY_DRILLING, QUALITY_SAWING, QUALITY_DIGGING, QUALITY_EXCAVATION, QUALITY_WELDING, QUALITY_HAMMERING)
+	I.required_qualities = list(QUALITY_CUTTING, QUALITY_DRILLING, QUALITY_SAWING, QUALITY_DIGGING, QUALITY_EXCAVATION, QUALITY_WELDING, QUALITY_HAMMERING)
 	I.prefix = "rubber-wrapped"
 
 // 	 PRODUCTIVITY: INCREASES WORKSPEED
 //------------------------------------------------
 /obj/item/tool_upgrade/productivity/ergonomic_grip
 	name = "ergonomic grip"
-	desc = "A replacement grip for a tool which allows it to be more precisely controlled with one hand."
+	desc = "A replacement grip for a tool which allows it to be more precisely controlled with one hand. Can be placed under a gun\'s barrel to reduce recoil. However, it also makes bracing impossible."
 	icon_state = "ergonomic"
 	matter = list(MATERIAL_STEEL = 1, MATERIAL_PLASTIC = 5)
 	price_tag = 120
@@ -153,7 +153,7 @@
 		GUN_UPGRADE_FIRE_DELAY_MULT = 0.8,
 		UPGRADE_BULK = 1
 	)
-	I.gun_loc_tag = GUN_GRIP
+	I.gun_loc_tag = GUN_UNDERBARREL
 	I.required_qualities = list(QUALITY_BOLT_TURNING, QUALITY_PULSING, QUALITY_PRYING, QUALITY_WELDING, QUALITY_SCREW_DRIVING, QUALITY_WIRE_CUTTING, QUALITY_SHOVELING, QUALITY_DIGGING, QUALITY_EXCAVATION, QUALITY_CLAMPING, QUALITY_CAUTERIZING, QUALITY_RETRACTING, QUALITY_DRILLING, QUALITY_HAMMERING, QUALITY_SAWING, QUALITY_CUTTING, QUALITY_WEAVING)
 	I.prefix = "ergonomic"
 
@@ -219,7 +219,7 @@
 	)
 	I.req_gun_tags = list(GUN_BAYONET)
 	I.gun_loc_tag = GUN_KNIFE
-	I.required_qualities = list(QUALITY_CUTTING,QUALITY_SAWING, QUALITY_SHOVELING, QUALITY_WIRE_CUTTING, QUALITY_SHOVELING, QUALITY_DIGGING)
+	I.required_qualities = list(QUALITY_CUTTING, QUALITY_SAWING, QUALITY_SHOVELING, QUALITY_WIRE_CUTTING, QUALITY_SHOVELING, QUALITY_DIGGING)
 	I.prefix = "sharpened"
 
 /obj/item/tool_upgrade/productivity/diamond_blade
@@ -374,10 +374,41 @@
 	I.gun_loc_tag = GUN_BARREL
 	I.req_gun_tags = list(GUN_ENERGY)
 
+/obj/item/tool_upgrade/productivity/rocket_engine
+	name = "rocket engine"
+	desc = "A singular rocket engine, used in assisted ballistics, tools, and once in a blue moon its intended purpose."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "rocket_engine"
+	origin_tech = list(TECH_ENGINEERING = 3, TECH_POWER = 4)
+	matter = list(MATERIAL_PLASTEEL = 3, MATERIAL_GOLD = 1)
+
+/obj/item/tool_upgrade/productivity/rocket_engine/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.tool_upgrades = list(
+	UPGRADE_WORKSPEED = 0.75,
+	UPGRADE_FORCE_MULT = 1.2,
+	UPGRADE_DEGRADATION_MULT = 3,
+	UPGRADE_POWERCOST_MULT = 2,
+	UPGRADE_FUELCOST_MULT = 2,
+	UPGRADE_PRECISION = -15,
+	UPGRADE_HEALTH_THRESHOLD = -10
+	)
+	I.weapon_upgrades = list(
+		GUN_UPGRADE_STEPDELAY_MULT = 0.1,
+		UPGRADE_BULK = 2,
+		GUN_UPGRADE_RECOIL = 1.5,
+		GUN_UPGRADE_FIRE_DELAY_MULT = 0.8
+		)
+	I.prefix = "rocket-assisted "
+	I.req_fuel_cell = REQ_FUEL_OR_CELL
+	I.gun_loc_tag = GUN_MECHANISM
+	I.req_gun_tags = list(GUN_PROJECTILE)
+
 // Wax coating- shrinks tool and give it anti-staining properties, can be applied to clothes
 /obj/item/tool_upgrade/productivity/waxcoat
 	name = "Wax Coating"
-	desc = "A bucket of filtered beeswax, to be applied to tools or clothes; preventing stains, and preventing minor knicks and damage."
+	desc = "A bucket of filtered beeswax, to be applied to tools or clothes to prevent stains, minor nicks, and damage."
 	icon_state = "waxcoat"
 	matter = list(MATERIAL_BIOMATTER = 2, MATERIAL_PLASTIC = 5)
 	can_remove = FALSE
@@ -433,7 +464,7 @@
 		GUN_UPGRADE_RECOIL = 0.8,
 	)
 	I.gun_loc_tag = GUN_GRIP
-	I.required_qualities = list(QUALITY_CUTTING,QUALITY_WIRE_CUTTING, QUALITY_SCREW_DRIVING, QUALITY_WELDING,QUALITY_PULSING, QUALITY_CLAMPING, QUALITY_CAUTERIZING, QUALITY_BONE_SETTING, QUALITY_LASER_CUTTING, QUALITY_SHOVELING, QUALITY_DIGGING, QUALITY_WEAVING)
+	I.required_qualities = list(QUALITY_CUTTING, QUALITY_WIRE_CUTTING, QUALITY_SCREW_DRIVING, QUALITY_WELDING,QUALITY_PULSING, QUALITY_CLAMPING, QUALITY_CAUTERIZING, QUALITY_BONE_SETTING, QUALITY_LASER_CUTTING, QUALITY_SHOVELING, QUALITY_DIGGING, QUALITY_WEAVING, QUALITY_BONE_GRAFTING)
 	I.prefix = "stabilized"
 
 /obj/item/tool_upgrade/refinement/magbit
@@ -530,7 +561,7 @@
 		UPGRADE_BULK = 0.5
 	)
 	I.gun_loc_tag = GUN_GRIP
-	I.required_qualities = list(QUALITY_CUTTING, QUALITY_WIRE_CUTTING, QUALITY_SCREW_DRIVING, QUALITY_WELDING ,QUALITY_PULSING, QUALITY_CLAMPING, QUALITY_CAUTERIZING, QUALITY_BONE_SETTING, QUALITY_LASER_CUTTING)
+	I.required_qualities = list(QUALITY_CUTTING, QUALITY_WIRE_CUTTING, QUALITY_SCREW_DRIVING, QUALITY_WELDING ,QUALITY_PULSING, QUALITY_CLAMPING, QUALITY_CAUTERIZING, QUALITY_BONE_SETTING, QUALITY_LASER_CUTTING, QUALITY_BONE_GRAFTING)
 	I.prefix = "vibration-compensated"
 
 // 		AUGMENTS: MISCELLANEOUS AND UTILITY
@@ -706,6 +737,35 @@
 	I.prefix = "sanctified"
 	I.req_fuel_cell = REQ_FUEL_OR_CELL
 
+/obj/item/tool_upgrade/augment/sanctifier_plus
+	name = "overclocked sanctifier"
+	icon_state = "sanctifier_plus"
+	desc = "Recommended for crusades against mutants, wild life, and heretics. Does this device actually make a better weapon or is it something else? Regardless, it makes one more thoughtful during labor. \
+	This one has been overclocked by members of the factortial path, increasing both its benefits and its drawbacks."
+	matter = list(MATERIAL_BIOMATTER = 3, MATERIAL_PLASTEEL = 2)
+	price_tag = 20
+
+/obj/item/tool_upgrade/augment/sanctifier_plus/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.tool_upgrades = list(
+	UPGRADE_SANCTIFY = TRUE,
+	UPGRADE_FORCE_MOD = 12,
+	UPGRADE_PRECISION = 15,
+	UPGRADE_HEALTH_THRESHOLD = 15,
+	UPGRADE_DEGRADATION_MULT = 0.7,
+	UPGRADE_WORKSPEED = -0.75
+	)
+	I.weapon_upgrades = list(
+	GUN_UPGRADE_RECOIL = 0.6,
+	GUN_UPGRADE_FIRE_DELAY_MULT = 1.3,
+	GUN_UPGRADE_MOVE_DELAY_MULT = 1.3,
+	GUN_UPGRADE_CHARGECOST = 0.7
+	)
+	I.gun_loc_tag = GUN_MECHANISM
+	I.prefix = "over sanctified"
+	I.req_fuel_cell = REQ_FUEL_OR_CELL
+
 /*
 /obj/item/tool_upgrade/augment/hammer_addon
 	name = "flat surface"
@@ -750,7 +810,7 @@
 		A powerful AI will integrate itself into this tool with the aid of nanotechnology and improve it in every way possible."
 	icon_state = "ai_tool"
 	matter = list(MATERIAL_PLASTIC = 1, MATERIAL_PLASTEEL = 3, MATERIAL_PLATINUM = 3, MATERIAL_GOLD = 3, MATERIAL_DIAMOND = 1)
-	price_tag = 225
+	price_tag = 725
 
 /obj/item/tool_upgrade/augment/ai_tool/New()
 	..()
@@ -809,7 +869,7 @@
 	desc = "Very rare tool mod from Greyson powered by their nanomachines. It repairs the tool while in use and makes it near unbreakable."
 	icon_state = "repair_nano"
 	matter = list(MATERIAL_PLASTIC = 1, MATERIAL_PLASTEEL = 1, MATERIAL_PLATINUM = 1)
-	price_tag = 100
+	price_tag = 325
 
 /obj/item/tool_upgrade/augment/repair_nano/New()
 	..()
@@ -870,7 +930,7 @@
 	icon_state = "artmod_1"
 	price_tag = 200
 
-/obj/item/tool_upgrade/augment/artwork_tool_mod/New()
+/obj/item/tool_upgrade/artwork_tool_mod/New()
 	..()
 	name = get_weapon_name(capitalize = TRUE)
 	icon_state = "artmod_[rand(1,16)]"

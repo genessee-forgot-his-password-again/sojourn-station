@@ -8,7 +8,8 @@
 	var/list/hud_list[10]
 	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
 	var/obj/item/rig/wearing_rig // This is very not good, but it's much much better than calling get_rig() every update_lying_buckled_and_verb_status() call.
-	var/obj/item/gun/using_scope // This is not very good either, because I've copied it. Sorry.
+	var/using_scope // This is not very good either, because I've copied it. Sorry.
+	var/show_title = TRUE
 
 /mob/living/carbon/human/New(var/new_loc, var/new_species, var/new_form)
 
@@ -67,6 +68,8 @@
 	for(var/organ in organs)
 		qdel(organ)
 	organs.Cut()
+
+	QDEL_NULL(sanity)
 	return ..()
 
 /mob/living/carbon/human/Stat()
@@ -106,7 +109,7 @@
 
 		var/obj/item/implant/core_implant/cruciform/C = get_core_implant(/obj/item/implant/core_implant/cruciform)
 		if(C)
-			stat("Cruciform", "[C.power]/[C.max_power]")
+			stat("Axis Power", "[C.power]/[C.max_power]")
 			stat("Channeling Boost", "[C.channeling_boost]")
 
 		var/obj/item/organ/internal/psionic_tumor/B = random_organ_by_process(BP_PSION)
@@ -334,6 +337,8 @@ var/list/rank_prefix = list(\
 		id = wear_id.GetIdCard()
 	if(!id)
 		id = get_idcard()
+	if(show_title == FALSE)
+		return ""
 	if(id)
 		rank = id.rank
 		if(rank_prefix[rank])
@@ -1039,6 +1044,13 @@ var/list/rank_prefix = list(\
 						src.adjustToxLoss(1)
 
 
+/mob/living/carbon/human/verb/Toggle_Title()
+	set name = "Toggle Title"
+	set desc = "Shows or hides your title."
+	set category = "IC"
+	show_title = !show_title
+	to_chat(usr, "You change your mind about showing your title.")
+
 /mob/living/carbon/human/verb/check_pulse()
 	set category = "Object"
 	set name = "Check pulse"
@@ -1656,3 +1668,37 @@ var/list/rank_prefix = list(\
 		return TRUE
 	else
 		return FALSE
+
+/mob/living/carbon/human/Move(NewLoc, Dir = 0, step_x = 0, step_y = 0, var/glide_size_override = 0)
+	. = ..()
+	if(.)
+		if(species.reagent_tag == IS_SLIME) // Slimes clean the floor. Code stolen from the roombas
+			var/turf/tile = loc
+			var/nutrition_gained = 5 // Up here for ease of modification
+			if(isturf(tile))
+				tile.clean_blood()
+				for(var/A in tile)
+					if(istype(A, /obj/effect))
+						if(istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay))
+							qdel(A)
+							src.nutrition += nutrition_gained // Gain some nutrition
+					else if(istype(A, /obj/item))
+						var/obj/item/cleaned_item = A
+						cleaned_item.clean_blood()
+					else if(ishuman(A))
+						var/mob/living/carbon/human/cleaned_human = A
+						if(cleaned_human.lying)
+							if(cleaned_human.head)
+								cleaned_human.head.clean_blood()
+								cleaned_human.update_inv_head(0)
+							if(cleaned_human.wear_suit)
+								cleaned_human.wear_suit.clean_blood()
+								cleaned_human.update_inv_wear_suit(0)
+							else if(cleaned_human.w_uniform)
+								cleaned_human.w_uniform.clean_blood()
+								cleaned_human.update_inv_w_uniform(0)
+							if(cleaned_human.shoes)
+								cleaned_human.shoes.clean_blood()
+								cleaned_human.update_inv_shoes(0)
+							cleaned_human.clean_blood(1)
+							to_chat(cleaned_human, SPAN_DANGER("[src] cleans your face!"))

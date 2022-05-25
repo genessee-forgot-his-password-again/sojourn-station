@@ -14,7 +14,7 @@
 	spawn_nothing_percentage = 90
 
 //Genetic Ambusher
-
+/*
 /obj/random/mob/ambusher
 	name = "random ambusher"
 	icon_state = "hostilemob-brown-low"
@@ -27,7 +27,7 @@
 	name = "low chance ambusher"
 	icon_state = "hostilemob-brown-low"
 	spawn_nothing_percentage = 95 // These things should not be escaping from science often.
-
+*/
 //Carps
 
 /obj/random/mob/carp
@@ -339,8 +339,9 @@
 	alpha = 128
 
 /obj/random/mob/undergroundmob/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/wurm = 20,
-		/mob/living/simple_animal/hostile/wurm/adult = 10,
+	return pickweight(list(/mob/living/carbon/superior_animal/wurm = 20,
+		/mob/living/carbon/superior_animal/wurm/silver = 15,
+		/mob/living/carbon/superior_animal/wurm/osmium = 10,
 		/mob/living/simple_animal/hostile/sargoyle = 20,
 		/mob/living/simple_animal/hostile/helldiver = 10,
 		/obj/random/mob/nightmare = 1
