@@ -12,7 +12,7 @@
 	name = "Nanite Regeneration"
 	desc = "You configure your nanite matrix to begin aiding in your natural healing."
 	gain_text = "You feel a dull ache as your nanogate releases newly configured nanites into your body."
-	var/regen_rate = 1
+	var/regen_rate = 0.5 //This seems low but this is per human handle_chemicals_in_body meaning this is rather robust
 
 /datum/perk/nanite_muscle
 	name = "Nanofiber Muscle Therapy"
@@ -29,11 +29,11 @@
 
 /datum/perk/nanite_armor/assign(mob/living/carbon/human/H)
 	..()
-	holder.brute_mod_perk -= armor_mod
+	holder?.brute_mod_perk -= armor_mod
 
 /datum/perk/nanite_armor/remove()
 	..()
-	holder.brute_mod_perk += armor_mod
+	holder?.brute_mod_perk += armor_mod
 
 /datum/perk/nanite_chem
 	name = "Nanite Chemicals"
@@ -104,7 +104,7 @@
 	anti_cheat = TRUE
 
 	var/list/ammo_boxes = typesof(/obj/item/ammo_magazine/ammobox)
-	//We cant print everything under the sun sadly, so we limit are options a small bit! 
+	//We cant print everything under the sun sadly, so we limit are options a small bit!
 	//No SI laser ammo, explosives, some higher end boxes/ammo, and church biomatter boxes
 	ammo_boxes -= list(	/obj/item/ammo_magazine/ammobox,
 						/obj/item/ammo_magazine/ammobox/pistol_35/laser,
@@ -127,6 +127,6 @@
 	var/obj/item/choice = input(usr, "Which type of ammo do you want?", "Ammo Choice", null) as null|anything in ammo_boxes
 	usr.put_in_hands(new choice(usr.loc))
 	cooldown_time = world.time + cooldown
-	
+
 	anti_cheat = FALSE
 	return ..()

@@ -56,11 +56,28 @@
 
 /datum/category_item/setup_option/background/bckgrnd/refugee
 	name = "Refugee"
-	desc = "Where ever you came from is no more, torn apart by conflict and war. It may have been a civil war or conquest by the Terran Federation, whatever the reason it has long since lost any \
+	desc = "Where ever you came from is no more, torn apart by conflict and war. It may have been a civil war or conquest by the Solarian Federation, whatever the reason it has long since lost any \
 	meaning after the destruction of your home-world. Or maybe it wasn't your homeworld that was destroyed, maybe it was just your way of life. Regardless, you've left a burned bridge behind you and \
 	can no longer go back. Your rough life has hardened you against the worst possible situations."
 
 	perks = list(/datum/perk/space_asshole)
+
+	stat_modifiers = list(
+		STAT_ROB = 0,
+		STAT_TGH = 0,
+		STAT_VIG = 0,
+		STAT_BIO = 0,
+		STAT_MEC = 0,
+		STAT_COG = 0
+	)
+
+/datum/category_item/setup_option/background/bckgrnd/linguist
+	name = "Aspiring Linguist"
+	desc = "Be it from your education or from a multi-lingual family, you've found yourself studying languages non-stop throughout your childhood and early adulthood. Unlike most you're silver-tongued \
+	in both your knowledge of English, your secondary or native language - and your tertiary! Being tri-lingual has its upsides, making you an adept trader of sorts. Though its downside is that you may \
+	have not studied as hard as some others have in other subjects."
+
+	perks = list(/datum/perk/linguist)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,

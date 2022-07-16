@@ -12,6 +12,14 @@
 	var/sticker = null
 	var/closed = TRUE
 
+/obj/item/storage/hcases/Destroy()
+
+	for (var/obj/held_item in contents) //if we find storage is harddelling move this down to that destroy
+		qdel(held_item)
+
+	..()
+	return QDEL_HINT_QUEUE //just to be safe
+
 /obj/item/storage/hcases/proc/can_interact(mob/user)
 	if((!ishuman(user) && (loc != user)) || user.stat || user.restrained())
 		return 1
@@ -111,11 +119,31 @@ obj/item/storage/hcases/attackby(obj/item/W, mob/user)
 	desc = "A lacquer coated hardcase that can hold a lot of various things. Alt+click to open and close."
 	max_storage_space = DEFAULT_SMALL_STORAGE * 1.3 //a better fancy box
 
+/obj/item/storage/hcases/scrap/job_artist
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/scrap/job_artist/populate_contents()
+	new /obj/item/bananapeel(src)
+	new /obj/item/storage/fancy/crayons(src)
+	new /obj/item/toy/weapon/waterflower(src)
+	new /obj/item/stamp/clown(src)
+	new /obj/item/handcuffs/fake(src)
+
+/obj/item/storage/hcases/preimer
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/preimer/populate_contents()
+	new /obj/item/storage/box/ids(src)
+	new /obj/item/tool/knife/dagger/ceremonial(src)
+	new /obj/item/clothing/accessory/cross(src)
+
+
+
 //////////////////////////////////////////Ammo//////////////////////////////////////////
 
 /obj/item/storage/hcases/ammo
 	name = "ammo hard case"
-	desc = "A generic ammo can. Can hold ammo magazines, boxes, and bullets. Alt+click to open and close."
+	desc = "A generic ammo can. Can hold ammo magazines, boxes, bullets, a assortment of grenades and some gear. Alt+click to open and close."
 	icon_state = "ammo_case"
 	sticker_name = "ammo"
 	matter = list(MATERIAL_STEEL = 20)
@@ -125,12 +153,60 @@ obj/item/storage/hcases/attackby(obj/item/W, mob/user)
 		/obj/item/ammo_casing,
 		/obj/item/ammo_magazine/ammobox,
 		/obj/item/ammo_kit,
-		/obj/item/gun/projectile/boltgun/flare_gun
+		/obj/item/gun/projectile/boltgun/flare_gun,
+		/obj/item/device/radio,
+		/obj/item/tool/knife,
+		/obj/item/cell/small,
+		/obj/item/cell/medium,
+		/obj/item/device/flash,
+		/obj/item/grenade,
+		/obj/item/reagent_containers/spray/pepper,
+		/obj/item/handcuffs
 		)
 
 /obj/item/storage/hcases/ammo/ih
 	icon_state = "ammo_case_ih"
-	desc = "An ammo can for Marshals. Can hold ammo magazines, boxes, and bullets. Alt+click to open and close."
+	desc = "An ammo can for Marshals. Can hold ammo magazines, boxes, bullets, a assortment of grenades and some gear. Alt+click to open and close."
+
+/obj/item/storage/hcases/ammo/ih/wo
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/ih/wo/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/ammo_magazine/kurtz_50/rubber(src)
+	new /obj/item/ammo_magazine/kurtz_50/rubber(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
+	new /obj/item/gun/energy/gun/martin/preloaded(src)
+
+/obj/item/storage/hcases/ammo/ih/spec_officer
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/ih/spec_officer/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
+	new /obj/item/gun/energy/gun/martin/preloaded(src)
+
+
+/obj/item/storage/hcases/ammo/ih/ranger_officer
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/ih/ranger_officer/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/ammo_magazine/speed_loader_kurtz_50/rubber(src)
+	new /obj/item/ammo_magazine/speed_loader_kurtz_50/rubber(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
+
+/obj/item/storage/hcases/ammo/ih/marshal_officer
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/ih/marshal_officer/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/gun/energy/gun/martin/preloaded(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
 
 /obj/item/storage/hcases/ammo/serb
 	icon_state = "ammo_case_serb"
@@ -139,6 +215,49 @@ obj/item/storage/hcases/attackby(obj/item/W, mob/user)
 /obj/item/storage/hcases/ammo/blackmarket
 	icon_state = "ammo_case_blackmarket"
 	desc = "A shady looking ammo can. Can hold ammo magazines, boxes, and bullets. Alt+click to open and close."
+
+/obj/item/storage/hcases/ammo/blackmarket/co
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/blackmarket/co/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/ammo_magazine/kurtz_50(src)
+	new /obj/item/ammo_magazine/kurtz_50(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
+	new /obj/item/gun/energy/gun/martin/preloaded(src)
+	new /obj/item/tool/knife/boot/blackshield(src)
+
+/obj/item/storage/hcases/ammo/blackmarket/serg
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/blackmarket/serg/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
+	new /obj/item/gun/energy/gun/martin/preloaded(src)
+	new /obj/item/tool/knife/boot/blackshield(src)
+
+
+/obj/item/storage/hcases/ammo/blackmarket/medspec
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/blackmarket/medspec/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
+	new /obj/item/gun/energy/gun/martin/preloaded(src)
+	new /obj/item/tool/knife/boot/blackshield(src)
+
+/obj/item/storage/hcases/ammo/blackmarket/trooper
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/ammo/blackmarket/trooper/populate_contents()
+	new /obj/item/handcuffs(src)
+	new /obj/item/device/lighting/toggleable/flashlight/seclite(src)
+	new /obj/item/cell/small/high(src)
+	new /obj/item/gun/energy/gun/martin/preloaded(src)
+	new /obj/item/tool/knife/boot/blackshield(src)
 
 /obj/item/storage/hcases/ammo/excel
 	icon_state = "ammo_case_excel"
@@ -156,13 +275,14 @@ obj/item/storage/hcases/attackby(obj/item/W, mob/user)
 	desc = "A wooden hard case made specifically for card carp, but it can hold various other gaming items. Alt+click to open and close."
 	icon_state = "gaming"
 	matter = list(MATERIAL_WOOD = 10)
-	max_storage_space = DEFAULT_BULKY_STORAGE // Side bars for decks tend to have lots of cards and given how specialized this is, a little extra space isn't bad. -Kaz
+	max_storage_space = DEFAULT_BULKY_STORAGE * 2 // Side bars for decks tend to have lots of cards and given how specialized this is, a little extra space isn't bad. -Kaz
 
 	can_hold = list(
 		/obj/item/cardholder,
 		/obj/item/card_carp,
 		/obj/item/pack_card_carp,
 		/obj/item/scale,
+		/obj/item/bone_counter,
 		/obj/item/board,
 		/obj/item/storage/pill_bottle/chechker,
 		/obj/item/deck,
@@ -235,6 +355,53 @@ obj/item/storage/hcases/attackby(obj/item/W, mob/user)
 	sticker_name = "scrap"
 	desc = "A lacquer coated hardcase with medical markings that can hold a lot of medical supplies. Alt+click to open and close."
 	max_storage_space = DEFAULT_SMALL_STORAGE * 1.3 //a better fancy box
+
+/obj/item/storage/hcases/med/medical_job
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/med/medical_job/populate_contents()
+	new /obj/item/stack/medical/advanced/bruise_pack/large(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/ointment/large(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/splint(src)
+	new /obj/item/reagent_containers/syringe/inaprovaline(src)
+	new /obj/item/device/scanner/health(src)
+	//Has medicals items inside it to save on spawn storage.
+	new /obj/item/storage/firstaid/soteria(src)
+	new /obj/item/modular_computer/tablet/moebius/preset(src)
+
+/obj/item/storage/hcases/med/medical_job_cbo
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/med/medical_job_cbo/populate_contents()
+	new /obj/item/stack/medical/advanced/bruise_pack/large(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/ointment/large(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/splint(src)
+	new /obj/item/reagent_containers/syringe/inaprovaline(src)
+	new /obj/item/device/scanner/health(src)
+	//Has medicals items inside it to save on spawn storage.
+	new /obj/item/storage/firstaid/soteria(src)
+	new /obj/item/modular_computer/tablet/moebius/preset(src)
+	new /obj/item/gun/projectile/clarissa/moebius/preloaded_cbo(src)
+	new /obj/item/gun_upgrade/trigger/dnalock(src)
+	new /obj/item/gun_upgrade/muzzle/silencer(src)
+
+/obj/item/storage/hcases/med/medical_job_trama
+	exspand_when_spawned = FALSE //No exspanding cheats
+
+/obj/item/storage/hcases/med/medical_job_trama/populate_contents()
+	new /obj/item/rig/trauma_suit/equipped(src)
+	new /obj/item/clothing/suit/straight_jacket(src)
+	new /obj/item/storage/firstaid/soteria/large(src)
+	new /obj/item/gun/energy/sst/formatbound/preloaded(src)
+	new /obj/item/cell/medium/moebius/high(src)
+	new /obj/item/ammo_magazine/smg_35/hv(src)
+	new /obj/item/modular_computer/tablet/moebius/preset(src)
 
 //////////////////////////////////////////Engineering//////////////////////////////////////////
 

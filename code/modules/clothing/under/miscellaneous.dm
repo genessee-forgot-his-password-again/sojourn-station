@@ -63,7 +63,7 @@
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 100, bullet = 100, energy = 100, bomb = 100, bio = 100, rad = 100)
+	armor_list = list(melee = 100, bullet = 100, energy = 100, bomb = 100, bio = 100, rad = 100)
 	cold_protection = UPPER_TORSO | LOWER_TORSO | LEGS | ARMS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0
@@ -218,7 +218,7 @@
 	icon_state = "gorka_ih_med_b"
 	item_state = "gorka_ih_med_b"
 	permeability_coefficient = 0.50
-	armor = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
+	armor_list = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
 
 /obj/item/clothing/under/rank/medspec/gorka_ih_med_g
 	name = "medical specialist gorka"
@@ -226,7 +226,7 @@
 	icon_state = "gorka_ih_med_g"
 	item_state = "gorka_ih_med_g"
 	permeability_coefficient = 0.50
-	armor = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
+	armor_list = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
 
 /obj/item/clothing/under/rank/medical/gorka_crew_med
 	name = "medical crew gorka"
@@ -455,8 +455,8 @@
 /obj/item/clothing/under/leisure
 	name = "leisure outfit"
 	desc = "A leisure outfit with brown jacket. Sometimes you just want to wear what is comfortable."
-	icon_state = "leisuroutfit"
-	item_state = "leisuroutfit"
+	icon_state = "leisureoutfit"
+	item_state = "leisureoutfit"
 
 /obj/item/clothing/under/leisure/white
 	name = "white blouse"
@@ -668,10 +668,48 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/helltaker
-	name = "charming outfit"//Helltaker reference
-	desc = "A red shirt with a black tie and black pants. Stylish enough to impress the devil."
+	name = "black charming outfit" // Helltaker reference
+	desc = "A red suit shirt with a black bottom and optional tie. Stylish enough to impress the devil." // Accomodating description for the alt sprites - Seb
 	icon_state = "helltaker"
 	item_state = "helltaker"
+	price_tag = 45
+
+/obj/item/clothing/under/helltaker/verb/toggle_style() // Alt styles to impersonate the most unique ones, made by me. - Seb
+	set name = "Adjust Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["default"] = "helltaker" // Lucy and Cerberus are both this one, no need for more alts. - Seb
+	options["sour gamer"] = "malina"
+	options["tired sadist"] = "pandemonica"
+	options["bratty masochist"] = "zdrada"
+	options["the cool one"] = "justice"
+	options["the lustful one"] = "modeus"
+
+	var/choice = input(M,"What kind of demon do you want to be?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		item_state = options[choice]
+		item_state_slots = list(
+			slot_back_str = options[choice]
+		)
+		to_chat(M, "You adjusted your attire's style into [choice] mode.")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
+
+/obj/item/clothing/under/helltaker_m
+	name = "white charming outfit"
+	desc = "A collared, loose red shirt with white pants and a stout belt. Go get your own demon harem, now."
+	icon_state = "helltaker_m" // The Helltaker dude himself - Seb
+	item_state = "helltaker_m"
 	price_tag = 45
 
 /obj/item/clothing/under/colony
@@ -687,7 +725,7 @@
 	icon_state = "johnny"
 	item_state = "johnny"
 	price_tag = 60
-	armor = list(
+	armor_list = list(
 		melee = 10,
 		bullet = 5,
 		energy = 5,
@@ -702,7 +740,7 @@
 	icon_state = "raider"
 	item_state = "raider"
 	price_tag = 60
-	armor = list(
+	armor_list = list(
 		melee = 10,
 		bullet = 5,
 		energy = 5,
@@ -716,7 +754,7 @@
 	icon_state = "tribalm"
 	item_state = "tribalm"
 	price_tag = 50
-	armor = list(
+	armor_list = list(
 		melee = 10,
 		bullet = 5,
 		energy = 5,
@@ -724,6 +762,7 @@
 		bio = 0,
 		rad = 0
 	)
+
 /obj/item/clothing/under/tribalhide/verb/toggle_style()
 	set name = "Adjust Style"
 	set category = "Object"

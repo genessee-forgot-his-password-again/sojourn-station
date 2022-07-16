@@ -1,7 +1,8 @@
 #define BEAM_IDLE        0
 #define BEAM_CAPTURING   1
-#define BEAM_STABILIZED  2
-#define BEAM_COOLDOWN    3
+#define BEAM_STABILIZING 2
+#define BEAM_STABILIZED  3
+#define BEAM_COOLDOWN    4
 
 #define JTB_EDGE     3
 #define JTB_MAXX   100
@@ -135,7 +136,7 @@
 	beam_state = BEAM_CAPTURING
 	spawn(beam_capture_time)
 		if(src && beam_state == BEAM_CAPTURING)  // Check if jtb_generator has not been destroyed during spawn time and if capture has not been cancelled
-			beam_state = BEAM_STABILIZED
+			beam_state = BEAM_STABILIZING  // Junk field is being created
 
 			generate_junk_field()  // Generate the junk field
 
@@ -145,6 +146,7 @@
 				jf_counter++
 
 			create_link_portal(T)
+			beam_state = BEAM_STABILIZED  // Junk field has been created and portals linked
 	return
 
 /obj/jtb_generator/proc/create_link_portal(var/turf/T)
@@ -906,8 +908,9 @@
 // Machinery that stabilizes the portal
 //////////////////////////////
 /obj/structure/jtb_pillar
-	name = "space-time interference dampener"
-	desc = "An ominous pillar that can stabilize a bluespace portal by dampening local space-time interferences."
+	name = "bluespace anchoring pylon"
+	desc = "An ominous pylon that can stabilize a short range of bluespace for a singular portal teleportation to nearby ship wrecks and astroid fields littered with potential salvage. \
+	While stable, it is not quite fully understood, being the product of Soteria's captured Greyson Positronics AI, Brynn. For an unknown reason, the pylons only work in the presence of obelisks."
 	icon = 'icons/obj/structures/junk_tractor_beam.dmi'
 	icon_state = "pillar"
 	layer = ABOVE_MOB_LAYER
@@ -924,6 +927,7 @@
 
 #undef BEAM_IDLE
 #undef BEAM_CAPTURING
+#undef BEAM_STABILIZING
 #undef BEAM_STABILIZED
 #undef JTB_EDGE
 #undef JTB_MAXX

@@ -100,6 +100,7 @@
 
 	var/list/obj/item/mech_ammo_box/ammo[3] // List to hold the mech's internal ammo.
 
+	var/obj/item/clothing/glasses/hud/hud
 
 /obj/mecha/can_prevent_fall()
 	return TRUE
@@ -389,10 +390,17 @@
 		if(selected && selected.is_ranged())
 			selected.action(target)
 	else if(selected)
-		if(selected.is_melee())
+		if(istype(selected, /obj/item/mecha_parts/mecha_equipment/melee_weapon))
+			if(istype(target, /mob/living))
+				selected.attack(target, user, user.targeted_organ)
+			else if(istype(target, /obj))
+				selected.attack_object(target, user)
+			else if(istype(target, /turf/simulated/wall))
+				target.attackby(selected, user)
+		else if(istype(selected, /obj/item/mecha_parts/mecha_equipment/ranged_weapon))
+			target.attackby(selected, user) // This makes it so you can atleast melee with your ranged weapon
+		else if(selected.is_melee())
 			selected.action(target)
-		else
-			occupant_message("<font color='red'>You cannot fire this weapon in close quarters!</font>")
 	else
 		src.melee_action(target)
 	return
@@ -1317,6 +1325,10 @@ assassination method if you time it right*/
 
 	if (user.buckled)
 		to_chat(user, SPAN_WARNING("You can't climb into the exosuit while buckled!"))
+		return
+
+	if(istype(user.get_equipped_item(slot_back), /obj/item/rig/ameridian_knight))
+		to_chat(user, SPAN_WARNING("Your armor is too bulky to fit in the exosuit!"))
 		return
 
 	src.log_message("[user] tries to move in.")
@@ -2323,3 +2335,10 @@ assassination method if you time it right*/
 		setInternalDamage(MECHA_INT_TANK_BREACH)
 	if (prob(probability))
 		setInternalDamage(MECHA_INT_CONTROL_LOST)
+
+/obj/mecha/proc/hud_deleted(var/obj/item/clothing/glasses/hud/source, var/obj/item/clothing/glasses/hud/placeholder) //2nd arg exists because our signals are outdated
+	SIGNAL_HANDLER
+
+	if (hud == source)
+		UnregisterSignal(source, COMSIG_HUD_DELETED)
+		hud = null

@@ -1348,8 +1348,9 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	see_in_dark = 1e6
 
 /mob/dview/Destroy()
-	crash_with("Prevented attempt to delete dview mob: [log_info_line(src)]")
-	return QDEL_HINT_LETMELIVE // Prevents destruction
+	. = QDEL_HINT_LETMELIVE // Prevents destruction
+	CRASH("Prevented attempt to delete dview mob: [log_info_line(src)]")
+
 
 /atom/proc/get_light_and_color(var/atom/origin)
 	if(origin)
@@ -1358,10 +1359,6 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 
 /mob/dview/Initialize() // Properly prevents this mob from gaining huds or joining any global lists
 	return INITIALIZE_HINT_NORMAL
-
-// call to generate a stack trace and print to runtime logs
-/proc/crash_with(msg)
-	CRASH(msg)
 
 /proc/CheckFace(var/atom/Obj1, var/atom/Obj2)
 	var/CurrentDir = get_dir(Obj1, Obj2)
@@ -1422,3 +1419,13 @@ GLOBAL_DATUM_INIT(dview_mob, /mob/dview, new)
 	// 	D.vv_edit_var(var_name, var_value) //same result generally, unless badmemes
 	// else
 	D.vars[var_name] = var_value
+
+/proc/generate_single_gun_number()
+	return pick(1,2,3,4,5,6,7,8,9,0)
+
+/proc/generate_gun_serial(digit_numbers)
+	var/generated_code = ""
+	while(digit_numbers)
+		digit_numbers--
+		generated_code += "[generate_single_gun_number()]" // cast to string
+	return generated_code

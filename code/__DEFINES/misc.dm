@@ -120,7 +120,11 @@
 #define MATERIAL_UNMELTABLE 0x1
 #define MATERIAL_BRITTLE    0x2
 #define MATERIAL_PADDING    0x4
+//Soj Changes
+#define CLIENT_MIN_FPS 0 //SERVER sync
 
+#define CLIENT_MAX_FPS 60 //Do not go above this or byond goes fucky
+//Soj End of SoJ
 #define TABLE_BRITTLE_MATERIAL_MULTIPLIER 4 // Amount table damage is multiplied by if it is made of a brittle material (e.g. glass)
 
 #define BOMBCAP_DVSTN_RADIUS (max_explosion_range/4)
@@ -238,6 +242,7 @@
 #define SPAN_NOTICE(text)  "<span class='notice'>[text]</span>"
 #define SPAN_WARNING(text) "<span class='warning'>[text]</span>"
 #define SPAN_DANGER(text)  "<span class='danger'>[text]</span>"
+#define SPAN_PSION(text)   "<b><font color='purple'>[text]</b></font>"
 #define span(class, text) ("<span class='[class]'>[text]</span>")
 // the thing below allow using SPANning in datum definition, the above can't.
 #define SPAN(class, X) "<span class='" + ##class + "'>" + ##X + "</span>"

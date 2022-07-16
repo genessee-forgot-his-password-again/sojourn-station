@@ -28,9 +28,9 @@ List of powers in this page :
 // Give the user a perk that make him move faster
 /obj/item/organ/internal/nanogate/proc/nanite_muscle()
 	set category = "Nanogate Powers"
-	set name = "Nanite Augment - Nanofiber Muscles (3)"
+	set name = "Nanite Augment - Nanofiber Muscles (5)"
 	set desc = "Spend some of your nanites to create nanite muscle to allow you to move faster."
-	nano_point_cost = 3 // Install two augments on both legs
+	nano_point_cost = 5 // Install two augments on both legs
 
 	if(!owner.stats.getPerk(PERK_NANITE_MUSCLE)) // Do they already have the perk?
 		if(pay_power_cost(nano_point_cost))
@@ -64,10 +64,15 @@ List of powers in this page :
 	set desc = "Convert some of your nanites into more specialized nanites. Only works for biological entities."
 	nano_point_cost = 1
 
-	var/list/choices_perk = typesof(PERK_NANITE_CHEM)
-	choices_perk -= PERK_NANITE_CHEM
+	var/list/choices_perk = list(	"Implantoids" = PERK_NANITE_CHEM_IMPLANT,
+									"Trauma Control System" = PERK_NANITE_CHEM_TCS,
+									"Control Booster Utility" = PERK_NANITE_CHEM_CBU,
+									"Control Booster Combat" = PERK_NANITE_CHEM_CBC,
+									"Purgers" = PERK_NANITE_CHEM_PURGER,
+									"Oxyrush" = PERK_NANITE_CHEM_OXYRUSH,
+									"Nantidotes" = PERK_NANITE_CHEM_NANTIDOTE)
 
-	var/datum/perk/nanite_chem/choice = input(owner, "Which nanite chem do you want?", "Chem Choice", null) as null|anything in choices_perk
+	var/datum/perk/nanite_chem/choice = choices_perk[input(owner, "Which nanite chem do you want?", "Chem Choice", null) as null|anything in choices_perk]
 
 	if(choice && owner.species?.reagent_tag != IS_SYNTHETIC && pay_power_cost(nano_point_cost)) // Check if the user actually made a choice, and if they did, check if they have the points.
 		owner.stats.addPerk(choice)

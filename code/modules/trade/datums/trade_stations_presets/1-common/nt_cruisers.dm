@@ -2,8 +2,8 @@
 	icon_states = "nt_cruiser"
 	markup = RARE_GOODS	// dept-specific stuff should be more expensive for guild
 	name_pool = list(
-		"CAV 'Faith'" = "'Church of Absolute Vessel 'Faith' We are currently resupplying from Nadezhda, but we can sell a few items from our stock.",
-		"CAV 'Hope'" = "'Church of Absolute Vessel 'Hope' We're in the system for the next few hours before we make a round trip to the confederacy, we're certainly willing to sell our goods."
+		"CAV 'Faith'" = "Church of Absolute Vessel 'Faith': \"We are currently resupplying from Nadezhda, but we can sell a few items from our stock.\"",
+		"CAV 'Hope'" = "Church of Absolute Vessel 'Hope': \"We're in the system for the next few hours before we make a round trip to the confederacy, we're certainly willing to sell our goods.\""
 		)
 	icon_states = "nt_cruiser"
 	uid = "nt_basic"
@@ -11,10 +11,10 @@
 	spawn_always = TRUE
 	base_income = 1600
 	wealth = 0
-	secret_inv_threshold = 2000
+	hidden_inv_threshold = 2000
 	recommendation_threshold = 4000
 	stations_recommended = list("trapper")
-	assortiment = list(
+	inventory = list(
 		"Biomatter products" = list(
 			/obj/item/reagent_containers/food/snacks/meat,
 			/obj/item/reagent_containers/food/drinks/milk,
@@ -39,6 +39,20 @@
 			/obj/structure/largecrate/animal/goat,
 			/obj/structure/largecrate/animal/cat,
 			/obj/structure/largecrate/animal/chick,
+			/obj/structure/largecrate/animal/pig
+		),
+		"Bee & Plant Supply" = list(
+			/obj/item/bee_pack,
+			/obj/item/beehive_assembly,
+			/obj/item/honey_frame,
+			/obj/item/bee_smoker,
+			/obj/item/circuitboard/honey_extractor = good_data("Honey Extractor Board", list(-1, 2), 300),
+			/obj/item/reagent_containers/spray/plantbgone,
+			/obj/item/reagent_containers/glass/bottle/ammonia,
+			/obj/item/tool/hatchet,
+			/obj/item/tool/minihoe,
+			/obj/item/device/scanner/plant,
+			/obj/item/clothing/gloves/botanic_leather
 		),
 		"Custodial Supply" = list(
 			/obj/item/reagent_containers/glass/bucket,
@@ -74,7 +88,7 @@
 		)
 	)
 
-	secret_inventory = list(
+	hidden_inventory = list(
 		"Melee weapons" = list(
 			/obj/item/tool/sword/nt/shortsword,
 			/obj/item/tool/sword/nt/longsword = custom_good_amount_range(list(-1, 2)),
@@ -100,6 +114,33 @@
 			/obj/item/cell/small/neotheology/plasma,
 			/obj/item/cell/medium/neotheology/plasma,
 			/obj/item/cell/large/neotheology/plasma
+		),
+		"Wine" = list(
+			/obj/item/reagent_containers/food/drinks/cans/cahors/cargo,
+			/obj/item/reagent_containers/food/drinks/bottle/ntcahors/cargo
+		),
+		"Seeds and Exodic Seeds" = list(
+			/obj/item/seeds/chiliseed,
+			/obj/item/seeds/berryseed,
+			/obj/item/seeds/cornseed,
+			/obj/item/seeds/eggplantseed,
+			/obj/item/seeds/tomatoseed,
+			/obj/item/seeds/appleseed,
+			/obj/item/seeds/soyaseed,
+			/obj/item/seeds/wheatseed,
+			/obj/item/seeds/carrotseed,
+			/obj/item/seeds/harebell,
+			/obj/item/seeds/lemonseed,
+			/obj/item/seeds/orangeseed,
+			/obj/item/seeds/grassseed,
+			/obj/item/seeds/sunflowerseed,
+			/obj/item/seeds/chantermycelium,
+			/obj/item/seeds/potatoseed,
+			/obj/item/seeds/sugarcaneseed,
+			/obj/item/seeds/libertymycelium,
+			/obj/item/seeds/reishimycelium,
+			/obj/item/seeds/random = good_data("Random Exodic Seed", list(-2, 1), 500),
+			/obj/item/seeds/kudzuseed
 		)
 	)
 	offer_types = list(
@@ -107,3 +148,15 @@
 		/obj/item/clothing/shoes/hermes_shoes = offer_data("hermes shoes", 420, 10),
 		/obj/item/reagent_containers/food/snacks/grown = offer_data("spare grown food", 10, 120)
 	)
+
+/obj/item/reagent_containers/food/drinks/cans/cahors/cargo
+	price_tag = 600
+
+/obj/item/reagent_containers/food/drinks/cans/cahors/cargo/New()
+	price_tag = 60
+
+/obj/item/reagent_containers/food/drinks/bottle/ntcahors/cargo
+	price_tag = 1200
+
+/obj/item/reagent_containers/food/drinks/bottle/ntcahors/cargo/New()
+	price_tag = 100
