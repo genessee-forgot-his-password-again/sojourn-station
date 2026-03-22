@@ -21,7 +21,8 @@
 		MATERIAL_PLASMA,
 		MATERIAL_PLATINUM,
 		MATERIAL_PLASTEEL,
-		MATERIAL_DIAMOND)
+		MATERIAL_DIAMOND,
+		MATERIAL_BIOMATTER)
 	var/list/materials_allowed = list()
 	var/list/materials_stored = list()
 	var/list/stored_item_materials = list()
