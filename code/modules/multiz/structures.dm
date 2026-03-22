@@ -108,8 +108,8 @@
 		qdel(target)
 	return ..()
 
-/obj/structure/multiz/ladder/attack_generic(var/mob/M)
-	attack_hand(M)
+/obj/structure/multiz/ladder/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
+	attack_hand(user)
 
 /obj/structure/multiz/ladder/proc/throw_through(var/obj/item/C, var/mob/throw_man)
 	if(istype(throw_man,/mob/living/carbon/human))
@@ -144,7 +144,7 @@
 		return
 	if (isrobot(M) && !isdrone(M))
 		var/mob/living/silicon/robot/R = M
-		climb(M, (climb_delay*6)/R.speed_factor) //Robots are not built for climbing, they should go around where possible
+		climb(M, (climb_delay*3)/R.speed_factor) //Robots are not built for climbing, they should go around where possible
 		//I'd rather make them unable to use ladders at all, but eris' labyrinthine maintenance necessitates it
 	else
 		climb(M, climb_delay)
@@ -338,9 +338,10 @@
 	icon = 'icons/obj/burrows.dmi'
 	icon_state = "maint_hole"
 
-
 /obj/structure/multiz/ladder/up/deepmaint
 	name = "maintenance ladder"
+	icon_state = "ladderup_dm"
+	alpha = 180 //So we can see a bit through them to avoid blocking sight
 
 /obj/structure/multiz/ladder/up/deepmaint/climb()
 	if(!target)

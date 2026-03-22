@@ -12,7 +12,8 @@
 	cost = 0
 
 	unlocks_designs = list(/datum/design/research/item/clothing/security,
-							/datum/design/research/item/weapon/clarissa)
+							/datum/design/research/item/weapon/clarissa,
+							/datum/design/research/item/ammo/pistol/empty)
 
 // TO ADD: synth flashes?
 /datum/technology/basic_nonlethal
@@ -28,7 +29,11 @@
 	required_tech_levels = list()
 	cost = 375
 
-	unlocks_designs = list(/datum/design/research/item/flash)
+	unlocks_designs = list(/datum/design/research/item/flash,
+						   /datum/design/research/item/weapon/weapon_upgrade/auto_eject_no_removal,
+						   /datum/design/research/item/ammo/pistol/rubber)
+
+
 
 /datum/technology/weapon_recharging //You know... Its really not logical that this is even here...
 	name = "Weapon Recharging"
@@ -49,6 +54,28 @@
 							/datum/design/research/circuit/recharger
 							///datum/design/research/item/hand_charger //Not yet
 							)
+
+/datum/technology/weapon_sonic
+	name = "Sonic Weaponry And Defence"
+	desc = "The advanced sonic crystal destoryer and a shield wall of same calibration"
+	tech_type = RESEARCH_COMBAT
+
+	x = 0.5
+	y = 0.7
+	icon = "sonic"
+
+	required_technologies = list(
+								/datum/technology/weapon_recharging
+								)
+	required_tech_levels = list()
+	cost = 1000 //cheap
+
+	unlocks_designs = list(
+							/datum/design/research/item/weapon/sonic_gun,
+							/datum/design/research/item/mecha/weapon/sonic,
+							/datum/design/research/circuit/ameridianshieldwallgen
+							)
+
 
 /datum/technology/advanced_nonlethal
 	name = "Advanced Non-Lethal"
@@ -77,10 +104,12 @@
 	required_technologies = list(/datum/technology/advanced_nonlethal)
 	required_tech_levels = list(RESEARCH_GREYSON = 3) //Likely people will get parts/cog/bots for this
 	cost = 5625
-	unlocks_designs = list(/datum/design/research/item/greyson/abnegate,
-						/datum/design/research/item/greyson/formatbound,
-						/datum/design/research/item/greyson/humility,
-						/datum/design/research/item/greyson/systemcost)
+	unlocks_designs = list(
+	/datum/design/research/item/greyson/abnegate,
+	/datum/design/research/item/greyson/formatbound,
+	/datum/design/research/item/greyson/humility,
+	/datum/design/research/item/greyson/systemcost
+                    )
 
 /datum/technology/hardsuit_nonlethal
 	name = "Mounted Non-Lethal"
@@ -129,6 +158,7 @@
 	cost = 1500
 
 	unlocks_designs = list(/datum/design/research/item/weapon/large_grenade,
+							/datum/design/research/item/ammo/pistol,
 							/datum/design/research/item/ammo/smg_mag,
 							/datum/design/research/item/ammo/pistol_laser,
 							/datum/design/research/item/ammo/magum_laser,
@@ -138,7 +168,7 @@
 
 /datum/technology/exotic_weaponry
 	name = "Experimental Weaponry"
-	desc = "Remote temperature controling weapon."
+	desc = "Remote temperature controlling weapon, implants and advanced shields."
 	tech_type = RESEARCH_COMBAT
 
 	x = 0.7
@@ -153,7 +183,9 @@
 							/datum/design/research/item/weapon/slimegun,
 							/datum/design/research/item/ammo/shotgun_fire,
 							/datum/design/research/item/ammo/shotgun_laser,
-							/datum/design/research/item/weapon/bastion
+							/datum/design/research/item/weapon/bastion,
+							/datum/design/research/item/mechfab/modules/punch_helper,
+							/datum/design/research/item/mechfab/modules/momentum_speed_adder
 							)
 
 /datum/technology/adv_exotic_weaponry
@@ -169,8 +201,7 @@
 	required_tech_levels = list()
 	cost = 3750
 
-	unlocks_designs = list(	/datum/design/research/item/weapon/decloner,
-							/datum/design/research/item/weapon/centurio,
+	unlocks_designs = list(	/datum/design/research/item/weapon/centurio,
 							/datum/design/research/item/weapon/auretian
 						)
 
@@ -192,15 +223,14 @@
 							/datum/design/research/item/weapon/c20r,
 							/datum/design/research/item/ammo/smg_mag/lethal,
 							/datum/design/research/item/ammo/smg_mag/rubber,
+							/datum/design/research/item/ammo/laser/box,
+							//datum/design/research/item/ammo/laser/box/ap,
+							//datum/design/research/item/ammo/laser/box/lethal,
 							/datum/design/research/item/weapon/starstriker,
-							/datum/design/research/item/ammo/laser,
-							/datum/design/research/item/ammo/laser/ap,
-							/datum/design/research/item/ammo/laser/lethal,
 							/datum/design/research/item/weapon/katana,
 							/datum/design/research/item/ammo/rifle_75,
 							/datum/design/research/item/ammo/light_rifle_257,
-							/datum/design/research/item/ammo/kurtz_laser
-						)
+							/datum/design/research/item/ammo/kurtz_laser)
 
 /datum/technology/exotic_gunmods
 	name = "Experimental Gunmods"
@@ -221,6 +251,7 @@
 							/datum/design/research/item/weapon/weapon_upgrade/toxin_coater,
 							/datum/design/research/item/weapon/weapon_upgrade/overheat,
 							/datum/design/research/item/weapon/weapon_upgrade/penetrator,
+							/datum/design/research/item/weapon/weapon_upgrade/dnalock_mod
 							//datum/design/research/item/weapon/weapon_upgrade/isotope_diffuser,
 							//datum/design/research/item/weapon/weapon_upgrade/psionic_catalyst
 						)
@@ -278,7 +309,8 @@
 	unlocks_designs = list(/datum/design/research/item/clothing/soteriaarmorchest,
 							 /datum/design/research/item/clothing/soteriaarmorhead,
 							 /datum/design/research/item/clothing/rig_cheap,
-							 /datum/design/research/item/clothing/tinfoil)
+							 /datum/design/research/item/clothing/tinfoil,
+							 /datum/design/research/item/clothing/armor_soterialabcoat)
 
 /datum/technology/advanced_armor
 	name = "Advanced Armor Designs"
@@ -295,8 +327,8 @@
 
 	unlocks_designs = list(/datum/design/research/item/clothing/medarmor,
 							/datum/design/research/item/clothing/armor_laserproof,
-							/datum/design/research/item/paramedic_armor,
-							/datum/design/research/item/paramedic_helmet,
+							/datum/design/research/item/clothing/paramedic_armor,
+							/datum/design/research/item/clothing/paramedic_helmet,
 							/datum/design/research/item/clothing/rig_advhazmat)
 
 /datum/technology/advanced_unstable_plasma_weapons
@@ -317,6 +349,8 @@
 							/datum/design/research/item/weapon/hydrogen_pistol,
 							/datum/design/research/item/weapon/hydrogen_cannon,
 							/datum/design/research/item/mecha/weapon/hydrogen,
+							/datum/design/research/item/weapon/hydrogen_sword,
 							/datum/design/research/item/weapon/hydrogen_welder,
 							/datum/design/research/item/weapon/hydrogrenade,
-							/datum/design/research/item/ammo/hydroflaskette)
+							/datum/design/research/item/ammo/hydroflaskette,
+							/datum/design/research/item/ion_jaunt)

@@ -153,8 +153,8 @@
 					visible_message("\The [attached] is taken off \the [src]")
 					attached = null
 				else if(ishuman(target))
-					usr.visible_message(SPAN_NOTICE("\The [usr] begins inserting needle into [target]'s vein."),
-									SPAN_NOTICE("You begin inserting needle into [target]'s vein."))
+					usr.visible_message(SPAN_NOTICE("\The [usr] begins searching for a vein to connect [target] into \the [src]..."),
+									SPAN_NOTICE("You begin inserting a needle into [target]'s vein."))
 					if(!do_mob(usr, target, 10))
 						usr.visible_message(SPAN_NOTICE("\The [usr]'s hand slips and pricks \the [target]."),
 									SPAN_NOTICE("Your hand slips and pricks \the [target]."))
@@ -431,7 +431,7 @@
 				return
 
 			// If the human is losing too much blood, beep.
-			if(H.get_blood_volume() < (H.total_blood_req + BLOOD_VOLUME_SAFE_MODIFIER) * 1.05)
+			if(H.get_blood_volume() * H.effective_blood_volume < (H.total_blood_req + BLOOD_VOLUME_SAFE_MODIFIER) * 1.05)
 				visible_message("\The [src] beeps loudly.")
 
 			var/datum/reagent/B = H.take_blood(beaker,amount)

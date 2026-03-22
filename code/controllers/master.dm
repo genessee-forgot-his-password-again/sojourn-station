@@ -7,6 +7,11 @@
  *
  **/
 
+//Init the debugger datum first so we can debug Master
+//You might wonder why not just create the debugger datum global in its own file, since its loaded way earlier than this DM file
+//Well for whatever reason then the Master gets created first and then the debugger when doing that
+//So thats why this code lives here now, until someone finds out how Byond inits globals
+GLOBAL_REAL(Debugger, /datum/debugger) = new
 //This is the ABSOLUTE ONLY THING that should init globally like this
 //2019 update: the failsafe,config and Global controllers also do it
 GLOBAL_REAL(Master, /datum/controller/master) = new
@@ -93,7 +98,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 			//Code used for first master on game boot or if existing master got deleted
 			Master = src
 			var/list/subsytem_types = subtypesof(/datum/controller/subsystem)
-			sortTim(subsytem_types, /proc/cmp_subsystem_init)
+			sortTim(subsytem_types, GLOBAL_PROC_REF(cmp_subsystem_init))
 			//Find any abandoned subsystem from the previous master (if there was any)
 			var/list/existing_subsystems = list()
 			for(var/global_var in global.vars)
@@ -117,7 +122,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 
 /datum/controller/master/Shutdown()
 	processing = FALSE
-	sortTim(subsystems, /proc/cmp_subsystem_init)
+	sortTim(subsystems, GLOBAL_PROC_REF(cmp_subsystem_init))
 	reverseRange(subsystems)
 	for(var/datum/controller/subsystem/ss in subsystems)
 		log_world("Shutting down [ss.name] subsystem...")
@@ -201,7 +206,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	to_chat(world, span_boldannounce("Initializing subsystems..."))
 
 	// Sort subsystems by init_order, so they initialize in the correct order.
-	sortTim(subsystems, /proc/cmp_subsystem_init)
+	sortTim(subsystems, GLOBAL_PROC_REF(cmp_subsystem_init))
 
 	var/start_timeofday = REALTIMEOFDAY
 	// Initialize subsystems.
@@ -209,6 +214,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	for (var/datum/controller/subsystem/SS in subsystems)
 		if (SS.flags & SS_NO_INIT || SS.initialized) //Don't init SSs with the correspondig flag or if they already are initialzized
 			continue
+		rustg_time_reset(SS_INIT_TIMER_KEY)
 		SS.Initialize(REALTIMEOFDAY)
 		CHECK_TICK
 	current_ticklimit = TICK_LIMIT_RUNNING
@@ -221,8 +227,15 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	if (!current_runlevel)
 		SetRunLevel(1)
 
+	//	SOJOURN: TGS integration: start
+	if(tgs_prime)
+		world.TgsInitializationComplete()
+
+	//world.TgsTargetedChatBroadcast(new /datum/tgs_message_content(text = config.message_announce_new_game))
+	//	SOJOURN: TGS integration: end
+
 	// Sort subsystems by display setting for easy access.
-	sortTim(subsystems, /proc/cmp_subsystem_display)
+	sortTim(subsystems, GLOBAL_PROC_REF(cmp_subsystem_display))
 	// Set world options.
 	world.change_fps(config.fps)
 	var/initialized_tod = REALTIMEOFDAY
@@ -304,9 +317,9 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	queue_tail = null
 	//these sort by lower priorities first to reduce the number of loops needed to add subsequent SS's to the queue
 	//(higher subsystems will be sooner in the queue, adding them later in the loop means we don't have to loop thru them next queue add)
-	sortTim(tickersubsystems, /proc/cmp_subsystem_priority)
+	sortTim(tickersubsystems, GLOBAL_PROC_REF(cmp_subsystem_priority))
 	for(var/I in runlevel_sorted_subsystems)
-		sortTim(runlevel_sorted_subsystems, /proc/cmp_subsystem_priority)
+		sortTim(I, GLOBAL_PROC_REF(cmp_subsystem_priority))
 		I += tickersubsystems
 
 	var/cached_runlevel = current_runlevel
@@ -430,6 +443,8 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 			subsystemstocheck -= thing
 		SS = thing
 		if (SS.state != SS_IDLE)
+			continue
+		if (SS.suspended > 0)
 			continue
 		if (SS.can_fire <= 0)
 			continue
@@ -599,13 +614,9 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	if (!skip_ticks)
 		skip_ticks = 1
 
-
-/datum/controller/master/stat_entry()
-	if(!statclick)
-		statclick = new/obj/effect/statclick/debug(null, "Initializing...", src)
-
-	stat("Byond:", "(FPS:[world.fps]) (TickCount:[world.time/world.tick_lag]) (TickDrift:[round(Master.tickdrift,1)]([round((Master.tickdrift/(world.time/world.tick_lag))*100,0.1)]%))")
-	stat("Master Controller:", statclick.update("(TickRate:[Master.processing]) (Iteration:[Master.iteration]) (TickLimit: [round(Master.current_ticklimit, 0.1)])"))
+/datum/controller/master/stat_entry(msg)
+	msg = "(TickRate:[Master.processing]) (Iteration:[Master.iteration]) (TickLimit: [round(Master.current_ticklimit, 0.1)])"
+	return msg
 
 /datum/controller/master/StartLoadingMap()
 	//disallow more than one map to load at once, multithreading it will just cause race conditions

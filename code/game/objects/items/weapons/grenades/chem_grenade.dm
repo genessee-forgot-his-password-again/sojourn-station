@@ -5,8 +5,7 @@
 /obj/item/grenade/chem_grenade
 	name = "grenade casing"
 	icon_state = "chemg"
-	icon_state = "teargas"
-	item_state = "teargas" //Sprites by hyperioo
+	item_state = "chemg" //Sprites by hyperioo
 	desc = "A hand made chemical grenade."
 	w_class = ITEM_SIZE_SMALL
 	force = WEAPON_FORCE_HARMLESS
@@ -184,7 +183,7 @@
 		C.throw_mode_off()
 
 	invisibility = INVISIBILITY_MAXIMUM //Why am i doing this?
-	spawn(50)		   //To make sure all reagents can work
+	spawn(3)		   //To make sure all reagents can work
 		qdel(src)	   //correctly before deleting the grenade.
 
 
@@ -313,7 +312,7 @@
 	name = "Absolute \"Kudzu Killer\""
 	desc = "Church brand weedkiller grenades. Designed to deal with Kudzu infestations. Mixes toxic biomatter with plasticides for great results"
 	icon_state = "foam"
-	matter = list(MATERIAL_STEEL = 3, MATERIAL_PLASTIC = 2, MATERIAL_BIOMATTER = 5)
+	matter = list(MATERIAL_STEEL = 1, MATERIAL_PLASTIC = 1, MATERIAL_BIOMATTER = 3)
 	matter_reagents = list("water" = 30)
 
 /obj/item/grenade/chem_grenade/cleaner
@@ -328,7 +327,7 @@
 	name = "Absolutism \"Cleanse Capsule\""
 	desc = "Church brand cleaner grenades. Designed to deal with biogenerator accidents and the aftermaths of wildlife hordes in the colony."
 	icon_state = "foam"
-	matter = list(MATERIAL_STEEL = 3, MATERIAL_BIOMATTER = 5)
+	matter = list(MATERIAL_STEEL = 2, MATERIAL_BIOMATTER = 5)
 	matter_reagents = list("water" = 30)
 
 /obj/item/grenade/chem_grenade/cleaner/Initialize()

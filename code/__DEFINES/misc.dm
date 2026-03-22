@@ -25,6 +25,26 @@
 #define SEE_INVISIBLE_MINIMUM 5
 #define INVISIBILITY_MAXIMUM 100
 
+// MultiZAS directions.
+#define NORTHUP (NORTH|UP)
+#define EASTUP (EAST|UP)
+#define SOUTHUP (SOUTH|UP)
+#define WESTUP (WEST|UP)
+#define NORTHDOWN (NORTH|DOWN)
+#define EASTDOWN (EAST|DOWN)
+#define SOUTHDOWN (SOUTH|DOWN)
+#define WESTDOWN (WEST|DOWN)
+
+// Stat modifier defines
+#define MELEE_STATTAG (1<<1)
+#define RANGED_STATTAG (1<<2)
+#define DEFENSE_STATTAG (1<<3)
+#define NEGATIVE_DEFENSE_STATTAG (1<<4)
+#define NOTHING_STATTAG (1<<5)
+
+#define PRIOR_TO_APPLY "prior"
+#define AFTER_APPLY "after"
+
 // Some arbitrary defines to be used by self-pruning global lists.
 #define PROCESS_KILL 26 // Used to trigger removal from a processing list.
 #define MAX_GEAR_COST 5 // Used in chargen for accessory loadout limit.
@@ -60,8 +80,8 @@
 #define WAIT_FINISH  4
 
 // Setting this much higher than 1024 could allow spammers to DOS the server easily.
-#define MAX_MESSAGE_LEN       3072
-#define MAX_PAPER_MESSAGE_LEN 4096
+#define MAX_MESSAGE_LEN       8192
+#define MAX_PAPER_MESSAGE_LEN 16384
 #define MAX_BOOK_MESSAGE_LEN  12288
 #define MAX_LNAME_LEN         64
 #define MAX_NAME_LEN          26
@@ -120,7 +140,11 @@
 #define MATERIAL_UNMELTABLE 0x1
 #define MATERIAL_BRITTLE    0x2
 #define MATERIAL_PADDING    0x4
+//Soj Changes
+#define CLIENT_MIN_FPS 0 //SERVER sync
 
+#define CLIENT_MAX_FPS 200 //Do not go above this or byond goes fucky
+//Soj End of SoJ
 #define TABLE_BRITTLE_MATERIAL_MULTIPLIER 4 // Amount table damage is multiplied by if it is made of a brittle material (e.g. glass)
 
 #define BOMBCAP_DVSTN_RADIUS (max_explosion_range/4)
@@ -134,9 +158,9 @@
 #define NTNET_SYSTEMCONTROL 4		// Control of various systems, RCon, air alarm control, etc.
 
 // NTNet transfer speeds, used when downloading/uploading a file/program.
-#define NTNETSPEED_LOWSIGNAL 0.05	// GQ/s transfer speed when the device is wirelessly connected and on Low signal
-#define NTNETSPEED_HIGHSIGNAL 0.15	// GQ/s transfer speed when the device is wirelessly connected and on High signal
-#define NTNETSPEED_ETHERNET 0.40		// GQ/s transfer speed when the device is using wired connection
+#define NTNETSPEED_LOWSIGNAL 0.25	// GQ/s transfer speed when the device is wirelessly connected and on Low signal
+#define NTNETSPEED_HIGHSIGNAL 0.5	// GQ/s transfer speed when the device is wirelessly connected and on High signal
+#define NTNETSPEED_ETHERNET 1		// GQ/s transfer speed when the device is using wired connection
 #define NTNETSPEED_DOS_AMPLIFICATION 2	// Multiplier for Denial of Service program. Resulting load on NTNet relay is this multiplied by NTNETSPEED of the device
 
 // Program bitflags
@@ -157,8 +181,10 @@
 
 
 // Special return values from bullet_act(). Positive return values are already used to indicate the blocked level of the projectile.
-#define PROJECTILE_CONTINUE   -1 //if the projectile should continue flying after calling bullet_act()
-#define PROJECTILE_FORCE_MISS -2 //if the projectile should treat the attack as a miss (suppresses attack and admin logs) - only applies to mobs.
+#define PROJECTILE_STOP					 1 //if the projectile should stop flying after calling bullet_act()
+#define PROJECTILE_CONTINUE				-1 //if the projectile should continue flying after calling bullet_act()
+#define PROJECTILE_FORCE_MISS			-2 //if the projectile should treat the attack as a miss (suppresses attack and admin logs) - only applies to mobs.
+#define PROJECTILE_FORCE_MISS_SILENCED	-2.5 //if the projectile should do the same thing as above, but not give the miss message
 
 //Camera capture modes
 #define CAPTURE_MODE_REGULAR 0 //Regular polaroid camera mode
@@ -183,20 +209,21 @@
 //distance
 #define RANGE_ADJACENT -1
 
+
 //Core implants
 #define CORE_ACTIVATED /datum/core_module/activatable
 
 //Cruciform
 #define CRUCIFORM_COMMON /datum/core_module/rituals/cruciform/base
-//#define CRUCIFORM_AGROLYTE /datum/core_module/rituals/cruciform/agrolyte
-//#define CRUCIFORM_CUSTODIAN /datum/core_module/rituals/cruciform/custodian
-#define CRUCIFORM_PRIEST /datum/core_module/rituals/cruciform/priest
-//#define CRUCIFORM_ACOLYTE /datum/core_module/rituals/cruciform/priest/acolyte
+#define CRUCIFORM_CLERGY /datum/core_module/rituals/cruciform/priest //Formerly CRUCIFORM_PRIEST, still is on Eris
 #define CRUCIFORM_INQUISITOR /datum/core_module/rituals/cruciform/inquisitor
 #define CRUCIFORM_CRUSADER /datum/core_module/rituals/cruciform/crusader
 #define CRUCIFORM_UPLINK /datum/core_module/cruciform/uplink
-#define CRUCIFORM_REDLIGHT /datum/core_module/cruciform/red_light
+#define CRUCIFORM_PRIME /datum/core_module/cruciform/red_light //Formerly CRUCIFORM_REDLIGHT, still is on Eris
 #define CRUCIFORM_CLONING /datum/core_module/cruciform/cloning
+//#define CRUCIFORM_ACOLYTE /datum/core_module/rituals/cruciform/priest/acolyte
+//#define CRUCIFORM_AGROLYTE /datum/core_module/rituals/cruciform/agrolyte
+//#define CRUCIFORM_CUSTODIAN /datum/core_module/rituals/cruciform/custodian
 
 #define CRUCIFORM_OBEY /datum/core_module/cruciform/obey
 #define CRUCIFORM_PRIEST_CONVERT /datum/core_module/activatable/cruciform/priest_convert
@@ -208,11 +235,6 @@
 #define CUPGRADE_MARTYR_GIFT /obj/item/cruciform_upgrade/martyr_gift
 #define CUPGRADE_WRATH_OF_GOD /obj/item/cruciform_upgrade/wrath_of_god
 #define CUPGRADE_SPEED_OF_THE_CHOSEN /obj/item/cruciform_upgrade/speed_of_the_chosen
-
-//https://secure.byond.com/docs/ref/info.html#/atom/var/mouse_opacity
-#define MOUSE_OPACITY_TRANSPARENT 0
-#define MOUSE_OPACITY_ICON 1
-#define MOUSE_OPACITY_OPAQUE 2
 
 //Filters
 #define AMBIENT_OCCLUSION filter(type="drop_shadow", x=0, y=-2, size=4, color="#04080FAA")
@@ -232,49 +254,16 @@
  //Preference save/load cooldown. This is in deciseconds.
 #define PREF_SAVELOAD_COOLDOWN 4 //Should be sufficiently hard to achieve without a broken mouse or autoclicker while still fulfilling its intended goal.
 
-#define JOINTEXT(X) jointext(X, null)
 
 //lazy text span classes defines.
 #define SPAN_NOTICE(text)  "<span class='notice'>[text]</span>"
 #define SPAN_WARNING(text) "<span class='warning'>[text]</span>"
 #define SPAN_DANGER(text)  "<span class='danger'>[text]</span>"
-#define span(class, text) ("<span class='[class]'>[text]</span>")
+#define SPAN_PSION(text)   "<b><font color='purple'>[text]</b></font>"
 // the thing below allow using SPANning in datum definition, the above can't.
 #define SPAN(class, X) "<span class='" + ##class + "'>" + ##X + "</span>"
 
 #define text_starts_with(text, start) (copytext(text, 1, length(start) + 1) == start)
-
-#define attack_animation(A) if(istype(A)) A.do_attack_animation(src)
-
-// Overlays
-// (placeholders for if/when TG overlays system is ported)
-//#define cut_overlays(...)			overlays.Cut()
-
-#define sequential_id(key) uniqueness_repository.Generate(/datum/uniqueness_generator/id_sequential, key)
-
-#define random_id(key,min_id,max_id) uniqueness_repository.Generate(/datum/uniqueness_generator/id_random, key, min_id, max_id)
-
-#define sound_to(target, sound)                             target << sound
-//#define to_chat(target, message)                          target << message
-#define to_world(message)                                   to_chat(world, message)
-#define to_world_log(message)                               log_world(message)
-#define show_browser(target, browser_content, browser_name) target << browse(browser_content, browser_name)
-#define to_file(file_entry, source_var)                     file_entry << source_var
-#define from_file(file_entry, target_var)                   file_entry >> target_var
-#define send_rsc(target, rsc_content, rsc_name)             target << browse_rsc(rsc_content, rsc_name)
-#define open_link(target, url)             					target << link(url)
-
-#define send_output(target, msg, control) target << output(msg, control)
-#define send_link(target, url) target << link(url)
-
-#define any2ref(x) "\ref[x]"
-
-#define MAP_IMAGE_PATH "nano/images/[GLOB.maps_data.path]/"
-
-#define map_image_file_name(z_level) "[GLOB.maps_data.path]-[z_level].png"
-
-// Spawns multiple objects of the same type
-#define cast_new(type, num, args...) if((num) == 1) { new type(args) } else { for(var/i in 1 to num) { new type(args) } }
 
 #define CLIENT_FROM_VAR(I) (ismob(I) ? I:client : (istype(I, /client) ? I : (istype(I, /datum/mind) ? I:current?:client : null)))
 
@@ -348,6 +337,8 @@
 
 //Prevent the master controller from starting automatically
 #define NO_INIT_PARAMETER "no-init"
+//Force the log directory to be something specific in the data/logs folder
+#define OVERRIDE_LOG_DIRECTORY_PARAMETER "log-directory"
 
 /// Required minimum values to see reagents in a beaker
 #define HUMAN_REQ_COG_FOR_REG 35
@@ -379,25 +370,44 @@
 #define INVISIBILITY_NONE                 0
 #define INVISIBILITY_WEAK                 25
 
-// Macro defining the actual code applying our overlays lists to the BYOND over-lays list. (I guess a macro for speed)
-// TODO - I don't really like the location of this macro define.  Consider it. ~Leshana
-#define COMPILE_OVERLAYS(A)\
-	if (TRUE) {\
-		var/list/oo = A.our_overlays;\
-		var/list/po = A.priority_overlays;\
-		if(LAZYLEN(po)){\
-			if(LAZYLEN(oo)){\
-				A.overlays = oo + po;\
-			}\
-			else{\
-				A.overlays = po;\
-			}\
-		}\
-		else if(LAZYLEN(oo)){\
-			A.overlays = oo;\
-		}\
-		else{\
-			A.overlays.Cut();\
-		}\
-		A.flags &= ~OVERLAY_QUEUED;\
-	}
+//Lying animation
+#define ANIM_LYING_TIME 2
+
+#define LIST_COLOR_RENAME 				\
+	list(								\
+		"rebeccapurple" = "dark purple",\
+		"darkslategrey" = "dark grey",	\
+		"darkolivegreen"= "dark green",	\
+		"darkslateblue" = "dark blue",	\
+		"darkkhaki" 	= "khaki",		\
+		"darkseagreen" 	= "light green",\
+		"midnightblue" 	= "blue",		\
+		"lightgrey" 	= "light grey",	\
+		"darkgrey" 		= "dark grey",	\
+		"darkmagenta"	= "dark magenta",\
+		"steelblue" 	= "blue",		\
+		"goldenrod"	 	= "gold"		\
+	)
+
+/**
+ * stuff like `copytext(input, length(input))` will trim the last character of the input,
+ * because DM does it so it copies until the char BEFORE the `end` arg, so we need to bump `end` by 1 in these cases.
+ */
+#define PREVENT_CHARACTER_TRIM_LOSS(integer) (integer + 1)
+
+/// BYOND's string procs don't support being used on datum references (as in it doesn't look for a name for stringification)
+/// We just use this macro to ensure that we will only pass strings to this BYOND-level function without developers needing to really worry about it.
+#define LOWER_TEXT(thing) lowertext(UNLINT("[thing]"))
+
+/**
+ * \ref behaviour got changed in 512 so this is necesary to replicate old behaviour.
+ * This is the more performant version, it is unfortunately necessary.
+**/
+#define REF(thing) (thing && isdatum(thing) && (thing:datum_flags & DF_USE_TAG) && thing:tag ? "[thing:tag]" : "\ref[thing]")
+
+/// Removes characters incompatible with file names.
+#define SANITIZE_FILENAME(text) (GLOB.filename_forbidden_chars.Replace(text, ""))
+
+// Font metrics bitfield
+/// Include leading A width and trailing C width in GetWidth() or in DrawText()
+#define INCLUDE_AC (1<<0)

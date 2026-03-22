@@ -199,8 +199,7 @@
 					radiation = rand() * 15 + 85
 					if(!rad_shield)
 						//irradiate nearby mobs
-						for(var/mob/living/M in view(7,src))
-							M.apply_effect(radiation / 25, IRRADIATE, 0)
+						PulseRadiation(src, radiation / 25, 7)
 				else
 					t_left_radspike = pick(10,15,25)
 
@@ -215,7 +214,7 @@
 			//modify the optimal wavelength
 			tleft_retarget_optimal_wavelength -= deltaT
 			if(tleft_retarget_optimal_wavelength <= 0)
-				tleft_retarget_optimal_wavelength = pick(4,8,15)
+				tleft_retarget_optimal_wavelength = pick(9,12,15)
 				optimal_wavelength_target = rand() * 9900 + 100
 			//
 			if(optimal_wavelength < optimal_wavelength_target)
@@ -275,16 +274,12 @@
 		//create report
 		var/obj/item/paper/geo_info/P = new(src)
 		P.name = "[src] report #[++report_num]: [scanned_item.name]"
-		P.copy_overlays(list("paper_stamped"), TRUE)
+		P.add_overlay(list("paper_stamped"), TRUE)
 
 		//work out data
 		var/data = " - Mundane object: [scanned_item.desc ? scanned_item.desc : "No information on record."]<br>"
 		var/datum/geosample/G
 		switch(scanned_item.type)
-			if(/obj/item/ore)
-				var/obj/item/ore/O = scanned_item
-				if(O.geologic_data)
-					G = O.geologic_data
 
 			if(/obj/item/rocksliver)
 				var/obj/item/rocksliver/O = scanned_item
@@ -321,6 +316,16 @@
 				anom_found = 1
 				data += " - Hyperspectral imaging reveals exotic energy wavelength detected with ID: [G.artifact_id]<br>"
 				data += " - Fourier transform analysis on anomalous energy absorption indicates energy source located inside emission radius of [G.artifact_distance]m<br>"
+
+			if(G.relic_method != null)
+				switch(G.relic_method)
+					if(0)
+						data += " - Packed Sand Around Geo: Use Welder to extract Geo<br>"
+					if(1)
+						data += " - Light Cobble Around Geo: Dig cobble to extract Geo<br>"
+					if(2)
+						data += " - Hard Rocks Around Geo: Carefully Excavate to extract Geo<br>"
+
 
 		if(!anom_found)
 			data += " - No anomalous data<br>"

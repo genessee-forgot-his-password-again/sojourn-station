@@ -38,7 +38,7 @@
 /datum/design/autolathe/clothing/scav_armor
 	name = "Scavenger Armor"
 	build_path = /obj/item/clothing/suit/storage/scavengerarmor
-	materials = list(MATERIAL_STEEL = 10, MATERIAL_PLASTIC = 10, MATERIAL_PLASTEEL = 10) //so hand crafting is better
+	materials = list(MATERIAL_STEEL = 10, MATERIAL_PLASTIC = 10, MATERIAL_PLASTEEL = 10, MATERIAL_PLATINUM = 1) //so hand crafting is better
 
 /datum/design/autolathe/clothing/scav_armor_void
 	name = "Void Scavenger Armor"
@@ -50,3 +50,20 @@
 	build_path = /obj/item/clothing/head/space/void/riggedvoidsuit
 	materials = list(MATERIAL_STEEL = 6, MATERIAL_PLASTIC = 8, MATERIAL_PLASTEEL = 3) //so hand crafting is better
 
+/datum/design/autolathe/clothing/bmask
+	name = "Ballistic Mask"
+	build_path = /obj/item/clothing/head/helmet/faceshield/bmask
+
+//Sun Branch
+/datum/design/autolathe/clothing/firefly_glasses
+	name = "\"Firefly\" Glasses"
+	build_path = /obj/item/clothing/glasses/firefly_glasses
+
+//Stamp Branch
+/datum/design/autolathe/clothing/stamped_wired_suit
+	name = "\"Wired\" Executive Suit"
+	build_path = /obj/item/clothing/suit/stamped_suit
+
+/datum/design/autolathe/clothing/stamped_huds
+	name = "\"Stamped\" lens"
+	build_path = /obj/item/clothing/glasses/stamped_lens

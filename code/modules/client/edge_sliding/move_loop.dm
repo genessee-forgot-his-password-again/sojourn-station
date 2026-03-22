@@ -4,7 +4,7 @@
 		move_dir = 0 //keep track of the direction the player is currently trying to move in.
 		true_dir = 0
 		keypresses = 0
-		CAN_MOVE_DIAGONALLY = 0
+		CAN_MOVE_DIAGONALLY = 1 //Soj edit
 
 	//rebind your interface so that your north/south/east/west keypresses are bound to:
 	//keydown: MoveKey [Direction] 1
@@ -61,10 +61,10 @@
 	set waitfor = 0
 	if(src.mloop) return
 	mloop = 1
-	src.Move(get_step(mob.loc, true_dir),true_dir)
-	while(src.true_dir)
+	Move(get_step(mob.loc, true_dir),true_dir)
+	while(true_dir)
 		sleep(world.tick_lag)
-		if(src.true_dir)
-			src.Move(get_step(mob.loc, true_dir),true_dir)
+		if(true_dir)
+			Move(get_step(mob.loc, true_dir),true_dir)
 	mloop = 0
 

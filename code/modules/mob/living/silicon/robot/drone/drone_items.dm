@@ -36,7 +36,7 @@
 	var/grabbed_something = 0
 
 	for(var/mob/M in T)
-		if(istype(M,/mob/living/simple_animal/lizard) || ismouse(M))
+		if(istype(M,/mob/living/simple/lizard) || ismouse(M))
 			src.loc.visible_message(SPAN_DANGER("[src.loc] sucks [M] into its decompiler. There's a horrible crunching noise."),SPAN_DANGER("It's a bit of a struggle, but you manage to suck [M] into your decompiler. It makes a series of visceral crunching noises."))
 			new/obj/effect/decal/cleanable/blood/splatter(get_turf(src))
 			qdel(M)
@@ -129,7 +129,7 @@
 		else if(istype(W,/obj/item/circuitboard/broken))
 			if(glass)
 				glass.add_charge(1000)
-		else if(istype(W,/obj/item/reagent_containers/food/snacks/grown))
+		else if(istype(W,/obj/item/reagent_containers/snacks/grown))
 			if(wood)
 				wood.add_charge(4000)
 		else if(istype(W,/obj/item/remains))
@@ -161,7 +161,7 @@
 	if(!module)
 		module = new /obj/item/robot_module/drone(src)
 
-	var/dat = "<HEAD><TITLE>Drone modules</TITLE></HEAD><BODY>\n"
+	var/dat = ""
 	dat += {"
 	<B>Activated Modules</B>
 	<BR>
@@ -193,7 +193,7 @@
 
 	dat += tools
 
-	if (emagged)
+	if (HasTrait(CYBORG_TRAIT_EMAGGED))
 		if (!module.emag)
 			dat += text("<B>Resource depleted</B><BR>")
 		else if(activated(module.emag))
@@ -203,4 +203,4 @@
 
 	dat += resources
 
-	src << browse(dat, "window=robotmod")
+	src << browse(HTML_SKELETON_TITLE("Drone modules",dat), "window=robotmod")

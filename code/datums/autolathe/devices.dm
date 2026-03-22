@@ -14,10 +14,6 @@
 	name = "slime scanner"
 	build_path = /obj/item/device/scanner/xenobio
 
-/datum/design/autolathe/device/antibody_scanner
-	name = "antibody scanner"
-	build_path = /obj/item/device/antibody_scanner
-
 /datum/design/autolathe/device/megaphone
 	name = "megaphone"
 	build_path = /obj/item/device/megaphone
@@ -87,3 +83,15 @@
 /datum/design/autolathe/device/grenade/nt_weedkiller
 	name = "\"Kudzu Killer\""
 	build_path = /obj/item/grenade/chem_grenade/antiweed/nt_antiweed
+
+/datum/design/autolathe/device/smartlink
+	name = "smartlink imprinter"
+	build_path = /obj/item/device/hardware_imprinter/smartlink
+
+/datum/design/autolathe/device/cogenhance
+	name = "cognitive enhancer imprinter"
+	build_path = /obj/item/device/hardware_imprinter/cogenhance
+
+/datum/design/autolathe/device/chemneutral
+	name = "chemical neutralizer imprinter"
+	build_path = /obj/item/device/hardware_imprinter/chemneutral

@@ -3,17 +3,17 @@
 	desc = "A folder containing some papers with important scientific data."
 	icon = 'icons/obj/oddities.dmi'
 	price_tag = 2500
-
+	prob_perk = 0 //The data is quite clear...
 	oddity_stats = list(
-		STAT_MEC = 8,
-		STAT_COG = 8,
-		STAT_BIO = 8,
+		STAT_MEC = 7,
+		STAT_COG = 7,
+		STAT_BIO = 7,
 	)
 
 	//var/static/inv_spawn_count = 3
 
 /obj/item/oddity/secdocs/Initialize()
-	icon_state = "paper_[pick("omega","psi","theta","nuke","delta","epsilon")]"
+	icon_state = "reports[rand(1,6)]"
 	desc = pick("It's labelled 'Attractor Fields Theory'.",
 				"It's labelled 'World Lines Theory'.",
 				"It's labelled 'The Door Phenomenon'.",

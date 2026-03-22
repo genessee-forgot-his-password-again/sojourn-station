@@ -16,8 +16,8 @@
 		STAT_TGH = 3,
 		STAT_VIG = 5,
 		STAT_BIO = 0,
-		STAT_MEC = -8,
-		STAT_COG = 5
+		STAT_MEC = 8, // Working mechanical jobs for most of your life, you should know how to use tools
+		STAT_COG = -5 // No education
 	)
 
 /datum/category_item/setup_option/background/bckgrnd/pressered_in_life
@@ -43,24 +43,44 @@
 	name = "Wealthy Upbringing"
 	desc = "You grew up with a silver spoon in your mouth all your life. Education, leisure time, and relaxation allowed you to indulge in scholarly pursuits to a degree, letting you pick up a few \
 	randomly useful facts about many things. A shame that easy living left you a bit naive and physically weak albeit healthier than most. Not to mention you never quite developed the sense of when \
-	danger is present. This certainly made switching to regular life a bit of a culture shock."
+	danger is present. This certainly made switching to regular life a bit of a culture shock. A major hangup is that filth is not something you particularly find appealing. Spoiled brat.. \
+	At least you've brought your heirloom with you. You should protect it well."
+
+	perks = list(PERK_NOBLE)
 
 	stat_modifiers = list(
-		STAT_ROB = 0,
-		STAT_TGH = 2,
-		STAT_VIG = -4,
+		STAT_ROB = -5,
+		STAT_TGH = -5, // Physically weak
+		STAT_VIG = -5, // Low-experience
 		STAT_BIO = 5,
 		STAT_MEC = 5,
-		STAT_COG = -3
+		STAT_COG = 5 // Education
 	)
 
 /datum/category_item/setup_option/background/bckgrnd/refugee
 	name = "Refugee"
-	desc = "Where ever you came from is no more, torn apart by conflict and war. It may have been a civil war or conquest by the Terran Federation, whatever the reason it has long since lost any \
+	desc = "Where ever you came from is no more, torn apart by conflict and war. It may have been a civil war or conquest by the Solarian Federation, whatever the reason it has long since lost any \
 	meaning after the destruction of your home-world. Or maybe it wasn't your homeworld that was destroyed, maybe it was just your way of life. Regardless, you've left a burned bridge behind you and \
 	can no longer go back. Your rough life has hardened you against the worst possible situations."
 
-	perks = list(/datum/perk/space_asshole)
+	perks = list(PERK_SPACE_ASSHOLE)
+
+	stat_modifiers = list(
+		STAT_ROB = 0,
+		STAT_TGH = 0,
+		STAT_VIG = 0,
+		STAT_BIO = 0,
+		STAT_MEC = 0,
+		STAT_COG = 0
+	)
+
+/datum/category_item/setup_option/background/bckgrnd/linguist
+	name = "Aspiring Linguist"
+	desc = "Be it from your education or from a multi-lingual family, you've found yourself studying languages non-stop throughout your childhood and early adulthood. Unlike most you're silver-tongued \
+	in both your knowledge of English, your secondary or native language - and your tertiary! Being tri-lingual has its upsides, making you an adept trader of sorts. Though its downside is that you may \
+	have not studied as hard as some others have in other subjects."
+
+	perks = list(PERK_LINGUIST)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -77,7 +97,7 @@
 	and made you extra paranoid, which can be a good thing when evading the law. Your experience with your own body has also let you learn a few medical tricks over the years, along with a tolerance \
 	to most drugs so you can inject more varied amounts than others."
 
-	perks = list(/datum/perk/addict)
+	perks = list(PERK_ADDICT)
 	restricted_to_species = list(FORM_HUMAN, FORM_KRIOSAN, FORM_AKULA, FORM_MARQUA, FORM_NARAMAD, FORM_OPIFEX, FORM_CHTMANT, FORM_CINDAR)
 
 	stat_modifiers = list(
@@ -86,7 +106,8 @@
 		STAT_VIG = 4,
 		STAT_BIO = 6,
 		STAT_MEC = 0,
-		STAT_COG = 5
+		STAT_COG = -5, // Brain fried from drugs
+		STAT_VIV = 5
 	)
 
 /datum/category_item/setup_option/background/bckgrnd/klutz
@@ -94,7 +115,7 @@
 	desc = "Your entire life has been a series of unlucky and often self-inflicted accidents, you spent enough time hurting yourself due to your own clumsiness that you've built up a more \
 	pain tolerance than most of common folks, meaning that due to this clumsiness problem, you've become quite tough and a little stronger too. A shame, this doesn't stop you from time to time failing even the most basic tasks at times. In fact, you find some tasks that require precision damn near impossible, and even handling or using guns is a dangerous prospect. Due to this problem, you have a terrible perception around the area around you."
 
-	perks = list(/datum/perk/klutz)
+	perks = list(PERK_KLUTZ)
 
 	stat_modifiers = list(
 		STAT_ROB = 10,
@@ -102,30 +123,33 @@
 		STAT_VIG = -20,
 		STAT_BIO = 0,
 		STAT_MEC = 0,
-		STAT_COG = 0
+		STAT_COG = -5 // Dumb, or just careless
 	)
 
 /datum/category_item/setup_option/background/bckgrnd/no_light
-	name = "Achromatic Lifestyle"
+	name = "Umbral Upbringing"
 	desc = "Much of your early life was spent in areas which did not have much, if any, natural light. This may have been planetary where stretches of time hid your world from the sun's light \
 	or you lived in an area where light wasn't a feasible resource due to economic, biological, or local reasons. Whatever the specifics, you've gotten highly adapted to finding your way through the \
-	dark, a shame this lifestyle didn't sharpen your eyesight as much as you'd have liked."
+	dark, your pupils widening faster to better take in your surroundings. This quick adaptation however, has led you to become more photosensitive to sudden bright lights and flashes."
 
-	perks = list(/datum/perk/nightcrawler)
+	perks = list(PERK_NIGHTCRAWLER)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
 		STAT_TGH = 0,
-		STAT_VIG = 0,
+		STAT_VIG = 5, // Eyes of an eagle
 		STAT_BIO = 0,
 		STAT_MEC = 0,
 		STAT_COG = 0
 	)
 
 /datum/category_item/setup_option/background/bckgrnd/gifted
-	name = "Gifted"
+	name = "Gifted Nihilist"
 	desc = "You were a smart child, gifted in any particular area you wished to embark upon be it intellectual or physical. Unfortunately this approach made you a jack of all trades and severely  \
-	hampered your ability to master any one discipline. Sure, you're smart, but without the experience and discipline of practical application it doesn't help you as much as anyone could hope."
+	hampered your ability to master any one discipline. Sure, you're smart, but without the experience and discipline of practical application it doesn't help you as much as anyone could hope. \
+	The one issue you truly suffer is a nihlistic world view; you seem more effected by your surroundings than the normal person."
+
+	perks = list(PERK_NIHILIST)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -147,8 +171,8 @@
 		STAT_ROB = 0,
 		STAT_TGH = 0,
 		STAT_VIG = 4,
-		STAT_BIO = 8,
-		STAT_MEC = 8,
+		STAT_BIO = 4,
+		STAT_MEC = 4,
 		STAT_COG = -15
 	)
 
@@ -159,15 +183,15 @@
 	no matter the scenario you cannot be left in turmoil for long. You always find contentment, you always find peace. As such, should you ever become a psion, you're mind is perfectly adapted \
 	to make the most of the essence from which your powers are called, granting you three additional uses of your abilities."
 
-	perks = list(/datum/perk/psi_harmony)
+	perks = list(PERK_PSI_HARMONY)
 
 	stat_modifiers = list(
-		STAT_ROB = 0,
-		STAT_TGH = 0,
-		STAT_VIG = 0,
+		STAT_ROB = -2,
+		STAT_TGH = -2, // Peaceful thoughts eschew you from applying violence
+		STAT_VIG = 2,
 		STAT_BIO = 0,
 		STAT_MEC = 0,
-		STAT_COG = 0
+		STAT_COG = 5 // A peaceful mind is a focused mind.
 	)
 
 /datum/category_item/setup_option/background/bckgrnd/psionic_mania
@@ -177,15 +201,15 @@
 	but the ultimate authority from which all authority is granted. This bedlam has changed how your mind works and, should you ever become a psion, has made you the perfect example of what \
 	a destructive mind can do. You always deal the maximum level of destruction when using your psionic powers which scale with your body and mind."
 
-	perks = list(/datum/perk/psi_mania)
+	perks = list(PERK_PSI_MANIA)
 
 	stat_modifiers = list(
-		STAT_ROB = 0,
-		STAT_TGH = 0,
+		STAT_ROB = 2,
+		STAT_TGH = 2, // Hardened by violent thoughts probably put to practice
 		STAT_VIG = 0,
 		STAT_BIO = 0,
 		STAT_MEC = 0,
-		STAT_COG = 0
+		STAT_COG = -5 // Violence clouds the mind, tradeoff for a good perk that never had any mechanical drawbacks
 	)
 
 /datum/category_item/setup_option/background/bckgrnd/razor_maniac
@@ -209,4 +233,76 @@
 		STAT_BIO = 0,
 		STAT_MEC = 0,
 		STAT_COG = 0
+	)
+
+/datum/category_item/setup_option/background/bckgrnd/true_data
+	name = "Introspective"
+	desc = "Do to being more in-tune with what you are and whats around you things that were once hidden behind probability or guessing are shown to you as factual odds."
+	perks = list(PERK_NO_OBFUSCATION)
+
+	stat_modifiers = list(
+		STAT_VIG = 5,
+		STAT_MEC = -5,
+		STAT_COG = 5,
+		STAT_VIV = -5
+	)
+
+/datum/category_item/setup_option/background/bckgrnd/blood_lust
+	name = "Always Targeted"
+	desc = "Whether learned through combat or training, you can manipulate simple combatives into targeting you through a killing intent, making the simple-minded, target you before anyone else."
+	perks = list(PERK_BLOOD_LUST)
+
+	//Makes you little less good with chems and sanity
+	stat_modifiers = list(
+		STAT_ROB = 5,
+		STAT_VIG = -5,
+		STAT_TGH = 5,
+		STAT_VIV = -5
+	)
+
+/datum/category_item/setup_option/background/bckgrnd/natural_style
+	name = "Natural Style"
+	desc = "Due to intense training and study into how to replicate sheath arts you can weather both a mental storm, and a battle field. \
+	All melee weapons that attack at range have a little bit extra reach when you wield them."
+	perks = list(PERK_NATURAL_STYLE)
+
+	//You have been trainning with a sword for speed and hitting a target
+	//+1 range to all ranged melee + sanity stablization, this perk is **good**
+	stat_modifiers = list(
+		STAT_ROB = 5,
+		STAT_TGH = 5,
+		STAT_BIO = 2,
+		STAT_VIG = -10,
+		STAT_COG = -10,
+		STAT_VIV = -30
+	)
+
+/datum/category_item/setup_option/background/bckgrnd/map_maker
+	name = "Map Making"
+	desc = "Your enhanced perception allows you to visualize the terrain around you, marking down walls, foes, and loot nearby."
+	perks = list(PERK_MAP_MAKER)
+
+	//Weak perk if you already know the map, also takes resources to use
+	stat_modifiers = list(
+		STAT_BIO = -5,
+		STAT_COG = 10,
+	)
+
+/datum/category_item/setup_option/background/bckgrnd/close_minded
+	name = "Close Minded"
+	desc = "You cannot be inspired and cannot gain insight. Oddities are just baubles to you. Though what you have already learned, you can apply very well."
+	perks = list(PERK_NO_INSPIRO)
+
+	restricted_to_species = list(
+		FORM_HUMAN, FORM_EXALT_HUMAN, FORM_SABLEKYNE, FORM_KRIOSAN,
+		FORM_AKULA, FORM_MARQUA, FORM_NARAMAD, FORM_OPIFEX, FORM_CHTMANT,
+		FORM_CINDAR, FORM_SLIME, FORM_MYCUS, FORM_FOLKEN)
+
+	stat_modifiers = list(
+		STAT_ROB = 25,
+		STAT_TGH = 25,
+		STAT_VIG = 25,
+		STAT_BIO = 35,
+		STAT_MEC = 35,
+		STAT_COG = 35
 	)

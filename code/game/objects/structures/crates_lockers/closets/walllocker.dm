@@ -5,6 +5,7 @@
 	icon_state = "wall-locker"
 	anchored = TRUE
 	wall_mounted = TRUE //This handles density in closets.dm
+	density = FALSE
 
 
 /obj/structure/closet/wall_mounted/emcloset
@@ -13,6 +14,9 @@
 	icon_state = "emerg"
 
 /obj/structure/closet/wall_mounted/emcloset/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/tank/emergency_oxygen(src)
 	new /obj/item/clothing/mask/breath(src)
 	new /obj/item/tank/emergency_oxygen(src)
@@ -29,9 +33,12 @@
 	icon_state = "hydrant"
 
 /obj/structure/closet/wall_mounted/firecloset/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/inflatable/door(src)
 	new /obj/item/inflatable/door(src)
-	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/ointment(src)
 	new /obj/item/clothing/head/hardhat/red(src)
 	new /obj/item/clothing/mask/gas(src)
 	new /obj/item/clothing/gloves/thick(src)

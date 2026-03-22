@@ -23,6 +23,7 @@
 #define SPECIES_ZORREN_FLAT		"Dog"
 #define SPECIES_ZORREN_HIGH		"Wolf"
 #define SPECIES_STATIONXENO     "Xenomorph Hybrid"
+#define SPECIES_SLIME			"Aulvae"
 #define SPECIES_CUSTOM			"Custom Species"
 
 // Monkey and alien monkeys.
@@ -59,6 +60,7 @@
 #define FORM_CANINE				"Canine"
 #define FORM_FELINE				"Feline"
 #define FORM_SHARK				"Shark"
+#define FORM_SUDAK				"Shark (Snoutless)"
 #define FORM_LIZARD				"Lizard"
 #define FORM_LIZARD_TGSHARP     "Sharp-Snouted Lizard"
 #define FORM_LIZARD_TGSMOOTH    "Smooth-Snouted Lizard"
@@ -67,7 +69,7 @@
 #define FORM_MOTH				"Moth"
 #define FORM_MOTH_WHITE			"Moth (Colorable)"
 #define FORM_NARAMAD			"Naramad"
-#define FORM_SLIME				"Slime"
+#define FORM_SLIME				"Aulvae"
 #define FORM_AVIAN				"Avian"
 #define FORM_SPIDER				"Arachnoid"
 #define FORM_STATIONXENO	    "Xenohybrid Drone"
@@ -107,7 +109,7 @@
 //
 #define FORM_MONKEY				"Monkey"
 #define FORM_GOLEM				"Golem"
-#define FORM_HIVEMIND			"Hivelord"
+//#define FORM_HIVEMIND			"Hivelord" - we defeated you >:T
 #define FORM_ALIEN_DRONE		"Xenomorph Drone"
 #define FORM_ALIEN_SENTINEL		"Xenomorph Sentinel"
 #define FORM_ALIEN_HUNTER		"Xenomorph Hunter"

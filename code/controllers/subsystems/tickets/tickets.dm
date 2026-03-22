@@ -54,10 +54,11 @@ SUBSYSTEM_DEF(tickets)
 		for(var/num in stales)
 			report += "[num], "
 		log_admin("<span class='[span_class]'>Tickets [report] have been open for over [TICKET_TIMEOUT / 600] minutes. Changing status to stale.</span>")
-		message_admins("<span class='[span_class]'>Tickets [report] have been open for over [TICKET_TIMEOUT / 600] minutes. Changing status to stale.</span>")
+		message_admins("<span class='[span_class]'>Tickets [report] have been open for over [TICKET_TIMEOUT / 600] minutes. Changing status to stale.</span>", mod_send_message = TRUE)
 
-/datum/controller/subsystem/tickets/stat_entry()
-	..("Tickets: [LAZYLEN(allTickets)]")
+/datum/controller/subsystem/tickets/stat_entry(msg)
+	msg += "Tickets: [LAZYLEN(allTickets)]"
+	return ..()
 
 /datum/controller/subsystem/tickets/proc/checkStaleness()
 	var/stales = list()
@@ -95,6 +96,7 @@ SUBSYSTEM_DEF(tickets)
 /datum/controller/subsystem/tickets/proc/newHelpRequest(client/C, text)
 	var/ticketNum // Holder for the ticket number
 	var/datum/ticket/T
+	var/category	//	SOJOURN: discord bot configuration: category for TGS message
 	// Get the open ticket assigned to the client and add a response. If no open tickets then make a new one
 	if((T = checkForOpenTicket(C)))
 		ticketNum = T.ticketNum
@@ -103,13 +105,21 @@ SUBSYSTEM_DEF(tickets)
 		to_chat(C.mob, "<span class='[span_class]'>Your [ticket_name] #[ticketNum] remains open! Visit \"My tickets\" under the Admin Tab to view it.</span>")
 		var/url_message = makeUrlMessage(C, text, ticketNum)
 		log_admin(url_message)
-		message_admins(url_message)
+		message_admins(url_message, mod_send_message = TRUE)
+		//	SOJOURN: discord bot configuration: START
+		category = "Ticket: #[ticketNum] New message from [key_name(C)]"
+		send2adminchat(category, text)
+		//	SOJOURN: discord bot configuration: END
 	else
 		newTicket(C, text, text)
 		// Play adminhelp sound to all admins who have not disabled it in preferences
 		for(var/client/X in admins)
 			if(X.get_preference_value(/datum/client_preference/staff/play_adminhelp_ping) == GLOB.PREF_HEAR)
 				sound_to(X, 'sound/effects/adminhelp.ogg')
+		//	SOJOURN: discord bot configuration: START
+		category = "New Ticket: #[(getTicketCounter() - 1)] from [key_name(C)]"
+		send2adminchat(category, text)
+		//	SOJOURN: discord bot configuration: END
 
 /**
  * Will add the URLs usable by staff to the message and return it
@@ -142,7 +152,8 @@ SUBSYSTEM_DEF(tickets)
 	var/datum/ticket/T = new(url_title, title, passedContent, new_ticket_num)
 	allTickets += T
 	T.client_ckey = C.ckey
-	T.locationSent = C.mob.loc.name
+	if (C.mob.loc?.name) //sanity check - some locs, such as title screen, have no name or position
+		T.locationSent = C.mob.loc?.name
 	T.mobControlled = C.mob
 
 	//Inform the user that they have opened a ticket
@@ -150,14 +161,14 @@ SUBSYSTEM_DEF(tickets)
 	sound_to(C, "sound/effects/adminhelp.ogg")
 
 	log_admin(url_title)
-	message_admins(url_title)
+	message_admins(url_title, mod_send_message = TRUE)
 
 //Set ticket state with key N to open
 /datum/controller/subsystem/tickets/proc/openTicket(N)
 	var/datum/ticket/T = allTickets[N]
 	if(T.ticketState != TICKET_OPEN)
 		log_admin("<span class='[span_class]'>[usr.client] / ([usr]) re-opened [ticket_name] number [N]</span>")
-		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) re-opened [ticket_name] number [N]</span>")
+		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) re-opened [ticket_name] number [N]</span>", mod_send_message = TRUE)
 		T.ticketState = TICKET_OPEN
 		return TRUE
 
@@ -167,7 +178,7 @@ SUBSYSTEM_DEF(tickets)
 	if(T.ticketState != TICKET_RESOLVED)
 		T.ticketState = TICKET_RESOLVED
 		log_admin("<span class='[span_class]'>[usr.client] / ([usr]) resolved [ticket_name] number [N]</span>")
-		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) resolved [ticket_name] number [N]</span>")
+		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) resolved [ticket_name] number [N]</span>", mod_send_message = TRUE)
 		to_chat_safe(returnClient(N), "<span class='[span_class]'>Your [ticket_name] has now been resolved.</span>")
 		return TRUE
 
@@ -199,7 +210,7 @@ SUBSYSTEM_DEF(tickets)
 	to_chat_safe(owner, list("<span class='[span_class]'>[C] has converted your ticket to a [other_ticket_name] ticket.</span>",\
 									"<span class='[span_class]'>Be sure to use the correct type of help next time!</span>"))
 	log_admin("<span class='[span_class]'>[C] has converted ticket number [T.ticketNum] to a [other_ticket_name] ticket.</span>")
-	message_admins("<span class='[span_class]'>[C] has converted ticket number [T.ticketNum] to a [other_ticket_name] ticket.</span>")
+	message_admins("<span class='[span_class]'>[C] has converted ticket number [T.ticketNum] to a [other_ticket_name] ticket.</span>", mod_send_message = TRUE)
 	create_other_system_ticket(T)
 
 /datum/controller/subsystem/tickets/proc/create_other_system_ticket(datum/ticket/T)
@@ -222,9 +233,9 @@ SUBSYSTEM_DEF(tickets)
 		"Already Resolved" = "The problem has been resolved already.",
 		//"Mentorhelp" = "Please redirect your question to Mentorhelp, as they are better experienced with these types of questions.",
 		"Happens Again" = "Thanks, let us know if it continues to happen.",
-		"Github Discord Issue Report" = "To report a bug, please go to our Github page. Then go to 'Issues'. Then 'New Issue'. Then fill out the report form. If the report would reveal current-round information, file it after the round ends. If you prefer, you can also report it in the Junkyard channel of our Discord.",
+		"Github Discord Issue Report" = "To report a bug, please go to our Github page. Then go to 'Issues'. Then 'New Issue'. Then fill out the report form. If the report would reveal current-round information, file it after the round ends. If you prefer, you can also report it in the issue reports channel of our Discord.",
 		"Clear Cache" = "To fix a blank screen, go to the 'Special Verbs' tab and press 'Reload UI Resources'. If that fails, clear your BYOND cache (instructions provided with 'Reload UI Resources'). If that still fails, please adminhelp again, stating you have already done the following." ,
-		"IC Issue" = "This is an In Character (IC) issue and will not be handled by admins. You could speak to IronHammer security forces, a departmental head or any other relevant authority currently aboard the ship.",
+		"IC Issue" = "This is an In Character (IC) issue and will not be handled by admins. You could speak to a Marshal Officer, a departmental head or any other relevant authority currently around the colony.",
 		"Reject" = "Reject",
 		"Man Up" = "Man Up",
 		"Skill Issue" = "Skill Issue",
@@ -235,7 +246,7 @@ SUBSYSTEM_DEF(tickets)
 	for(var/key in response_phrases)	//build a new list based on the short descriptive keys of the master list so we can send this as the input instead of the full paragraphs to the admin choosing which autoresponse
 		sorted_responses += key
 
-	var/message_key = input("Select an autoresponse. This will mark the ticket as resolved.", "Autoresponse") as null|anything in sortTim(sorted_responses, /proc/cmp_text_asc) //use sortTim and cmp_text_asc to sort alphabetically
+	var/message_key = input("Select an autoresponse. This will mark the ticket as resolved.", "Autoresponse") as null|anything in sortTim(sorted_responses, GLOBAL_PROC_REF(cmp_text_asc)) //use sortTim and cmp_text_asc to sort alphabetically
 	var/client/ticket_owner = get_client_by_ckey(T.client_ckey)
 	switch(message_key)
 		if(null) //they cancelled
@@ -262,7 +273,7 @@ SUBSYSTEM_DEF(tickets)
 	var/datum/ticket/T = allTickets[N]
 	if(T.ticketState != TICKET_CLOSED)
 		log_admin("<span class='[span_class]'>[usr.client] / ([usr]) closed [ticket_name] number [N]</span>")
-		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) closed [ticket_name] number [N]</span>")
+		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) closed [ticket_name] number [N]</span>", mod_send_message = TRUE)
 		to_chat_safe(returnClient(N), close_messages)
 		T.ticketState = TICKET_CLOSED
 		return TRUE
@@ -386,9 +397,6 @@ UI STUFF
 */
 
 /datum/controller/subsystem/tickets/proc/returnUI(tab = TICKET_OPEN)
-	set name = "Open Ticket Interface"
-	set category = "Tickets"
-
 //dat
 	var/trStyle = "border-top:2px solid; border-bottom:2px solid; padding-top: 5px; padding-bottom: 5px;"
 	var/tdStyleleft = "border-top:2px solid; border-bottom:2px solid; width:150px; text-align:center;"
@@ -605,7 +613,7 @@ UI STUFF
 /datum/controller/subsystem/tickets/proc/takeTicket(var/index)
 	if(assignStaffToTicket(usr.client, index))
 		log_admin("<span class='[span_class]'>[usr.client] / ([usr]) has taken [ticket_name] number [index]</span>")
-		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) has taken [ticket_name] number [index]</span>")
+		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) has taken [ticket_name] number [index]</span>", mod_send_message = TRUE)
 		to_chat_safe(returnClient(index), "<span class='[span_class]'>Your [ticket_name] is being handled by [usr.client].</span>")
 
 /datum/controller/subsystem/tickets/proc/unassignTicket(index)
@@ -614,7 +622,7 @@ UI STUFF
 		T.staffAssigned = null
 		to_chat_safe(returnClient(index), "<span class='[span_class]'>Your [ticket_name] has been unassigned. Another staff member will help you soon.</span>")
 		log_admin("<span class='[span_class]'>[usr.client] / ([usr]) has unassigned [ticket_name] number [index]</span>")
-		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) has unassigned [ticket_name] number [index]</span>")
+		message_admins("<span class='[span_class]'>[usr.client] / ([usr]) has unassigned [ticket_name] number [index]</span>", mod_send_message = TRUE)
 
 #undef TICKET_STAFF_MESSAGE_ADMIN_CHANNEL
 #undef TICKET_STAFF_MESSAGE_PREFIX

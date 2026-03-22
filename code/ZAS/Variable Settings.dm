@@ -113,7 +113,7 @@ var/global/vs_control/vsc = new
 			if("[ch]_NAME" in vars) vw_name = vars["[ch]_NAME"]
 		dat += "<b>[vw_name] = [vw]</b> <A href='?src=\ref[src];changevar=[ch]'>\[Change\]</A><br>"
 		dat += "<i>[vw_desc]</i><br><br>"
-	user << browse(dat,"window=settings")
+	user << browse(HTML_SKELETON(dat),"window=settings")
 
 /vs_control/Topic(href,href_list)
 	if("changevar" in href_list)
@@ -169,7 +169,7 @@ var/global/vs_control/vsc = new
 		vars[ch] = vw
 	if(how == "Toggle")
 		newvar = (newvar?"ON":"OFF")
-	to_chat(world, SPAN_NOTICE("<b>[key_name(user)] changed the setting [display_description] to [newvar].</b>"))
+	to_world("<span class='notice'><b>[key_name(user)] changed the setting [display_description] to [newvar].</b></span>")
 	if(ch in plc.settings)
 		ChangeSettingsDialog(user,plc.settings)
 	else
@@ -199,40 +199,32 @@ var/global/vs_control/vsc = new
 		return
 	switch(def)
 		if("Plasma - Standard")
-			plc.CLOTH_CONTAMINATION = 1 //If this is on, plasma does damage by getting into cloth.
 			plc.PLASMAGUARD_ONLY = 0
 			plc.GENETIC_CORRUPTION = 0 //Chance of genetic corruption as well as toxic damage, X in 1000.
 			plc.SKIN_BURNS = 0       //Plasma has an effect similar to mustard gas on the un-suited.
 			plc.EYE_BURNS = 1 //Plasma burns the eyes of anyone not wearing eye protection.
 			plc.PLASMA_HALLUCINATION = 0
-			plc.CONTAMINATION_LOSS = 0.02
 
 		if("Plasma - Low Hazard")
-			plc.CLOTH_CONTAMINATION = 0 //If this is on, plasma does damage by getting into cloth.
 			plc.PLASMAGUARD_ONLY = 0
 			plc.GENETIC_CORRUPTION = 0 //Chance of genetic corruption as well as toxic damage, X in 1000
 			plc.SKIN_BURNS = 0       //Plasma has an effect similar to mustard gas on the un-suited.
 			plc.EYE_BURNS = 1 //Plasma burns the eyes of anyone not wearing eye protection.
 			plc.PLASMA_HALLUCINATION = 0
-			plc.CONTAMINATION_LOSS = 0.01
 
 		if("Plasma - High Hazard")
-			plc.CLOTH_CONTAMINATION = 1 //If this is on, plasma does damage by getting into cloth.
 			plc.PLASMAGUARD_ONLY = 0
 			plc.GENETIC_CORRUPTION = 0 //Chance of genetic corruption as well as toxic damage, X in 1000.
 			plc.SKIN_BURNS = 1       //Plasma has an effect similar to mustard gas on the un-suited.
 			plc.EYE_BURNS = 1 //Plasma burns the eyes of anyone not wearing eye protection.
 			plc.PLASMA_HALLUCINATION = 1
-			plc.CONTAMINATION_LOSS = 0.05
 
 		if("Plasma - Oh Shit!")
-			plc.CLOTH_CONTAMINATION = 1 //If this is on, plasma does damage by getting into cloth.
 			plc.PLASMAGUARD_ONLY = 1
 			plc.GENETIC_CORRUPTION = 5 //Chance of genetic corruption as well as toxic damage, X in 1000.
 			plc.SKIN_BURNS = 1       //Plasma has an effect similar to mustard gas on the un-suited.
 			plc.EYE_BURNS = 1 //Plasma burns the eyes of anyone not wearing eye protection.
 			plc.PLASMA_HALLUCINATION = 1
-			plc.CONTAMINATION_LOSS = 0.075
 
 		if("ZAS - Normal")
 			airflow_lightest_pressure = 20
@@ -312,17 +304,15 @@ var/global/vs_control/vsc = new
 			connection_temperature_delta 	= initial(connection_temperature_delta)
 
 			plc.PLASMA_DMG 					= initial(plc.PLASMA_DMG)
-			plc.CLOTH_CONTAMINATION 		= initial(plc.CLOTH_CONTAMINATION)
 			plc.PLASMAGUARD_ONLY 			= initial(plc.PLASMAGUARD_ONLY)
 			plc.GENETIC_CORRUPTION 			= initial(plc.GENETIC_CORRUPTION)
 			plc.SKIN_BURNS 					= initial(plc.SKIN_BURNS)
 			plc.EYE_BURNS 					= initial(plc.EYE_BURNS)
-			plc.CONTAMINATION_LOSS 			= initial(plc.CONTAMINATION_LOSS)
 			plc.PLASMA_HALLUCINATION 		= initial(plc.PLASMA_HALLUCINATION)
 			plc.N2O_HALLUCINATION 			= initial(plc.N2O_HALLUCINATION)
 
 
-	to_chat(world, "<span class='notice'><b>[key_name(user)] changed the global plasma/ZAS settings to \"[def]\"</b></span>")
+	to_world("<span class='notice'><b>[key_name(user)] changed the global plasma/ZAS settings to \"[def]\"</b></span>")
 
 /pl_control/var/list/settings = list()
 

@@ -8,7 +8,7 @@
 	w_class = ITEM_SIZE_TINY
 	health = 5
 	var/amount_grown = 0
-	var/spawn_type = /mob/living/carbon/superior_animal/roach/roachling
+	var/spawn_type = /mob/living/carbon/superior/roach/roachling
 	var/datum/genetics/genetics_holder/unnatural_mutations = new()
 
 /obj/item/roach_egg/afterattack(obj/O as obj, mob/user as mob, proximity)
@@ -22,7 +22,7 @@
 	qdel(src)
 
 /obj/item/roach_egg/attackby(var/obj/item/I, var/mob/user)
-	if(I.attack_verb.len)
+	if(LAZYLEN(I.attack_verb))
 		visible_message(SPAN_WARNING("\The [src] have been [pick(I.attack_verb)] with \the [I][(user ? " by [user]." : ".")]"))
 	else
 		visible_message(SPAN_WARNING("\The [src] have been attacked with \the [I][(user ? " by [user]." : ".")]"))
@@ -32,8 +32,9 @@
 
 /obj/item/roach_egg/bullet_act(var/obj/item/projectile/Proj)
 	..()
-	health -= Proj.get_structure_damage()
-	healthcheck()
+	if (!(Proj.testing))
+		health -= Proj.get_structure_damage()
+		healthcheck()
 
 /obj/item/roach_egg/proc/healthcheck()
 	if(health <= 0)

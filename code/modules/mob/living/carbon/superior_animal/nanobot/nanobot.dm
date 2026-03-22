@@ -1,4 +1,4 @@
-/mob/living/carbon/superior_animal/nanobot
+/mob/living/carbon/superior/nanobot
 	name = "Nanobot"
 	desc = "A robot built from nanites to serve as a personal servant and guard. A product originally designed by the opifex before being mimiced by the Artificer Guild. They come in several variants \
 	and are known for being highly versatile."
@@ -15,7 +15,7 @@
 	see_in_dark = 10
 	wander = FALSE
 	stop_automated_movement_when_pulled = TRUE
-	armor = list(melee = 30, bullet = 30, energy = 30, bomb = 50, bio = 100, rad = 100)
+	armor = list(melee = 7, bullet = 7, energy = 7, bomb = 50, bio = 100, rad = 100)
 	mob_classification = CLASSIFICATION_SYNTHETIC
 	breath_required_type = 0 // Doesn't need to breath
 	breath_poison_type = 0 // Can't be poisoned
@@ -38,6 +38,8 @@
 	meat_type = /obj/item/scrap_lump
 	reagent_immune = TRUE
 	toxin_immune = TRUE
+	cold_protection = 1
+	heat_protection = 1
 
 	do_gibs = FALSE
 	colony_friend = TRUE
@@ -67,48 +69,53 @@
 	var/treatment_oxy = "dexalinp"
 	var/treatment_fire = "dermaline"
 	var/treatment_tox = "carthatoline"
-	var/treatment_virus = "spaceacillin"
+	never_stimulate_air = TRUE
+	research_value = 1500
 
-/mob/living/carbon/superior_animal/nanobot/handle_breath(datum/gas_mixture/breath) //we dont care about the air
+/mob/living/carbon/superior/nanobot/handle_breath(datum/gas_mixture/breath) //we dont care about the air
 	return
 
-/mob/living/carbon/superior_animal/nanobot/handle_environment(var/datum/gas_mixture/environment) //were space proof
+/mob/living/carbon/superior/nanobot/handle_environment(var/datum/gas_mixture/environment) //were space proof
 	return
 
-/mob/living/carbon/superior_animal/nanobot/handle_cheap_breath(datum/gas_mixture/breath as anything)
-	return
-
-/mob/living/carbon/superior_animal/nanobot/handle_cheap_environment(datum/gas_mixture/environment as anything)
-	return
-
-/mob/living/carbon/superior_animal/nanobot/New()
+/mob/living/carbon/superior/nanobot/New()
 	. = ..()
 	Radio = new/obj/item/device/radio(src)
 	Console = new /obj/item/modular_computer/console/preset/nanobot(src)
 	update_icon()
 
-/mob/living/carbon/superior_animal/nanobot/rejuvenate()
+/mob/living/carbon/superior/nanobot/rejuvenate()
 	..()
-	//We trgain are consol and radio if revived!
+	//We regain our console and radio if revived!
 	Radio = new/obj/item/device/radio(src)
 	Console = new /obj/item/modular_computer/console/preset/nanobot(src)
 
-/mob/living/carbon/superior_animal/nanobot/examine(mob/user)
+/mob/living/carbon/superior/nanobot/examine(mob/user)
 	..()
 	if(iscarbon(user) || issilicon(user))
 		var/robotics_expert = user.stats.getPerk(PERK_ROBOTICS_EXPERT)
 		if(robotics_expert) // Are we an expert in robots or examining ourselves?
 			to_chat(user, SPAN_NOTICE("[name] is currently at [(health/maxHealth)*100]% integrity!")) // Give a more accurate reading.
-		else if (health < maxHealth * 0.25)
+		else if(health < maxHealth * 0.10)
+			to_chat(user, SPAN_DANGER("It looks like they are on their last legs!"))
+		else if (health < maxHealth * 0.20)
 			to_chat(user, SPAN_DANGER("It's grievously wounded!"))
-		else if (health < maxHealth * 0.50)
+		else if (health < maxHealth * 0.30)
 			to_chat(user, SPAN_DANGER("It's badly wounded!"))
-		else if (health < maxHealth * 0.75)
-			to_chat(user, SPAN_WARNING("It's wounded."))
+		else if (health < maxHealth * 0.40)
+			to_chat(user, SPAN_WARNING("Its wounds are mounting."))
+		else if (health < maxHealth * 0.50)
+			to_chat(user, SPAN_WARNING("It looks half dead."))
+		else if (health < maxHealth * 0.60)
+			to_chat(user, SPAN_WARNING("It looks like its been beaten up quite badly"))
+		else if (health < maxHealth * 0.70)
+			to_chat(user, SPAN_WARNING("It has accrued some lasting injuries."))
+		else if (health < maxHealth * 0.80)
+			to_chat(user, SPAN_WARNING("It has had minor damage done to it."))
 		else if (health < maxHealth)
-			to_chat(user, SPAN_WARNING("It's a bit wounded."))
+			to_chat(user, SPAN_WARNING("It has a few cuts and bruses."))
 
-/mob/living/carbon/superior_animal/nanobot/death()
+/mob/living/carbon/superior/nanobot/death()
 	if(controller) // Is there someone currently controlling the bot when it died?
 		to_chat(src, "You are suddenly shunted out of your nanobot as it dies.")
 		controller.adjustBrainLoss(rand(5, 10)) // Get some brain damage.
@@ -120,13 +127,13 @@
 		qdel(internals_items)
 	. = ..()
 
-/mob/living/carbon/superior_animal/nanobot/update_icon()
-	overlays.Cut()
-	overlays += image(icon, "[icon_state]_lights")
+/mob/living/carbon/superior/nanobot/update_icon()
+	cut_overlays()
+	add_overlay(image(icon, "[icon_state]_lights"))
 
 
 // For repairing damage to the bot.
-/mob/living/carbon/superior_animal/nanobot/attackby(obj/item/W as obj, mob/user as mob)
+/mob/living/carbon/superior/nanobot/attackby(obj/item/W as obj, mob/user as mob)
 	var/obj/item/T // Define the tool variable early on to avoid compilation problem and to allow us to use tool-unique variables
 	if(user.a_intent == I_HELP) // Are we helping ?
 
@@ -141,11 +148,23 @@
 										SPAN_NOTICE("[user] [user.stats.getPerk(PERK_ROBOTICS_EXPERT) ? "expertly" : ""] repair the damage to [src.name]."),
 										SPAN_NOTICE("You [user.stats.getPerk(PERK_ROBOTICS_EXPERT) ? "expertly" : ""] repair the damage to [src.name].")
 										)
+					//Robotics get an extra hard 50 heal ontop of rng
 					if(user.stats.getPerk(PERK_ROBOTICS_EXPERT))
-						heal_overall_damage(50, 50)
-					else
-						heal_overall_damage(rand(30, 50), rand(30, 50))
-					return
+						adjustBruteLoss(-50)
+						adjustOxyLoss(-50)
+						adjustToxLoss(-50)
+						adjustFireLoss(-50)
+						adjustCloneLoss(-50)
+						adjustBrainLoss(-50)
+						adjustHalLoss(-50)
+
+					adjustBruteLoss(-rand(50, 30))
+					adjustOxyLoss(-rand(50, 30))
+					adjustToxLoss(-rand(50, 30))
+					adjustFireLoss(-rand(50, 30))
+					adjustCloneLoss(-rand(50, 30))
+					adjustBrainLoss(-rand(50, 30))
+					adjustHalLoss(-rand(50, 30))
 				return
 			to_chat(user, "[src] doesn't need repairs.")
 			return
@@ -161,7 +180,7 @@
 										SPAN_NOTICE("You start to reactivate [src.name]..")
 										)
 				if(T.use_tool(user, src, WORKTIME_EXTREMELY_LONG, QUALITY_PULSING, FAILCHANCE_EASY, required_stat = STAT_COG)) // Bring the bot back. It's long as fuck. Bit faster if it's your job.
-					revive() // That proc fully heal the bot, but we don't care because we make sure it is fully healed before calling it.
+					rejuvenate() // That proc fully heal the bot, but we don't care because we make sure it is fully healed before calling it.
 			else if(user.stats.getPerk(PERK_ROBOTICS_EXPERT))
 				to_chat(user, "[src] need to be fully repaired before reactivation is possible.")
 			else
@@ -171,11 +190,16 @@
 	// If nothing was ever triggered, continue as normal
 	..()
 
-/mob/living/carbon/superior_animal/nanobot/proc/spawn_food()
+/mob/living/carbon/superior/nanobot/attack_hand(mob/user as mob)
+	if(user.a_intent == I_HELP) // Are we on help intent?
+		interact(user)
+	else ..()
+
+/mob/living/carbon/superior/nanobot/proc/spawn_food()
 	new /obj/item/storage/ration_pack(src.loc) // Spawn the food
 	visible_emote("state, \"Dispensing emergency ration pack.\"") // Vocal Message
 
-/mob/living/carbon/superior_animal/nanobot/verb/return_mind()
+/mob/living/carbon/superior/nanobot/verb/return_mind()
 	set category = "Remote Control"
 	set name = "Deactivate Remote Control"
 	set desc = "Deactivate the remote control of the nanobot and return to your body.."

@@ -32,7 +32,7 @@
 	if(reinf_material)
 		.[reinf_material.name] = 2
 
-/obj/structure/girder/attack_generic(var/mob/user, var/damage, var/attack_message = "smashes apart", var/wallbreaker)
+/obj/structure/girder/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(istype(user))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.do_attack_animation(src)
@@ -43,7 +43,7 @@
 
 /obj/structure/girder/bullet_act(var/obj/item/projectile/Proj)
 	//Girders only provide partial cover. There's a chance that the projectiles will just pass through. (unless you are trying to shoot the girder)
-	if(Proj.original != src && !prob(cover))
+	if(Proj.original != src && !prob(cover) || Proj.testing) //no inversion on testing is intentional since its only partial cover
 		return PROJECTILE_CONTINUE //pass through
 
 	var/damage = Proj.get_structure_damage()
@@ -68,7 +68,10 @@
 		reinforce_girder()
 
 /obj/structure/girder/attackby(obj/item/I, mob/user)
-
+	if(user.a_intent == I_HELP && istype(I, /obj/item/gun))
+		var/obj/item/gun/G = I
+		G.gun_brace(user, src)
+		return
 	//Attempting to damage girders
 	//This supercedes all construction, deconstruction and similar actions. So change your intent out of harm if you don't want to smack it
 	if (usr.a_intent == I_HURT && user.Adjacent(src))
@@ -298,7 +301,7 @@
 		return
 	return ..()
 
-/obj/structure/girder/attack_generic(var/mob/user, var/damage, var/attack_verb)
+/obj/structure/girder/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(istype(user))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.do_attack_animation(src)

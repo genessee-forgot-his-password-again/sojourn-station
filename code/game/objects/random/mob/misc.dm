@@ -6,7 +6,7 @@
 	alpha = 128
 
 /obj/random/mob/render/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/render))
+	return /mob/living/simple/hostile/render
 
 /obj/random/mob/render/low_chance
 	name = "low chance render"
@@ -14,34 +14,35 @@
 	spawn_nothing_percentage = 90
 
 //Genetic Ambusher
-
+/*
 /obj/random/mob/ambusher
 	name = "random ambusher"
 	icon_state = "hostilemob-brown-low"
 	alpha = 128
 
 /obj/random/mob/ambusher/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/shadow))
+	return pickweight(list(/mob/living/carbon/superior/shadow))
 
 /obj/random/mob/ambusher/low_chance
 	name = "low chance ambusher"
 	icon_state = "hostilemob-brown-low"
 	spawn_nothing_percentage = 95 // These things should not be escaping from science often.
-
+*/
 //Carps
 
 /obj/random/mob/carp
 	name = "random carp"
 	icon_state = "hostilemob-purple"
 	alpha = 128
+	mobs = list(/mob/living/simple/hostile/carp = 9,
+		/mob/living/simple/hostile/carp/baby = 7,
+		/mob/living/simple/hostile/carp/pike = 6,
+		/mob/living/simple/hostile/carp/shark = 2,
+		/mob/living/simple/hostile/carp/greatwhite = 0.5
+		)
 
 /obj/random/mob/carp/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/carp = 9,
-		/mob/living/simple_animal/hostile/carp/baby = 7,
-		/mob/living/simple_animal/hostile/carp/pike = 6,
-		/mob/living/simple_animal/hostile/carp/shark = 2,
-		/mob/living/simple_animal/hostile/carp/greatwhite = 0.5
-		))
+	return pickweight(mobs)
 
 /obj/random/mob/carp/low_chance
 	name = "low chance random carp"
@@ -55,7 +56,7 @@
 	alpha = 128
 
 /obj/random/mob/croaker/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/retaliate/croakerlord))
+	return /mob/living/simple/hostile/retaliate/croakerlord
 
 /obj/random/mob/croaker/low_chance
 	name = "low chance croaker"
@@ -67,18 +68,40 @@
 	name = "random void wolf"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/carbon/superior/human/voidwolf = 9,
+		/mob/living/carbon/superior/human/voidwolf/fieldtech = 2,
+		/mob/living/carbon/superior/human/voidwolf/ranged = 4,
+		/mob/living/carbon/superior/human/voidwolf/fieldtech/ranged = 4,
+		/mob/living/carbon/superior/human/voidwolf/captain = 0.5
+		)
 
 /obj/random/mob/voidwolf/item_to_spawn()
-	return pickweight(list(
-		/mob/living/carbon/superior_animal/human/voidwolf = 9,
-		/mob/living/carbon/superior_animal/human/voidwolf/fieldtech = 2,
-		/mob/living/carbon/superior_animal/human/voidwolf/ranged = 4,
-		/mob/living/carbon/superior_animal/human/voidwolf/fieldtech/ranged = 4,
-		/mob/living/carbon/superior_animal/human/voidwolf/captain = 0.5
-		))
+	return pickweight(mobs)
 
 /obj/random/mob/voidwolf/low_chance
 	name = "low chance random void wolf"
+	icon_state = "hostilemob-brown-low"
+	spawn_nothing_percentage = 60
+
+/obj/random/mob/excelsior
+	name = "random excelsior" //about a 50/50 chance to have a corpse, or an excel agent
+	icon_state = "hostilemob-brown"
+	alpha = 128
+	mobs = list(/obj/landmark/corpse/excelsior = 10,
+		/mob/living/carbon/superior/human/excelsior = 2,
+		/mob/living/carbon/superior/human/excelsior/excel_ppsh = 2,
+		/mob/living/carbon/superior/human/excelsior/excel_ak = 2,
+		/mob/living/carbon/superior/human/excelsior/excel_vintorez = 2,
+		/mob/living/carbon/superior/human/excelsior/excel_drozd = 2,
+		/mob/living/carbon/superior/human/excelsior/excel_hammer_shield = 2,
+		/mob/living/carbon/superior/human/excelsior/excel_hammer_shield/batton = 2
+		)
+
+/obj/random/mob/excelsior/item_to_spawn()
+	return pickweight()
+
+/obj/random/mob/excelsior/low_chance
+	name = "low chance random excelsior"
 	icon_state = "hostilemob-brown-low"
 	spawn_nothing_percentage = 60
 
@@ -87,37 +110,72 @@
 	name = "random psi_monster"
 	icon_state = "hostilemob-brown"
 	alpha = 128
-
-/obj/random/mob/psi_monster/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/psi_monster = 9,
+	has_postspawn = TRUE
+	late_handling = TRUE //Dont spawn the 40 billion untill someone opens a burrow to deepmaints
+	mobs = list(/mob/living/carbon/superior/psi = 9,
 				//trash
-				/mob/living/carbon/superior_animal/psi_monster/memory_eater = 8,
-				/mob/living/carbon/superior_animal/psi_monster/thought_melter = 8,
-				/mob/living/carbon/superior_animal/psi_monster/pus_maggot = 8,
+				/mob/living/carbon/superior/psi/memory_eater = 8,
+				/mob/living/carbon/superior/psi/thought_melter = 8,
+				/mob/living/carbon/superior/psi/pus_maggot = 8,
 				//robust
-				/mob/living/carbon/superior_animal/psi_monster/ponderous = 6,
-				/mob/living/carbon/superior_animal/psi_monster/hovering_nightmare = 6,
-				/mob/living/carbon/superior_animal/psi_monster/licker = 6,
-				/mob/living/carbon/superior_animal/psi_monster/memory = 6,
-				/mob/living/carbon/superior_animal/psi_monster/flesh_tower = 6,
+				/mob/living/carbon/superior/psi/ponderous = 6,
+				/mob/living/carbon/superior/psi/hovering_nightmare = 6,
+				/mob/living/carbon/superior/psi/licker = 6,
+				/mob/living/carbon/superior/psi/memory = 6,
+				/mob/living/carbon/superior/psi/flesh_tower = 6,
 				//impressive
-				/mob/living/carbon/superior_animal/psi_monster/flesh_behemoth = 2,
-				/mob/living/carbon/superior_animal/psi_monster/mind_gazer = 3,
-				/mob/living/carbon/superior_animal/psi_monster/pus_maggot/ash_wendigo = 4,
-				/mob/living/carbon/superior_animal/psi_monster/cerebral_crusher = 4,
-				/mob/living/carbon/superior_animal/psi_monster/wasonce/crimson_jelly = 2,
-				/mob/living/carbon/superior_animal/psi_monster/wasonce/crimson_jelly/pitch_horror = 1,
-				))
+				/mob/living/carbon/superior/psi/flesh_behemoth = 2,
+				/mob/living/carbon/superior/psi/mind_gazer = 3,
+				/mob/living/carbon/superior/psi/pus_maggot/ash_wendigo = 4,
+				/mob/living/carbon/superior/psi/cerebral_crusher = 4
+				)
 
+//At higher levels we throw in CRAZY NOT CONNECTED TO THE REAL CULT daskvey TYPE MOBS, they are harder to fight with less
+/obj/random/mob/psi_monster/item_to_spawn()
+	if(GLOB.chaos_level > 0)
+		mobs += list(/mob/living/carbon/superior/psi/wasonce/crimson_jelly = (0.2 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/debuffer = (0.1 * GLOB.chaos_level))
+
+	if(GLOB.chaos_level > 1)
+		mobs += list(/mob/living/carbon/superior/psi/wasonce/crimson_jelly/pitch_horror = (0.1 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/weakling/deepmaints_bound = (0.5 * GLOB.chaos_level))
+
+	if(GLOB.chaos_level > 2)
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/deepmaints_bound = (0.5 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/cleaver/deepmaints_bound = (0.3 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/laser/deepmaints_bound = (0.2 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/shield/deepmaints_bound = (0.2 * GLOB.chaos_level))
+
+	if(GLOB.chaos_level > 3)
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/plasma/deepmaints_bound = (0.2 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/smg/deepmaints_bound = (0.2 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/rifle/deepmaints_bound = (0.1 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/halberd/deepmaints_bound = (0.2 * GLOB.chaos_level))
+
+	if(GLOB.chaos_level > 4)
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/orb_shooter/deepmaints_bound = (0.2 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/daskvey_follower/orb_master/deepmaints_bound = (0.2 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/psi/ploge = (0.1 * GLOB.chaos_level)) //Once admin only
+
+	return pickweight(mobs)
+
+//used for admins/events/respawns
+/obj/random/mob/psi_monster/insta_spawn
+	name = "random psionic monster will spawn instantly"
+	has_postspawn = FALSE
+	late_handling = FALSE
+
+//Spawn these instantly for they are bosses
 /obj/random/mob/psi_monster_mega_fauna
 	name = "random mega psi monster"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/carbon/superior/psi/dreaming_king = 1,
+				/mob/living/carbon/superior/psi/dreaming_king/hound_crown =1,
+				)
 
 /obj/random/mob/psi_monster_mega_fauna/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/psi_monster/dreaming_king = 1,
-				/mob/living/carbon/superior_animal/psi_monster/dreaming_king/hound_crown =1,
-				))
+	return pickweight(mobs)
 
 /obj/random/mob/psi_monster/low_chance
 	name = "low chance random psi_monster"
@@ -135,6 +193,13 @@
 /obj/random/cluster/psi_monster/item_to_spawn()
 	return /obj/random/mob/psi_monster
 
+ //used for admins/events/respawns
+/obj/random/cluster/psi_monster/insta_spawn
+	name = "random psionic monster will spawn instantly"
+
+/obj/random/cluster/psi_monster/insta_spawn/item_to_spawn()
+	return /obj/random/mob/psi_monster/insta_spawn
+
 /obj/random/cluster/psi_monster/low_chance
 	name = "low chance cluster of psi_monsters"
 	icon_state = "hostilemob-brown-cluster-low"
@@ -151,37 +216,39 @@
 	alpha = 128
 
 /obj/random/cluster/psi_monster/maggot_death_gasp/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/psi_monster/pus_maggot/summoned = 1))
+	return /mob/living/carbon/superior/psi/pus_maggot/summoned
 
 //xenomorphs
 /obj/random/mob/xenomorphs
 	name = "random xenomorph"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/carbon/superior/xenomorph = 9,
+				//trash
+				/mob/living/carbon/superior/xenomorph/sentinel = 8,
+				/mob/living/carbon/superior/xenomorph/hunter = 8,
+				/mob/living/carbon/superior/xenomorph/runner = 8,
+				/mob/living/carbon/superior/xenomorph/runner/panther = 8,
+				/mob/living/carbon/superior/xenomorph/spitter = 8,
+				//robust
+				/mob/living/carbon/superior/xenomorph/warrior = 6,
+				/mob/living/carbon/superior/xenomorph/defender = 6,
+				/mob/living/carbon/superior/xenomorph/warrior/shrike = 6,
+				/mob/living/carbon/superior/xenomorph/warrior/bull = 6,
+				/mob/living/carbon/superior/xenomorph/spitter/boiler = 6,
+				//impressive
+				/mob/living/carbon/superior/xenomorph/warrior/bull/crusher = 4,
+				/mob/living/carbon/superior/xenomorph/warrior/shrike/screecher = 4,
+				/mob/living/carbon/superior/xenomorph/runner/ravager = 4,
+				/mob/living/carbon/superior/xenomorph/warrior/defiler = 4,
+				/mob/living/carbon/superior/xenomorph/warrior/hivelord = 4)
 
 /obj/random/mob/xenomorphs/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/xenomorph = 9,
-				//trash
-				/mob/living/carbon/superior_animal/xenomorph/sentinel = 8,
-				/mob/living/carbon/superior_animal/xenomorph/hunter = 8,
-				/mob/living/carbon/superior_animal/xenomorph/runner = 8,
-				/mob/living/carbon/superior_animal/xenomorph/runner/panther = 8,
-				/mob/living/carbon/superior_animal/xenomorph/spitter = 8,
-				//robust
-				/mob/living/carbon/superior_animal/xenomorph/warrior = 6,
-				/mob/living/carbon/superior_animal/xenomorph/defender = 6,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/shrike = 6,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/bull = 6,
-				/mob/living/carbon/superior_animal/xenomorph/spitter/boiler = 6,
-				//impressive
-				/mob/living/carbon/superior_animal/xenomorph/warrior/bull/crusher = 4,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/shrike/screecher = 4,
-				/mob/living/carbon/superior_animal/xenomorph/runner/ravager = 4,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/defiler = 4,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/hivelord = 4,
-				//mega fauna
-				/mob/living/carbon/superior_animal/xenomorph/warrior/praetorian = 1,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/shrike/praetorian/queen = 0.1))
+	if(GLOB.chaos_level > 0)
+		mobs += list(/mob/living/carbon/superior/xenomorph/warrior/praetorian = (0.5 * GLOB.chaos_level))
+		mobs += list(/mob/living/carbon/superior/xenomorph/warrior/shrike/praetorian/queen = (0.1 * GLOB.chaos_level))
+
+	return pickweight(mobs)
 
 /obj/random/mob/xenomorphs/low_chance
 	name = "low chance random xenomorph"
@@ -195,31 +262,32 @@
 	min_amount = 3
 	max_amount = 9
 	spread_range = 0
+	var/list/mobs = list()
 
 /obj/random/cluster/xenomorphs/screacher_removed_and_megafuna
 	name = "random xenomorph without megafana and screecher"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/carbon/superior/xenomorph = 9,
+				//trash
+				/mob/living/carbon/superior/xenomorph/sentinel = 8,
+				/mob/living/carbon/superior/xenomorph/hunter = 8,
+				/mob/living/carbon/superior/xenomorph/runner = 8,
+				/mob/living/carbon/superior/xenomorph/runner/panther = 8,
+				/mob/living/carbon/superior/xenomorph/spitter = 8,
+				//robust
+				/mob/living/carbon/superior/xenomorph/warrior = 6,
+				/mob/living/carbon/superior/xenomorph/defender = 6,
+				/mob/living/carbon/superior/xenomorph/warrior/bull = 6,
+				/mob/living/carbon/superior/xenomorph/spitter/boiler = 6,
+				//impressive
+				/mob/living/carbon/superior/xenomorph/warrior/bull/crusher = 4,
+				/mob/living/carbon/superior/xenomorph/runner/ravager = 4,
+				/mob/living/carbon/superior/xenomorph/warrior/defiler = 4,
+				/mob/living/carbon/superior/xenomorph/warrior/hivelord = 4)
 
 /obj/random/cluster/xenomorphs/screacher_removed_and_megafuna/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/xenomorph = 9,
-				//trash
-				/mob/living/carbon/superior_animal/xenomorph/sentinel = 8,
-				/mob/living/carbon/superior_animal/xenomorph/hunter = 8,
-				/mob/living/carbon/superior_animal/xenomorph/runner = 8,
-				/mob/living/carbon/superior_animal/xenomorph/runner/panther = 8,
-				/mob/living/carbon/superior_animal/xenomorph/spitter = 8,
-				//robust
-				/mob/living/carbon/superior_animal/xenomorph/warrior = 6,
-				/mob/living/carbon/superior_animal/xenomorph/defender = 6,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/bull = 6,
-				/mob/living/carbon/superior_animal/xenomorph/spitter/boiler = 6,
-				//impressive
-				/mob/living/carbon/superior_animal/xenomorph/warrior/bull/crusher = 4,
-				/mob/living/carbon/superior_animal/xenomorph/runner/ravager = 4,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/defiler = 4,
-				/mob/living/carbon/superior_animal/xenomorph/warrior/hivelord = 4))
-
+	return pickweight(mobs)
 
 /obj/random/cluster/xenomorphs/item_to_spawn()
 	return /obj/random/mob/xenomorphs
@@ -239,25 +307,39 @@
 	name = "random prepper base mob"
 	icon_state = "hostilemob-cyan"
 	alpha = 128
+	mobs = list(/mob/living/simple/hostile/hivebot = 16,
+		/mob/living/simple/hostile/hivebot/range = 12,
+		/mob/living/carbon/superior/robot/forgotton = 6, //Weaklings spawn less
+		/mob/living/carbon/superior/robot/forgotton/engineer= 16,
+		/mob/living/carbon/superior/robot/forgotton/range = 8,
+		)
 
-//This is made out of a 100 fo easyer math
+//This is made out of a 100 fo easier math
 /obj/random/mob/prepper/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/hivebot = 16,
-		/mob/living/simple_animal/hostile/hivebot/range = 12,
-		/mob/living/simple_animal/hostile/republicon = 16,
-		/mob/living/simple_animal/hostile/republicon/range = 8,
-		/mob/living/carbon/superior_animal/sentinal_seeker = 1 //Were rare and tanky
-		))
+	if(GLOB.chaos_level > 2)
+		mobs += list(/mob/living/carbon/superior/robot/forgotton/sentinal_seeker = (0.1 * GLOB.chaos_level))
+
+	return pickweight(mobs)
+
+/obj/random/mob/prepper_boss_lowchance
+	name = "low chance sentinel seeker"
+	icon_state = "hostilemob-red"
+	alpha = 128
+	spawn_nothing_percentage = 90 // Same HP and stats as a Render while being as fast as an Emperor.
+
+/obj/random/mob/prepper_boss_lowchance/item_to_spawn()
+	return /mob/living/carbon/superior/robot/forgotton/sentinal_seeker
 
 /obj/random/mob/prepper_ranged
 	name = "random prepper base mob (range only)"
 	icon_state = "hostilemob-blue"
 	alpha = 128
+	mobs = list(/mob/living/simple/hostile/hivebot/range = 3,
+		/mob/living/carbon/superior/robot/forgotton/range = 1
+		)
 
 /obj/random/mob/prepper_ranged/item_to_spawn()
-	return pickweight(list(		/mob/living/simple_animal/hostile/hivebot/range = 3,
-		/mob/living/simple_animal/hostile/republicon/range = 1
-		))
+	return pickweight(mobs)
 
 
 //local fauna - surface
@@ -265,15 +347,16 @@
 	name = "random tengolo"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/simple/hostile/tengbrute = 20,
+		/mob/living/simple/hostile/tengstalker = 10,
+		/mob/living/simple/hostile/tengcharge = 20,
+		/mob/living/simple/hostile/hell_pig = 2,
+		/mob/living/simple/hostile/hell_pig/slepnir = 2,
+		/mob/living/simple/hostile/hell_pig/wendigo = 2
+		)
 
 /obj/random/mob/tengolo/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/tengbrute = 20,
-		/mob/living/simple_animal/hostile/tengstalker = 10,
-		/mob/living/simple_animal/hostile/tengcharge = 20,
-		/mob/living/simple_animal/hostile/hell_pig = 1,
-		/mob/living/simple_animal/hostile/hell_pig/slepnir = 1,
-		/mob/living/simple_animal/hostile/hell_pig/wendigo = 1
-		))
+	return pickweight(mobs)
 
 /obj/random/mob/tengolo/low_chance
 	name = "low chance random tengolo"
@@ -297,7 +380,7 @@
 	alpha = 128
 
 /obj/random/mob/tahca/item_to_spawn()
-	return /mob/living/simple_animal/hostile/retaliate/tahca
+	return /mob/living/simple/hostile/retaliate/tahca
 
 /obj/random/mob/tahca/low_chance
 	name = "low chance tahca"
@@ -310,7 +393,7 @@
 	alpha = 128
 
 /obj/random/mob/mukwah/item_to_spawn()
-	return /mob/living/simple_animal/hostile/bear/mukwah
+	return /mob/living/simple/hostile/bear/mukwah
 
 /obj/random/mob/mukwah/low_chance
 	name = "low chance mukwah"
@@ -324,7 +407,7 @@
 	alpha = 128
 
 /obj/random/mob/hakhma/item_to_spawn()
-	return /mob/living/simple_animal/hostile/retaliate/hakhma
+	return /mob/living/simple/hostile/retaliate/hakhma
 
 /obj/random/mob/hakhma/low_chance
 	name = "low chance hakhma"
@@ -337,14 +420,16 @@
 	name = "random underground mob"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/carbon/superior/wurm = 20,
+		/mob/living/carbon/superior/wurm/silver = 15,
+		/mob/living/carbon/superior/wurm/osmium = 10,
+		/mob/living/simple/hostile/sargoyle = 20,
+		/mob/living/simple/hostile/helldiver = 10,
+		/obj/random/mob/nightmare = 1
+		)
 
 /obj/random/mob/undergroundmob/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/wurm = 20,
-		/mob/living/simple_animal/hostile/wurm/adult = 10,
-		/mob/living/simple_animal/hostile/sargoyle = 20,
-		/mob/living/simple_animal/hostile/helldiver = 10,
-		/obj/random/mob/nightmare = 1
-		))
+	return pickweight(mobs)
 
 /obj/random/mob/undergroundmob/low_chance
 	name = "low chance random underground mob"
@@ -356,10 +441,11 @@
 	name = "random nightmare"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/simple/hostile/nightmare = 99,
+			/mob/living/simple/hostile/nightmare/dream_daemon = 1)
 
 /obj/random/mob/nightmare/item_to_spawn()
-	return pickweight(list(/mob/living/simple_animal/hostile/nightmare = 99,
-			/mob/living/simple_animal/hostile/nightmare/dream_daemon = 1)) //If you get this spawn your unlucky
+	return pickweight(mobs) //If you get this spawn your unlucky
 
 /obj/random/mob/nightmare/low_chance
 	name = "low chance nightmare"
@@ -372,26 +458,27 @@
 	name = "random vox"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/carbon/superior/vox = 8,
+		/mob/living/carbon/superior/vox/posin_thrower = 3,
+		/mob/living/carbon/superior/vox/thrower_spear = 4,
+		/mob/living/carbon/superior/vox/armord = 6,
+		/mob/living/carbon/superior/vox/hider = 4,
+		/mob/living/carbon/superior/vox/ashen = 6,
+		/mob/living/carbon/superior/vox/weak = 10,
+		/mob/living/carbon/superior/vox/rage = 4
+		)
 
 /obj/random/mob/vox/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/vox = 8,
-		/mob/living/carbon/superior_animal/vox/posin_thrower = 3,
-		/mob/living/carbon/superior_animal/vox/thrower_spear = 4,
-		/mob/living/carbon/superior_animal/vox/armord = 6,
-		/mob/living/carbon/superior_animal/vox/hider = 4,
-		/mob/living/carbon/superior_animal/vox/ashen = 6,
-		/mob/living/carbon/superior_animal/vox/weak = 10,
-		/mob/living/carbon/superior_animal/vox/rage = 4
-		))
+	return pickweight(mobs)
 
 /obj/random/mob/vox/low_chance
-	name = "low chance nightmare"
+	name = "low chance vox"
 	icon_state = "hostilemob-brown-low"
 	spawn_nothing_percentage = 50 //Coin flip
 
 
-#define LUNA	/mob/living/carbon/superior_animal/lodge/cerberus/chimera/moon
-#define SOLIS	/mob/living/carbon/superior_animal/lodge/cerberus/chimera/sun
+#define LUNA	/mob/living/carbon/superior/lodge/cerberus/chimera/moon
+#define SOLIS	/mob/living/carbon/superior/lodge/cerberus/chimera/sun
 
 // Bit flags to check which twins has spawned
 #define LUNA_FLAG 1

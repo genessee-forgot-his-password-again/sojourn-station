@@ -1,7 +1,8 @@
 /datum/surgery_step/robotic
-	difficulty = FAILCHANCE_EASY
+	difficulty = FAILCHANCE_EASY //WAY easier to do it on a robot then any old carbon!
 	required_stat = STAT_MEC
 	inflict_agony = 0 // Robotic organs can't feel pain anyway
+	is_robotic = TRUE // Metal over flesh
 
 /datum/surgery_step/robotic/can_use(mob/living/user, obj/item/organ/external/organ, obj/item/tool)
 	return BP_IS_ROBOTIC(organ)
@@ -13,8 +14,6 @@
 		SPAN_WARNING("[user]'s hand slips, \the [tool] hitting [organ.get_surgery_name()] harmlessly."),
 		SPAN_WARNING("Your hand slips, \the [tool] hitting [organ.get_surgery_name()] harmlessly.")
 	)
-
-
 
 /datum/surgery_step/robotic/open
 	required_tool_quality = QUALITY_SCREW_DRIVING
@@ -77,15 +76,12 @@
 	)
 	organ.take_damage(5, 0)
 
-
-
 /datum/surgery_step/robotic/remove_item
 	required_tool_quality = QUALITY_PRYING
-
 	duration = 90
 
 /datum/surgery_step/robotic/remove_item/can_use(mob/living/user, obj/item/organ/external/organ, obj/item/tool, atom/movable/target)
-	return ..() && organ.is_open() && organ.can_remove_item(target)
+	return organ.is_open() && organ.can_remove_item(target)
 
 /datum/surgery_step/robotic/remove_item/begin_step(mob/living/user, obj/item/organ/external/organ, obj/item/tool, atom/movable/target)
 	user.visible_message(
@@ -130,7 +126,7 @@
 		SPAN_NOTICE("[user] disconnects [organ.get_surgery_name()] with \the [tool]."),
 		SPAN_NOTICE("You disconnect [organ.get_surgery_name()] with \the [tool].")
 	)
-	organ.droplimb(TRUE, DROPLIMB_EDGE)
+	organ.droplimb(TRUE, DISMEMBER_METHOD_EDGE)
 
 /datum/surgery_step/robotic/fix_bone
 	required_tool_quality = QUALITY_WELDING

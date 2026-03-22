@@ -2,7 +2,7 @@
 	name = "linear combat shield"
 	desc = "A shield generator that forms a rectangular, unidirectionally projectile-blocking wall in front of the exosuit."
 	icon_state = "shield_droid"
-	origin_tech = list(TECH_PHORON = 3, TECH_MAGNET = 6, TECH_ILLEGAL = 4)
+	origin_tech = list(TECH_PLASMA = 3, TECH_MAGNET = 6, TECH_ILLEGAL = 4)
 	matter = list(MATERIAL_PLASTEEL = 12, MATERIAL_GOLD = 6, MATERIAL_SILVER = 6, MATERIAL_URANIUM = 4, MATERIAL_PLATINUM = 4, MATERIAL_DIAMOND = 2)
 	equip_cooldown = 5
 	energy_drain = 20
@@ -14,29 +14,24 @@
 	var/icon/drone_overlay
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/New()
-	..()
+	. = ..()
 	my_shield = new my_shield_type
 	my_shield.shield_regen_delay = equip_cooldown
 	my_shield.my_tool = src
-	return
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/critfail()
 	..()
 	my_shield.adjust_health(-200)
-	return
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/Destroy()
-	if (chassis)
+	if(chassis)
 		chassis.overlays -= drone_overlay
 		my_shield.forceMove(src)
 		my_shield.destroy_shields()
 		my_shield.my_tool = null
 		my_shield.my_mecha = null
-		qdel(my_shield)
-		my_shield = null
 	if(my_shield)
-		qdel(my_shield)
-		my_shield = null
+		QDEL_NULL(my_shield)
 	return ..()
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/attach(obj/mecha/M as obj)
@@ -46,18 +41,16 @@
 		my_shield.my_mecha = chassis
 		my_shield.forceMove(chassis)
 
-		drone_overlay = new(src.icon, icon_state = "shield_droid")
+		drone_overlay = new(icon, icon_state = "shield_droid")
 		M.add_overlay(drone_overlay)
-	return
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/detach()
 	chassis.overlays -= drone_overlay
-	..()
+	. = ..()
 	my_shield.destroy_shields()
 	my_shield.my_mecha = null
 	my_shield.shield_health = my_shield.max_shield_health
 	my_shield.forceMove(src)
-	return
 
 /obj/item/mecha_parts/mecha_equipment/proc/handle_movement_action() //Any modules that have special effects or needs when taking a step or floating through space.
 	return
@@ -65,32 +58,25 @@
 /obj/item/mecha_parts/mecha_equipment/combat_shield/handle_movement_action()
 	if(chassis)
 		my_shield.update_shield_positions()
-	return
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/proc/toggle_shield()
-	..()
 	if(chassis)
 		my_shield.attack_self(chassis.occupant)
 		if(my_shield.active)
 			set_ready_state(0)
-			//step_delay = 4
-			//droid_overlay = new(src.icon, icon_state = "shield_droid_a")
 			log_message("Activated.")
 		else
 			set_ready_state(1)
-			//step_delay = 1
-			//droid_overlay = new(src.icon, icon_state = "shield_droid")
 			log_message("Deactivated.")
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/Topic(href, href_list)
 	..()
 	if(href_list["toggle_shield"])
 		toggle_shield()
-	return
 
 /obj/item/mecha_parts/mecha_equipment/combat_shield/get_equip_info()
 	if(!chassis) return
-	return "<span style=\"color:[equip_ready?"#0f0":"#f00"];\">*</span>&nbsp;[src.name] - <a href='?src=\ref[src];toggle_shield=1'>[my_shield.active?"Dea":"A"]ctivate</a>"
+	return "<span style=\"color:[equip_ready?"#0f0":"#f00"];\">*</span>&nbsp;[name] - <a href='?src=\ref[src];toggle_shield=1'>[my_shield.active?"Dea":"A"]ctivate</a>"
 
 //shield subtypes (personal shields)
 /obj/effect/directional_shield/personal
@@ -98,7 +84,7 @@
 	desc = "A wide shield, which has the property to block incoming projectiles but allow outgoing projectiles to pass it.  \
 	Slower moving objects are not blocked, so people can walk in and out of the barrier, and things can be thrown into and out \
 	of it."
-	icon_state = "church_shield"
+	icon_state = "church_shield" //this icon is really really annoying so I've soft-disabeld it on the projecter itself. No point in deleting it so I'll leave it here incase someone wants to improve it.
 
 // This is the actual shield.  The projector is a different item.
 /obj/effect/directional_shield
@@ -147,7 +133,6 @@
 		color = "#0099FF"
 	else
 		animate(src, color = new_color, 5)
-//	color = new_color
 
 /obj/effect/directional_shield/Destroy()
 	if(projector)
@@ -156,11 +141,11 @@
 	return ..()
 
 /obj/effect/directional_shield/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if(air_group || (height==0))
+	if(air_group || (height == 0))
 		return TRUE
 	else if(istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
-		if(istype(P, /obj/item/projectile/test)) // Turrets need to try to kill the shield and so their test bullet needs to penetrate.
+		if(istype(P, /obj/item/projectile/test) || P.testing) // Turrets need to try to kill the shield and so their test bullet needs to penetrate.
 			return TRUE
 
 		var/bad_arc = reverse_direction(dir) // Arc of directions from which we cannot block.
@@ -171,9 +156,11 @@
 	return TRUE
 
 /obj/effect/directional_shield/bullet_act(var/obj/item/projectile/P)
-	adjust_health(-P.get_structure_damage())
+	if(!P.testing)
+		adjust_health(-P.get_structure_damage())
 	P.on_hit()
-	playsound(get_turf(src), 'sound/effects/EMPulse.ogg', 75, 1)
+	if(!P.testing)
+		playsound(get_turf(src), 'sound/effects/EMPulse.ogg', 75, 1)
 
 // All the shields tied to their projector are one 'unit', and don't have individualized health values like most other shields.
 /obj/effect/directional_shield/proc/adjust_health(amount)
@@ -239,7 +226,7 @@
 	active = FALSE
 
 /obj/item/shield_projector/proc/update_shield_positions()
-	if (istype(src.loc,/obj/item/storage) || istype(src.loc,/obj/structure/closet || istype(src.loc,/obj/item/clothing/suit/storage)))	//no point in finding spot for light if flashlight is inside container
+	if(istype(loc,/obj/item/storage) || istype(loc,/obj/structure/closet || istype(loc,/obj/item/clothing/suit/storage)))	//no point in finding spot for light if flashlight is inside container
 		destroy_shields()
 		return
 	for(var/obj/effect/directional_shield/S in active_shields)
@@ -251,7 +238,7 @@
 		if(shield_health <= 0)
 			destroy_shields()
 			var/turf/T = get_turf(src)
-			T.visible_message("<span class='danger'>\The [src] overloads and the shield vanishes!</span>")
+			T.visible_message(SPAN_DANGER("[src] overloads and the shield vanishes!"))
 			playsound(get_turf(src), 'sound/machines/defib_failed.ogg', 75, 0)
 		else
 			if(shield_health < max_shield_health / 4) // Play a more urgent sounding beep if it's at 25% health.
@@ -286,17 +273,17 @@
 	for(var/obj/effect/directional_shield/S in active_shields)
 		S.update_color(new_color)
 
-/obj/item/shield_projector/attack_self(var/mob/living/user)
+/obj/item/shield_projector/attack_self(mob/living/user)
 	if(active)
 		if(always_on)
-			to_chat(user, "<span class='warning'>You can't seem to deactivate \the [src].</span>")
+			to_chat(user, SPAN_WARNING("You can't seem to deactivate [src]"))
 			return
 
 		destroy_shields()
 	else
 		setDir(user.dir) // Needed for linear shields.
 		create_shields()
-	visible_message("<span class='notice'>\The [user] [!active ? "de":""]activates \the [src].</span>")
+	visible_message(SPAN_NOTICE("[user] [!active ? "de":""]activates \the [src]."))
 
 /obj/item/shield_projector/Process()
 	if(always_on && !active) // Make shields as soon as possible if this is set.
@@ -310,16 +297,16 @@
 		else
 			playsound(get_turf(src), 'sound/machines/defib_safetyOff.ogg', 75, 0)
 
-/obj/item/shield_projector/examine(var/mob/user)
-	..()
+/obj/item/shield_projector/examine(mob/user)
+	. = ..()
 	if(get_dist(src, user) <= 1)
 		to_chat(user, "\The [src]'s shield matrix is at [round( (shield_health / max_shield_health) * 100, 0.01)]% strength.")
 
-/obj/item/shield_projector/emp_act(var/severity)
+/obj/item/shield_projector/emp_act(severity)
 	adjust_health(-max_shield_health / severity) // A strong EMP will kill the shield instantly, but weaker ones won't on the first hit.
 
-/obj/item/shield_projector/Move(var/newloc, var/direct)
-	..(newloc, direct)
+/obj/item/shield_projector/Move(newloc, direct)
+	. = ..(newloc, direct)
 	update_shield_positions()
 
 /obj/item/shield_projector/entered_with_container()
@@ -351,8 +338,8 @@
 	description_info = "This creates a shield in a square shape around the user, which allows projectiles to leave from inside but blocks projectiles from outside.  \
 	Everything else can pass through the shield freely, including other people and thrown objects. The shield also cannot block certain effects which \
 	take place over an area, such as flashbangs or explosions."
-	size_x = 2
-	size_y = 2
+	size_x = 1 //Focus on protecting areself over others.
+	size_y = 1
 
 /obj/item/shield_projector/rectangle/church_personal
 	name = "rosaria personal shield"
@@ -361,16 +348,23 @@
 	The shield also cannot block certain effects which \
 	take place over an area, such as flashbangs or explosions."
 	icon_state = "last_shelter"
-	high_color = "#FFFFFF"
+	high_color = "#EADB83"
 	shield_health = 300
 	max_shield_health = 300
+	size_x = 2 //but the Prime? We protect are own!
+	size_y = 2
+
+/obj/item/shield_projector/rectangle/borg_personal
+	name = "integrated combat shield projector"
+	description_info = "A small integral shield emitter designed for use by synthetics. Smaller and more cheaply made, it is notably less efficient than higher end models,\
+	Persona Shields allow projectiles to leave from inside but blocks projectiles from outside.  Everything else can pass through the shield freely, \
+	including other people and thrown objects. The shield also cannot block certain effects which \
+	take place over an area, such as flashbangs or explosions."
+	shield_health = 200
+	max_shield_health = 200
+	shield_regen_amount = 5
 	size_x = 1
 	size_y = 1
-
-/obj/item/shield_projector/rectangle/church_personal/create_shield(var/newloc, var/new_dir)
-	var/obj/effect/directional_shield/personal/S = new(newloc, src)
-	S.dir = new_dir
-	active_shields += S
 
 // A shortcut for admins to spawn in to put into simple animals or other things where it needs to reactivate automatically.
 /obj/item/shield_projector/rectangle/automatic
@@ -512,10 +506,10 @@
 	else
 		my_tool.set_ready_state(1)
 
-/obj/item/shield_projector/line/exosuit/attack_self(var/mob/living/user)
+/obj/item/shield_projector/line/exosuit/attack_self(mob/living/user)
 	if(active)
 		if(always_on)
-			to_chat(user, "<span class='warning'>You can't seem to deactivate \the [src].</span>")
+			to_chat(user, SPAN_WARNING("You can't seem to deactivate [src]."))
 			return
 
 		destroy_shields()
@@ -525,10 +519,10 @@
 		else
 			setDir(user.dir)
 		create_shields()
-	visible_message("<span class='notice'>\The [user] [!active ? "de":""]activates \the [src].</span>")
+	visible_message(SPAN_NOTICE("[user] [!active ? "de":""]activates [src]."))
 
 /obj/item/shield_projector/line/exosuit/adjust_health(amount)
-	..()
+	. = ..()
 	my_mecha.use_power(my_tool.energy_drain)
 	if(!active && shield_health < shield_regen_amount)
 		my_tool.log_message("Shield overloaded.")

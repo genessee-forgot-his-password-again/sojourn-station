@@ -143,9 +143,11 @@
 		..()
 
 /obj/vehicle/bullet_act(var/obj/item/projectile/Proj)
-	health -= Proj.get_structure_damage()
+	if (!(Proj.testing))
+		health -= Proj.get_structure_damage()
 	..()
-	healthCheck()
+	if (!(Proj.testing))
+		healthCheck()
 
 /obj/vehicle/ex_act(severity)
 	switch(severity)
@@ -373,7 +375,7 @@
 /obj/vehicle/proc/update_stats()
 	return
 
-/obj/vehicle/attack_generic(var/mob/user, var/damage, var/attack_message)
+/obj/vehicle/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(!damage)
 		return
 	visible_message(SPAN_DANGER("\The [user] [attack_message] the \the [src]!"))

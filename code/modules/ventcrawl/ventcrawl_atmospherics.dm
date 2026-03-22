@@ -10,7 +10,8 @@
 				M.client.images -= pipe_image
 				M.pipes_shown -= pipe_image
 		pipe_image = null
-	. = ..()
+	..()
+	return QDEL_HINT_QUEUE
 
 /obj/machinery/atmospherics/ex_act(severity)
 	for(var/atom/movable/A in src) //ventcrawling is serious business
@@ -18,7 +19,7 @@
 	. = ..()
 
 /obj/machinery/atmospherics/relaymove(mob/living/user, direction)
-	if(user.loc != src || !(direction & initialize_directions)) //can't go in a way we aren't connecting to
+	if(user.loc != src || !(direction & initialize_directions) || !IS_CARDINAL(direction)) //can't go in a way we aren't connecting to
 		return
 	ventcrawl_to(user,findConnecting(direction),direction)
 

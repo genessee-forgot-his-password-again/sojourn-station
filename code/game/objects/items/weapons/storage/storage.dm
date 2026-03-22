@@ -24,10 +24,17 @@
 	var/insertion_sound
 	var/extraction_sound
 
+	var/exspand_when_spawned = TRUE
+	no_swing = TRUE
+
+	var/change_relativePositionY = FALSE
+	var/allow_mulitable_storage = null
+
+
 /obj/item/storage/debug
 	name = "Destickinator"
-	desc = "A case that can fit legitmently anything inside it, used by Bluespace Technicians and the like to remove stuck items form their hands. \
-	Seems its somehow was made stable as well, allowing you to de-stick even bluespace items without risk of your hand being lost."
+	desc = "A case that can fit legitimately anything inside it, used by Bluespace Technicians and the like to remove items stuck from people's hands. \
+	Seems it somehow was made stable as well, allowing you to de-stick even bluespace items without risk of losing your limbs."
 	icon_state = "desticker"
 	w_class = ITEM_SIZE_PLANET
 	max_w_class = 999
@@ -50,30 +57,31 @@
 /HUD_element/slottedItemBackground
 	icon = 'icons/HUD/block.png'
 
-/obj/item/storage/proc/storageBackgroundClick(var/HUD_element/sourceElement, var/mob/clientMob, location, control, params)
+/proc/storageBackgroundClick(var/HUD_element/sourceElement, var/mob/clientMob, location, control, params)
 	var/atom/A = sourceElement.getData("item")
 	if(A)
 		var/obj/item/I = clientMob.get_active_hand()
 		if(I)
 			clientMob.ClickOn(A)
 
-/obj/item/storage/proc/itemBackgroundClick(var/HUD_element/sourceElement, var/mob/clientMob, location, control, params)
+/proc/itemBackgroundClick(var/HUD_element/sourceElement, var/mob/clientMob, location, control, params)
 	var/atom/A = sourceElement.getData("item")
 	if(A)
 		clientMob.ClickOn(A)
 
-/obj/item/storage/proc/closeButtonClick(var/HUD_element/sourceElement, var/mob/clientMob, location, control, params)
+/proc/closeButtonClick(var/HUD_element/sourceElement, var/mob/clientMob, location, control, params)
 	var/obj/item/storage/S = sourceElement.getData("item")
 	if(S)
 		S.close(clientMob)
 
 /obj/item/storage/proc/setupItemBackground(var/HUD_element/itemBackground, var/atom/item, var/itemCount)
-	itemBackground.setClickProc(.proc/itemBackgroundClick)
+	itemBackground.setClickProc(GLOBAL_PROC_REF(itemBackgroundClick))
 	itemBackground.setData("item", item)
 
 	var/HUD_element/itemIcon = itemBackground.add(new/HUD_element())
 	itemIcon.setDimensions(32,32) //todo: should be width/height of real object icon
 	itemIcon.setAlignment(HUD_CENTER_ALIGNMENT,HUD_CENTER_ALIGNMENT) //center
+
 
 	//todo: remove vis_contents, use mimic icon, make wrappers for dragdrop/examine/clicks, do not alter item
 	item.pixel_x = 0 //no pixel offsets inside storage
@@ -91,14 +99,14 @@
 
 /obj/item/storage/proc/generateHUD(var/datum/hud/data)
 	RETURN_TYPE(/HUD_element)
-	var/HUD_element/main = new("storage")
+	var/HUD_element/main = new("storage[allow_mulitable_storage]")
 	main.setDeleteOnHide(TRUE)
 
 	var/HUD_element/closeButton = new
 	closeButton.setName("HUD Storage Close Button")
 	closeButton.setIcon(icon("icons/mob/screen1.dmi","x"))
 	closeButton.setHideParentOnClick(TRUE)
-	closeButton.setClickProc(.proc/closeButtonClick)
+	closeButton.setClickProc(GLOBAL_PROC_REF(closeButtonClick))
 	closeButton.setData("item", src)
 
 	//storage space based items
@@ -112,7 +120,7 @@
 		storageBackground.setName("HUD Storage Background")
 		storageBackground.setHideParentOnHide(TRUE)
 
-		storageBackground.setClickProc(.proc/storageBackgroundClick)
+		storageBackground.setClickProc(GLOBAL_PROC_REF(storageBackgroundClick))
 		storageBackground.setData("item", src)
 
 		var/paddingSides = 2 //in pixels
@@ -196,7 +204,7 @@
 
 				currentItemNumber++
 			else //empty slots
-				itemBackground.setClickProc(.proc/storageBackgroundClick)
+				itemBackground.setClickProc(GLOBAL_PROC_REF(storageBackgroundClick))
 				itemBackground.setData("item", src)
 
 			totalWidth += itemBackground.getWidth() + spacingBetweenSlots
@@ -210,6 +218,11 @@
 				totalHeight = (currentSlot/maxColumnCount) * (itemBackground.getHeight() + spacingBetweenSlots)
 
 	main.setPosition(data.StorageData["Xspace"],data.StorageData["Yspace"])
+
+	if(change_relativePositionY)
+		main._relativePositionY = change_relativePositionY
+		main._updatePosition()
+
 	return main
 
 /obj/item/storage/Destroy()
@@ -239,7 +252,7 @@
 		return
 
 	if(user.s_active != src) //opening a new storage item
-		if(user.s_active) //user already had a storage item open
+		if(user.s_active && !allow_mulitable_storage) //user already had a storage item open
 			user.s_active.close(user)
 
 		for(var/obj/item/I in src)
@@ -251,8 +264,8 @@
 		generateHUD(data).show(user.client)
 		is_seeing |= user
 		user.s_active = src
-	SEND_SIGNAL(src, COMSIG_STORAGE_OPENED, user)
-	SEND_SIGNAL(user, COMSIG_STORAGE_OPENED, src)
+	LEGACY_SEND_SIGNAL(src, COMSIG_STORAGE_OPENED, user)
+	LEGACY_SEND_SIGNAL(user, COMSIG_STORAGE_OPENED, src)
 
 /obj/item/storage/proc/hide_from(var/mob/user)
 	is_seeing -= user
@@ -262,7 +275,7 @@
 	if(!user.client)
 		return
 
-	user.client.hide_HUD_element("storage")
+	user.client.hide_HUD_element("storage[allow_mulitable_storage]")
 
 /obj/item/storage/proc/open(var/mob/user)
 	if(src.use_sound)
@@ -392,8 +405,6 @@
 		var/obj/item/storage/fancy/F = src
 		F.update_icon(1)
 
-	W.layer = initial(W.layer)
-	W.set_plane(initial(W.plane))
 
 	if (new_location)
 		W.loc = new_location
@@ -406,6 +417,8 @@
 		W.maptext = ""
 
 	W.on_exit_storage(src)
+	W.layer = initial(W.layer)
+	W.set_plane(initial(W.plane))
 	if(extraction_sound)
 		playsound(get_turf(src), extraction_sound, 100)
 	update_icon()
@@ -559,7 +572,8 @@
 	var/total_storage_space = 0
 	for(var/obj/item/I in contents)
 		total_storage_space += I.get_storage_cost()
-	max_storage_space = max(total_storage_space, max_storage_space) //prevents spawned containers from being too small for their contents
+	if(exspand_when_spawned)
+		max_storage_space = max(total_storage_space, max_storage_space) //prevents spawned containers from being too small for their contents
 
 // Override in subtypes
 /obj/item/storage/proc/populate_contents()

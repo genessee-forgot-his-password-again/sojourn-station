@@ -57,12 +57,12 @@
 	birthtime = world.time
 	lifetime = _lifetime
 	if(lifetime > 0) //Portals with no lifetime do not close automatically.
-		addtimer(CALLBACK(src, .proc/close,), lifetime)
+		addtimer(CALLBACK(src, PROC_REF(close),), lifetime)
 
 var/list/portal_cache = list()
 
 /obj/effect/portal/proc/blend_icon(turf/T)
-	if(!("icon[initial(T.icon)]_iconstate[T.icon_state]_[type]" in portal_cache))//If the icon has not been added yet
+	if(!("icon[initial(T.icon)]_iconstate[T?.icon_state]_[type]" in portal_cache))//If the icon has not been added yet
 		var/icon/I1 = icon(icon,mask)//Generate it.
 		var/icon/I2 = icon(initial(T.icon),T.icon_state)
 		I1.Blend(I2,ICON_MULTIPLY)
@@ -105,7 +105,7 @@ var/list/portal_cache = list()
 	if (M.anchored && !istype(M, /obj/mecha))
 		return
 	if (!( target ))
-		qdel(src)
+		close()		//SOJOURN EDIT: Prevents edgecases where mobs cross the junk field side before the station side portal is generated properly.
 		return
 	if (istype(M, /atom/movable))
 		if(prob(failchance)) //oh dear a problem, put em in deep space

@@ -13,7 +13,7 @@
 		/obj/random/costume/head_generic				= 2,
 		/obj/random/costume/head_animals				= 2,
 		/obj/random/toy/arcadejunk						= 1,
-		/obj/item/toy/figure							= 1,
+		/obj/random/toy/action_figure					= 1,
 		/obj/random/toy/mecha							= 1,
 		/obj/random/toy/plushie							= 1,
 	)
@@ -123,7 +123,7 @@
 					  "Queen ",
 					  "Raider ", "Ravager ", "Renegade ", "Revolutionary ", "Representative ", "Racketeer ",
 					  "Soldier ", "Scavenger ", "Sergeant ", "Serial Killer ", "Serbian ", "Smuggler ", "Swarmer ", "Supreme ", "Sorcerer ",
-					  "Traitor ", "Terrorist ", "Thief ", "Trafficker ", "Terroriser ", "Treasure Hunter ", "Terrible ", "Titanic ",
+					  "contractor ", "Terrorist ", "Thief ", "Trafficker ", "Terroriser ", "Treasure Hunter ", "Terrible ", "Titanic ",
 					  "Vandal ", "Viscount ", "Vampire ", "Void Wolf ", "Veteran ", "Villainous ", "Vice President ",
 					  "Warlord ", "Warmonger ", "Wrangler ", "Waster ", "Wizard ",
 					  "Xenomorph ", "Xenohybrid ",
@@ -148,7 +148,7 @@
 					  "Pasotel", "Pauper", "Paul", "Popsy", "Prax", "Praxen", "Pierce", "Phayne", "Phoenix", "Preston", "Patrick", "Piper", "Peter",
 					  "Quentin", "Quinn", "Quincy", "Quillon", "Quinton", "Quintavius", "Quimby", "Quade", "Queenie", "Quinta", "Quinlan",
 					  "Raere", "Raeschen", "Ray", "Resca", "Rex", "Ricardo", "Robbie", "Robinson", "Roosevelt", "Rotten", "Ru", "Rose", "Remington",
-					  "Samantha", "Sanders", "Sarah", "Shyne", "Sari", "Sans", "Seeking", "Stall", "Stellar", "Steam", "Schrödinger", "Steven", "Szandor", "Sydney", "Strelle", //best character
+					  "Samantha", "Sanders", "Sarah", "Shyne", "Sari", "Sans", "Seeking", "Stall", "Stellar", "Steam", "SchrÃ¶dinger", "Steven", "Szandor", "Sydney", "Strelle", //best character
 					  "Tasald", "Trevor", "Tamoka", "Tarmane", "Todd", "Torvo", "Thompson", "Thomas", "Trump", "Tommy", "Thor", "Timothy", "Tony",
 					  "Uriel", "Undine", "Uri", "Universe", "Ulysses", "Uriah", "Usher", "Ursel", "Uziel", "Ursula", "Ursule", "Ulva",
 					  "Victoria", "Vanessa", "Veer", "Verity", "Vixen", "Violet", "Victor", "Valentine", "Valentino", "Vaughn", "Vivek",
@@ -181,7 +181,7 @@
 
 	dat += "</b></center>"
 
-	user << browse(dat, "window=arcade")
+	user << browse(HTML_SKELETON(dat), "window=arcade")
 	onclose(user, "arcade")
 	return
 
@@ -255,6 +255,9 @@
 		if(!gameover)
 			src.gameover = 1
 			src.temp = "[src.enemy_name] has fallen! Rejoice!"
+			if(ishuman(usr))
+				var/mob/living/carbon/human/H = usr
+				H.sanity.onGame()
 
 			if(emagged)
 

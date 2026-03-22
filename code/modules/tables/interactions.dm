@@ -41,7 +41,7 @@
 				chance += 50
 			else
 				return 1					//But only from one side
-		if(prob(chance))
+		if((prob(chance)) && (!(P.testing)))
 			health -= P.get_structure_damage()/2
 			if (health > 0)
 				visible_message(SPAN_WARNING("[P] hits \the [src]!"))
@@ -149,10 +149,16 @@
 		break_to_parts()
 		return
 
+	if(user.a_intent == I_HELP && istype(W, /obj/item/gun))
+		var/obj/item/gun/G = W
+		G.gun_brace(user, src)
+		return
+
 	if(can_plate && !material)
 		to_chat(user, SPAN_WARNING("There's nothing to put \the [W] on! Try adding plating to \the [src] first."))
 		return
 
 	if (user.unEquip(W, loc))
 		set_pixel_click_offset(W, params)
+
 /obj/structure/table/attack_tk() // no telehulk sorry

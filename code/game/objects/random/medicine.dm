@@ -10,8 +10,6 @@
 /obj/random/medical/item_to_spawn()
 	return pickweight(list(/obj/item/stack/medical/bruise_pack = 4,\
 				/obj/item/stack/medical/ointment = 4,\
-				/obj/item/stack/medical/advanced/bruise_pack = 1,\
-				/obj/item/stack/medical/advanced/ointment = 1,\
 				/obj/item/stack/medical/splint = 1,\
 				/obj/item/bodybag = 2,\
 				/obj/item/bodybag/cryobag = 1,\
@@ -29,13 +27,13 @@
 				/obj/item/reagent_containers/hypospray/autoinjector/tricordrazine = 3,\
 				/obj/item/reagent_containers/hypospray/autoinjector/quickclot = 3,\
 				/obj/item/stack/nanopaste = 0.5,\
-				/obj/item/reagent_containers/syringe/stim/mbr = 0.5,\
+				/obj/item/reagent_containers/syringe/stim/greaser = 0.5,\
 				/obj/item/reagent_containers/syringe/stim/cherrydrops = 0.5,\
 				/obj/item/reagent_containers/syringe/stim/pro_surgeon = 0.5,\
 				/obj/item/reagent_containers/syringe/stim/violence = 0.5,\
 				/obj/item/reagent_containers/syringe/stim/bouncer = 0.5,\
 				/obj/item/reagent_containers/syringe/stim/steady = 0.5,\
-				/obj/item/reagent_containers/syringe/stim/machine_spirit = 0.1,\
+				/obj/item/reagent_containers/syringe/stim/greasy_lard = 0.1,\
 				/obj/item/reagent_containers/syringe/stim/grape_drops = 0.1,\
 				/obj/item/reagent_containers/syringe/stim/ultra_surgeon = 0.1,\
 				/obj/item/reagent_containers/syringe/stim/violence_ultra = 0.1,\
@@ -77,7 +75,6 @@
 	return pickweight(list(/obj/item/storage/firstaid/regular = 3,\
 				/obj/item/storage/firstaid/toxin = 1,\
 				/obj/item/storage/firstaid/o2 = 1,\
-				/obj/item/storage/firstaid/adv = 0.5,\
 				/obj/item/storage/firstaid/fire = 1))
 
 /obj/random/firstaid/low_chance

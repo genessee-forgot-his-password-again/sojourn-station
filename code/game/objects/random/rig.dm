@@ -6,29 +6,31 @@
 /obj/random/rig/item_to_spawn()
 	return pickweight(list(
 	//Uncommon/civilian ones. These should make up most of the rig spawns
-	/obj/item/rig/eva = 20,
+	/obj/item/rig/eva = 40,
 	/obj/item/rig/eva/equipped = 10,
-	/obj/item/rig/medical = 20,
+	/obj/item/rig/medical = 30,
 	/obj/item/rig/medical/equipped = 10,
-	/obj/item/rig/light = 20,
-	/obj/item/rig/industrial = 20,
-	/obj/item/rig/industrial/equipped = 10,
+	/obj/item/rig/light = 10,
+	/obj/item/rig/industrial = 10,
+	/obj/item/rig/industrial/equipped = 5,
+	/obj/item/rig/light/hacker = 10,
+	/obj/item/rig/light/hacker/equipped = 1, //has numerous rare modules including power sink and omni hud rare treat
 
 	//Head of staff
 	//obj/item/rig/ce = 10,
 	//obj/item/rig/ce/equipped = 5,
-	/obj/item/rig/hazmat = 5,
-	/obj/item/rig/hazmat/equipped = 2,
+	/obj/item/rig/hazmat = 2,
+	/obj/item/rig/hazmat/equipped = 1,
 
 	//Heavy armor
 	//obj/item/rig/combat = 10,
 	//obj/item/rig/combat/ironhammer = 10,
-	/obj/item/rig/hazard = 5,
+	/obj/item/rig/hazard = 2,
 
 	//The ones below here come with built in weapons
 	//obj/item/rig/combat/equipped = 4,
 	//obj/item/rig/combat/ironhammer/equipped = 4,
-	/obj/item/rig/hazard/equipped = 2,
+	/obj/item/rig/hazard/equipped = 1,
 	))
 
 /obj/random/rig/always_spawn
@@ -90,7 +92,7 @@
 /obj/random/rig_module/item_to_spawn()
 	return pickweight(list(
 	//Storage
-	/obj/item/rig_module/storage = 12, //Made much more common
+	//obj/item/rig_module/storage = 12, //Made much more common
 
 	//Computer
 	/obj/item/rig_module/ai_container = 5,
@@ -118,12 +120,14 @@
 	/obj/item/rig_module/device/anomaly_scanner = 2,
 	/obj/item/rig_module/device/orescanner = 2,
 	/obj/item/rig_module/device/rcd = 0.5,
-	/obj/item/rig_module/chem_dispenser = 0.8,
-	/obj/item/rig_module/chem_dispenser/ninja = 2, //This version is same as normal but has much less of each chem
-	/obj/item/rig_module/chem_dispenser/combat = 0.8,
-	/obj/item/rig_module/chem_dispenser/injector = 0.5, //Like normal but can be used on other people as well as yourself
+	/obj/item/rig_module/modular_injector = 0.8,
+	/obj/item/rig_module/modular_injector/combat = 0.8,
+	/obj/item/rig_module/modular_injector/medical = 0.5, //Like normal but can be used on other people as well as yourself
 	/obj/item/rig_module/voice = 3,
 	/obj/item/rig_module/maneuvering_jets = 8, //Useful but common
+	/obj/item/rig_module/device/soap = 0.5, //Dud 99% of the time
+	/obj/item/rig_module/device/light_replacer = 0.1, //Almost always a dud
+	/obj/item/rig_module/device/paperfiller = 0.01, //Is a dud
 
 	//Vision
 	/obj/item/rig_module/vision/multi = 0.1, //Every vision mod in one, very powerful
@@ -156,7 +160,7 @@
 /obj/random/rig_module/rare/item_to_spawn()
 	return pickweight(list(
 	//Storage
-	/obj/item/rig_module/storage = 1,
+	//obj/item/rig_module/storage = 1,
 
 	/obj/item/rig_module/electrowarfare_suite = 1,
 
@@ -173,8 +177,8 @@
 	//Utility
 	/obj/item/rig_module/device/drill = 1,
 	/obj/item/rig_module/device/rcd = 1,
-	/obj/item/rig_module/chem_dispenser/combat = 1,
-	/obj/item/rig_module/chem_dispenser/injector = 1, //Like normal but can be used on other people as well as yourself
+	/obj/item/rig_module/modular_injector/combat = 1,
+	/obj/item/rig_module/modular_injector/medical = 1, //Like normal but can be used on other people as well as yourself
 	/obj/item/rig_module/voice = 1,
 	/obj/item/rig_module/held/shield = 1,
 	//Vision

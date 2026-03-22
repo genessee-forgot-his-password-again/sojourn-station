@@ -7,7 +7,7 @@
 */
 
 
-ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
+ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_MOD|R_DEBUG, TRUE)
 
 /client/proc/cmd_dev_bst()
 	set category = "Debug"
@@ -15,7 +15,7 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 	set desc = "Spawns a Bluespace Tech to debug stuff"
 
 
-	if(!check_rights(R_ADMIN|R_DEBUG))
+	if(!check_rights(R_ADMIN|R_MOD|R_DEBUG))
 		return
 
 	var/T = get_turf(usr)
@@ -26,6 +26,8 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 	bst.real_name = "Bluespace Technician"
 	bst.voice_name = "Bluespace Technician"
 	bst.h_style = "Crewcut"
+	if(usr.mind)
+		usr.mind.transfer_to(bst)
 
 	//Items
 	bst.equip_to_slot_or_del(new /obj/item/clothing/under/admin/bst(bst), slot_w_uniform)
@@ -33,7 +35,7 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 	bst.equip_to_slot_or_del(new /obj/item/storage/backpack/holding/bst(bst), slot_back)
 	bst.equip_to_slot_or_del(new /obj/item/storage/box/survival(bst.back), slot_in_backpack)
 	bst.equip_to_slot_or_del(new /obj/item/clothing/shoes/admin/bst(bst), slot_shoes)
-	bst.equip_to_slot_or_del(new /obj/item/clothing/head/beret(bst), slot_head)
+	bst.equip_to_slot_or_del(new /obj/item/clothing/head/admin/bst(bst), slot_head)
 	bst.equip_to_slot_or_del(new /obj/item/clothing/glasses/admin/bst(bst), slot_glasses)
 	bst.equip_to_slot_or_del(new /obj/item/storage/belt/utility/full/bst(bst), slot_belt)
 	bst.equip_to_slot_or_del(new /obj/item/clothing/gloves/admin/bst(bst), slot_gloves)
@@ -60,7 +62,7 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 	//Add the rest of the languages
 	bst.add_language(LANGUAGE_COMMON)
 	bst.add_language(LANGUAGE_CYRILLIC)
-	bst.add_language(LANGUAGE_SERBIAN)
+	bst.add_language(LANGUAGE_ILLYRIAN)
 	bst.add_language(LANGUAGE_MONKEY)
 	// Antagonist languages
 	bst.add_language(LANGUAGE_XENOMORPH)
@@ -74,6 +76,7 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 
 	log_and_message_admins("has become a Bluespace Technician \the [jumplink(T)] User:[src]", location = T) //So we can go to it
 	log_admin("Bluespace Tech Spawned: X:[bst.x] Y:[bst.y] Z:[bst.z] User:[src]") //Going to leave this do to XYZ logging
+	init_verbs()
 	return 1
 
 /client/proc/bst_post_spawn(mob/living/carbon/human/bst/bst)
@@ -246,7 +249,7 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
-	armor = list(melee = 100, bullet = 100, energy = 100, bomb = 100, bio = 100, rad = 100)
+	armor_list = list(melee = 100, bullet = 100, energy = 100, bomb = 100, bio = 100, rad = 100)
 	cold_protection = UPPER_TORSO | LOWER_TORSO | LEGS | ARMS | HEAD
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0
@@ -280,6 +283,22 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 	else
 		..()
 
+/obj/item/clothing/head/admin/bst
+	name = "bluespace technician's beret"
+	desc = "An incredible beret. The letters 'BST' are stamped on the side."
+	icon = 'icons/inventory/head/icon.dmi'
+	icon_state = "beret"
+	psi_blocking = 50
+
+/obj/item/clothing/head/admin/bst/attack_hand()
+	if(!usr)
+		return
+	if(!isbst(usr))
+		to_chat(usr, span("alert", "Your hand seems to go right through the [src]. It's like it doesn't exist."))
+		return
+	else
+		..()
+
 /obj/item/clothing/glasses/admin/bst
 	name = "bluespace technician's glasses"
 	desc = "A pair of modified sunglasses. The word 'BST' is stamped on the side."
@@ -288,7 +307,7 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 	item_state = "sunglasses"
 	vision_flags = (SEE_TURFS|SEE_OBJS|SEE_MOBS)
 	see_invisible = SEE_INVISIBLE_NOLIGHTING
-	flash_protection = FLASH_PROTECTION_MAJOR
+	flash_protection = FLASH_PROTECTION_MODERATE
 
 /obj/item/clothing/glasses/admin/bst/verb/toggle_xray(mode in list("X-Ray without Lighting", "X-Ray with Lighting", "Normal"))
 	set name = "Change Vision Mode"
@@ -337,6 +356,7 @@ ADMIN_VERB_ADD(/client/proc/cmd_dev_bst, R_ADMIN|R_DEBUG, TRUE)
 
 /obj/item/card/id/bst
 	icon_state = "centcom"
+	group = "secblue"
 	desc = "An ID straight from Central Command. This one looks highly classified."
 
 /obj/item/card/id/bst/New()

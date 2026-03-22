@@ -30,7 +30,8 @@ SUBSYSTEM_DEF(supply)
 
 
 /datum/controller/subsystem/supply/stat_entry()
-	..("Credits: [get_account_credits(department_accounts[DEPARTMENT_LSS])]")
+	msg += "Credits: [get_account_credits(department_accounts[DEPARTMENT_LSS])]"
+	return ..()
 
 //To stop things being sent to centcom which should not be sent to centcom. Recursively checks for these types.
 /datum/controller/subsystem/supply/proc/forbidden_atoms_check(atom/A)
@@ -58,7 +59,7 @@ SUBSYSTEM_DEF(supply)
 		for(var/atom/movable/AM in subarea)
 			if(AM.anchored)
 				continue
-			SEND_SIGNAL(shuttle, COMSIG_SHUTTLE_SUPPLY, AM)
+			LEGACY_SEND_SIGNAL(shuttle, COMSIG_SHUTTLE_SUPPLY, AM)
 			sold_atoms += export_item_and_contents(AM, contraband, hacked, dry_run = FALSE)
 
 	for(var/A in exports)

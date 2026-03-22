@@ -26,6 +26,7 @@
 		//There have to be at least two posts, so these are effectively doubled
 		var/power_draw = 30000 //30 kW. How much power is drawn from powernet. Increase this to allow the generator to sustain longer shields, at the cost of more power draw.
 		var/max_stored_power = 50000 //50 kW
+		var/passive_power_use = 2500 // The amount of power used as soon as we're connected to a power net.
 		use_power = NO_POWER_USE	//Draws directly from power net. Does not use APC power.
 		var/max_field_dist = 8
 		var/stunmode = FALSE
@@ -100,7 +101,7 @@
 	power()
 
 	if(power)
-		storedpower -= 2500 //the generator post itself uses some power
+		storedpower -= passive_power_use //the generator post itself uses some power
 
 	if(storedpower >= max_stored_power)
 		storedpower = max_stored_power
@@ -266,7 +267,8 @@
 	. = ..()
 
 /obj/machinery/shieldwallgen/bullet_act(var/obj/item/projectile/Proj)
-	storedpower -= 400 * Proj.get_structure_damage()
+	if (!(Proj.testing))
+		storedpower -= 400 * Proj.get_structure_damage()
 	..()
 	return
 
@@ -300,7 +302,7 @@
 	update_nearby_tiles()
 	src.gen_primary = A
 	src.gen_secondary = B
-	if(A && B && A.active && B.active)
+	if(A?.active && B?.active)
 		needs_power = 1
 		if(prob(50))
 			A.storedpower -= generate_power_usage
@@ -334,13 +336,14 @@
 
 
 /obj/machinery/shieldwall/bullet_act(var/obj/item/projectile/Proj)
-	if(needs_power)
-		var/obj/machinery/shieldwallgen/G
-		if(prob(50))
-			G = gen_primary
-		else
-			G = gen_secondary
-		G.storedpower -= 400 * Proj.get_structure_damage()
+	if (!(Proj.testing))
+		if(needs_power)
+			var/obj/machinery/shieldwallgen/G
+			if(prob(50))
+				G = gen_primary
+			else
+				G = gen_secondary
+			G.storedpower -= 400 * Proj.get_structure_damage()
 	..()
 	return
 

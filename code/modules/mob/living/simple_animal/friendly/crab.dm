@@ -1,5 +1,5 @@
 //Look Sir, free crabs!
-/mob/living/simple_animal/crab
+/mob/living/simple/crab
 	name = "crab"
 	desc = "A hard-shelled crustacean. Seems quite content to lounge around all the time."
 	icon_state = "crab"
@@ -8,22 +8,22 @@
 	emote_see = list("clacks")
 	speak_chance = 1
 	turns_per_move = 5
-	meat_type = /obj/item/reagent_containers/food/snacks/meat
+	meat_type = /obj/item/reagent_containers/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "stomps"
 	stop_automated_movement = 1
 	friendly = "pinches"
 	faction = "pond"
-	mob_size = 5
 	leather_amount = 0
 	bones_amount = 0
 	var/obj/item/inventory_head
 	var/obj/item/inventory_mask
 	possession_candidate = 1
 	colony_friend = TRUE
+	sanity_damage = -1
 
-/mob/living/simple_animal/crab/Life()
+/mob/living/simple/crab/Life()
 	..()
 	//CRAB movement
 	if(!ckey && !stat)
@@ -35,11 +35,11 @@
 	regenerate_icons()
 
 //COFFEE! SQUEEEEEEEEE!
-/mob/living/simple_animal/crab/Coffee
+/mob/living/simple/crab/Coffee
 	name = "Graves"
 	real_name = "Graves"
 	icon_state = "evilcrab"
-	desc = "It's Graves, the other pet! Despite his rather evil appearence he is utterly harmless. Best friends with Tea the Frog."
+	desc = "It's Graves, the other pet! Despite his rather evil appearance he is utterly harmless. Best friends with Tea the Frog."
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "stomps"
@@ -47,7 +47,7 @@
 	colony_friend = TRUE
 	friendly_to_colony = TRUE
 
-/mob/living/simple_animal/frog
+/mob/living/simple/frog
 	name = "frog"
 	desc = "Ribbit!"
 	icon_state = "tinyfrog"
@@ -56,17 +56,17 @@
 	emote_see = list("ribbits")
 	speak_chance = 1
 	turns_per_move = 5
-	meat_type = /obj/item/reagent_containers/food/snacks/meat
+	meat_type = /obj/item/reagent_containers/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "stomps"
-	mob_size = 3
 	faction = "pond"
 	density = 0
 	wander = 1
 	colony_friend = TRUE
+	sanity_damage = -1
 
-/mob/living/simple_animal/hostile/ratking
+/mob/living/simple/hostile/ratking
 	name = "rat king"
 	icon = 'icons/mob/mobs-mouse.dmi'
 	icon_state = "rat_king"
@@ -83,7 +83,7 @@
 	melee_damage_lower = 15
 	meat_amount = 3
 
-/mob/living/simple_animal/frog/rare
+/mob/living/simple/frog/rare
 	name = "Tea"
 	desc = "It's quite colorful but you can't help but feel he is incredibly smug given the fact this fatass just sits in his own personal pond all day."
 	icon_state = "rare_frog"
@@ -92,27 +92,27 @@
 	emote_see = list("ribbits smugly")
 	speak_chance = 1
 	turns_per_move = 5
-	meat_type = /obj/item/reagent_containers/food/snacks/meat
+	meat_type = /obj/item/reagent_containers/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "stomps"
-	mob_size = 3
 	faction = "neutral"
 	colony_friend = TRUE
 	friendly_to_colony = TRUE
+	sanity_damage = -1
 
-/mob/living/simple_animal/snail
+/mob/living/simple/snail
 	name = "snail"
 	desc = "Taking things slowly, one day at a time."
 	icon_state = "snail"
 	mob_size = MOB_TINY
 	speak_chance = 0
 	turns_per_move = 5
-	meat_type = /obj/item/reagent_containers/food/snacks/meat
+	meat_type = /obj/item/reagent_containers/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "stomps"
-	mob_size = 3
 	faction = "pond"
 	density = 0
 	colony_friend = TRUE
+	sanity_damage = -1

@@ -10,7 +10,7 @@
 //Silences the weapon, reduces damage multiplier slightly, Legacy port.
 /obj/item/gun_upgrade/muzzle/silencer
 	name = "Silencer"
-	desc = "A threaded silencer that can be attached to the muzzle of certain guns. Vastly reduces noise, but impedes muzzle velocity."
+	desc = "A threaded silencer that can be attached to the muzzle of certain guns. Vastly reduces noise."
 	matter = list(MATERIAL_PLASTEEL = 3, MATERIAL_PLASTIC = 1)
 	icon_state = "silencer"
 	price_tag = 100
@@ -20,13 +20,38 @@
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
 		GUN_UPGRADE_SILENCER = TRUE,
-		GUN_UPGRADE_RECOIL = 0.9,
-		GUN_UPGRADE_PEN_MULT = 0.9,
 		UPGRADE_BULK = 1
 		)
 	I.gun_loc_tag = GUN_MUZZLE
 	I.req_gun_tags = list(GUN_SILENCABLE)
 	I.prefix = "silenced"
+
+/obj/item/gun_upgrade/muzzle/pain_maker
+	name = "SA \"PainMaker\" muzzle"
+	desc = "A threaded barrel that can be attached to the muzzle of most projectile guns. \
+	Threaded barrel device made of a coil sensor and heater. As bullets pass the device they are slowed down and heated up by the coil, causing them to deform when hitting a target and imparting all their painful energy. \
+	Typically used when taking a hostages or kidnapping."
+	matter = list(MATERIAL_PLASTEEL = 3, MATERIAL_PLASTIC = 1)
+	icon_state = "silencer"
+	price_tag = 100
+
+/obj/item/gun_upgrade/muzzle/pain_maker/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.weapon_upgrades = list(
+		UPGRADE_BULK = 2,
+		GUN_UPGRADE_STEPDELAY_MULT = 2,
+		GUN_UPGRADE_DAMAGE_MULT = 0.3,
+		GUN_UPGRADE_PEN_MULT = 0.5,
+		GUN_UPGRADE_PIERC_MULT = -3, //This does a LOT lowering range, as well as most guns being unable to wall bang with it
+		GUN_UPGRADE_OFFSET = 25,
+		GUN_UPGRADE_RECOIL = 5,
+		GUN_UPGRADE_DAMAGE_HALLOSS = 20,
+		GUN_UPGRADE_PAIN_MULT = 2
+		)
+	I.gun_loc_tag = GUN_MUZZLE
+	I.req_gun_tags = list(GUN_PROJECTILE)
+	I.prefix = "LTL"
 
 //Decreases fire delay. Acquired through loot spawns or guild crafting
 /obj/item/gun_upgrade/barrel/forged
@@ -39,11 +64,12 @@
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-		GUN_UPGRADE_FIRE_DELAY_MULT = 0.8
-		)
+		GUN_UPGRADE_FIRE_DELAY_MULT = 0.8,
+		GUN_UPGRADE_STEPDELAY_MULT = 0.9, // Actually useful beyond being a glorified ergo grip
+		GUN_UPGRADE_MUZZLEFLASH = 0.75)
 	I.gun_loc_tag = GUN_BARREL
 	I.req_gun_tags = list(GUN_PROJECTILE)
-	I.prefix = "refined barrel"
+	I.prefix = "fluted barrel"
 
 //Makes a gun deal more damage. fire faster but recoil heavy
 /obj/item/gun_upgrade/barrel/bore
@@ -56,14 +82,14 @@
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-		GUN_UPGRADE_DAMAGE_MULT = 1.1,
-		GUN_UPGRADE_FIRE_DELAY_MULT = 1.1,
-		GUN_UPGRADE_RECOIL = 1.25,
+		GUN_UPGRADE_DAMAGE_MULT = 1.2,
+		GUN_UPGRADE_FIRE_DELAY_MULT = 1.1, // Better than the mod used to make it
+		GUN_UPGRADE_RECOIL = 1.1, // Better than a ported barrel
 		UPGRADE_BULK = 1
 		)
 	I.gun_loc_tag = GUN_BARREL
 	I.req_gun_tags = list(GUN_PROJECTILE)
-	I.prefix = "bored barrel"
+	I.prefix = "polygonal rifled"
 
 //Increases penetration multiplier, projectile speed. Increases fire delay. Acquired via science
 /obj/item/gun_upgrade/barrel/mag_accel
@@ -77,7 +103,7 @@
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-		GUN_UPGRADE_PEN_MULT = 1.2,
+		GUN_UPGRADE_PEN_MULT = 1.1,
 		GUN_UPGRADE_PIERC_MULT = 1, // Adds 1 to the gun's penetrating value
 		GUN_UPGRADE_STEPDELAY_MULT = 0.8,
 		GUN_UPGRADE_FIRE_DELAY_MULT = 1.5,
@@ -98,7 +124,7 @@
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-		GUN_UPGRADE_PEN_MULT = 0.5,
+		GUN_UPGRADE_PEN_MULT = 0.75,
 		GUN_UPGRADE_DAMAGE_BURN = 10,
 		GUN_UPGRADE_OFFSET = 5,
 		GUN_UPGRADE_RECOIL = 1.3,
@@ -106,7 +132,7 @@
 		)
 	I.gun_loc_tag = GUN_BARREL
 	I.req_gun_tags = list(GUN_PROJECTILE)
-	I.prefix = "heated barreled"
+	I.prefix = "barrel heated"
 
 //Meme mod that swaps the firing sound for a bike horn noises at the cost of making every single thing about the gun shitty. Too funny not to put in, takes 2 minutes to remove since its a prank item.
 /obj/item/gun_upgrade/mechanism/bikehorn
@@ -122,7 +148,7 @@
 		GUN_UPGRADE_HONK = TRUE,
 		GUN_UPGRADE_RECOIL = 1.2,
 		GUN_UPGRADE_DAMAGE_MULT = 0.8,
-		GUN_UPGRADE_PEN_MULT = 0.8,
+		GUN_UPGRADE_PEN_MULT = 0.9,
 		GUN_UPGRADE_FIRE_DELAY_MULT = 1.2,
 		GUN_UPGRADE_MOVE_DELAY_MULT = 1.2,
 		GUN_UPGRADE_MUZZLEFLASH = 1.2,
@@ -154,9 +180,29 @@
 	I.req_gun_tags = list(GUN_ENERGY)
 	I.prefix = "focused"
 
+/*
+/obj/item/gun_upgrade/barrel/excruciator_plus
+	name = "Factorial \"EXCRUCIATOR\" hyper lens"
+	desc = "It's time for us to shine. This device has been modified by members of the factorial path, doubling its strength and drawbacks, for better or worse."
+	icon_state = "Excruciator_plus"
+	matter = list(MATERIAL_BIOMATTER = 3, MATERIAL_PLASTEEL = 1, MATERIAL_GOLD = 1, MATERIAL_GLASS = 1)
+	price_tag = 160
+
+/obj/item/gun_upgrade/barrel/excruciator_plus/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.weapon_upgrades = list(
+		GUN_UPGRADE_DAMAGE_MULT = 1.45,
+		GUN_UPGRADE_CHARGECOST = 1.25,
+		UPGRADE_BULK = 0.75,
+		)
+	I.gun_loc_tag = GUN_BARREL
+	I.req_gun_tags = list(GUN_ENERGY)
+	I.prefix = "hyper focused"
+
 /obj/item/gun_upgrade/trigger
 	matter = list(MATERIAL_PLASTIC = 2, MATERIAL_PLASTEEL = 1)
-
+*/
 //Disables the ability to toggle the safety, toggles the safety permanently off, decreases fire delay. Acquired through loot spawns
 /obj/item/gun_upgrade/trigger/dangerzone
 	name = "\"Danger Zone\" Trigger"
@@ -172,7 +218,7 @@
 		GUN_UPGRADE_FORCESAFETY = FALSE,
 		)
 	I.gun_loc_tag = GUN_TRIGGER
-	I.prefix = "feather trigger"
+	I.prefix = "trigger feathered"
 
 //Disables the ability to toggle the safety, toggles the safety permanently on, takes 2 minutes to remove (yikes). Acquired through loot spawns
 /obj/item/gun_upgrade/trigger/cop_block
@@ -237,13 +283,13 @@
 /* //This mod works fine but if a bullet hits an object it run times, my theory is its trying to make an effect work via rads that isn't coded properly either by ERIS or my bad porting.
 //For now this has been modified to not use rad damage since that has issues.
 */
-//Adds extra burns and toxin damage to .35 rounds. Acquired through raiding greyson machines or heavy SI investment.
+//Adds extra burns and toxin damage to 9mm rounds. Acquired through raiding greyson machines or heavy SI investment.
 /obj/item/gun_upgrade/mechanism/glass_widow
 	name = "Greyson \"Glass Widow\" infuser"
-	desc = "An old technology from the Greyson's glory days, used to make formerly useless civilian-grade weaponry into something much more lethal. This mechanism fits .35 caliber weapons only and coats the bullets in dangerous caustic toxins."
+	desc = "An old technology from the Greyson's glory days, used to make formerly useless civilian-grade weaponry into something much more lethal. This mechanism fits 9mm weapons only and coats the bullets in dangerous caustic toxins."
 	icon_state = "Glass_Widow"
 	matter = list(MATERIAL_STEEL = 6, MATERIAL_PLASTEEL = 4, MATERIAL_PLATINUM = 4)
-	price_tag = 250
+	price_tag = 800
 
 /obj/item/gun_upgrade/mechanism/glass_widow/New()
 	..()
@@ -253,14 +299,14 @@
 		GUN_UPGRADE_DAMAGE_TOX = 10,
 		UPGRADE_BULK = 1
 		)
-	I.req_gun_tags = list(GUN_PROJECTILE, GUN_CALIBRE_35)
+	I.req_gun_tags = list(GUN_PROJECTILE, GUN_CALIBRE_9MM)
 	I.gun_loc_tag = GUN_MECHANISM
 	I.prefix = "infused"
 
-// Guild made upgrade kit that makes .50 guns a bit more viable
+// Guild made upgrade kit that makes 12mm guns a bit more viable
 /obj/item/gun_upgrade/mechanism/upgrade_kit
 	name = "Kurtz's refinement kit"
-	desc = "A kit made of plasteel designed to refit and refine any kurtz loaded .50 caliber weapon. This kit is produced by the Artificer's Guild so even \
+	desc = "A kit made of plasteel designed to refit and refine any kurtz loaded 12mm weapon. This kit is produced by the Artificer's Guild so even \
 	the heaviest caliber pistols might stand a chance of competing with their legendary myrmidon design."
 	icon_state = "kit_heavy_alt"
 	can_remove = FALSE
@@ -270,22 +316,22 @@
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-		GUN_UPGRADE_DAMAGE_MULT = 1.1, //10% more damage
-		GUN_UPGRADE_FIRE_DELAY_MULT = 0.9, //10% declay removed
-		GUN_UPGRADE_PEN_MULT = 1.2, //we shoot harder, but not by much
+		GUN_UPGRADE_DAMAGE_MULT = 1.1,
+		GUN_UPGRADE_FIRE_DELAY_MULT = 0.9, //10% delay removed
+		GUN_UPGRADE_PEN_MULT = 1.1, //we shoot harder, but not by much
 		GUN_UPGRADE_MOVE_DELAY_MULT = 0.9, //We shoot somehwat faster (not hit scan)
-		GUN_UPGRADE_RECOIL = 0.85, //15% less recoil (dosnt help as much without stacking it with other mods)
+		GUN_UPGRADE_RECOIL = 0.85, //15% less recoil (doesn't help as much without stacking it with other mods)
 		UPGRADE_BULK = -1
 		)
-	I.req_gun_tags = list(GUN_PROJECTILE, GUN_CALIBRE_50)
+	I.req_gun_tags = list(GUN_PROJECTILE, GUN_CALIBRE_12MM)
 	I.gun_loc_tag = GUN_MECHANISM
 	I.prefix = "kitted"
 
-// Rare Bluecross spawn clock cult brass kit that will make any .50 cal gun into something worth ya know... using...
+// Rare Bluecross spawn clock cult brass kit that will make any 12mm cal gun into something worth ya know... using...
 // Todo make Cult spawn with this and the clockwork block
 /obj/item/gun_upgrade/mechanism/brass_kit
 	name = "\"Brass Fighter\" refinement kit"
-	desc = "A kit made from brass and designed to improve .50 caliber kurtz weaponry. It's strange to look at in this day and age. It ticks, tocks, chimes, \
+	desc = "A kit made from brass and designed to improve 12mm caliber kurtz weaponry. It's strange to look at in this day and age. It ticks, tocks, chimes, \
 	and plays a faint melodic tone through brass gears and perptually grinding cogs. Was this an invention of the blue cross or a toy some other entity made?"
 	icon_state = "Clockblock"
 	can_remove = FALSE
@@ -296,14 +342,14 @@
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
 		GUN_UPGRADE_DAMAGE_MULT = 1.15, //15% more damage
-		GUN_UPGRADE_FIRE_DELAY_MULT = 0.8, //20% declay removed
-		GUN_UPGRADE_PEN_MULT = 2, //we shoot harder
+		GUN_UPGRADE_FIRE_DELAY_MULT = 0.8, //20% delay removed
+		GUN_UPGRADE_PEN_MULT = 1.5, //we shoot harder
 		GUN_UPGRADE_MOVE_DELAY_MULT = 0.6, //We shoot way faster (not hit scan)
 		GUN_UPGRADE_MUZZLEFLASH = 2, //Bigger flash
 		GUN_UPGRADE_RECOIL = 0.75, //25% less recoil (dosnt help as much without stacking it with other mods)
 		UPGRADE_BULK = -2
 		)
-	I.req_gun_tags = list(GUN_PROJECTILE, GUN_CALIBRE_50)
+	I.req_gun_tags = list(GUN_PROJECTILE, GUN_CALIBRE_12MM)
 	I.gun_loc_tag = GUN_MECHANISM
 	I.prefix = "brass kitted"
 
@@ -341,7 +387,61 @@
 	I.req_gun_tags = list(GUN_PROJECTILE)
 	I.gun_loc_tag = GUN_MECHANISM
 	I.breakable = FALSE
-	I.prefix = "feather trigger"
+	I.prefix = "" // We do a little trolling. Don't fire guns the enemy drops without examining them!
+
+/obj/item/gun_upgrade/mechanism/tensioner
+	name = "weighted pulley kit"
+	desc = "A set of compound pulleys, cables and mounting screws for installing onto a bow. Makes it harder to draw back, but more powerful."
+	icon_state = "winder_kit"
+	price_tag = 500
+
+/obj/item/gun_upgrade/mechanism/tensioner/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.weapon_upgrades = list(
+		GUN_UPGRADE_DAMAGE_BRUTE = 0.5, //7.62mm extra damage at new max charge
+		GUN_UPGRADE_OVERCHARGE_MAX = 1.5,
+		GUN_UPGRADE_OVERCHARGE_RATE = 0.35
+		)
+	I.req_gun_tags = list(ARROW_FIRING)
+	I.gun_loc_tag = GUN_MECHANISM
+	I.prefix = "heavy"
+
+/obj/item/gun_upgrade/mechanism/froggeytensioner
+	name = "high tension bowstring"
+	desc = "A collection of pulleys, mounting screws and an impressively powerful bowstring of animal sinew for installing onto a bow. Makes it harder to draw back, but more powerful."
+	icon_state = "winder_kit"
+	price_tag = 500
+
+/obj/item/gun_upgrade/mechanism/froggeytensioner/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.weapon_upgrades = list(
+		GUN_UPGRADE_DAMAGE_BRUTE = 0.25,
+		GUN_UPGRADE_OVERCHARGE_MAX = 1.25,
+		GUN_UPGRADE_OVERCHARGE_RATE = 0.7
+		)
+	I.req_gun_tags = list(ARROW_FIRING)
+	I.gun_loc_tag = GUN_MECHANISM
+	I.prefix = "overstrung"
+
+/obj/item/gun_upgrade/mechanism/detensioner
+	name = "compound pulley kit"
+	desc = "A set of compound pulleys, cables and mounting screws for installing onto a bow. Makes it significantly easier to draw back, but less powerful."
+	icon_state = "winder_kit"
+	price_tag = 250
+
+/obj/item/gun_upgrade/mechanism/detensioner/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.weapon_upgrades = list(
+		GUN_UPGRADE_OVERCHARGE_MAX = 0.75,
+		GUN_UPGRADE_OVERCHARGE_RATE = 2
+		)
+	I.req_gun_tags = list(ARROW_FIRING)
+	I.gun_loc_tag = GUN_MECHANISM
+	I.prefix = "light" // To differentiate = less damage
+
 
 //obj/item/gun_upgrade/underbarrel
 
@@ -374,7 +474,7 @@
 	I.weapon_upgrades = list(
 	GUN_UPGRADE_RECOIL = 2,
 	GUN_UPGRADE_FIRE_DELAY_MULT = 1.5,
-	GUN_UPGRADE_DAMAGE_MULT = 2,
+	GUN_UPGRADE_DAMAGE_BASE = 1,
 	GUN_UPGRADE_CHARGECOST = 2)
 	I.req_fuel_cell = REQ_CELL
 	I.gun_loc_tag = GUN_MECHANISM
@@ -392,7 +492,7 @@
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-	GUN_UPGRADE_DAMAGE_MULT = 0.90,
+	GUN_UPGRADE_DAMAGE_MULT = 0.9,
 	GUN_UPGRADE_FIRE_DELAY_MULT = 0.25)
 	I.req_fuel_cell = REQ_CELL
 	I.gun_loc_tag = GUN_MECHANISM
@@ -466,23 +566,8 @@
 	I.req_gun_tags = list(GUN_PROJECTILE)
 	I.gun_loc_tag = GUN_BARREL
 
-//We don't use sanity damage and sanity damaging effects, but I'm keeping this commented out in case we some day do.
-// Add psy damage to your weapon
-/obj/item/gun_upgrade/mechanism/psionic_catalyst
-	name = "Moebius \"Mastermind\" psionic catalyst"
-	desc = "This controversial device greatly amplifies the natural psionic ability of the user and allows them to project their will into the world. Before the development of the Psi Amp, psionic disciplines were mostly detectable only in a lab environment."
-	icon_state = "psionic_catalyst"
-	matter = list(MATERIAL_SILVER = 3, MATERIAL_PLASTEEL = 3, MATERIAL_URANIUM = 3)
-
-/obj/item/gun_upgrade/mechanism/psionic_catalyst/New()
-	..()
-	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
-	I.weapon_upgrades = list(
-	GUN_UPGRADE_DAMAGE_PSY = 0.4)
-	I.prefix = "psionic"
-	I.req_gun_tags = list(GUN_PROJECTILE)
-	I.gun_loc_tag = GUN_MECHANISM
 */
+/* //The handholder rail and its consequences have been a disaster for Sojournkind.
 /obj/item/gun_upgrade/mechanism/gun_rail
 	name = "H&S \"HandHolder\" Barrel Rail"
 	desc = "A simple magnetic barrel rail, designed to fit onto a variety of weapons. Easy to attach, impossible to remove."
@@ -504,29 +589,51 @@
 	I.breakable = FALSE
 	I.unique_removal = TRUE
 	I.unique_removal_type = GUN_SCOPE
+*/
+//We don't use sanity damage and sanity damaging effects, but I'm keeping this commented out in case we some day do.
+// Add psy damage to your weapon
+
+/obj/item/gun_upgrade/mechanism/psionic_catalyst
+	name = "Moebius \"Mastermind\" psionic catalyst"
+	desc = "This controversial device greatly amplifies the natural psionic ability of the user and allows them to project their will into the world. Before the development of the Psi Amp, psionic disciplines were mostly detectable only in a lab environment."
+	icon_state = "psionic_catalyst"
+	matter = list(MATERIAL_SILVER = 3, MATERIAL_PLASTEEL = 3, MATERIAL_URANIUM = 3)
+
+/obj/item/gun_upgrade/mechanism/psionic_catalyst/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.weapon_upgrades = list(
+	GUN_UPGRADE_DAMAGE_PSY = 0.4)
+	I.prefix = "psionic"
+	I.req_gun_tags = list(GUN_PROJECTILE)
+	I.gun_loc_tag = GUN_MECHANISM
 
 /obj/item/gun_upgrade/mechanism/greyson_master_catalyst
 	name = "Greyson \"Master Unmaker\" infuser"
-	desc = "One of the rarest and most powerful weapon modification ever made by Greyson Positronics and one of the numerous reasons they remain a threat even after the company collapsed into malfunctioning artificial intelligences. It can infuse any weapon with immense power that causes utter ruin to machine and organic matter alike."
+	desc = "One of the rarest and most powerful weapon modifications ever made by Greyson Positronics and one of the numerous reasons they remain a threat even after the company collapsed into malfunctioning artificial intelligences. It can infuse any weapon with immense power that causes utter ruin to machine and organic matter alike."
 	icon_state = "psionic_catalyst"
 	matter = list(MATERIAL_PLATINUM = 5, MATERIAL_PLASTEEL = 3, MATERIAL_DIAMOND = 10)
-	price_tag = 450
+	price_tag = 4500
 
 /obj/item/gun_upgrade/mechanism/greyson_master_catalyst/New()
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
+		UPGRADE_BULK = 1,
 		GUN_UPGRADE_DAMAGE_BRUTE = 10,
 		GUN_UPGRADE_DAMAGE_BURN = 10,
 		GUN_UPGRADE_DAMAGE_TOX = 5,
 		GUN_UPGRADE_DAMAGE_OXY = 5,
 		GUN_UPGRADE_DAMAGE_CLONE = 5,
 		GUN_UPGRADE_DAMAGE_HALLOSS = 5,
-		UPGRADE_BULK = 1
+		GUN_UPGRADE_FIRE_DELAY_MULT = 1.2,
+		GUN_UPGRADE_CHARGECOST = 1.5
 	)
 	I.removal_time *= 10
 	I.gun_loc_tag = GUN_MECHANISM
+	I.req_fuel_cell = REQ_CELL
 	I.prefix = "catalytic"
+	I.greyson_moding = TRUE
 
 /obj/item/gun_upgrade/barrel/gauss
 	name = "Void Wolf \"Gauss Coil\" barrel"
@@ -539,7 +646,8 @@
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
 		GUN_UPGRADE_DAMAGE_BRUTE = 5,
-		GUN_UPGRADE_PEN_MULT = 1.2,
+		GUN_UPGRADE_PEN_BASE = 0.2,
+		GUN_UPGRADE_PEN_MULT = 1.1,
 		GUN_UPGRADE_PIERC_MULT = 1,
 		GUN_UPGRADE_FIRE_DELAY_MULT = 1.2,
 		GUN_UPGRADE_RECOIL = 1.2,
@@ -565,14 +673,14 @@
 	I.gun_loc_tag = GUN_TRIGGER
 	I.req_gun_tags = list(GUN_ENERGY)
 	I.breakable = FALSE
-	I.prefix = "feather trigger"
+	I.prefix = "" // We do a little trolling. Don't fire guns the enemy drops without examining them!
 
 /obj/item/gun_upgrade/scope
 //	bad_type = /obj/item/gun_upgrade/scope
 
 /obj/item/gun_upgrade/scope/watchman
 	name = "Artificer's Guild \"Watchman\" scope"
-	desc = "In the age of 3D printing, the design of a scope one can rely on is common, but a scope that is special is a rarity. Hand-made scopes forged by the Artificer's Guild are known across the entire terran federation for the quality they have and this one is no diffrent."
+	desc = "In the age of 3D printing, the design of a scope one can rely on is common, but a scope that is special is a rarity. Hand-made scopes forged by the Artificer's Guild are known across the entire Solarian Federation for the quality they have and this one is no different."
 	icon_state = "Watchman"
 	matter = list(MATERIAL_GLASS = 2, MATERIAL_PLASTEEL = 1)
 	price_tag = 40
@@ -582,7 +690,25 @@
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
 		GUN_UPGRADE_OFFSET = 0.9,
-		GUN_UPGRADE_ZOOM = 1.2
+		GUN_UPGRADE_ZOOM = 1.2 // 9 extra tiles
+		)
+	I.gun_loc_tag = GUN_SCOPE
+	I.req_gun_tags = list(GUN_SCOPE)
+	I.prefix = "scoped"
+
+/obj/item/gun_upgrade/scope/acog
+	name = "H&S \"AGOG\" scope"
+	desc = "In the age of 3D printing, the design of a scope one can rely on is common, but a scope that is special is a rarity. This is not one such scope. Mass produced, lathe machined and incredibly cheap. These often misaligned optics are truly ubiquitous."
+	icon_state = "agog"
+	matter = list(MATERIAL_GLASS = 2, MATERIAL_STEEL = 1)
+	price_tag = 20
+
+/obj/item/gun_upgrade/scope/acog/New()
+	..()
+	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
+	I.weapon_upgrades = list(
+		GUN_UPGRADE_OFFSET = 0.5,
+		GUN_UPGRADE_ZOOM = 0.5 // 3 extra tiles of vision
 		)
 	I.gun_loc_tag = GUN_SCOPE
 	I.req_gun_tags = list(GUN_SCOPE)
@@ -614,8 +740,8 @@
 
 // Greatly reduces firerate but will turn on or off auto-eject
 /obj/item/gun_upgrade/magwell/auto_eject
-	name = "H&S \"Dropper\" Magwell Braker"
-	desc = "A rather smartly designed magwell braker box that when added to guns that have an auto-eject magwell prevent it, if it dosn't prevent an auto-eject it will force the magwel itself out! When force-ejecting a mag, will play a beeping sound."
+	name = "H&S \"Dropper\" Magwell Autodrop Mechanism"
+	desc = "A rather smartly-designed magwell breaker box that, when added to guns that do not already possess an auto-eject feature, will automatically drop the gun's magazine into the floor once it empties! When force-ejecting a mag, it will play a beeping sound."
 	icon_state = "auto_spingbox"
 	matter = list(MATERIAL_PLASTIC = 2, MATERIAL_PLASTEEL = 3, MATERIAL_GLASS = 2)
 	price_tag = 70
@@ -629,121 +755,44 @@
 	GUN_UPGRADE_AUTOEJECT = TRUE)
 	I.req_gun_tags = list(GUN_MAGWELL)
 	I.gun_loc_tag = GUN_MAGWELL
-	I.prefix = "auto dropped"
+	I.prefix = "auto dropping"
 
-//Trash mods, for putting on old guns
+//Fancy verson
+/obj/item/gun_upgrade/magwell/auto_eject/no_removal
+	name = "SI \"Braker\" Magwell Autodrop System"
+	desc = "A rather oddly-designed magwell breaker box that, when added to guns that do not already possess an auto-eject feature, will automatically drop the gun's magazine into the floor once it empties! When force-ejecting a mag, it will play a beeping sound.\
+	Unlike the other versions on the market this, once added, will not be removable as it replaces key components of the receiver to be as seamless as possible."
+	can_remove = FALSE
+	matter = list(MATERIAL_PLASTIC = 2, MATERIAL_PLASTEEL = 1, MATERIAL_GLASS = 2, MATERIAL_SILVER = 1, MATERIAL_GOLD = 1)
 
-/obj/item/gun_upgrade/trigger/faulty
-	name = "Faulty Trigger"
-	desc = "Weirdly sticky, and none of your fingers seem to fit to it comfortably. This causes more recoil and increases delay between shots as you try to compensate for it."
-	icon_state = "Cop_Block"
-	price_tag = 0
-
-/obj/item/gun_upgrade/trigger/faulty/New()
+/obj/item/gun_upgrade/magwell/auto_eject/no_removal/New()
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-		GUN_UPGRADE_RECOIL = rand(12,30)/10,
-		GUN_UPGRADE_FIRE_DELAY_MULT = rand(11,18)/10
-	)
-	I.destroy_on_removal = TRUE
-	I.removal_time *= rand(10, 14)/10
-	I.removal_difficulty *= rand(5, 15)/10
-	I.gun_loc_tag = GUN_TRIGGER
-	I.prefix = "feather trigger"
+	GUN_UPGRADE_AUTOEJECT = TRUE)
+	I.req_gun_tags = list(GUN_MAGWELL)
+	I.gun_loc_tag = GUN_MAGWELL
+	I.prefix = "integrated dropping"
 
-/obj/item/gun_upgrade/barrel/faulty
-	name = "Warped Barrel"
-	desc = "Extreme heat has warped this barrel off-target. This decreases the impact force of bullets fired through it and makes it more difficult to correctly aim the weapon it's attached to."
-	icon_state = "Forged_barrel"
-	price_tag = 0
 
-/obj/item/gun_upgrade/barrel/faulty/New()
+//Underbarrel aka bipods
+
+/obj/item/gun_upgrade/underbarrel
+
+/obj/item/gun_upgrade/underbarrel/bipod
+	name = "H&S \"Stand\" bipod"
+	desc = "A simple set of telescopic poles to keep a weapon stabilized during firing. It greatly reduces recoil when deployed, but also increases the gun's weight, making it unwieldy unless braced."
+	icon_state = "bipod"
+	matter = list(MATERIAL_PLASTIC = 2, MATERIAL_PLASTEEL = 3)
+	price_tag = 130
+
+/obj/item/gun_upgrade/underbarrel/bipod/New()
 	..()
 	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
 	I.weapon_upgrades = list(
-		GUN_UPGRADE_OFFSET = rand(5,15),
-		GUN_UPGRADE_PEN_MULT = rand(4,9)/10,
-		GUN_UPGRADE_DAMAGE_MULT = rand(4,9)/10,
-	)
-	I.destroy_on_removal = TRUE
-	I.removal_time *= rand(10, 14)/10
-	I.removal_difficulty *= rand(5, 15)/10
-	I.gun_loc_tag = GUN_BARREL
-	I.prefix = "refined barrel"
-
-/obj/item/gun_upgrade/muzzle/faulty
-	name = "Failed Makeshift Silencer"
-	desc = "Inspired by cheesy action movies, somebody has left trash on the end of this weapon. This causes the attached weapon to suffer from weaker armor penetration."
-	icon_state = "silencer"
-	price_tag = 0
-
-/obj/item/gun_upgrade/muzzle/faulty/New()
-	..()
-	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
-	I.weapon_upgrades = list(
-		GUN_UPGRADE_PEN_MULT = rand(4,9)/10,
-		GUN_UPGRADE_STEPDELAY_MULT = rand(12,18)/10,
-	)
-	I.destroy_on_removal = TRUE
-	I.removal_time *= rand(10, 14)/10
-	I.removal_difficulty *= rand(5, 15)/10
-	I.gun_loc_tag = GUN_MUZZLE
-	I.prefix = "silenced"
-
-/obj/item/gun_upgrade/mechanism/faulty
-	name = "Unknown Clockwork Mechanism"
-	desc = "It's really not clear what this modification actually does. It appears to effect the attached weapon's recoil, but if it actually helps or hinders the weapon is unclear."
-	icon_state = "Clockblock"
-	price_tag = 0
-
-/obj/item/gun_upgrade/mechanism/faulty/New()
-	..()
-	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
-	I.weapon_upgrades = list(
-		GUN_UPGRADE_RECOIL = rand(5, 50)/10,
-	)
-	I.destroy_on_removal = TRUE
-	I.removal_time *= rand(10, 14)/10
-	I.removal_difficulty *= rand(5, 15)/10
-	I.gun_loc_tag = GUN_MECHANISM
-	I.prefix = "ticking"
-
-/obj/item/gun_upgrade/scope/faulty
-	name = "Misaligned sights"
-	desc = "Some bad knocks have changed the angling on the sights of this weapon. This causes the attached weapon to suffer from decreased accuracy."
-	icon_state = "Watchman"
-	price_tag = 0
-
-/obj/item/gun_upgrade/scope/faulty/New()
-	..()
-	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
-	I.weapon_upgrades = list(
-		GUN_UPGRADE_OFFSET = rand(3,6),
-	)
-	I.destroy_on_removal = TRUE
-	I.removal_time *= rand(10, 14)/10
-	I.removal_difficulty *= rand(5, 15)/10
-	I.gun_loc_tag = GUN_SCOPE
-	I.prefix = "scoped"
-
-/obj/item/gun_upgrade/mechanism/faulty_trapped
-	name = "Jammed loader"
-	desc = "The mechanism that loads bullets into the chamber has jammed, one would be lucky the gun didn't explode if this was shot."
-	icon_state = "Reverse_loader"
-
-/obj/item/gun_upgrade/mechanism/faulty_trapped/New()
-	..()
-	var/datum/component/item_upgrade/I = AddComponent(/datum/component/item_upgrade)
-	I.weapon_upgrades = list(
-		GUN_UPGRADE_RIGGED = TRUE
-	)
-	I.destroy_on_removal = TRUE
-	I.removal_time *= rand(10, 14)/10
-	I.removal_difficulty *= rand(5, 15)/10
-	I.gun_loc_tag = GUN_MECHANISM
-	I.prefix = "feather trigger"
-
-#define TRASH_GUNMODS list(/obj/item/gun_upgrade/trigger/faulty, /obj/item/gun_upgrade/barrel/faulty, \
-		/obj/item/gun_upgrade/muzzle/faulty, /obj/item/gun_upgrade/mechanism/faulty, \
-		/obj/item/gun_upgrade/scope/faulty, /obj/item/gun_upgrade/mechanism/faulty_trapped)
+		GUN_UPGRADE_BIPOD = TRUE,
+		GUN_UPGRADE_RECOIL = 0.9,
+		UPGRADE_BULK = 1
+		)
+	I.gun_loc_tag = GUN_UNDERBARREL
+	I.prefix = "bipodal"

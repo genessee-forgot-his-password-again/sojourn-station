@@ -23,7 +23,7 @@
 	dropped.density = FALSE
 	dropped.opacity = FALSE
 	animate(dropped, pixel_y = initial_y, pixel_x = initial_x , time = 7)
-	addtimer(CALLBACK(dropped, /atom/movable.proc/end_fall), 7)
+	addtimer(CALLBACK(dropped, TYPE_PROC_REF(/atom/movable, end_fall)), 7)
 	qdel(src)
 
 /atom/movable/proc/end_fall()
@@ -37,6 +37,8 @@
 	playsound(loc, 'sound/effects/meteorimpact.ogg', 50, 1)
 	density = initial(density)
 	opacity = initial(opacity)
+	reset_plane_and_layer()
+
 /obj/effect/falling_effect/singularity_act()
 	return
 

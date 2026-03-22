@@ -8,10 +8,10 @@
 		slot_r_hand_str = "wiz_helm",
 		)
 	unacidable = 1 //No longer shall our kind be foiled by lone chemists with spray bottles!
-	armor = list(
-		melee = 40,
-		bullet = 40,
-		energy = 20,
+	armor_list = list(
+		melee = 10,
+		bullet = 10,
+		energy = 5,
 		bomb = 25,
 		bio = 100,
 		rad = 90
@@ -26,10 +26,10 @@
 	item_state = "wiz_voidsuit"
 	slowdown = 1
 	unacidable = 1
-	armor = list(
-		melee = 40,
-		bullet = 40,
-		energy = 20,
+	armor_list = list(
+		melee = 10,
+		bullet = 10,
+		energy = 5,
 		bomb = 25,
 		bio = 100,
 		rad = 90

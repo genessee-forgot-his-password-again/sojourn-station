@@ -15,25 +15,23 @@
 	l_ear  =/obj/item/device/radio/headset/heads/cmo
 	uniform = /obj/item/clothing/under/rank/moebius_biolab_officer
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat/cmo
-	r_pocket = /obj/item/device/lighting/toggleable/flashlight/pen
 	id_type = /obj/item/card/id/cmo
 	pda_type = /obj/item/modular_computer/pda/heads/cmo
 	r_ear  = /obj/item/reagent_containers/syringe/large
 	belt = /obj/item/storage/belt/medical
 	glasses = /obj/item/clothing/glasses/hud/health
-	backpack_contents = list(/obj/item/storage/firstaid/soteria = 1, /obj/item/modular_computer/tablet/moebius/preset = 1, /obj/item/gun/projectile/clarissa/moebius/preloaded_cbo = 1, /obj/item/gun_upgrade/trigger/dnalock = 1, /obj/item/gun_upgrade/muzzle/silencer = 1)
+	backpack_contents = list(/obj/item/storage/hcases/med/medical_job_cbo = 1)
 
 /decl/hierarchy/outfit/job/medical/doctor
 	name = OUTFIT_JOB_NAME("Soteria - Medical Doctor")
 	uniform = /obj/item/clothing/under/rank/medical
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat
-	r_pocket = /obj/item/device/lighting/toggleable/flashlight/pen
 	r_ear  = /obj/item/reagent_containers/syringe/large
 	belt = /obj/item/storage/belt/medical
-	backpack_contents = list(/obj/item/storage/firstaid/soteria = 1, /obj/item/modular_computer/tablet/moebius/preset = 1)
+	backpack_contents = list(/obj/item/storage/hcases/med/medical_job = 1)
 
-/decl/hierarchy/outfit/job/medical/trauma_team
-	name = OUTFIT_JOB_NAME("Soteria - Trauma Team")
+/decl/hierarchy/outfit/job/medical/recovery_team
+	name = OUTFIT_JOB_NAME("Soteria - Recovery Team")
 	uniform = /obj/item/clothing/under/rank/paramedic
 	id_type = /obj/item/card/id/med
 	pda_type = /obj/item/modular_computer/pda/science/medical
@@ -41,15 +39,30 @@
 	shoes = /obj/item/clothing/shoes/jackboots
 	belt = /obj/item/storage/belt/medical/emt
 	flags = OUTFIT_HAS_BACKPACK|OUTFIT_EXTENDED_SURVIVAL
-	head = /obj/item/clothing/head/helmet/visor/cyberpunkgoggle
+	head = /obj/item/clothing/head/soft/medical
+	gloves = /obj/item/clothing/gloves/stungloves/trauma
 	r_ear  = /obj/item/reagent_containers/syringe/large
 	l_pocket = /obj/item/device/flash
 	r_pocket = /obj/item/handcuffs
-	backpack_contents = list(/obj/item/rig/trauma_suit/equipped = 1, /obj/item/clothing/suit/straight_jacket = 1, /obj/item/storage/firstaid/soteria/large = 1, /obj/item/gun/energy/sst/formatbound/preloaded = 1, /obj/item/cell/medium/moebius/high = 1, /obj/item/ammo_magazine/smg_35/hv = 1, /obj/item/modular_computer/tablet/moebius/preset = 1)
-	suit_store = /obj/item/gun/projectile/automatic/c20r/sci/preloaded
+	backpack_contents = list(/obj/item/storage/hcases/med/medical_job_trama = 1) // Weapon selection moved inside the hardcase.
 
 /decl/hierarchy/outfit/job/medical/psychiatrist
 	name = OUTFIT_JOB_NAME("Soteria - Psychiatrist")
 	uniform = /obj/item/clothing/under/rank/psych
 	suit = /obj/item/clothing/suit/storage/toggle/labcoat
 	r_ear  = /obj/item/reagent_containers/syringe/large
+	backpack_contents = list(/obj/item/storage/hcases/med/medical_job_psyco = 1)
+
+/decl/hierarchy/outfit/job/medical/doctor/medStudent
+	name = OUTFIT_JOB_NAME("Soteria - Soteria Medical Student")
+	suit = /obj/item/clothing/suit/storage/toggle/labcoat
+
+/decl/hierarchy/outfit/job/medical/doctor/medNurse
+	name = OUTFIT_JOB_NAME("Soteria - Soteria Nurse")
+
+/decl/hierarchy/outfit/job/medical/doctor/medERPhys
+	name = OUTFIT_JOB_NAME("Soteria - Soteria Emergency Physician")
+
+/decl/hierarchy/outfit/job/medical/doctor/medSurgeon
+	name = OUTFIT_JOB_NAME("Soteria - Soteria Medical Surgeon")
+	suit = /obj/item/clothing/suit/storage/hazardvest

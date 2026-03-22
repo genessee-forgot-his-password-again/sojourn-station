@@ -5,10 +5,10 @@
 	icon_state = "void"
 
 	heat_protection = HEAD
-	armor = list(
-		melee = 30,
-		bullet = 20,
-		energy = 10,
+	armor_list = list(
+		melee = 7,
+		bullet = 5,
+		energy = 2,
 		bomb = 25,
 		bio = 100,
 		rad = 75
@@ -21,12 +21,12 @@
 	name = "voidsuit"
 	icon_state = "void"
 	item_state = "void"
-	desc = "A high-tech dark red space suit."
+	desc = "A high-tech dark red space suit." //not that high tech apparently. This is legacy stuff so should be avoided being messed with too
 	slowdown = 1
-	armor = list(
-		melee = 30,
-		bullet = 20,
-		energy = 10,
+	armor_list = list(
+		melee = 7,
+		bullet = 5,
+		energy = 2,
 		bomb = 25,
 		bio = 100,
 		rad = 75
@@ -42,12 +42,6 @@
 	var/obj/item/clothing/shoes/magboots/boots = null // Deployable boots, if any.
 	var/obj/item/clothing/head/helmet/helmet = /obj/item/clothing/head/helmet/space/void   // Deployable helmet, if any.
 	var/obj/item/tank/tank = null              // Deployable tank, if any.
-
-	valid_accessory_slots = list()
-	restricted_accessory_slots = list()
-
-	tool_qualities = list()
-	max_upgrades = 0
 
 /obj/item/clothing/suit/space/void/Initialize()
 	if(boots && ispath(boots))
@@ -77,14 +71,6 @@
 	if(boots) boots.clean_blood()
 	if(helmet) helmet.clean_blood()
 	if(tank) tank.clean_blood()
-
-	return ..()
-
-/obj/item/clothing/suit/space/void/decontaminate()
-	if(boots) boots.decontaminate()
-	if(helmet) helmet.decontaminate()
-	if(tank) tank.decontaminate()
-
 	return ..()
 
 /obj/item/clothing/suit/space/void/equipped(mob/M)
@@ -233,7 +219,7 @@
 		to_chat(user, SPAN_WARNING("You cannot modify \the [src] while it is being worn."))
 		return
 
-	if(istype(W,/obj/item/tool/screwdriver))
+	if(istype(W,/obj/item/tool/wrench))
 		if(boots || tank || helmet)
 			var/choice = input("What component would you like to remove?") as null|anything in list(boots,tank,helmet)
 			if(!choice) return
@@ -286,4 +272,4 @@
 			playsound(loc, 'sound/items/Deconstruct.ogg', 50, 1)
 		return
 
-	..()
+	.=..()

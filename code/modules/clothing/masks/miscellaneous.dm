@@ -1,3 +1,5 @@
+#define NORMAL_MASK_SANITY_COEFF_BUFF 1.3
+
 /obj/item/clothing/mask/muzzle
 	name = "muzzle"
 	desc = "To stop that awful noise."
@@ -6,7 +8,7 @@
 	body_parts_covered = FACE
 	w_class = ITEM_SIZE_SMALL
 	gas_transfer_coefficient = 0.90
-	voicechange = 1
+	muffle_voice = FALSE
 
 /obj/item/clothing/mask/muzzle/tape
 	name = "length of tape"
@@ -27,6 +29,15 @@
 		return 0
 	..()
 
+/obj/item/clothing/mask/attackby(obj/item/W, mob/user)
+	if(istype(W, /obj/item/device/assembly/voice))
+		if(src.muffle_voice == TRUE)
+			to_chat(user, SPAN_NOTICE("[src] already has a voice transmitter in it!"))
+			return
+		to_chat(user, SPAN_NOTICE("[user] installs a voice transmitter in [src]."))
+		src.muffle_voice = TRUE
+		qdel(W)
+
 /obj/item/clothing/mask/surgical
 	name = "sterile mask"
 	desc = "A sterile mask designed to help prevent the spread of diseases."
@@ -37,7 +48,7 @@
 	item_flags = FLEXIBLEMATERIAL
 	gas_transfer_coefficient = 0.90
 	permeability_coefficient = 0.01
-	armor = list(
+	armor_list = list(
 		melee = 0,
 		bullet = 0,
 		energy = 0,
@@ -46,6 +57,10 @@
 		rad = 0
 	)
 	price_tag = 10
+
+/obj/item/clothing/mask/surgical/New()
+	..()
+	AddComponent(/datum/component/clothing_sanity_protection, NORMAL_MASK_SANITY_COEFF_BUFF)
 
 //Alt race masks here
 /obj/item/clothing/mask/surgical/kriosan
@@ -108,6 +123,7 @@
 	item_flags = FLEXIBLEMATERIAL
 	w_class = ITEM_SIZE_SMALL
 	price_tag = 20
+	muffle_voice = FALSE
 
 /obj/item/clothing/mask/bandana/equipped(var/mob/user, var/slot)
 	switch(slot)
@@ -175,3 +191,16 @@
 	desc = "A skull-pattern bandana with nanotech lining. Can be worn on the head or face."
 	icon_state = "bandskull"
 	item_state = "bandskull"
+
+//Does its magic on defence
+/obj/item/clothing/mask/church_veil
+	name = "Absolute nylo veil"
+	desc = "An Absolute's New Testament veil, crafted from thin sheets of mimicry fracsilkie-ium, reinforced with interwoven durasteel fibers. \
+	Its fibers shimmer when the wearer is striked giving them faith."
+	icon_state = "church_veil"
+	item_state = "church_veil"
+	flags_inv = HIDEFACE
+	body_parts_covered = 0
+	//The biomatter is high do to mimicry of fracsilkie-ium (its made up [frac]tal [silk](y)[ie] [ium])
+	matter = list(MATERIAL_BIOMATTER = 75, MATERIAL_DURASTEEL = 0.1, MATERIAL_GOLD = 0.1, MATERIAL_SILVER = 0.1)
+	price_tag = 1200

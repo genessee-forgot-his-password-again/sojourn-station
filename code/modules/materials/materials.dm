@@ -121,7 +121,7 @@ var/list/name_to_material
 	var/list/window_options = list()
 
 	// Damage values.
-	var/hardness = 60            // Prob of wall destruction by hulk, used for edge damage in weapons.
+	var/hardness = 10            // Prob of wall destruction by hulk, used for edge damage in weapons.
 	var/weight = 20              // Determines blunt damage/throwforce for weapons.
 
 	// Noise when someone is faceplanted onto a table made of this material.
@@ -134,6 +134,17 @@ var/list/name_to_material
 	var/stack_type
 	// Wallrot crumble message.
 	var/rotting_touch_message = "crumbles under your touch"
+
+/material/ui_data(mob/user)
+	var/list/data = list()
+
+	data["name"] = name
+
+	var/class_name = sanitize_css_class_name("[stack_type]")
+	var/datum/asset/spritesheet_batched/materials/sprite = get_asset_datum(/datum/asset/spritesheet_batched/materials)
+	data["icon"] = sprite.icon_class_name(class_name)
+
+	return data
 
 // Placeholders for light tiles and rglass.
 /material/proc/build_rod_product(var/mob/user, var/obj/item/stack/used_stack, var/obj/item/stack/target_stack)
@@ -266,7 +277,7 @@ var/list/name_to_material
 	opacity = 0.4
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 100
+	hardness = 50
 	stack_origin_tech = list(TECH_MATERIAL = 6)
 
 /material/durasteel
@@ -275,7 +286,7 @@ var/list/name_to_material
 	icon_colour = "#6EA7BE"
 	integrity = 600
 	melting_point = 7000
-	hardness = 100
+	hardness = 50
 	weight = 28
 	explosion_resistance = 75
 	stack_origin_tech = list(TECH_MATERIAL = 8)
@@ -285,7 +296,7 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/gold
 	icon_colour = "#EDD12F"
 	weight = 24
-	hardness = 40
+	hardness = 20
 	stack_origin_tech = list(TECH_MATERIAL = 4)
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
@@ -299,7 +310,7 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/silver
 	icon_colour = "#D1E6E3"
 	weight = 22
-	hardness = 50
+	hardness = 30
 	stack_origin_tech = list(TECH_MATERIAL = 3)
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
@@ -311,7 +322,7 @@ var/list/name_to_material
 	icon_base = "stone"
 	icon_colour = "#FC2BC5"
 	shard_type = SHARD_SHARD
-	hardness = 30
+	hardness = 10
 	stack_origin_tech = list(TECH_MATERIAL = 2, TECH_PLASMA = 2)
 	door_icon_base = "stone"
 	sheet_singular_name = "crystal"
@@ -342,7 +353,7 @@ var/list/name_to_material
 	icon_colour = "#D9C179"
 	shard_type = SHARD_STONE_PIECE
 	weight = 22
-	hardness = 55
+	hardness = 20
 	door_icon_base = "stone"
 	sheet_singular_name = "brick"
 	sheet_plural_name = "bricks"
@@ -351,7 +362,7 @@ var/list/name_to_material
 	name = MATERIAL_MARBLE
 	icon_colour = "#AAAAAA"
 	weight = 26
-	hardness = 100
+	hardness = 30
 	integrity = 201 //hack to stop kitchen benches being flippable, todo: refactor into weight system
 	stack_type = /obj/item/stack/material/marble
 
@@ -379,7 +390,7 @@ var/list/name_to_material
 	icon_reinf = "reinf_over"
 	icon_colour = PLASTEEL_COLOUR//"#777777"
 	explosion_resistance = 25
-	hardness = 80
+	hardness = 25
 	weight = 23
 	stack_origin_tech = list(TECH_MATERIAL = 2)
 	hitsound = 'sound/weapons/genhit.ogg'
@@ -401,7 +412,7 @@ var/list/name_to_material
 	integrity = 100
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 30
+	hardness = 5
 	weight = 15
 	door_icon_base = "stone"
 	destruction_desc = "shatters"
@@ -506,7 +517,7 @@ var/list/name_to_material
 	return 1
 
 /material/glass/proc/is_reinforced()
-	return (hardness > 35) //todo
+	return (hardness > 5) //todo
 
 /material/glass/reinforced
 	name = MATERIAL_RGLASS
@@ -518,10 +529,10 @@ var/list/name_to_material
 	integrity = 100
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 40
+	hardness = 10
 	weight = 30
 	stack_origin_tech = "materials=2"
-	composite_material = list(MATERIAL_STEEL = 2,MATERIAL_GLASS = 3)
+	composite_material = list(MATERIAL_STEEL = 1,MATERIAL_GLASS = 1)
 	window_options = list("One Direction" = 1, "Full Window" = 6, "Windoor" = 5)
 	created_window = /obj/structure/window/reinforced
 	created_window_full = /obj/structure/window/reinforced/full
@@ -540,6 +551,7 @@ var/list/name_to_material
 	created_window_full = /obj/structure/window/plasmabasic/full
 	wire_product = null
 	rod_product = /obj/item/stack/material/glass/plasmarglass
+	hardness = 15
 
 /material/glass/plasma/reinforced
 	name = MATERIAL_RPLASMAGLASS
@@ -549,7 +561,7 @@ var/list/name_to_material
 	composite_material = list() //todo
 	created_window = /obj/structure/window/reinforced/plasma
 	created_window_full = /obj/structure/window/reinforced/plasma/full
-	hardness = 40
+	hardness = 20
 	weight = 30
 	//composite_material = list() //todo
 	rod_product = null
@@ -561,7 +573,7 @@ var/list/name_to_material
 	icon_base = "solid"
 	icon_reinf = "reinf_over"
 	icon_colour = "#CCCCCC"
-	hardness = 10
+	hardness = 5
 	weight = 12
 	melting_point = T0C+371 //assuming heat resistant plastic
 	stack_origin_tech = list(TECH_MATERIAL = 3)
@@ -634,7 +646,7 @@ var/list/name_to_material
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER
 	shard_can_repair = 0 // you can't weld splinters back into planks
-	hardness = 15
+	hardness = 10
 	weight = 18
 	melting_point = T0C+300 //okay, not melting in this case, but hot enough to destroy wood
 	ignition_point = T0C+288
@@ -671,6 +683,7 @@ var/list/name_to_material
 /material/cloth //todo
 	name = MATERIAL_CLOTH
 	stack_origin_tech = list(TECH_MATERIAL = 2)
+	stack_type = /obj/item/stack/material/cloth
 	door_icon_base = "wood"
 	ignition_point = T0C+232
 	melting_point = T0C+300
@@ -679,7 +692,7 @@ var/list/name_to_material
 /material/silk //todo
 	name = MATERIAL_SILK
 	stack_origin_tech = list(TECH_MATERIAL = 2)
-	composite_material = list(MATERIAL_BIOMATTER = 1) //So we have a vaule to more then one faction
+	stack_type = /obj/item/stack/material/silk
 	door_icon_base = "wood"
 	ignition_point = T0C+232
 	melting_point = T0C+300
@@ -705,6 +718,7 @@ var/list/name_to_material
 //TODO PLACEHOLDERS:
 /material/leather
 	name = MATERIAL_LEATHER
+	stack_type = /obj/item/stack/material/leather
 	icon_colour = "#5C4831"
 	stack_origin_tech = list(TECH_MATERIAL = 2)
 	flags = MATERIAL_PADDING
@@ -713,6 +727,7 @@ var/list/name_to_material
 
 /material/bone
 	name = MATERIAL_BONE
+	stack_type = /obj/item/stack/material/bone
 	icon_colour = "#EDE1D1"
 	stack_origin_tech = list(TECH_MATERIAL = 2)
 	flags = MATERIAL_PADDING
@@ -724,6 +739,7 @@ var/list/name_to_material
 /material/carpet
 	name = "carpet"
 	display_name = "comfy"
+	stack_type = /obj/item/stack/tile/carpet // The icon is red, thus red carpet by default
 	use_name = "red upholstery"
 	icon_colour = "#DA020A"
 	flags = MATERIAL_PADDING
@@ -735,6 +751,7 @@ var/list/name_to_material
 /material/cotton
 	name = "cotton"
 	display_name ="cotton"
+	stack_type = /obj/item/stack/material/cloth
 	icon_colour = "#FFFFFF"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
@@ -743,6 +760,7 @@ var/list/name_to_material
 /material/cloth_teal
 	name = "teal"
 	display_name ="teal"
+	stack_type = /obj/item/stack/tile/carpet/blucarpet
 	use_name = "teal cloth"
 	icon_colour = "#00EAFA"
 	flags = MATERIAL_PADDING
@@ -753,6 +771,7 @@ var/list/name_to_material
 	name = "black"
 	display_name = "black"
 	use_name = "black cloth"
+	stack_type = /obj/item/stack/tile/carpet/bcarpet
 	icon_colour = "#505050"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
@@ -762,6 +781,7 @@ var/list/name_to_material
 	name = "green"
 	display_name = "green"
 	use_name = "green cloth"
+	stack_type = /obj/item/stack/tile/carpet/turcarpet
 	icon_colour = "#01C608"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
@@ -771,6 +791,7 @@ var/list/name_to_material
 	name = "purple"
 	display_name = "purple"
 	use_name = "purple cloth"
+	stack_type = /obj/item/stack/tile/carpet/purcarpet
 	icon_colour = "#9C56C4"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
@@ -780,6 +801,7 @@ var/list/name_to_material
 	name = "blue"
 	display_name = "blue"
 	use_name = "blue cloth"
+	stack_type = /obj/item/stack/tile/carpet/sblucarpet
 	icon_colour = "#6B6FE3"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
@@ -789,6 +811,7 @@ var/list/name_to_material
 	name = "beige"
 	display_name = "beige"
 	use_name = "beige cloth"
+	stack_type = /obj/item/stack/material/cloth
 	icon_colour = "#E8E7C8"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
@@ -798,6 +821,7 @@ var/list/name_to_material
 	name = "lime"
 	display_name = "lime"
 	use_name = "lime cloth"
+	stack_type = /obj/item/stack/tile/carpet/turcarpet
 	icon_colour = "#62E36C"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
@@ -807,7 +831,26 @@ var/list/name_to_material
 	name = "yellow"
 	display_name = "yellow"
 	use_name = "yellow cloth"
+	stack_type = /obj/item/stack/tile/carpet/oracarpet
 	icon_colour = "#FFFF00"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+
+/material/ameridian
+	name = MATERIAL_AMERIDIAN
+	stack_type = /obj/item/stack/material/ameridian
+	icon_colour = "#007A00"
+	sheet_singular_name = "shard"
+	sheet_plural_name = "shards"
+	stack_origin_tech = list(TECH_MATERIAL = 9)
+
+/material/refined_scrap
+	name = MATERIAL_RSCRAP
+	stack_type = /obj/item/stack/material/refined_scrap
+	composite_material = list(MATERIAL_STEEL = 1)
+	stack_origin_tech = list(TECH_MATERIAL = 2)
+	weight = 30
+	icon_colour = "B7410E"
+	sheet_singular_name = "pieces"
+	sheet_plural_name = "pieces"

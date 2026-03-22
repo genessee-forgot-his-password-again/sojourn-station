@@ -12,11 +12,11 @@
 	nerve_system_accumulations = 0
 	appear_in_default_catalog = FALSE
 	constant_metabolism = TRUE
-	scannable = 1
+	scannable = TRUE
 
 /datum/reagent/medicine/sabledone/affect_blood(mob/living/carbon/M, alien, effect_multiplier)
-	M.add_chemical_effect(CE_PAINKILLER, 10000, TRUE)
-	M.apply_effect(-200, AGONY, 0)
+	M.add_chemical_effect(CE_PAINKILLER, 200, TRUE)
+	M.apply_effect(-50, HALLOSS, 0)
 
 /datum/reagent/stim/marquatol
 	name = "Marquatol"
@@ -44,52 +44,16 @@
 	nerve_system_accumulations = 0
 	appear_in_default_catalog = FALSE
 	constant_metabolism = TRUE
-	scannable = 1
+	scannable = TRUE
 
 /datum/reagent/medicine/hadrenol/affect_blood(mob/living/carbon/M, alien, effect_multiplier)
-	M.adjustOxyLoss(-0.6)
-	M.heal_organ_damage(0.3, 0.3)
-	M.adjustToxLoss(-0.3)
-	M.add_chemical_effect(CE_BLOODCLOT, 0.1)
-	M.add_chemical_effect(CE_PAINKILLER, 25, TRUE)
-
-/datum/reagent/medicine/hustim
-	name = "Hustimdol"
-	id = "hustim"
-	description = "A chemical naturally produced by humans pushed to their limit. Induces a recovery coma to heal their wounds."
-	taste_description = "bitterness"
-	reagent_state = LIQUID
-	color = "#ded890"
-	nerve_system_accumulations = 0
-	appear_in_default_catalog = FALSE
-	constant_metabolism = TRUE
-	scannable = 1
-
-/datum/reagent/medicine/hustim/affect_blood(mob/living/carbon/M, alien, effect_multiplier)
-	M.heal_organ_damage(0.8, 0.4, 6)
-	M.add_chemical_effect(CE_BLOODCLOT, min(1,0.4))
-	M.adjustOxyLoss(-2) //We are taking are deep breaths
-	M.adjustToxLoss(-1)
+	M.heal_organ_damage(1, 0.8, 4, 2) // Barely buffed up Hustimdol without the sleepyness, any more would be too good. Remember this has a half hour cooldown.
+	M.adjustOxyLoss(-1)
+	M.add_chemical_effect(CE_TOXIN, -1)
+	M.add_chemical_effect(CE_BLOODCLOT, 0.4)
+	M.add_chemical_effect(CE_BLOODRESTORE, 1.1 * effect_multiplier) // Paramount due to how organ efficiency works
+	M.add_chemical_effect(CE_PAINKILLER, 45, TRUE) // Come on, stand up! You can do it!
 	M.add_chemical_effect(CE_STABLE)
-	M.add_chemical_effect(CE_PAINKILLER, 45, TRUE)
-	M.add_chemical_effect(CE_PULSE, -1)
-	//We also sleep are target, this will make it not as good to use against spiders still active or simple animals.
-	var/effective_dose = dose
-	if(issmall(M))
-		effective_dose *= 2
-
-	if(effective_dose < 1)
-		if(effective_dose == metabolism * 2 || prob(5))
-			M.emote("yawn")
-	else if(effective_dose < 3)
-		M.eye_blurry = max(M.eye_blurry, 10)
-	else if(effective_dose < 4)
-		if(prob(50))
-			M.Weaken(2)
-		M.drowsyness = max(M.drowsyness, 20)
-	else
-		M.sleeping = max(M.sleeping, 20)
-		M.drowsyness = max(M.drowsyness, 60)
 
 /datum/reagent/stim/kriotol
 	name = "Kriotol"
@@ -105,7 +69,7 @@
 	M.stats.addTempStat(STAT_TGH, 10, STIM_TIME, "kriotol")
 	M.stats.addTempStat(STAT_VIG, 20, STIM_TIME, "kriotol")
 	M.add_chemical_effect(CE_DARKSIGHT, SEE_INVISIBLE_NOLIGHTING)
-	M.add_chemical_effect(CE_SPEEDBOOST, 0.6)
+	M.add_chemical_effect(CE_SPEEDBOOST, 0.2)
 	M.add_chemical_effect(CE_PULSE, 2)
 
 /datum/reagent/stim/robustitol
@@ -117,7 +81,6 @@
 	color = "#5f95e2"
 	nerve_system_accumulations = 0
 	addiction_chance = 100
-
 	appear_in_default_catalog = FALSE
 
 /datum/reagent/stim/robustitol/affect_blood(mob/living/carbon/M, alien, effect_multiplier)
@@ -127,10 +90,6 @@
 	M.stats.addTempStat(STAT_BIO, -100, STIM_TIME, "robustitol")
 	M.stats.addTempStat(STAT_VIG, -100, STIM_TIME, "robustitol")
 	M.stats.addTempStat(STAT_MEC, -100, STIM_TIME, "robustitol")
-
-/datum/reagent/drug/robustitol/withdrawal_act(mob/living/carbon/M)
-	M.stats.addTempStat(STAT_TGH, -STAT_LEVEL_BASIC, STIM_TIME, "robustitol_w")
-	M.stats.addTempStat(STAT_ROB, -STAT_LEVEL_BASIC, STIM_TIME, "robustitol_w")
 
 /datum/reagent/medicine/sergatonin
 	name = "Naratonin"
@@ -142,7 +101,7 @@
 	nerve_system_accumulations = 0
 	appear_in_default_catalog = FALSE
 	constant_metabolism = TRUE
-	scannable = 1
+	scannable = TRUE
 
 /datum/reagent/medicine/sergatonin/affect_blood(mob/living/carbon/M, alien, effect_multiplier)
 	M.stats.addTempStat(STAT_TGH, 25, STIM_TIME, "naratonin")
@@ -166,18 +125,12 @@
 	nerve_system_accumulations = 0
 	appear_in_default_catalog = FALSE
 	constant_metabolism = TRUE
-	scannable = 1
+	scannable = TRUE
 
 /datum/reagent/medicine/cindpetamol/affect_blood(mob/living/carbon/M, alien, effect_multiplier, var/removed)
-	M.adjustToxLoss(-8)
-	if(ishuman(M))
-		var/mob/living/carbon/human/H = M
-		var/obj/item/organ/internal/liver/L = H.random_organ_by_process(OP_LIVER)
-		if(istype(L))
-			if(BP_IS_ROBOTIC(L))
-				return
-			if(L.damage > 0)
-				L.damage = max(L.damage - 2 * removed, 0)
+	M.add_chemical_effect(CE_TOXIN, -8)
+	M.add_chemical_effect(CE_LIVERHEAL, 2)
+
 	var/mob/living/carbon/C = M
 	if(istype(C) && C.metabolism_effects.addiction_list.len)
 		if(prob(90 + dose))

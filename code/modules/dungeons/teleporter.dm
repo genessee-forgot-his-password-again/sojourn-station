@@ -8,28 +8,28 @@
 	var/charging = FALSE
 	var/charge = 0
 	var/charge_max = 50
-	var/flickering = 0
+	var/flick_lighting = 0
 	var/ticks_before_next_summon = 2
 	var/mobgenlist = list(
-		/mob/living/simple_animal/hostile/bear,
-		/mob/living/simple_animal/hostile/carp,
-		/mob/living/simple_animal/hostile/carp,
-		/mob/living/simple_animal/hostile/carp/pike,
-		/mob/living/simple_animal/hostile/hivebot,
-		/mob/living/simple_animal/hostile/viscerator,
-		/mob/living/simple_animal/hostile/viscerator)//duplicates to rig chances towards spawning more weaker enemies, but in favour of generally spawning more enemies
+		/mob/living/simple/hostile/bear,
+		/mob/living/simple/hostile/carp,
+		/mob/living/simple/hostile/carp,
+		/mob/living/simple/hostile/carp/pike,
+		/mob/living/simple/hostile/hivebot,
+		/mob/living/simple/hostile/viscerator,
+		/mob/living/simple/hostile/viscerator)//duplicates to rig chances towards spawning more weaker enemies, but in favour of generally spawning more enemies
 	var/turfs_around = list()
 	var/victims_to_teleport = list()
-	var/obj/crawler/spawnpoint/target = null
-	anchored = 1
+	var/obj/crawler/spawnpoint/target
+	anchored = TRUE
 	unacidable = 1
-	density = 1
+	density = TRUE
 
 /obj/rogue/teleporter/New()
 	for(var/turf/T in orange(7, src))
 		turfs_around += T
 
-/obj/rogue/teleporter/attack_hand(var/mob/user as mob)
+/obj/rogue/teleporter/attack_hand(mob/user)
 	if(!charge)
 		target = locate(/obj/crawler/spawnpoint)
 		if(target)
@@ -38,7 +38,7 @@
 		else
 			to_chat(user, "Nothing seems to happen.")
 	else if(charging)
-		if(flickering)
+		if(flick_lighting)
 			to_chat(user, "The portal looks too unstable to pass through!")
 		else
 			to_chat(user, "The teleporter needs time to charge.")
@@ -82,7 +82,7 @@
 	var/mobs_to_spawn = rand(min_mobs, max_mobs)
 	while(mobs_to_spawn)
 		var/mobchoice = pick(mobgenlist)
-		var/mob/living/simple_animal/newmob = new mobchoice(pick(turfs_around))
+		var/mob/living/simple/newmob = new mobchoice(pick(turfs_around))
 		var/datum/effect/effect/system/spark_spread/sparks = new /datum/effect/effect/system/spark_spread()
 		sparks.set_up(3, 0, get_turf(newmob.loc))
 		sparks.start()
@@ -103,7 +103,7 @@
 /obj/rogue/teleporter/proc/end_teleporter_event()
 	portal_burst()
 
-	for(var/mob/living/simple_animal/SA in range(8, src))//So wounded people won't fucking die when returning
+	for(var/mob/living/simple/SA in range(8, src))//So wounded people won't fucking die when returning
 		SA.adjustBruteLoss(50)
 
 	for(var/mob/living/carbon/human/H in range(8, src))//Only human mobs are allowed, otherwise you'd end up with a fuckton of carps in the dungeon
@@ -154,7 +154,7 @@
 	sleep(100)
 	update_icon()
 
-	for(var/mob/living/simple_animal/A in target.loc.loc)
+	for(var/mob/living/simple/A in target.loc.loc)
 		spawn(1)
 			if(A)
 				A.stasis = FALSE
@@ -162,7 +162,7 @@
 
 	add_overlay(image(icon, icon_state = "portal_failing"))
 	visible_message("The portal starts flickering!")
-	flickering = 1
+	flick_lighting = 1
 	sleep(100)
 	update_icon()
 
@@ -175,25 +175,15 @@
 		if (get_dist(src, O) > 8)
 			continue
 
-		var/flash_time = 8
 		if (ishuman(O))
 			var/mob/living/carbon/human/H = O
-			if(!H.eyecheck() <= 0)
-				continue
-			flash_time *= H.species.flash_mod
-			var/eye_efficiency = H.get_organ_efficiency(OP_EYES)
-			if(!eye_efficiency)
-				return
-			if(eye_efficiency < 50 && prob(100 - eye_efficiency  + 20))
-				if (O.HUDtech.Find("flash"))
-					flick("e_flash", O.HUDtech["flash"])
+			H.flash(FALSE, FALSE , FALSE , FALSE, 8)
+
 		else
 			if(!O.blinded)
 				if (istype(O,/mob/living/silicon/ai))
 					return
-				if (O.HUDtech.Find("flash"))
-					flick("flash", O.HUDtech["flash"])
-		O.Weaken(flash_time)
+				O.flash(FALSE, FALSE, FALSE ,FALSE)
 
 		sleep(1)
 
@@ -207,9 +197,9 @@
 	var/turf/target = null
 	var/active = FALSE
 	w_class = ITEM_SIZE_GARGANTUAN
-	anchored = 1
+	anchored = TRUE
 	unacidable = 1
-	density = 1
+	density = TRUE
 	var/t_x
 	var/t_y
 	var/t_z

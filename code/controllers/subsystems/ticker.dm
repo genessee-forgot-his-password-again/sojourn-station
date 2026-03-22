@@ -21,7 +21,7 @@ SUBSYSTEM_DEF(ticker)
 
 	var/random_players = 0 	// if set to nonzero, ALL players who latejoin or declare-ready join will have random appearances/genders
 
-	var/list/syndicate_coalition = list() // list of traitor-compatible factions
+	var/list/syndicate_coalition = list() // list of contractor-compatible factions
 	var/list/factions = list()			  // list of all factions
 	var/list/availablefactions = list()	  // list of factions with openings
 
@@ -36,10 +36,10 @@ SUBSYSTEM_DEF(ticker)
 
 	var/round_end_announced = 0 // Spam Prevention. Announce round end only once.
 
-	var/ship_was_nuked = 0              // See nuclearbomb.dm and malfunction.dm.
-	var/ship_nuke_code = "NO CODE"       // Heads will get parts of this code.
+	var/ship_was_nuked = 0			  // See nuclearbomb.dm and malfunction.dm.
+	var/ship_nuke_code = "NO CODE"	   // Heads will get parts of this code.
 	var/ship_nuke_code_rotation_part = 1 // What part of code next Head will get.
-	var/nuke_in_progress = 0           	// Sit back and relax
+	var/nuke_in_progress = 0		   	// Sit back and relax
 
 	var/newscaster_announcements = null
 
@@ -50,6 +50,9 @@ SUBSYSTEM_DEF(ticker)
 	var/automatic_restart_allowed = TRUE
 
 	var/list/round_start_events
+	var/list/message_args				//	args for message
+
+	var/automatic_restart_time_lobby_sound_cooldown = 0 //used for
 
 /datum/controller/subsystem/ticker/Initialize(start_timeofday)
 	if(!syndicate_code_phrase)
@@ -90,7 +93,6 @@ SUBSYSTEM_DEF(ticker)
 			if(!start_immediately)
 				to_chat(world, "Please, setup your character and select ready. Game will start in [pregame_timeleft] seconds.")
 			current_state = GAME_STATE_PREGAME
-			send_assets()
 			fire()
 
 		if(GAME_STATE_PREGAME)
@@ -118,6 +120,17 @@ SUBSYSTEM_DEF(ticker)
 				if(start_immediately)
 					fire()
 			first_start_trying = FALSE
+
+			if(config.automatic_restart_time_lobby)
+				if(world.time >= config.automatic_restart_time_lobby)
+					if(automatic_restart_time_lobby_sound_cooldown < world.time)
+						automatic_restart_time_lobby_sound_cooldown = world.time + 10 SECONDS
+						SEND_SOUND(world, sound('sound/AI/annoucement_dings.ogg'))
+						to_chat(world, "<span class='danger'>Restarting world due to no active players willing to start game. Save characters if working on them.</span>")
+					spawn(60 SECONDS)
+						if(!(current_state == GAME_STATE_PREGAME))
+							log_admin("World has rebooted due to no active players willing to play the game.")
+							world.Reboot()
 
 		if(GAME_STATE_SETTING_UP)
 			if(!setup())
@@ -228,8 +241,17 @@ SUBSYSTEM_DEF(ticker)
 
 	GLOB.storyteller.announce()
 
+	//	SOJOURN: discord bot configuration: START
+	message_args = list(
+		"storyteller" = GLOB.storyteller?.name,
+		"welcome" = GLOB.storyteller?.welcome,
+		"game_id" = game_id,
+		"newline" = "\n"
+	)
+	send2chat(new /datum/tgs_message_content(format_message_named(config.message_announce_new_game, message_args)), config.channel_announce_new_game)
+	//	SOJOURN: discord bot configuration: END
+
 	setup_economy()
-	setup_nanite_mailer()
 	newscaster_announcements = pick(newscaster_standard_feeds)
 
 	create_characters() //Create player characters and transfer them
@@ -273,17 +295,24 @@ SUBSYSTEM_DEF(ticker)
 	generate_excel_contracts(min(6 + round(minds.len / 5), 12))
 	generate_blackshield_contracts(min(6 + round(minds.len / 5), 12))
 	excel_check()
-	addtimer(CALLBACK(src, .proc/contract_tick), 15 MINUTES)
+	//blackshield_check() - does nothing FOR NOWWWW!!!! - likely ever
+	addtimer(CALLBACK(src, PROC_REF(contract_tick)), 15 MINUTES)
 
 	//start_events() //handles random events and space dust.
 	//new random event system is handled from the MC.
 
-	var/admins_number = 0
+	//	SOJOURN: discord bot configuration: START
+	/*var/admins_number = 0
 	for(var/client/C)
 		if(C.holder)
 			admins_number++
-	if(admins_number == 0)
+	if(admins_number == 0)*/
+	var/list/adm = get_admin_counts()
+	var/list/allmins = adm["present"]
+	if(!allmins.len)
 		send2adminirc("Round has started with no admins online.")
+		send2adminchat("Server", "Round [game_id ? "#[game_id]" : ""] has started[allmins.len ? "." : " with no active admins online!"]")
+	//	SOJOURN: discord bot configuration: END
 
 	return TRUE
 
@@ -403,7 +432,7 @@ SUBSYSTEM_DEF(ticker)
 			SSticker.minds |= player.mind
 
 /datum/controller/subsystem/ticker/proc/generate_contracts(count)
-	var/list/candidates = (subtypesof(/datum/antag_contract) - typesof(/datum/antag_contract/excel)- typesof(/datum/antag_contract/blackshield))
+	var/list/candidates = (subtypesof(/datum/antag_contract) - typesof(/datum/antag_contract/excel) - typesof(/datum/antag_contract/blackshield))
 	while(count--)
 		while(candidates.len)
 			var/contract_type = pick(candidates)
@@ -431,6 +460,10 @@ SUBSYSTEM_DEF(ticker)
 			if(C.unique)
 				candidates -= contract_type
 			break
+
+///datum/controller/subsystem/ticker/proc/blackshield_check()
+
+//	addtimer(CALLBACK(src, PROC_REF(blackshield_check)), 3 MINUTES)
 
 /datum/controller/subsystem/ticker/proc/generate_excel_contracts(count)
 	var/list/candidates = subtypesof(/datum/antag_contract/excel)
@@ -470,13 +503,13 @@ SUBSYSTEM_DEF(ticker)
 					marked_areas += 1
 		if (marked_areas >= 3)
 			M.complete()
-	addtimer(CALLBACK(src, .proc/excel_check), 3 MINUTES)
+	addtimer(CALLBACK(src, PROC_REF(excel_check)), 3 MINUTES)
 
 /datum/controller/subsystem/ticker/proc/contract_tick()
 	generate_contracts(1)
 	generate_blackshield_contracts(1)
 	generate_excel_contracts(1)
-	addtimer(CALLBACK(src, .proc/contract_tick), 15 MINUTES)
+	addtimer(CALLBACK(src, PROC_REF(contract_tick)), 15 MINUTES)
 
 /datum/controller/subsystem/ticker/proc/equip_characters()
 	var/captainless = TRUE
@@ -500,6 +533,15 @@ SUBSYSTEM_DEF(ticker)
 
 /datum/controller/subsystem/ticker/proc/declare_completion()
 	to_chat(world, "<br><br><br><H1>A round has ended!</H1>")
+	//	SOJOURN: discord bot configuration: START
+	message_args = list(
+		"game_id" = game_id,
+		"newline" = "\n"
+	)
+	send2chat(new /datum/tgs_message_content(format_message_named(config.message_announce_round_end, message_args)), config.channel_announce_end_game)
+	send2adminchat("Server", "Round just ended.")
+	//	SOJOURN: discord bot configuration: END
+
 	for(var/mob/Player in GLOB.player_list)
 		if(Player.mind && !isnewplayer(Player))
 			if(Player.stat != DEAD)
@@ -575,6 +617,7 @@ SUBSYSTEM_DEF(ticker)
 	command_announcement.Announce("Today's shift will be ending in [round(round_end_time/(1 MINUTE))] minute[round_end_time >= 1 MINUTE && round_end_time < 2 MINUTES ? "" : "s"]. Please finish up all current tasks and return all departmental equipment used.", "Shift End Call", new_sound = 'sound/misc/notice3.ogg')
 	automatic_restart_allowed = FALSE
 	scheduled_restart = world.time + round_end_time
+	rounddurationcountdown2text(round_end_time)
 
 /datum/controller/subsystem/ticker/proc/HasRoundStarted()
 	return current_state >= GAME_STATE_PLAYING

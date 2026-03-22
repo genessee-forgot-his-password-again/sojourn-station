@@ -1,7 +1,7 @@
 /datum/trade_station/cybermoebus
 	spawn_probability = 0 //were bugged
 	name_pool = list("FTS 'PentaOptium'" = "Free Trade Station 'PentaOptium'. \"Oh, you, I think I can sell you some cybernetics.\"")
-	assortiment = list(
+	inventory = list(
 		"Soteria" = list(
 			/obj/item/organ/external/robotic/moebius/l_arm,
 			/obj/item/organ/external/robotic/moebius/r_arm,
@@ -38,8 +38,8 @@
 			/obj/item/organ/external/robotic/blackshield/r_arm,
 			/obj/item/organ/external/robotic/blackshield/l_leg,
 			/obj/item/organ/external/robotic/blackshield/r_leg
-		),
-	)
+		)
+	)//No real better place to put this honestly
 
 	offer_types = list(
 		/obj/item/organ_module/active/simple/armblade = offer_data("implanted armblade", 300, 0),

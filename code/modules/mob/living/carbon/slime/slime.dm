@@ -16,6 +16,7 @@
 
 	see_in_dark = 8
 	update_slimes = 0
+	inherent_mutations = list(MUTATION_SLIME_BONE, MUTATION_BOTTOMLESS_BELLY, MUTATION_RAND_UNSTABLE)
 
 	// canstun and canweaken don't affect slimes because they ignore stun and weakened variables
 	// for the sake of cleanliness, though, here they are.
@@ -53,6 +54,7 @@
 	var/die_temperature = 50 // slime dies instantly when its bodytemperature is below this
 
 	///////////TIME FOR SUBSPECIES
+	research_value = 800
 
 	var/colour = "grey"
 	var/coretype = /obj/item/slime_extract/grey
@@ -62,7 +64,7 @@
 
 /mob/living/carbon/slime/New(var/location, var/colour="grey")
 
-	verbs += /mob/living/proc/ventcrawl
+	add_verb(src, /mob/living/proc/ventcrawl)
 
 	src.colour = colour
 	number = rand(1, 1000)
@@ -151,22 +153,17 @@
 /mob/living/carbon/slime/allow_spacemove()
 	return -1
 
-/mob/living/carbon/slime/Stat()
+/mob/living/carbon/slime/get_status_tab_items()
 	. = ..()
-
-	statpanel("Status")
-	stat(null, "Health: [round((health / maxHealth) * 100)]%")
-	stat(null, "Intent: [a_intent]")
-
-	if (client.statpanel == "Status")
-		stat(null, "Nutrition: [nutrition]/[get_max_nutrition()]")
-		if(amount_grown >= 10)
-			if(is_adult)
-				stat(null, "You can reproduce!")
-			else
-				stat(null, "You can evolve!")
-
-		stat(null,"Power Level: [powerlevel]")
+	. += "Health: [round((health / maxHealth) * 100)]%"
+	. += "Intent: [a_intent]"
+	. += "Nutrition: [nutrition]/[get_max_nutrition()]"
+	if(amount_grown >= 10)
+		if(is_adult)
+			. += "You can reproduce!"
+		else
+			. += "You can evolve!"
+	. += "Power Level: [powerlevel]"
 
 /mob/living/carbon/slime/adjustFireLoss(amount)
 	..(-abs(amount)) // Heals them
@@ -174,9 +171,15 @@
 	return
 
 /mob/living/carbon/slime/bullet_act(var/obj/item/projectile/Proj)
-	attacked += 10
+	if (!(Proj.testing))
+		attacked += 10
+	//Fast return for this as we always hit and always kill
+	if(istype(Proj, /obj/item/projectile/slime_death))
+		death() //We just die
+		return TRUE
 	..(Proj)
-	handle_regular_status_updates()
+	if (!(Proj.testing))
+		handle_regular_status_updates()
 	return 0
 
 /mob/living/carbon/slime/emp_act(severity)
@@ -282,7 +285,7 @@
 
 			G.synch()
 
-			LAssailant = M
+			LAssailant_weakref = WEAKREF(M)
 
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 			visible_message(SPAN_WARNING("[M] has grabbed [src] passively!"))

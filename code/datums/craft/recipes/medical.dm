@@ -3,11 +3,19 @@
 	related_stats = list(STAT_COG)
 
 /datum/craft_recipe/medical/bandage
-	name = "bandages"
+	name = "bandages (cloth)"
 	result = /obj/item/stack/medical/bruise_pack/handmade
 	icon_state = "clothing"
 	steps = list(
-		list(CRAFT_MATERIAL, 5, MATERIAL_CLOTH, "time" = 15),
+		list(CRAFT_MATERIAL, 4, MATERIAL_CLOTH, "time" = 15),
+	)
+
+/datum/craft_recipe/medical/bandage_silk
+	name = "bandages (silk)"
+	result = /obj/item/stack/medical/bruise_pack/handmade
+	icon_state = "clothing"
+	steps = list(
+		list(CRAFT_MATERIAL, 2, MATERIAL_SILK, "time" = 15),
 	)
 
 /datum/craft_recipe/medical/silkointment
@@ -17,6 +25,22 @@
 		list(CRAFT_MATERIAL, 5, MATERIAL_SILK, "time" = 30),
 	)
 
+/datum/craft_recipe/medical/rag
+	name = "rag from clothing"
+	result = /obj/item/reagent_containers/glass/rag
+	icon_state = "clothing"
+	steps = list(
+		list(/obj/item/clothing, 1, "time" = 30)
+	)
+
+/datum/craft_recipe/medical/rag/alt
+	name = "rag from cloth"
+	result = /obj/item/reagent_containers/glass/rag
+	icon_state = "clothing"
+	steps = list(
+		list(CRAFT_MATERIAL, 3, MATERIAL_CLOTH, "time" = 15),
+	)
+
 /datum/craft_recipe/medical/blood_pack
 	name = "blood pack"
 	result = /obj/item/reagent_containers/blood/empty
@@ -24,9 +48,49 @@
 		list(CRAFT_MATERIAL, 1, MATERIAL_PLASTIC)
 	)
 
+/datum/craft_recipe/medical/bottle
+	name = "bottle"
+	result = /obj/item/reagent_containers/glass/bottle
+	steps = list(
+		list(CRAFT_MATERIAL, 1, MATERIAL_GLASS),
+		list(QUALITY_WELDING, 10, 70)
+	)
+
+/datum/craft_recipe/medical/potion_bottle
+	name = "elegant bottle"
+	result = /obj/item/reagent_containers/glass/bottle/potion
+	steps = list(
+		list(CRAFT_MATERIAL, 1, MATERIAL_GLASS),
+		list(QUALITY_WELDING, 10, 70)
+	)
+
+/datum/craft_recipe/medical/pointy_bottle
+	name = "tincture bottle"
+	result = /obj/item/reagent_containers/glass/bottle/tincture
+	steps = list(
+		list(CRAFT_MATERIAL, 1, MATERIAL_GLASS),
+		list(QUALITY_WELDING, 10, 70)
+	)
+
+/datum/craft_recipe/medical/beaker
+	name = "beaker"
+	result = /obj/item/reagent_containers/glass/beaker
+	steps = list(
+		list(CRAFT_MATERIAL, 1, MATERIAL_GLASS),
+		list(QUALITY_WELDING, 10, 70)
+	)
+
+/datum/craft_recipe/medical/beaker_large
+	name = "large beaker"
+	result = /obj/item/reagent_containers/glass/beaker/large
+	steps = list(
+		list(CRAFT_MATERIAL, 2, MATERIAL_GLASS),
+		list(QUALITY_WELDING, 10, 70)
+	)
+
 /datum/craft_recipe/medical/bone_braces
 	name = "bone braces"
-	result = /obj/item/bone_brace
+	result = /obj/item/modification/organ/internal/electromechanical/bone_braces
 	steps = list(
 		list(CRAFT_MATERIAL, 3, MATERIAL_PLASTEEL),
 		list(QUALITY_WELDING, 20, 50),

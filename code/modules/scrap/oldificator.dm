@@ -22,8 +22,6 @@
 	 "Looks completely ruined.",
 	 "It is difficult to make out what this thing once was.",
 	 "A relic from a bygone age.")
-
-	germ_level = pick(80,110,160)
 	price_tag *= RAND_DECIMAL(0.1, 0.6) //Tank the price of it
 
 	//Deplete matter and matter_reagents
@@ -48,6 +46,8 @@
 		return
 	name = initial(name)
 	color = initial(color)
+	desc = initial(desc)
+	price_tag = initial(price_tag)
 	..()
 
 /obj/item/make_old()
@@ -59,63 +59,60 @@
 
 /obj/item/tool/make_old()
 	.=..()
-	if (.)
-		adjustToolHealth(-(rand(20, 60) * degradation))
-		precision -= rand(0,10)
-		workspeed = workspeed*(rand(5,10)/10) //50% less speed max
-		degradation += rand(0,4)
-		health = rand(10, max_health)
+	if(.)
+		var/list/trash_mods = TRASH_TOOLMODS
+		while(trash_mods.len)
+			var/trash_mod_path = pick_n_take(trash_mods)
+			var/obj/item/trash_mod = new trash_mod_path
+			if(LEGACY_SEND_SIGNAL(trash_mod, COMSIG_IATTACK, src, null))
+				break
+			QDEL_NULL(trash_mod)
+	health = rand(10, max_health)
+	refresh_upgrades() //So we dont null upgrades.
+	if(prob(60) && cell)
+		QDEL_NULL(cell)
+	if(prob(60) && use_fuel_cost)
+		var/random = rand(0, max_fuel)
+		consume_fuel(random, forced = TRUE)
+		update_icon()
 
-/obj/item/tool/make_young()
-	if(!oldified)
-		return
-	workspeed = initial(workspeed)
-	precision = initial(precision)
-	degradation = initial(degradation)
-	refresh_upgrades() //So we dont null upgrades
-	..()
+/obj/item/device/scanner/make_old()
+	.=..()
+	if(prob(60))
+		QDEL_NULL(cell)
+
+/obj/item/device/t_scanner/make_old()
+	.=..()
+	if(prob(60))
+		QDEL_NULL(cell)
 
 /obj/item/gun/make_old()
 	. = ..()
-	if(. && prob(60))
+	refresh_upgrades() //So we dont null upgrades.
+
+//Two rolls for bad mods!
+/obj/item/gun/projectile/make_old()
+	. = ..()
+	if(.)
 		var/list/trash_mods = TRASH_GUNMODS
 		while(trash_mods.len)
 			var/trash_mod_path = pick_n_take(trash_mods)
 			var/obj/item/trash_mod = new trash_mod_path
-			if(SEND_SIGNAL(trash_mod, COMSIG_IATTACK, src, null))
+			if(LEGACY_SEND_SIGNAL(trash_mod, COMSIG_IATTACK, src, null))
 				break
 			QDEL_NULL(trash_mod)
-	else
-		fire_delay+= rand(0,3)
-		recoil_buildup+= rand(0,10)
-		damage_multiplier = damage_multiplier*(rand(8,10)/10) //20% less damage max
-		penetration_multiplier = penetration_multiplier*(rand(8,10)/10) //20% less damage penetration
 	refresh_upgrades() //So we dont null upgrades.
-
-/obj/item/gun/make_young()
-	if(!oldified)
-		return
-	fire_delay = initial(fire_delay)
-	recoil_buildup = initial(recoil_buildup)
-	damage_multiplier = initial(damage_multiplier)
-	penetration_multiplier = initial(penetration_multiplier)
-	refresh_upgrades() //So we dont null upgrades
-	..()
 
 /obj/item/gun/energy/make_old()
 	. = ..()
-	charge_cost+= rand(0,250)
-	overcharge_max-= rand(0,5) //This is infact a number you want to go up
-	overcharge_rate-= rand(0,5)
-
-/obj/item/gun/energy/make_young()
-	if(!oldified)
-		return
-	charge_cost = initial(charge_cost)
-	overcharge_max = initial(overcharge_max)
-	overcharge_rate = initial(overcharge_rate)
-	refresh_upgrades() //So we dont null upgrades. Do it again...
-	..()
+	if(.)
+		var/list/trash_mods = TRASH_GUNMODS_ENERGY
+		while(trash_mods.len)
+			var/trash_mod_path = pick_n_take(trash_mods)
+			var/obj/item/trash_mod = new trash_mod_path
+			if(LEGACY_SEND_SIGNAL(trash_mod, COMSIG_IATTACK, src, null))
+				break
+	refresh_upgrades() //So we dont null upgrades.
 
 /obj/item/storage/make_old()
 	.=..()
@@ -162,9 +159,17 @@
 			R.volume = rand(0, R.volume)
 		reagents?.add_reagent("toxin", rand(0, actual_volume - reagents?.total_volume))
 
+//Old chemical bottles also hide their reagents
+/obj/item/reagent_containers/glass/bottle/make_old(low_quality_oldification)
+	.=..()
+	if(.)
+		name = "[pick("scratched", "cracked", "dirty", "chipped")] bottle"
+		desc = "A small old glass bottle."
+		if(display_label)
+			desc += " The label is unreadable."
 
 //Sealed survival food, always edible
-/obj/item/reagent_containers/food/snacks/liquidfood/make_old()
+/obj/item/reagent_containers/snacks/openable/liquidfood/make_old()
 	return
 
 /obj/item/ammo_magazine/make_old()
@@ -201,10 +206,10 @@
 /obj/item/stack/rods/make_old()
 	return
 
-/obj/item/ore/make_old()
+/obj/item/stack/ore/make_old()
 	return
 
-/obj/item/computer_hardware/hard_drive/portable/design/make_old()
+/obj/item/pc_part/drive/disk/design/make_old()
 	..()
 	if(license >= 1)
 		license = round(license / pick(1, 1, 1, 1.1, 1.1, 1.1, 1.1, 1.2, 1.3)) //This looses a lot when unlucky
@@ -259,17 +264,15 @@
 		if(prob(30))
 			slowdown += pick(0.5, 0.5, 1, 1.5)
 		if(prob(40))
-			if(islist(armor)) //Possible to run before the initialize proc, thus having to modify the armor list
-				for(var/i in armor)
-					armor[i] = rand(0, armor[i])
-			else if(is_proper_datum(armor))
+			if(!armor) //Possible to run before the initialize proc, thus having to modify the armor list
+				for(var/i in armor_list)
+					armor_list[i] = rand(0, armor_list[i])
+			else
 				armor = armor.setRating(melee = rand(0, armor.getRating(ARMOR_MELEE)), bullet =  rand(0, armor.getRating(ARMOR_BULLET)), energy = rand(0, armor.getRating(ARMOR_ENERGY)), bomb = rand(0, armor.getRating(ARMOR_BOMB)), bio = rand(0, armor.getRating(ARMOR_BIO)), rad = rand(0, armor.getRating(ARMOR_RAD)))
 		if(prob(40))
 			heat_protection = rand(0, round(heat_protection * 0.5))
 		if(prob(40))
 			cold_protection = rand(0, round(cold_protection * 0.5))
-		if(prob(20))
-			contaminate()
 		if(prob(15))
 			add_blood()
 		if(prob(60)) // I mean, the thing is ew gross.
@@ -343,6 +346,14 @@
 		if(prob(75))
 			darkness_view = -1
 
+/obj/item/clothing/glasses/make_young()
+	if(!oldified)
+		return
+	vision_flags = initial(vision_flags)
+	darkness_view = initial(darkness_view)
+	refresh_upgrades() //So we dont null upgrades.
+	..()
+
 /obj/item/device/lighting/glowstick/make_old()
 	.=..()
 	if (.)
@@ -392,6 +403,12 @@
 	if (.)
 		if(hud && prob(75))
 			hud = new /obj/item/clothing/glasses/hud/broken
+
+/obj/item/clothing/glasses/sechud/make_young()
+	.=..()
+	if (.)
+		if(hud)
+			hud = new /obj/item/clothing/glasses/hud/security
 
 // This code is fucking cursed and responsible for roughly 50% of the round run-times and crashed when booting up the server. No idea what cursed shit eris did, leave this commented out. -Kaz
 /*

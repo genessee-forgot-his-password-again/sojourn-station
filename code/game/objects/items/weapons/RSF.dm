@@ -81,14 +81,14 @@ RSF
 			product = new /obj/item/clothing/mask/smokable/cigarette()
 			used_energy = 10
 		if(2)
-			product = new /obj/item/reagent_containers/food/drinks/drinkingglass()
-			used_energy = 50
+			product = new /obj/item/reagent_containers/drinks/drinkingglass()
+			used_energy = 12
 		if(3)
 			product = new /obj/item/paper()
 			used_energy = 10
 		if(4)
 			product = new /obj/item/pen()
-			used_energy = 50
+			used_energy = 12
 		if(5)
 			product = new /obj/item/storage/pill_bottle/dice()
 			used_energy = 200

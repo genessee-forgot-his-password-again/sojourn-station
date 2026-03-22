@@ -3,7 +3,7 @@ Boss of this maints.
 Has ability of every roach.
 */
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce
+/mob/living/carbon/superior/psi/wasonce
 	name = "Was Once"
 	desc = "A burbling mass of bones, flesh, and regret. Its strength is matched only by the maddened suffering it endures."
 	icon = 'icons/mob/genetics/wasonce.dmi'
@@ -38,7 +38,7 @@ Has ability of every roach.
 
 	attacktext = "delivered a crushing blow to"
 
-	armor = list(melee = 60, bullet = 30, energy = 0, bomb = 20, bio = 50, rad = 100, agony = 100)
+	armor = list(melee = 15, bullet = 7, energy = 0, bomb = 20, bio = 50, rad = 100, agony = 100)
 
 	var/knockdown_odds = 60 //Maybe stay away from it
 
@@ -47,9 +47,10 @@ Has ability of every roach.
 	melee_damage_upper = 35
 	attack_sound = 'sound/xenomorph/alien_footstep_charge1.ogg'
 	move_to_delay = 6
-	mob_size =  3  // The same as Hivemind Tyrant
+	mob_size =  MOB_LARGE  // The same as Hivemind Tyrant
 	status_flags = 0
 	mouse_opacity = MOUSE_OPACITY_OPAQUE // Easier to click on in melee, they're giant targets anyway
+	phaser = TRUE //WERE REALLLLL
 
 	life_cycles_before_sleep = 3000 //Keep this awake for longer than the regular mob.
 
@@ -74,7 +75,7 @@ Has ability of every roach.
 	var/lethal_to_captive = FALSE
 	var/real_mutator = TRUE
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce/New(var/mob/living/victim)
+/mob/living/carbon/superior/psi/wasonce/New(var/mob/living/victim)
 	..()
 
 	injector = new(src)
@@ -85,7 +86,6 @@ Has ability of every roach.
 		akira = victim
 		//Kill them properly. - 300 damage to bypass most health mods, this should kill anyone even power gamers with best stats, best perks.
 		akira.adjustBruteLoss(80)
-		akira.adjustToxLoss(220)
 		akira.adjustCloneLoss(100)
 
 		name = "Was once [akira]"
@@ -104,14 +104,25 @@ Has ability of every roach.
 	playsound(src.loc, 'sound/voice/shriek1.ogg', 100, 1, 8, 8)
 
 // NOM
-/mob/living/carbon/superior_animal/psi_monster/wasonce/UnarmedAttack(atom/A, proximity)
+/mob/living/carbon/superior/psi/wasonce/UnarmedAttack(atom/A, proximity)
 	if(isliving(A))
 		var/mob/living/L = A
 		var/mob/living/carbon/human/H
 		if(ishuman(L))
 			H = L
 		if(H)
+
 			if (H.paralysis || H.sleeping || H.resting || H.lying || H.weakened)
+				//Likely the most useful power to block
+				if(H.stats.getPerk(PERK_SHIN_DEEMAINTS))
+					var/obj/item/implant/core_implant/cruciform/CI
+					CI = H.get_core_implant(/obj/item/implant/core_implant/cruciform)
+					if(CI && CI.active)
+						if(CI.power >= 8) //Do to being blocking being eighted
+							CI.power -= 8
+							. = ..()
+							return
+
 				H.visible_message(SPAN_DANGER("\the [src] absorbs \the [L] into its mass!"))
 				H.loc = src
 				maxHealth += 250
@@ -127,7 +138,7 @@ Has ability of every roach.
 				L.visible_message(SPAN_DANGER("\the [src] uses its mass to knock over \the [L]!"))
 	. = ..()
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce/death(gibbed, deathmessage = "shreeks in its death as it voilently mutate into a explostion of gibs!")
+/mob/living/carbon/superior/psi/wasonce/death(gibbed, deathmessage = "shrieks in its death as it violently bursts into a shower of gibs!")
 	for(var/mob/living/drop_victim in captives)
 		drop_victim.loc = get_turf(src)
 	captives = list()
@@ -139,22 +150,36 @@ Has ability of every roach.
 	..()
 	qdel(src) //Delete you!
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce/Life()
+/mob/living/carbon/superior/psi/wasonce/Life()
 
+	if(captives.len)
+		for(var/mob/living/carbon/human/captive in captives)
+			if(captive.loc != src)
+				captives.Remove(captive)
 
 	if(captives.len && prob(15) && real_mutator)
 		var/fail_mutation_path = pick(injector.getFailList())
 		var/datum/genetics/mutation/injecting_mutation = new fail_mutation_path()
 		injector.addMutation(injecting_mutation)
 		for(var/mob/living/carbon/human/captive in captives)
+
+			//Block injecting mutations into are captive(s) if even once of us has this.
+			if(captive.stats.getPerk(PERK_SHIN_DEEMAINTS))
+				var/obj/item/implant/core_implant/cruciform/CI
+				CI = captive.get_core_implant(/obj/item/implant/core_implant/cruciform)
+				if(CI && CI.active)
+					if(CI.power >= 1.8) //Do to being blocking being eighted
+						CI.power -= 1.8
+						break
+
 			if(captive.species.reagent_tag == IS_SYNTHETIC && (captive.getBruteLoss() < 300))
 				to_chat(captive, SPAN_DANGER(pick("The immense strength of the creature is crushing. Wasn't... Flesh supposed to be weak?")))
 				captive.adjustBruteLossByPart(15, pick(captive.organs))
 			else
-				injector.inject_mutations(captive, TRUE)
 				to_chat(captive, SPAN_DANGER(pick(
 					"The mass changes you...", "Veins slip into your flesh and merge with your own", "Parts of yourself fuse to the roiling flesh surrounding you.",
 					"You feel yourself breathing through multiple lungs.", "You feel yourself assimilating with the whole.")))
+				injector.inject_mutations(captive, TRUE)
 		injector.removeAllMutations()
 	if(lethal_to_captive && captives.len && prob(15))
 		for(var/mob/living/captive in captives)
@@ -162,7 +187,7 @@ Has ability of every roach.
 			captive.adjustFireLoss(5)
 	..()
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce/return_air_for_internal_lifeform()
+/mob/living/carbon/superior/psi/wasonce/return_air_for_internal_lifeform()
 	//assume that the cryo cell has some kind of breath mask or something that
 	//draws from the cryo tube's environment, instead of the cold internal air.
 	if(loc)
@@ -170,20 +195,22 @@ Has ability of every roach.
 	else
 		return null
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce/findTarget()
+/mob/living/carbon/superior/psi/wasonce/findTarget()
 	var/atom/best_target = null
 	var/distance_weighting = 0
 
-	for(var/atom/O in getPotentialTargets())
-		var/priority = isValidAttackTarget(O)
-		if (priority)
-			var/temp_weighting = priority * get_dist(src, O)
-			if(!distance_weighting || distance_weighting < temp_weighting)
-				distance_weighting = temp_weighting
-				best_target = O
-	return best_target
+	var/turf/our_turf = get_turf(src)
+	if (our_turf) //If we're not in anything, continue
+		for(var/mob/living/O in hearers(src, viewRange))
+			var/priority = isValidAttackTarget(O)
+			if (priority)
+				var/temp_weighting = priority * get_dist(src, O)
+				if(!distance_weighting || distance_weighting < temp_weighting)
+					distance_weighting = temp_weighting
+					best_target = O
+		return best_target
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce/isValidAttackTarget(var/atom/O)
+/mob/living/carbon/superior/psi/wasonce/isValidAttackTarget(var/atom/O)
 	if (isliving(O))
 		var/mob/living/L = O
 		if((L.health <= (ishuman(L) ? HEALTH_THRESHOLD_CRIT : 0)) || (!attack_same && (L.faction == src.faction)) || (L in friends))
@@ -205,5 +232,5 @@ Has ability of every roach.
 		var/obj/mecha/M = O
 		return isValidAttackTarget(M.occupant) / 4
 
-/mob/living/carbon/superior_animal/psi_monster/wasonce/slip(var/slipped_on)
+/mob/living/carbon/superior/psi/wasonce/slip(var/slipped_on)
 	return FALSE

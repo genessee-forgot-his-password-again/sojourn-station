@@ -34,7 +34,7 @@ ADMIN_VERB_ADD(/client/proc/giveruntimelog, R_ADMIN, FALSE)
 		to_chat(src, "<font color='red'>Error: giveruntimelog(): Client not found.</font>")
 		return
 
-	target.verbs |= /client/proc/getruntimelog
+	add_verb(target, /client/proc/getruntimelog)
 	to_chat(target, "<font color='red'>You have been granted access to runtime logs. Please use them responsibly or risk being banned.</font>")
 	return
 
@@ -96,7 +96,7 @@ ADMIN_VERB_ADD(/client/proc/getcurrentlogs, R_ADMIN, FALSE)
 	message_admins("[key_name_admin(src)] accessed file: [path]")
 	switch(alert("View (in game), Open (in your system's text editor), or Download?", path, "View", "Open", "Download"))
 		if ("View")
-			src << browse("<pre style='word-wrap: break-word;'>[html_encode(file2text(file(path)))]</pre>", list2params(list("window" = "viewfile.[path]")))
+			src << browse(HTML_SKELETON("<pre style='word-wrap: break-word;'>[html_encode(file2text(file(path)))]</pre>"), list2params(list("window" = "viewfile.[path]")))
 		if ("Open")
 			src << run(file(path))
 		if ("Download")

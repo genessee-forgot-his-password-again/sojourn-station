@@ -133,6 +133,20 @@ Freeing yourself is much harder than freeing someone else. Calling for help is a
 	if (C.has_quality(QUALITY_PRYING))
 		attempt_release(user, C)
 		return
+
+	//Disarming a trap with rods or gripper, qol for borgs
+	if(!buckled_mob && deployed)
+		if(istype(C, /obj/item/stack/rods) || istype(C, /obj/item/gripper))
+			if (do_after(user, 15)) //Faster to disarm via just stabbing it with rods/triggering with a gripper
+				user.visible_message(
+					SPAN_DANGER("[user] has disarmed \the [src]."),
+					SPAN_DANGER("You have disarmed \the [src]!")
+					)
+				deployed = FALSE
+				anchored = FALSE
+				playsound(src, 'sound/effects/impacts/beartrap_shut.ogg', 10, 1,-2,-2)//Fairly quiet snapping sound, it was controled
+				update_icon()
+
 	.=..()
 
 /obj/item/beartrap/attack_hand(mob/user as mob)
@@ -156,7 +170,7 @@ Freeing yourself is much harder than freeing someone else. Calling for help is a
 		return
 	.=..()
 
-/obj/item/beartrap/attack_generic(var/mob/user, var/damage)
+/obj/item/beartrap/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if (buckled_mob)
 		attempt_release(user)
 		return
@@ -232,7 +246,7 @@ Freeing yourself is much harder than freeing someone else. Calling for help is a
 	var/mob/living/L = buckled_mob
 	//armour
 
-	if( L.damage_through_armor(fail_damage, BRUTE, target_zone, ARMOR_MELEE, used_weapon = src) )
+	if( L.damage_through_armor(fail_damage, BRUTE, target_zone, ARMOR_MELEE, used_weapon = src,  armor_divisor = 1) )
 	//No damage - no stun
 		L.Stun(4) //A short stun prevents spamming failure attempts
 		shake_camera(user, 2, 1)
@@ -245,10 +259,36 @@ Freeing yourself is much harder than freeing someone else. Calling for help is a
 
 	playsound(src, 'sound/effects/impacts/beartrap_shut.ogg', 10, 1,-2,-2)//Fairly quiet snapping sound
 
+	if (user == buckled_mob)
+		to_chat(user, SPAN_NOTICE("Freeing yourself is very difficult. Perhaps you should call for help?"))
+
 	if (difficulty)
-		to_chat(user, SPAN_NOTICE("You failed to release the trap. There was a [round(100 - difficulty)]% chance of success"))
+		if(ishuman(user))
+			var/mob/living/carbon/human/H = user
+			if(!H.stats.getPerk(PERK_NO_OBFUSCATION))
+				var/obfuscation_word = obfuscation(difficulty)
+				to_chat(H, SPAN_NOTICE("You failed to release the trap. There is [obfuscation_word] chance of success"))
+			else
+				to_chat(H, SPAN_NOTICE("You failed to release the trap. There was a [difficulty]% chance of failer"))
+		else
+			to_chat(user, SPAN_NOTICE("You failed to release the trap. There was a [round(100 - difficulty)]% chance of success"))
+
 		if (user == buckled_mob)
 			to_chat(user, SPAN_NOTICE("Freeing yourself is very difficult. Perhaps you should call for help?"))
+
+/obj/item/beartrap/proc/obfuscation(var/difficulty)
+	var/wordplay = "impossable to fail"
+	if(difficulty >= 0)
+		wordplay = "really good"
+	if(difficulty >= 25)
+		wordplay = "good"
+	if(difficulty >= 50)
+		wordplay = "unlikely"
+	if(difficulty >= 75)
+		wordplay = "not much"
+	if(difficulty >= 100)
+		wordplay = "no"
+	return wordplay
 
 /obj/item/beartrap/proc/attack_mob(mob/living/L)
 	//Small mobs won't trigger the trap
@@ -267,16 +307,20 @@ Freeing yourself is much harder than freeing someone else. Calling for help is a
 
 
 	//armour
-	if( L.damage_through_armor(fail_damage, BRUTE, target_zone, ARMOR_MELEE, used_weapon = src) )
+	if( L.damage_through_armor(base_damage, BRUTE, target_zone, ARMOR_MELEE, used_weapon = src,  armor_divisor = 1) )
 	//No damage - no stun
 		L.Stun(4) //A short stun prevents spamming failure attempts
 		shake_camera(L, 2, 1)
 
 	//trap the victim in place
 	set_dir(L.dir)
-	can_buckle = TRUE
-	buckle_mob(L)
-	to_chat(L, SPAN_DANGER("The steel jaws of \the [src] bite into you, trapping you in place!"))
+	if(L.mob_size < MOB_LARGE) //large mobs dont get stuck, but do take additional damage
+		can_buckle = TRUE
+		buckle_mob(L)
+		to_chat(L, SPAN_DANGER("The steel jaws of \the [src] bite into you, trapping you in place!"))
+	else
+		//If you are using it on a big mob you can ue the extra damage
+		L.damage_through_armor(base_damage, BRUTE, target_zone, ARMOR_MELEE, used_weapon = src,  armor_divisor = 1)
 
 	//If the victim is nonhuman and has no client, start processing.
 	if (!ishuman(L) && !L.client)
@@ -292,7 +336,7 @@ Very rarely it might escape
 
 	//If its dead or gone, stop processing
 	//Also stop if a player took control of it, they can try to free themselves
-	if (QDELETED(L) || L.is_dead() || L.loc != loc || L.client)
+	if (QDELETED(L) || is_dead(L) || L.loc != loc || L.client)
 		release_mob()		// Reset the trap properly if the roach was gibbed during the processing.
 		return PROCESS_KILL
 
@@ -389,6 +433,53 @@ Very rarely it might escape
 	qdel(src)
 
 /**********************************
+	Wooden Trible Trap
+**********************************/
+/*
+	Currently admin only, used for events as it has a fancy toxin
+	Massively lowered stats and breaks almost instantly
+	Has integrity that depletes and it will eventually break
+*/
+/obj/item/beartrap/trible_vox
+	name = "wooden trap"
+	desc = "A classic shallow pit trap consisting of two planks of wood wrapped in thorned vines. It uses an unfortunate person's weight to drive the thorns into their leg. \
+	Useless once removed moved from a  pit. The vines have been dunked in a foul smelling substance."
+	icon_state = "woodtrap"
+	price_tag = 150 //Kros loves this kinda stuff maybe, or any real collectors
+	base_damage = 20
+	fail_damage = 10
+	base_difficulty = 50
+	matter = list(MATERIAL_WOOD = 4)
+	var/integrity = 20
+
+//It takes 8 damage whenever it snaps onto a mob
+/obj/item/beartrap/trible_vox/attack_mob(mob/living/L)
+	if(L?.faction == "vox_tribe")
+		return
+	.=..()
+	integrity -= 8
+	check_integrity()
+	L.reagents.add_reagent("slow_toxin", integrity)
+
+/obj/item/beartrap/trible_vox/fail_attempt(var/user, var/difficulty)
+	.=..()
+	integrity -= rand(6, 10)
+	check_integrity()
+
+/obj/item/beartrap/trible_vox/proc/check_integrity()
+	if (prob(integrity))
+		return
+
+	break_apart()
+
+/obj/item/beartrap/trible_vox/proc/break_apart()
+	visible_message(SPAN_DANGER("\the [src] shatters into fragments!"))
+	new /obj/item/stack/material/wood(loc, 10)
+	new /obj/item/material/shard/wood(loc)
+	new /obj/item/material/shard/wood(loc)
+	qdel(src)
+
+/**********************************
 	Armed Subtypes
 **********************************/
 /*
@@ -401,5 +492,9 @@ Very rarely it might escape
 	anchored = TRUE
 
 /obj/item/beartrap/makeshift/armed
+	deployed = TRUE
+	anchored = TRUE
+
+/obj/item/beartrap/trible_vox/armed
 	deployed = TRUE
 	anchored = TRUE

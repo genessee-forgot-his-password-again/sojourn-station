@@ -4,7 +4,7 @@
 	nanomodule_path = /datum/nano_module/program/point_miner
 	program_icon_state = "comm_logs"
 	program_key_state = "rd_key"
-	program_menu_icon = "cart"
+	program_menu_icon = "sim-card"
 	extended_desc = "A SI devolped tool used to sort large databases of filed research reports to gather RnD points onto a local hardrives or disk."
 	size = 50
 	available_on_ntnet = FALSE
@@ -29,15 +29,20 @@
 	. = ..()
 	if(!running)
 		return
-	var/obj/item/computer_hardware/processor_unit/CPU = computer.processor_unit
-	var/obj/item/computer_hardware/hard_drive/HD = computer.hard_drive
+	var/obj/item/pc_part/processor_unit/CPU = computer.processor_unit
+	var/obj/item/pc_part/drive/HD = computer.hard_drive
+	var/obj/item/pc_part/drive/disk/PD = computer.portable_drive
 
 	if(!istype(CPU) || !CPU.check_functionality() || !istype(HD))
 		message = "A fatal hardware error has been detected."
 		return
 
-	if(HD.used_capacity >= HD.max_capacity)
-		message = "Storage hard drive capacity error, clear space."
+	if(!istype(PD) || !PD.check_functionality())
+		message = "!!ERROR!! No Portal Data Disk! Please Insert Data Disk."
+		return
+
+	if(PD.used_capacity >= PD.max_capacity)
+		message = "Storage Data Disk capacity error, clear space."
 		return
 
 	progress += get_speed()
@@ -45,8 +50,11 @@
 
 	if(progress >= target_progress)
 		reset()
+		computer.visible_message(SPAN_NOTICE("[computer] state, \"Decryption Succesfully Completed.\""))
+		playsound(computer.loc, 'sound/machines/ping.ogg', 50, 1 -3)
 		message = "Successfully collected data points and saved metadata results."
-		HD.store_file(new/datum/computer_file/binary/research_points())
+		var/datum/computer_file/binary/research_points/RP = new(target_progress/1000) // 1 Size = 1000 points.
+		PD.store_file(RP)
 
 /datum/computer_file/program/point_miner/proc/reset()
 	running = FALSE
@@ -66,7 +74,8 @@
 	if(href_list["PRG_execute"])
 		if(running)
 			return 1
-		var/obj/item/computer_hardware/processor_unit/CPU = computer.processor_unit
+		var/obj/item/pc_part/processor_unit/CPU = computer.processor_unit
+		operator_skill = get_operator_skill(usr, STAT_COG)
 		if(!istype(CPU) || !CPU.check_functionality())
 			message = "A fatal hardware error has been detected."
 			return
@@ -75,7 +84,7 @@
 		return 1
 
 
-/datum/nano_module/program/point_miner/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state = GLOB.default_state)
+/datum/nano_module/program/point_miner/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state = GLOB.default_state)
 	if(!ntnet_global)
 		return
 	var/datum/computer_file/program/point_miner/PRG = program

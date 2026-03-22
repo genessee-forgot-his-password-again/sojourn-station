@@ -21,9 +21,9 @@
 
 /obj/effect/decal/cleanable/greenglow/Initialize(mapload, ...)
 	. = ..()
-	START_PROCESSING(SSobj, src)
+	AddRadSource(src, 2, 4) // Values taken from the process proc below
 	set_light(1.5 ,1, "#00FF7F")
-	addtimer(CALLBACK(GLOBAL_PROC, .proc/qdel, src), 120 SECONDS)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(qdel), src), 120 SECONDS)
 
 /obj/effect/decal/cleanable/greenglow/Process()
 	. = ..()
@@ -31,6 +31,13 @@
 		if(prob(2))
 			to_chat(l, SPAN_WARNING("Your skin itches."))
 		l.apply_effect(2, IRRADIATE)
+
+/obj/effect/decal/cleanable/greenglow/bile/Process()
+	. = ..()
+	for(var/mob/living/carbon/l in range(4))
+		if(prob(25))
+			to_chat(src, SPAN_WARNING("The air begins to feel warm."))
+		l.apply_effect(0.5, IRRADIATE) //we spit out THREE of these.
 
 /obj/effect/decal/cleanable/dirt
 	name = "dirt"
@@ -135,6 +142,18 @@
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "greenglow"
 
+/obj/effect/decal/cleanable/greenglow/bile
+	name = "glowing bile"
+	desc = "A small puddle of glowing green bile, it utterly reeks. Just being near it makes you feel a bit warmer."
+
+
+/obj/effect/decal/cleanable/slimecorpse // Slimepeople remains
+	name = "runny slime pool"
+	icon = 'icons/effects/effects.dmi'
+	desc = "Liquified remains of what appears to have been a slime lifeform before. Its composition is too thin to be able to gellify once more into form..."
+	icon_state = "toxic_puddle"
+	anchored = TRUE
+
 /obj/effect/decal/cleanable/filth
 	name = "filth"
 	desc = "Disgusting. Someone from last shift didn't do their job properly."
@@ -180,8 +199,7 @@
 	icon = 'icons/effects/blood.dmi'
 	icon_state = "vomit_1"
 	random_icon_states = list("vomit_1", "vomit_2", "vomit_3", "vomit_4")
-	var/list/viruses = list()
-	sanity_damage = 1
+	sanity_damage = 0.5
 
 	Destroy()
 		. = ..()

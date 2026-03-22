@@ -34,7 +34,7 @@
 
 		/*
 		Further purging of signals for interacting with things -Hex
-		SEND_SIGNAL(src, COMSIG_GLASS_LENSES_REMOVED, usr, src)
+		LEGACY_SEND_SIGNAL(src, COMSIG_GLASS_LENSES_REMOVED, usr, src)
 		*/
 		have_lenses = FALSE
 	else
@@ -91,8 +91,8 @@
 
 /obj/item/clothing/glasses/attachable_lenses/explosive/handle_insertion(obj/item/clothing/glasses/target, mob/living/carbon/human/inserter)
 	..()
-	RegisterSignal(target, COMSIG_CLOTH_EQUIPPED, .proc/handle_boom)
-	RegisterSignal(target, COMSIG_GLASS_LENSES_REMOVED, .proc/handle_removal)
+	RegisterSignal(target, COMSIG_CLOTH_EQUIPPED, PROC_REF(handle_boom))
+	RegisterSignal(target, COMSIG_GLASS_LENSES_REMOVED, PROC_REF(handle_removal))
 	if(target.is_worn()) // Sucks to be you.
 		handle_boom(inserter)
 

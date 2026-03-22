@@ -1,45 +1,55 @@
 /datum/trade_station/asterstradecapital
 	name_pool = list(
-		"FTS 'Solnishko'" = "Free Trade Station 'Solnishko', they sending message \"Zdravstvuite, this is the Trade Station 'Solaris'. We have all of the best products on sale on the frontier! You couldn't get better prices!.\ Everything for sale here, don't be afraid to come aboard and check our wares!\"",
+		"FTS 'Solnishko'" = "Free Trade Station 'Solnishko', they're sending a message \"Zdravstvuite, this is the Trade Station 'Solnishko'. We have all of the best products for sale on the frontier! You couldn't get better prices! \ Everything for sale here, don't be afraid to come aboard and check our wares!\"",
 	)
 	forced_overmap_zone = list(
 		list(24, 26),
 		list(30, 30)
 	)
+
+	icon_states = list("capital", "station")
+
 	uid = "asterstradecapital"
+	tree_x = 0.58
+	tree_y = 0.9
 	start_discovered = TRUE
 	spawn_always = TRUE
-	markup = COMMON_GOODS
+	markup = WHOLESALE_GOODS
 	base_income = 1600
 	wealth = 0
-	secret_inv_threshold = 2000
-	recommendation_threshold = 4000
-	stations_recommended = list("casino" , "kriosanconfederacy")
-	assortiment = list(
-		"Disk Designs" = list(
-			/obj/item/computer_hardware/hard_drive/portable/design/misc = good_data("Lonestar Miscellaneous Pack", list(1, 10)),
-			/obj/item/computer_hardware/hard_drive/portable/design/robustcells = good_data("Lonestar Robustcells", list(1, 10)),
-			/obj/item/computer_hardware/hard_drive/portable/design/janitor = good_data("Lonestar Janitor Pack", list(1, 10)),
-			/obj/item/computer_hardware/hard_drive/portable/design/nonlethal_ammo = good_data("H&S Nonlethal Magazines Pack", list(1, 10)),
-			/obj/item/computer_hardware/hard_drive/portable/design/lethal_ammo = good_data("H&S Lethal Magazines Pack", list(1, 10)),
-			/obj/item/computer_hardware/hard_drive/portable/design/security = good_data("Security Miscellaneous Pack", list(1, 10)),
-			/obj/item/computer_hardware/hard_drive/portable = good_data("Blank Disk", list(1, 10))
-		),
+	hidden_inv_threshold  = 2000
+	recommendation_threshold = 1000
+	stations_recommended = list("casino", "kriosanconfederacy")
+	inventory  = list(
 		"Tools and Equipment" = list(
 			/obj/item/clothing/suit/storage/hazardvest,
 			/obj/item/storage/pouch/small_generic,
 			/obj/item/storage/pouch/ammo,
-			/obj/item/storage/belt/utility,
+			/obj/item/storage/belt/utility = good_data("empty toolbelt", list(5, 20), 70),
 			/obj/item/device/lighting/toggleable/flashlight,
 			/obj/item/device/lighting/toggleable/flashlight/heavy,
-			/obj/item/tool/omnitool = good_data("Lonestar \"Munchkin 5000\"", list(1, 3)),
+			/obj/item/device/lightreplacer,
+			/obj/item/tool/omnitool = good_data("Lonestar \"Munchkin 5000\"", list(1, 3), 1000),
 			/obj/item/tool/crowbar,
 			/obj/item/tool/screwdriver,
 			/obj/item/tool/shovel,
 			/obj/item/tool/wirecutters,
 			/obj/item/tool/wrench,
 			/obj/item/tool/weldingtool,
-			/obj/item/tool/tape_roll
+			/obj/item/tool/tape_roll,
+			/obj/item/device/geiger,
+			/obj/item/device/toner,
+			/obj/item/reagent_containers/drinks/cans/monocan = good_data("Mono-Can", list(1, 10), 35),
+			/obj/item/reagent_containers/drinks/cans/moonwatercan = good_data("Moon-Can", list(1, 10), 35)
+		),
+		"Storage Utilities" = list(
+			/obj/item/storage/hcases/ammo,
+			/obj/item/storage/hcases/parts,
+			/obj/item/storage/hcases/med,
+			/obj/item/storage/hcases/engi,
+			/obj/item/storage/bag/produce,
+			/obj/item/storage/bag/sheetsnatcher,
+			/obj/item/storage/bag/chemistry
 		),
 		"Lonestar Cells" = list(
 			/obj/item/cell/small,
@@ -52,8 +62,20 @@
 			/obj/item/cell/large/high,
 			/obj/item/cell/large/super
 		),
+		"Lonestar Grenades" = list(
+			/obj/item/grenade/chem_grenade/antiweed,
+			/obj/item/grenade/chem_grenade/cleaner,
+			/obj/item/grenade/chem_grenade/metalfoam
+		),
+		"Mining Gear" = list(
+			/obj/item/tool/karl,
+			/obj/item/tool/pickaxe,
+			/obj/item/tool/pickaxe/excavation,
+			/obj/item/storage/bag/ore,
+			/obj/structure/ore_box
+		),
 		"Toys" = list(
-			/obj/item/toy/junk/balloon = good_data("Water Balloon", list(1, 50)),
+			/obj/item/toy/junk/balloon = good_data("Water Balloon", list(1, 50), 5),
 			/obj/item/toy/junk/blink,
 			/obj/item/toy/junk/inflatable_duck,
 			/obj/item/toy/junk/eight_ball,
@@ -61,6 +83,8 @@
 			/obj/item/toy/weapon/katana,
 			/obj/item/toy/junk/snappop,
 			/obj/item/toy/junk/bosunwhistle,
+			/obj/item/toy/junk/dodgeball,
+			/obj/item/toy/junk/dodgeball/face,
 			/obj/item/toy/figure/character/bobblehead/excelsior,
 			/obj/item/toy/figure/character/bobblehead/serbian,
 			/obj/item/toy/figure/character/bobblehead/acolyte,
@@ -72,7 +96,9 @@
 			/obj/item/toy/figure/character/bobblehead/red_soldier,
 			/obj/item/toy/figure/character/bobblehead/metacat,
 			/obj/item/toy/figure/character/bobblehead/shitcurity,
-			/obj/item/toy/figure/character/bobblehead/metro_patrolman
+			/obj/item/toy/figure/character/bobblehead/metro_patrolman,
+			/obj/item/gun/projectile/revolver/capgun,
+			/obj/item/storage/box/blanks
 		),
 		"Holland and Sullivan Sidearms & Ammunition" = list(
 			/obj/item/clothing/accessory/holster,
@@ -91,37 +117,68 @@
 			/obj/item/ammo_magazine/ammobox/pistol_35,
 			/obj/item/ammo_magazine/ammobox/pistol_35/rubber
 		),
-		"Miscellanous" = list(
+		"Solnishko 'Guns-from-Home' Parts" = list(
+			/obj/item/pc_part/drive/disk/design/gun_parts/bootleg = good_data("Solnishko Distrubtion - Homemade Parts", list(1, 1), 600),
+			/obj/item/part/gun/grip/wood,
+			/obj/item/part/gun/mechanism/pistol,
+			/obj/item/part/gun/mechanism/revolver,
+			/obj/item/part/gun/barrel/pistol,
+			/obj/item/part/gun/barrel/magnum
+		),
+		"Miscellaneous" = list(
 			/obj/item/device/camera,
 			/obj/item/device/camera_film,
-			/obj/item/device/toner,
 			/obj/item/storage/photo_album,
 			/obj/item/wrapping_paper,
 			/obj/item/packageWrap,
-			/obj/item/reagent_containers/glass/paint/red = good_data("Red Paint", list(1, 10)),
-			/obj/item/reagent_containers/glass/paint/green = good_data("Green Paint", list(1, 10)),
-			/obj/item/reagent_containers/glass/paint/blue = good_data("Blue Paint", list(1, 10)),
-			/obj/item/reagent_containers/glass/paint/yellow = good_data("Yellow Paint", list(1, 10)),
-			/obj/item/reagent_containers/glass/paint/purple = good_data("Purple Paint", list(1, 10)),
-			/obj/item/reagent_containers/glass/paint/black = good_data("Black Paint", list(1, 10)),
-			/obj/item/reagent_containers/glass/paint/white = good_data("White Paint", list(1, 10)),
-			/obj/item/storage/lunchbox = good_data("Lunchbox", list(1, 10)),
-			/obj/item/storage/lunchbox/rainbow = good_data("Rainbow Lunchbox", list(1, 10)),
-			/obj/item/storage/lunchbox/cat = good_data("Cat Lunchbox", list(1, 10))
+			/obj/item/reagent_containers/glass/paint/red = good_data("Red Paint", list(1, 10), 50),
+			/obj/item/reagent_containers/glass/paint/green = good_data("Green Paint", list(1, 10), 50),
+			/obj/item/reagent_containers/glass/paint/blue = good_data("Blue Paint", list(1, 10), 50),
+			/obj/item/reagent_containers/glass/paint/yellow = good_data("Yellow Paint", list(1, 10), 50),
+			/obj/item/reagent_containers/glass/paint/purple = good_data("Purple Paint", list(1, 10), 50),
+			/obj/item/reagent_containers/glass/paint/black = good_data("Black Paint", list(1, 10), 50),
+			/obj/item/reagent_containers/glass/paint/white = good_data("White Paint", list(1, 10), 45),
+			/obj/item/storage/lunchbox = good_data("Lunchbox", list(1, 10), 30),
+			/obj/item/storage/lunchbox/rainbow = good_data("Rainbow Lunchbox", list(1, 10), 30),
+			/obj/item/storage/lunchbox/cat = good_data("Cat Lunchbox", list(1, 10), 30),
+			/obj/item/contraband/poster,
+			/obj/item/device/eftpos
 		)
 	)
 
-	secret_inventory = list(
+	hidden_inventory = list(
 		"Robustcell-X" = list(
 			/obj/item/cell/large/hyper,
 			/obj/item/cell/medium/hyper,
 			/obj/item/cell/small/hyper
 		),
+		"Imported Liquids" = list(
+			/obj/item/weldpack,
+			/obj/item/weldpack/canister,
+			/obj/structure/reagent_dispensers/fueltank,
+			/obj/structure/reagent_dispensers/watertank,
+			/obj/structure/reagent_dispensers/watertank/huge
+		),
+		"LSS Novelties" = list(
+			/obj/item/gun/projectile/revolver/longboi,
+			/obj/item/gun_upgrade/trigger/honker,
+			/obj/item/clothing/glasses/sunglasses/big,
+			/obj/item/gun/projectile/basilisk,
+		),
 		"LSS Toolmods" = list(
 			/obj/item/tool_upgrade/productivity/diamond_blade,
 			/obj/item/tool_upgrade/refinement/laserguide
 		),
-		"Nicknacks & Bobbles" = list(
+		"LSS Music" = list(
+			/obj/item/device/synthesized_instrument/guitar,
+			/obj/item/device/synthesized_instrument/guitar/multi,
+			/obj/item/device/synthesized_instrument/synthesizer,
+			/obj/item/device/synthesized_instrument/trumpet,
+			/obj/item/device/synthesized_instrument/violin,
+			/obj/structure/synthesized_instrument/synthesizer/piano = good_data("Piano", list(-4, 2), 1200),
+			/obj/item/media/boombox = good_data("NT Boom Box", list(-400000000, -399999999), 300) //When will K5 fix this???
+		),
+		"Trinkets & Baubles" = list(
 			/obj/item/oddity/ls/collector_coin = custom_good_amount_range(list(3, 6)),
 			/obj/item/oddity/ls/pamphlet = custom_good_amount_range(list(3, 6)),
 			/obj/item/oddity/ls/rod_figure = custom_good_amount_range(list(3, 6)),
@@ -142,61 +199,10 @@
 		)
 	)
 
-/* - Why mech stuff, also this isnt compatable in SoJ
-	secret_inventory = list(
-		"Exosuits" = list(
-			/mob/living/exosuit/premade/powerloader/firefighter,
-			/mob/living/exosuit/premade/powerloader/flames_blue,
-			/mob/living/exosuit/premade/powerloader/flames_red,
-			/mob/living/exosuit/premade/light,
-			/mob/living/exosuit/premade/heavy,
-			/mob/living/exosuit/premade/combat/slayer,
-		),
-		"Mech Armor" = list(
-			/obj/item/robot_parts/robot_component/armour/exosuit/plain,
-			/obj/item/robot_parts/robot_component/armour/exosuit/radproof,
-			/obj/item/robot_parts/robot_component/armour/exosuit/ablative,
-			/obj/item/robot_parts/robot_component/armour/exosuit/combat,
-		),
-		"Parts" = list(
-			/obj/item/mech_component/chassis,
-			/obj/item/mech_component/manipulators,
-			/obj/item/mech_component/sensors,
-			/obj/item/mech_component/propulsion,
-		),
-		"Soft" = list(
-			/obj/item/electronics/circuitboard/exosystem/engineering,
-			/obj/item/electronics/circuitboard/exosystem/utility,
-			/obj/item/electronics/circuitboard/exosystem/medical,
-			/obj/item/electronics/circuitboard/exosystem/weapons,
-		),
-		"Equipment" = list(
-			/obj/item/mech_equipment/mounted_system/taser,
-			/obj/item/mech_equipment/mounted_system/taser/ion,
-			/obj/item/mech_equipment/mounted_system/taser/plasma,
-			/obj/item/mech_equipment/mounted_system/rcd,
-			/obj/item/mech_equipment/clamp,
-			/obj/item/mech_equipment/light,
-			/obj/item/mech_equipment/drill,
-			/obj/item/mech_equipment/mounted_system/extinguisher,
-			/obj/item/mech_equipment/sleeper,
-		),
-	)
-
 	offer_types = list(
-		/obj/item/mech_component/ = offer_data("mech component", 150, 10),															// base price: 150
-		/obj/item/mech_equipment/ = offer_data("mech equipment", 200, 10),															// base price: 200
-		/obj/item/robot_parts/robot_component/armour/exosuit/plain = offer_data("exosuit armor plating", 300, 8),					// base price: 300
-		/obj/item/robot_parts/robot_component/armour/exosuit/radproof = offer_data("rad-proof exosuit armor plating", 500, 8),		// base price: 500
-		/obj/item/robot_parts/robot_component/armour/exosuit/ablative = offer_data("ablative exosuit armor plating", 550, 8),		// base price: 550
-		/obj/item/robot_parts/robot_component/armour/exosuit/combat = offer_data("combat exosuit armor plating", 1000, 8),			// base price: 1000
-		/obj/item/organ/external/robotic/one_star = offer_data("onestar external prosthetic", 1800, 4),								// base price: 900
-		/obj/item/organ/external/robotic/serbian = offer_data("serbian external prosthetic", 600, 8),								// base price: 600; roundstart item, but you'd be giving up an arm and a leg for cash
-	)*/
-
-	offer_types = list(
-		/obj/item/tool/knife = offer_data("spare knifes", 150, 30),
-		/obj/item/reagent_containers/food/snacks/grown = offer_data("spare grown food", 10, 120), //10 credits a grown item basicl
+		/obj/item/tool/knife = offer_data("spare knifes", 30, 20),
+		/obj/item/reagent_containers/snacks/grown = offer_data("spare grown food", 10, 120), //10 credits a grown item basicl
 		/datum/reagent/organic/nutriment/honey = offer_data("Honey bottle (60u)", 800, 1),
-		/obj/item/organ/external/robotic/one_star = offer_data("grayson external prosthetic", 1800, 4)
+		/obj/item/organ/external/robotic/one_star = offer_data("grayson external prosthetic", 1800, 4),
+		/obj/item/toy/consumer/product/toaster = offer_data("toolbox toaster", 250, 4)
 	)

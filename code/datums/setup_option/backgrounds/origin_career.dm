@@ -5,7 +5,7 @@
 	(or dishonest) citizen of the colony. One benefit at least of your raider life style is you got good at getting in and out quickly, regardless of any barriers in your way. Sadly your past is \
 	a known factor and while here on the frontier security can overlook a checkered past, your records should contain a detailed and accurate report of your history."
 
-	perks = list(/datum/perk/parkour, /datum/perk/chem_contraband)
+	perks = list(PERK_PARKOUR )
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -88,7 +88,7 @@
 	teaching you how to properly set a bandage and spot the differences and uses of various medical chemicals. Later on in life you might have taken your medical career further or chosen a different path. \
 	Whatever happened, you haven't forgotten the few tricks you learned."
 
-	perks = list(/datum/perk/chem_contraband)
+	perks = list(PERK_CHEM_CONTRABAND)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -101,9 +101,11 @@
 
 /datum/category_item/setup_option/background/career/military
 	name = "Former Military"
-	desc = "The Terran Federation is the largest industrial military complex in the galaxy, former members are extremely common be they conscripts of conquered empires or citizens seeking \
+	desc = "The Solarian Federation is the largest industrial military complex in the galaxy, former members are extremely common be they conscripts of conquered empires or citizens seeking \
 	to serve their nation. Some individuals may come from their own planetary defense forces, serving as a combination of planetary guard and soldier. Military training has the benefit \
 	of physical conditioning and marksmanship training, but the stamping out of the individual makes most lose their creativity."
+
+	perks = list(PERK_SURVIVOR)
 
 	stat_modifiers = list(
 		STAT_ROB = 2,
@@ -116,11 +118,11 @@
 
 /datum/category_item/setup_option/background/career/militarymedical
 	name = "Former Military (Medical)"
-	desc = "The Terran Federation is the largest industrial military complex in the galaxy, former members are extremely common be they conscripts of conquered empires or citizens seeking \
+	desc = "The Solarian Federation is the largest industrial military complex in the galaxy, former members are extremely common be they conscripts of conquered empires or citizens seeking \
 	to serve their nation. Some individuals may come from their own planetary defense forces, serving as a combination of planetary guard and soldier. Military training has the benefit \
 	of physical conditioning and as a combat medic you got the benefit of additional medical training, though not as good as what you'd get in a hospital, it has its benefits."
 
-	perks = list(/datum/perk/chem_contraband)
+	perks = list(PERK_CHEM_CONTRABAND)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -133,7 +135,7 @@
 
 /datum/category_item/setup_option/background/career/militaryengineer
 	name = "Former Military (Engineering)"
-	desc = "The Terran Federation is the largest industrial military complex in the galaxy, former members are extremely common be they conscripts of conquered empires or citizens seeking \
+	desc = "The Solarian Federation is the largest industrial military complex in the galaxy, former members are extremely common be they conscripts of conquered empires or citizens seeking \
 	to serve their nation. Some individuals may come from their own planetary defense forces, serving as a combination of planetary guard and soldier. Military training has the benefit \
 	of physical conditioning and as a member of the logistics/armor core you've gained a few tips and tricks when dealing with machines."
 
@@ -153,7 +155,7 @@
 	your past and history, after all, its the frontier and the colony can't be as picky as bigger empires. But that life has at least gifted you with some broad if boorish skills and a quick fingered \
 	disposition for snatching objects off of people without them noticing."
 
-	perks = list(/datum/perk/fast_fingers, /datum/perk/chem_contraband)
+	perks = list(PERK_FAST_FINGERS, PERK_CHEM_CONTRABAND)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -170,7 +172,7 @@
 	developed a hearty constitution and self reliant attitude. Yet the boredom of being cut off from the general population and the lack of more intellectual stimulation did a number on your \
 	creativity. All that time spent working in low oxygen environments and the occasional oxygen breach has adapted you to dealing with such events, your lungs may as well be made of metal now."
 
-	perks = list(/datum/perk/lungs_of_iron)
+	perks = list(PERK_LUNGS_OF_IRON)
 
 	stat_modifiers = list(
 		STAT_ROB = 3,
@@ -202,7 +204,7 @@
 	This can range from starting your own shop to small business making stuff. Who knows how many tried and failed but your one of them, the market back in Sol Fed was just to crowed, that must be it. \
 	The system of bureaucracy and its regulations have pushed out many like you but it really gets the old noggin working in overtime."
 
-	perks = list(/datum/perk/market_prof) //YOU GOT THIS, YOU KNOW WHATS UP AND HOW TO TURN TRASH INTO GOLD! BE YOUR OWN BOSS, GONE ON TO DO IT!
+	perks = list(PERK_MARKET_PROF) //YOU GOT THIS, YOU KNOW WHATS UP AND HOW TO TURN TRASH INTO GOLD! BE YOUR OWN BOSS, GONE ON TO DO IT!
 
 	stat_modifiers = list(
 		STAT_ROB = -4,
@@ -219,7 +221,7 @@
 	Sometimes it was more localized, crawling to the abandoned tunnels of destroyed and long forgotten ship looking for valuables and answers to why they were brought to this state. \
 	Life as a scavenger was rough, but it did let you adjust to frontier work comfortably. Your life of avoiding hazards be they incidental or made with malcontent has at least made you more ready \
 	to dodge potential traps."
-	perks = list(/datum/perk/sure_step)
+	perks = list(PERK_SURE_STEP)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -237,7 +239,7 @@
 	details to such an extent that it became second nature. As a result, should you ever become a psion, your ability to hyper focus without losing the bigger picture allows you to lessen the \
 	negative side effects of your powers and use some abilities at no cost."
 
-	perks = list(/datum/perk/psi_attunement)
+	perks = list(PERK_PSI_ATTUNEMENT)
 
 	stat_modifiers = list(
 		STAT_ROB = 0,
@@ -253,7 +255,7 @@
 	desc = "Your existence has been deemed to be \"of particular worth to the colony.\" you were either head-hunted for a position here, or simply knew the right people to talk to.\
 	As a result, you've earned yourself a contract granting higher pay than other colonists on the station. Whether or not you earned that pay is up for debate, but for now,\
 	you can enjoy the closest thing to the high life that this backwater dump has going for it."
-	perks = list(/datum/perk/nepotism)
+	perks = list(PERK_NEPOTISM)
 	stat_modifiers = list(
 		STAT_ROB = 0,
 		STAT_TGH = 0,
@@ -261,4 +263,22 @@
 		STAT_BIO = 0,
 		STAT_MEC = 0,
 		STAT_COG = 0
+	)
+
+/datum/category_item/setup_option/background/career/overbreath
+	name = "Thrill Seeker"
+	desc = "Boring desk jobs or hard labour never gave you the breath of life as much as being in danger, \
+	leading to development of skills for handling perilous situations. \
+	Sadly the fields that require such skills are not to keen on allowing self improvement."
+	perks = list(PERK_OVERBREATH)
+	//Basically you worked in high risk jobs where you got hurt a lot so some self treatment happens
+	//This is meant to be jobs in the field of running into burning buildings to pull out people, or needing to handle people drunk in a bar ect ect.
+	stat_modifiers = list(
+		STAT_ROB = 3,
+		STAT_TGH = 2,
+		STAT_VIG = -10,
+		STAT_BIO = 5,
+		STAT_MEC = -3,
+		STAT_COG = -6,
+		STAT_VIV = -15
 	)

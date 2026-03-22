@@ -96,7 +96,7 @@ var/list/custom_table_appearance = list(
 		T.update_icon()
 	. = ..()
 
-/obj/structure/table/attack_generic(var/mob/user, var/damage, var/attack_verb, var/wallbreaker)
+/obj/structure/table/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(istype(user))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.do_attack_animation(src)
@@ -261,7 +261,7 @@ var/list/custom_table_appearance = list(
 	if(!istype(M))
 		to_chat(user, SPAN_WARNING("You cannot [verb]e \the [src] with \the [S]."))
 		return null
-	if (src.flipped && istype(M, /material/glass))
+	if (src.flipped > 0)
 		to_chat(user, SPAN_WARNING("You cannot [verb]e \the [src] with \the [S] when [src] flipped!."))
 		return null
 	if(manipulating) return M
@@ -342,7 +342,10 @@ var/list/custom_table_appearance = list(
 			if(material)
 				if (istype(material, /material/glass))
 					for(var/i = 1 to 4)
-						I = image(icon, "glass_[connections[i]]", dir = 1<<(i-1))
+						if(icon == 'icons/obj/bench.dmi')
+							I = image(icon, "[connections[i]]", dir = 1<<(i-1))
+						else
+							I = image(icon, "glass_[connections[i]]", dir = 1<<(i-1))
 						if(material.icon_colour)
 							I.color = material.icon_colour
 						add_overlay(I)
@@ -354,6 +357,8 @@ var/list/custom_table_appearance = list(
 				else if (istype(material, /material/wood))
 					for(var/i = 1 to 4)
 						I = image(icon, "wood_[connections[i]]", dir = 1<<(i-1))
+						if(material.icon_colour)
+							I.color = material.icon_colour
 						add_overlay(I)
 
 				else

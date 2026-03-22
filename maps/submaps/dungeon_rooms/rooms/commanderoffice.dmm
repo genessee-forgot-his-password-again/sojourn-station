@@ -23,9 +23,7 @@
 /turf/simulated/floor/wood,
 /area/crawler)
 "h" = (
-/obj/machinery/door/blast/shutters{
-	id = 2
-	},
+/obj/effect/window_lwall_spawn/smartspawn/onestar,
 /turf/simulated/floor/tiled/techmaint,
 /area/crawler)
 "i" = (
@@ -41,16 +39,14 @@
 /turf/simulated/floor/carpet/bcarpet,
 /area/crawler)
 "l" = (
-/obj/machinery/shieldwallgen{
-	anchored = 1
-	},
+/obj/random/turret/os,
 /turf/simulated/floor/tiled/techmaint,
 /area/crawler)
 "m" = (
 /turf/simulated/floor/tiled/derelict,
 /area/crawler)
 "n" = (
-/mob/living/carbon/superior_animal/robot/greyson/roomba/boomba,
+/obj/random/mob/roomba,
 /turf/simulated/floor/wood,
 /area/crawler)
 "p" = (
@@ -107,10 +103,7 @@
 /turf/simulated/floor/wood,
 /area/crawler)
 "z" = (
-/obj/machinery/door/blast/shutters{
-	id = 2
-	},
-/obj/structure/low_wall,
+/obj/structure/low_wall/onestar,
 /turf/simulated/floor/tiled/techmaint,
 /area/crawler)
 "A" = (

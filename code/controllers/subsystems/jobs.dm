@@ -159,21 +159,16 @@ SUBSYSTEM_DEF(job)
 
 				if(age < job.minimum_character_age) // Nope.
 					continue
-
-				switch(age)
-					if(job.minimum_character_age to (job.minimum_character_age+10))
-						weightedCandidates[V] = 3 // Still a bit young.
-					if((job.minimum_character_age+10) to (job.ideal_character_age-10))
-						weightedCandidates[V] = 6 // Better.
-					if((job.ideal_character_age-10) to (job.ideal_character_age+10))
-						weightedCandidates[V] = 10 // Great.
-					if((job.ideal_character_age+10) to (job.ideal_character_age+20))
-						weightedCandidates[V] = 6 // Still good.
-					if((job.ideal_character_age+20) to INFINITY)
-						weightedCandidates[V] = 3 // Geezer.
-					else
-						// If there's ABSOLUTELY NOBODY ELSE
-						if(candidates.len == 1) weightedCandidates[V] = 1
+				else if(age <= (job.minimum_character_age + 10))
+					weightedCandidates[V] = 3 // Still a bit young.
+				else if(age <= (job.ideal_character_age - 10))
+					weightedCandidates[V] = 6 // Better.
+				else if(age <= (job.ideal_character_age + 10))
+					weightedCandidates[V] = 10 // Great.
+				else if(age <= (job.ideal_character_age + 20))
+					weightedCandidates[V] = 6 // Still good.
+				else
+					weightedCandidates[V] = 3 // Geezer.
 
 
 			var/mob/new_player/candidate = pickweight(weightedCandidates)
@@ -310,6 +305,7 @@ SUBSYSTEM_DEF(job)
 	var/datum/job/job = GetJob(rank)
 	var/list/spawn_in_storage = list()
 
+
 	if(job)
 		H.job = rank
 
@@ -327,9 +323,9 @@ SUBSYSTEM_DEF(job)
 			for(var/datum/gear/G in spawn_in_storage)
 				G.spawn_in_storage_or_drop(H, H.client.prefs.Gear()[G.display_name])
 
+		//job.finalTweaks(H) //Uncomment to turn on various tweaks to character creation.
 		job.add_stats(H)
 
-		job.add_knownCraftRecipes(H)
 
 		job.add_additiional_language(H)
 
@@ -371,8 +367,6 @@ SUBSYSTEM_DEF(job)
 				if("Robot")
 					return H.Robotize()
 				if("AI")
-					var/sound/announce_sound = (SSticker.current_state <= GAME_STATE_SETTING_UP)? null : sound('sound/ai/newAI.ogg', volume=20)
-					global_announcer.autosay(new_sound=announce_sound)
 					return H
 				if("Premier")
 					var/sound/announce_sound = (SSticker.current_state <= GAME_STATE_SETTING_UP)? null : sound('sound/misc/boatswain.ogg', volume=20)
@@ -410,6 +404,35 @@ SUBSYSTEM_DEF(job)
 			C.access.Add(job.cruciform_access)
 			C.install_default_modules_by_path(job)
 			C.security_clearance = job.security_clearance
+			//IDK were else to place this so it works when you late join and its active
+			if(GLOB.hive_data_bool["all_church_to_battle"])
+				if(H.client &&  H.stat != DEAD && ishuman(H)) //Basic sanity checks to prevent anything abd
+					make_antagonist(H.mind, ROLE_INQUISITOR)
+
+		//Occulus Edit, Right here! Custom skills.
+
+		//Caps before stats
+		H.stats.set_Stat_cap(STAT_BIO, H.client.prefs.BIO_CAP)
+		H.stats.set_Stat_cap(STAT_COG, H.client.prefs.COG_CAP)
+		H.stats.set_Stat_cap(STAT_MEC, H.client.prefs.MEC_CAP)
+		H.stats.set_Stat_cap(STAT_ROB, H.client.prefs.ROB_CAP)
+		H.stats.set_Stat_cap(STAT_TGH, H.client.prefs.TGH_CAP)
+		H.stats.set_Stat_cap(STAT_VIG, H.client.prefs.VIG_CAP)
+		H.stats.set_Stat_cap(STAT_VIV, H.client.prefs.VIV_CAP)
+		H.stats.set_Stat_cap(STAT_ANA, H.client.prefs.ANA_CAP)
+
+		//Stats get added here after cap so we dont have silly over-filling
+		H.stats.changeStat(STAT_BIO, H.client.prefs.BIOMOD)
+		H.stats.changeStat(STAT_COG, H.client.prefs.COGMOD)
+		H.stats.changeStat(STAT_MEC, H.client.prefs.MECMOD)
+		H.stats.changeStat(STAT_ROB, H.client.prefs.ROBMOD)
+		H.stats.changeStat(STAT_TGH, H.client.prefs.TGHMOD)
+		H.stats.changeStat(STAT_VIG, H.client.prefs.VIGMOD)
+		H.stats.changeStat(STAT_VIV, H.client.prefs.VIVMOD)
+		H.stats.changeStat(STAT_ANA, H.client.prefs.ANAMOD)
+		H.give_health_via_stats()
+		H.metabolism_effects.calculate_nsa() //update NSA incase we have any viv round start
+		// This could be cleaner and better, however it should apply your stats once on spawn properly if here. If anyone wants to do this in a cleaner manner be my guest.
 
 		BITSET(H.hud_updateflag, ID_HUD)
 		BITSET(H.hud_updateflag, SPECIALROLE_HUD)
@@ -431,8 +454,29 @@ SUBSYSTEM_DEF(job)
 			if(G)
 				var/permitted = 1
 				if(permitted)
+			/*
+					var/cheater = FALSE
+					var/datum/perk/experienced/selectedPerk
+					var/datum/department/experiencedDepartment
+					for(var/datum/perk/experienced/counter in H.stats.perks)
+						if (istype(counter,/datum/perk/experienced))
+							selectedPerk = counter
+							if (selectedPerk.dept)
+								var/list/paths = subtypesof(/datum/department)									// This chunk of code works with Experienced Perks (if implemented)
+								for (var/Q in paths)															// so that Experienced Perks mean bringing in outside items from other departments
+									var/datum/department/checker = new Q										// Uncomment when those are implemented
+									if (istype(checker,/datum/department))
+										if (checker.id)
+											if (checker.id == selectedPerk.dept)
+												experiencedDepartment = checker
+												for (var/X in experiencedDepartment.jobs_in_department)
+													var/datum/job/J = new X
+													if (J.title in G.allowed_roles)
+														cheater = TRUE
+
+			*/
 					if(G.allowed_roles)
-						if(job.title in G.allowed_roles)
+						if(job.title in G.allowed_roles)// || (cheater))		// The cheater var too.
 							permitted = 1
 						else
 							permitted = 0
@@ -641,7 +685,7 @@ SUBSYSTEM_DEF(job)
 //Returns true if either the job from job_key has been forced, or the sum of all jobs in the list exceeds req_time
 /datum/controller/subsystem/job/proc/JobTimeAutoCheck(ckey, job_key, jobs, req_time)
 	if(JobTimeAllowCheck(ckey, job_key)) return TRUE
-	return JobTimeCheck(ckey, jobs) >= req_time
+	return (JobTimeCheck(ckey, jobs) >= req_time)
 
 //Returns the sum of all times in the list of jobs provided.
 //If 'jobs' is not a list, it will be encapsulated in one.

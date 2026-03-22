@@ -2,6 +2,7 @@
 	name = "control spider"
 	icon_state = "spiderling_control"
 	spider_price = 25
+	ignore_activate_all = TRUE
 	var/active = FALSE
 	var/last_use = - 2 MINUTES
 	var/cooldown = 2 MINUTES
@@ -46,7 +47,7 @@
 	active = TRUE
 	last_use = world.time
 
-	addtimer(CALLBACK(src, .proc/return_mind), rand(50 SECONDS, 60 SECONDS))
+	addtimer(CALLBACK(src, PROC_REF(return_mind)), rand(50 SECONDS, 60 SECONDS))
 
 /obj/item/implant/carrion_spider/control/on_uninstall()
 	..()

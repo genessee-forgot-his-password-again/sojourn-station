@@ -249,7 +249,7 @@
 /obj/machinery/light/small{
 	dir = 1
 	},
-/mob/living/carbon/superior_animal/human/voidwolf,
+/mob/living/carbon/superior/human/voidwolf,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "aX" = (
@@ -459,7 +459,7 @@
 /area/outpost/abandoned_fortress)
 "bA" = (
 /obj/structure/grille/broken,
-/mob/living/carbon/superior_animal/xenomorph,
+/mob/living/carbon/superior/xenomorph,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "bB" = (
@@ -474,12 +474,6 @@
 /obj/random/junkfood/low_chance,
 /obj/random/junkfood/low_chance,
 /turf/simulated/floor/tiled/white/brown_platform,
-/area/outpost/abandoned_fortress)
-"bD" = (
-/obj/effect/decal/cleanable/blood,
-/obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/human/voidwolf/aerotrooper,
-/turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "bE" = (
 /obj/structure/barricade,
@@ -778,7 +772,6 @@
 /obj/structure/table/reinforced,
 /obj/item/storage/toolbox/mechanical,
 /obj/item/handcuffs,
-/obj/item/melee/baton,
 /turf/simulated/floor/tiled/white/brown_platform,
 /area/outpost/abandoned_fortress)
 "cH" = (
@@ -1641,8 +1634,6 @@
 /area/outpost/abandoned_fortress)
 "fi" = (
 /obj/structure/table/standard,
-/obj/item/melee/baton/cattleprod,
-/obj/item/melee/baton/cattleprod,
 /turf/simulated/floor/tiled/dark,
 /area/outpost/abandoned_fortress)
 "fj" = (
@@ -1964,10 +1955,10 @@
 	pixel_x = 3;
 	pixel_y = -3
 	},
-/obj/item/computer_hardware/hard_drive/portable/design/circuits,
-/obj/item/computer_hardware/hard_drive/portable/design/components,
-/obj/item/computer_hardware/hard_drive/portable/design/misc,
-/obj/item/computer_hardware/hard_drive/portable/design/misc,
+/obj/item/pc_part/drive/disk/design/circuits,
+/obj/item/pc_part/drive/disk/design/components,
+/obj/item/pc_part/drive/disk/design/misc,
+/obj/item/pc_part/drive/disk/design/misc,
 /obj/machinery/light/small{
 	dir = 4
 	},
@@ -2337,7 +2328,7 @@
 /area/outpost/abandoned_fortress)
 "gU" = (
 /obj/structure/table/steel_reinforced,
-/obj/item/reagent_containers/food/drinks/shaker,
+/obj/item/reagent_containers/drinks/shaker,
 /turf/simulated/floor/carpet/bcarpet,
 /area/outpost/abandoned_fortress)
 "gV" = (
@@ -2581,7 +2572,7 @@
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "hG" = (
-/mob/living/carbon/superior_animal/xenomorph/warrior/shrike/praetorian/queen,
+/mob/living/carbon/superior/xenomorph/warrior/shrike/praetorian/queen,
 /turf/simulated/floor/tiled/white/cyancorner,
 /area/outpost/abandoned_fortress)
 "hH" = (
@@ -2919,7 +2910,7 @@
 "iI" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/xenomorph/spitter/boiler,
+/mob/living/carbon/superior/xenomorph/spitter/boiler,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "iJ" = (
@@ -3076,12 +3067,6 @@
 /obj/random/scrap/dense_weighted,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
-"jg" = (
-/obj/effect/decal/cleanable/blood/gibs/limb,
-/obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/human/voidwolf/aerotrooper,
-/turf/simulated/floor/tiled,
-/area/outpost/abandoned_fortress)
 "jh" = (
 /obj/effect/decal/cleanable/blood,
 /obj/effect/decal/cleanable/dirt,
@@ -3143,7 +3128,7 @@
 "jq" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/grille/broken,
-/mob/living/carbon/superior_animal/xenomorph,
+/mob/living/carbon/superior/xenomorph,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "jr" = (
@@ -3201,7 +3186,7 @@
 /turf/simulated/floor/tiled/white/brown_platform,
 /area/outpost/abandoned_fortress)
 "jy" = (
-/mob/living/carbon/superior_animal/human/voidwolf/captain,
+/mob/living/carbon/superior/human/voidwolf/captain,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "jz" = (
@@ -3293,11 +3278,11 @@
 /area/outpost/abandoned_fortress)
 "jP" = (
 /obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/xenomorph/runner/ravager,
+/mob/living/carbon/superior/xenomorph/runner/ravager,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "jQ" = (
-/mob/living/carbon/superior_animal/xenomorph/sentinel,
+/mob/living/carbon/superior/xenomorph/sentinel,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "jR" = (
@@ -3477,7 +3462,7 @@
 /area/outpost/abandoned_fortress)
 "kq" = (
 /obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/xenomorph/sentinel,
+/mob/living/carbon/superior/xenomorph/sentinel,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "kr" = (
@@ -4573,17 +4558,17 @@
 /area/outpost/abandoned_fortress)
 "qX" = (
 /obj/effect/decal/cleanable/blood/splatter,
-/mob/living/carbon/superior_animal/xenomorph/spitter/boiler,
+/mob/living/carbon/superior/xenomorph/spitter/boiler,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "uF" = (
 /obj/random/junk/low_chance,
 /obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/xenomorph,
+/mob/living/carbon/superior/xenomorph,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "vq" = (
-/mob/living/carbon/superior_animal/xenomorph/warrior/praetorian{
+/mob/living/carbon/superior/xenomorph/warrior/praetorian{
 	desc = "The praetorian, the second most powerful and ruthless xenomorph ever birthed from the dark pit these monsters crawled from. This one looks a bit damaged by laser fire.";
 	health = 1000;
 	name = "hurt praetorian"
@@ -4613,7 +4598,7 @@
 /area/outpost/abandoned_fortress)
 "wU" = (
 /obj/structure/barricade,
-/mob/living/carbon/superior_animal/xenomorph/runner,
+/mob/living/carbon/superior/xenomorph/runner,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "xh" = (
@@ -4623,7 +4608,7 @@
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "xt" = (
-/mob/living/carbon/superior_animal/xenomorph/warrior/shrike,
+/mob/living/carbon/superior/xenomorph/warrior/shrike,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "xT" = (
@@ -4654,11 +4639,11 @@
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "BM" = (
-/mob/living/carbon/superior_animal/xenomorph/runner/ravager,
+/mob/living/carbon/superior/xenomorph/runner/ravager,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "Dy" = (
-/mob/living/carbon/superior_animal/xenomorph/warrior/hivelord,
+/mob/living/carbon/superior/xenomorph/warrior/hivelord,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "DF" = (
@@ -4681,7 +4666,7 @@
 "EP" = (
 /obj/effect/decal/cleanable/blood/splatter,
 /obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/xenomorph/warrior/bull,
+/mob/living/carbon/superior/xenomorph/warrior/bull,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "Fp" = (
@@ -4701,7 +4686,7 @@
 /area/outpost/abandoned_fortress)
 "HK" = (
 /obj/structure/grille/broken,
-/mob/living/carbon/superior_animal/xenomorph/runner,
+/mob/living/carbon/superior/xenomorph/runner,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "HU" = (
@@ -4737,7 +4722,7 @@
 "MZ" = (
 /obj/effect/decal/cleanable/blood/drip,
 /obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/xenomorph/spitter/boiler,
+/mob/living/carbon/superior/xenomorph/spitter/boiler,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "Ok" = (
@@ -4772,12 +4757,12 @@
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "Vy" = (
-/mob/living/carbon/superior_animal/xenomorph/hunter,
+/mob/living/carbon/superior/xenomorph/hunter,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "Wj" = (
 /obj/effect/decal/cleanable/dirt,
-/mob/living/carbon/superior_animal/xenomorph/hunter,
+/mob/living/carbon/superior/xenomorph/hunter,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/outpost/abandoned_fortress)
 "Xz" = (
@@ -4791,7 +4776,7 @@
 	pixel_y = 8
 	},
 /obj/structure/grille/broken,
-/mob/living/carbon/superior_animal/xenomorph,
+/mob/living/carbon/superior/xenomorph,
 /turf/simulated/floor/tiled,
 /area/outpost/abandoned_fortress)
 "Yv" = (
@@ -13782,7 +13767,7 @@ iu
 bp
 iJ
 aU
-jg
+iu
 jr
 bo
 bE
@@ -14387,7 +14372,7 @@ ac
 aW
 aU
 bf
-bD
+iS
 aD
 jB
 bF

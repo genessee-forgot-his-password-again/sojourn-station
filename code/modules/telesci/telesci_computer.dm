@@ -122,8 +122,12 @@
 
 /obj/machinery/computer/telesci_console/proc/openPortal()
 	portalOpened = TRUE
-	telepad.openPortal(targetX, targetY, targetZ)
 	var/area/portalarea = get_area(get_turf(locate(targetX,targetY,targetZ)))
+
+	//Really need these areas to NOT be able to get to with telesci
+	if(!portalarea.name == "Junk Field" && !portalarea.name == "Deep Mine")
+		telepad.openPortal(targetX, targetY, targetZ)
+
 	if(portalarea.tele_inhibited())
 		for(var/obj/machinery/telesci_relay/relay in telepad.relaysInUse)
 			relay.chanceExplode()
@@ -135,7 +139,7 @@
 			playsound(blocker,'sound/effects/telesci_inhibitor_alarm.ogg', 80, FALSE, 7, extrarange = 10, is_global = FALSE, ignore_walls = TRUE)
 			blocker.visible_message(SPAN_DANGER("\The [src] sparks violently and begins to shake!"))
 			do_sparks(6, FALSE, get_turf(blocker))
-			addtimer(CALLBACK(blocker, /obj/machinery/telesci_inhibitor/proc/explode), 1 SECOND)
+			addtimer(CALLBACK(blocker, TYPE_PROC_REF(/obj/machinery/telesci_inhibitor, explode)), 1 SECOND)
 
 		if(inhibitorExploded)
 			var/obj/item/device/radio/headset/a = new /obj/item/device/radio/headset(null)
@@ -165,8 +169,8 @@
 	var/turf/origin = get_turf(telepad)
 	if(!isPlayerLevel(targetZ))
 		return BS_DISTANCE_INVALID //Invalid area.
-	if(isSealedLevel(targetZ))
-		return BS_DISTANCE_STRESSFUL //Sealed Z levels like deep maint require stressing the telepad.
+//	if(isSealedLevel(targetZ)) //Commented out. Nearly all of our z-levels are sealed  we don't need to check for this. -Benl8561
+//		return BS_DISTANCE_STRESSFUL //Sealed Z levels like deep maint require stressing the telepad.
 	if(targetArea.tele_inhibited())
 		return BS_DISTANCE_STRESSFUL //Tele inhibited Z levels also require stressing the telepad.
 	if(tracking_beacon)

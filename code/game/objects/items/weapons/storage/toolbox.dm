@@ -15,6 +15,8 @@
 	max_storage_space = 18 //enough to hold all starting contents and then some
 	origin_tech = list(TECH_COMBAT = 1)
 	attack_verb = list("robusted")
+	hitsound = 'sound/weapons/smash.ogg'
+	no_swing = FALSE
 
 /obj/item/storage/toolbox/emergency
 	name = "emergency toolbox"

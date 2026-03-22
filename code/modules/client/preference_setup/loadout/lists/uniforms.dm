@@ -4,6 +4,7 @@
 	path = /obj/item/clothing/under/bride_white
 	slot = slot_w_uniform
 	sort_category = "Uniforms and Casual Dress"
+	cost = 0
 
 /datum/gear/uniform/tracksuit
 	display_name = "track suit"
@@ -15,6 +16,11 @@
 	path = /obj/item/clothing/under/top
 	flags = GEAR_HAS_TYPE_SELECTION
 
+/datum/gear/uniform/hawaiian
+	display_name = "Hawaiian-shirt selection"
+	path = /obj/item/clothing/under/hawaiian
+	flags = GEAR_HAS_TYPE_SELECTION
+
 /datum/gear/uniform/dismas
 	display_name = "highwayman clothes"
 	path = /obj/item/clothing/under/dismas
@@ -24,14 +30,13 @@
 	path = /obj/item/clothing/under/cheongsam
 	flags = GEAR_HAS_TYPE_SELECTION
 
+/datum/gear/uniform/ashigaru
+	display_name = "ashigaru"
+	path = /obj/item/clothing/under/ashigaru
+
 /datum/gear/uniform/dress
 	display_name = "dress selection"
-	path = /obj/item/clothing/under/plaid
-	flags = GEAR_HAS_TYPE_SELECTION
-
-/datum/gear/uniform/casualdress
-	display_name = "casual dress selection"
-	path = /obj/item/clothing/under/dress/casual
+	path = /obj/item/clothing/under/dress/
 	flags = GEAR_HAS_TYPE_SELECTION
 
 /datum/gear/uniform/gorkajumpsuit
@@ -78,6 +83,10 @@
 	display_name = "black suit skirt"
 	path = /obj/item/clothing/under/suit_jacket/blackskirt
 
+/datum/gear/uniform/fancy_redish_suit
+	display_name = "expensive brown suit"
+	path =/obj/item/clothing/under/fancy_redish_suit
+
 /datum/gear/uniform/latex_maid
 	display_name = "latex maid dress"
 	path = /obj/item/clothing/under/costume/kinky/latex_maid
@@ -89,6 +98,10 @@
 /datum/gear/uniform/sexy_maid
 	display_name = "sexy maid dress"
 	path = /obj/item/clothing/under/sexymaid
+
+/datum/gear/uniform/proper_maid
+	display_name = "proper maid dress"
+	path = /obj/item/clothing/under/costume/propermaid
 
 /datum/gear/uniform/modularsuit
 	display_name = "modular suit selection"
@@ -125,6 +138,11 @@
 	path = /obj/item/clothing/under/swimsuit
 	flags = GEAR_HAS_TYPE_SELECTION
 
+/datum/gear/uniform/swimsuitrisque
+	display_name = "daring swimsuit"
+	path = /obj/item/clothing/under/swimsuit_c
+	flags = GEAR_HAS_COLOR_SELECTION
+
 /datum/gear/uniform/texansuit
 	display_name = "ivory texan suit"
 	path = /obj/item/clothing/under/top/dimmadome
@@ -138,7 +156,7 @@
     display_name = "leisure suits"
     path = /obj/item/clothing/under/leisure
 
-/datum/gear/uniform/leisure/New()
+/datum/gear/uniform/leisure/New() //Don't do this. Use GEAR_HAS_TYPE_SELECTION unless the items you want selectable don't share the same valid parent.
 	..()
 	var/leisure = list(
 		"Brown Jacket"			=	/obj/item/clothing/under/leisure,
@@ -151,7 +169,7 @@
     display_name = "stylish suits"
     path = /obj/item/clothing/under/white
 
-/datum/gear/uniform/stylish_suits/New()
+/datum/gear/uniform/stylish_suits/New() //Like so.
 	..()
 	var/stylish = list(
 		"Ivory Suit"				=	/obj/item/clothing/under/white,
@@ -162,28 +180,17 @@
 	)
 	gear_tweaks += new /datum/gear_tweak/path(stylish)
 
-/datum/gear/uniform/dress
-    display_name = "dresses"
-    path = /obj/item/clothing/under/dress
-
-/datum/gear/uniform/dress/New()
-	..()
-	var/dress = list(
-		"Gray Dress"			=	/obj/item/clothing/under/dress,
-		"Blue Dress"			=	/obj/item/clothing/under/dress/blue,
-		"Red Dress"				=	/obj/item/clothing/under/dress/red,
-		"White Dress" 			=	/obj/item/clothing/under/dress/white,
-		"Black Dress" 			=	/obj/item/clothing/under/dress/black
-	)
-	gear_tweaks += new /datum/gear_tweak/path(dress)
-
 /datum/gear/uniform/cyber
 	display_name = "augmented jumpsuit"
 	path = /obj/item/clothing/under/cyber
 
 /datum/gear/uniform/helltaker
-	display_name = "charming outfit"
+	display_name = "black charming outfit"
 	path = /obj/item/clothing/under/helltaker
+
+/datum/gear/uniform/helltaker_m
+	display_name = "white charming outfit"
+	path = /obj/item/clothing/under/helltaker_m
 
 /datum/gear/uniform/johnny
 	display_name = "rockerboy clothes"
@@ -192,34 +199,6 @@
 /datum/gear/uniform/raider
 	display_name = "leather outfit"
 	path = /obj/item/clothing/under/raider
-
-/datum/gear/uniform/jersey
-	display_name = "church overalls"
-	path = /obj/item/clothing/under/jersey
-
-/datum/gear/uniform/churchsport
-	display_name = "church sport clothes"
-	path = /obj/item/clothing/under/rank/church/sport
-
-/datum/gear/uniform/churchnonrank
-	display_name = "church clothes"
-	path = /obj/item/clothing/under/rank/church
-
-/datum/gear/uniform/mono_belt
-	display_name = "monomial belt"
-	path = /obj/item/clothing/under/monomial_belt
-
-/datum/gear/uniform/lemniscate
-	display_name = "lemniscate skirt"
-	path = /obj/item/clothing/under/rank/lemniscate
-
-/datum/gear/uniform/monashka
-	display_name = "monashka garments"
-	path = /obj/item/clothing/under/rank/monashka
-
-/datum/gear/uniform/ntdress
-	display_name = "Absolutist summmer dress"
-	path = /obj/item/clothing/under/rank/ntdress
 
 /datum/gear/uniform/aerostatic_suit
 	display_name = "dark comfortable clothing"
@@ -240,6 +219,18 @@
 	path = /obj/item/clothing/under/neon
 	flags = GEAR_HAS_TYPE_SELECTION
 
+/datum/gear/uniform/bodysuit
+	display_name = "eva skinsuit"
+	path = /obj/item/clothing/under/bodysuit
+
+/datum/gear/uniform/skintight
+	display_name = "skintight bodysuit"
+	path = /obj/item/clothing/under/skintight
+
+/datum/gear/uniform/greyturtleneck
+	display_name = "grey turtleneck"
+	path = /obj/item/clothing/under/greyturtleneck
+
 /datum/gear/uniform/generic
 	display_name = "generic outfit, color presets"
 	path = /obj/item/clothing/under/genericb
@@ -252,3 +243,11 @@
 		"white" = /obj/item/clothing/under/genericw
 	)
 	gear_tweaks += new /datum/gear_tweak/path(generic)
+
+/datum/gear/uniform/jersey
+	display_name = "tacky jersey"
+	path = /obj/item/clothing/under/costume/misc/jersey
+
+/datum/gear/uniform/sports
+	display_name = "white tank top"
+	path = /obj/item/clothing/under/sports

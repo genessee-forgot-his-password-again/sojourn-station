@@ -47,13 +47,13 @@
 	name = "Humanoid Heart"
 	key = "MUTATION_HEART"
 	desc = "When cloned in an organ sac, produces a beating human heart."
-	loot = list(/obj/item/organ/internal/heart)
+	loot = list(/obj/item/organ/internal/vital/heart)
 
 /datum/genetics/mutation/sac_contents/b_heart
 	name = "Mega Babooon Heart"
 	key = "MUTATION_B_HEART"
 	desc = "When cloned in an organ sac, produces the heart of a mega-baboon. Beats with the sound of progress."
-	loot = list(/obj/item/organ/internal/heart/huge/baboon)
+	loot = list(/obj/item/organ/internal/vital/heart/huge/baboon)
 
 //Lungs
 /datum/genetics/mutation/sac_contents/lungs
@@ -61,14 +61,14 @@
 	key = "MUTATION_LUNG"
 	desc = "When cloned in an organ sac, produces a set of lungs."
 	sac_desc_modifier = "It breathes from an inhuman orifice."
-	loot = list(/obj/item/organ/internal/lungs)
+	loot = list(/obj/item/organ/internal/vital/lungs)
 
 /datum/genetics/mutation/sac_contents/g_lungs
 	name = "Large Lungs"
 	key = "MUTATION_G_LUNG"
 	desc = "When cloned in an organ sac, produces abnormally sized lungs."
 	sac_desc_modifier = "It takes deep breaths from an inhuman orifice."
-	loot = list(/obj/item/organ/internal/lungs/long)
+	loot = list(/obj/item/organ/internal/vital/lungs/long)
 
 //Liver
 /datum/genetics/mutation/sac_contents/liver
@@ -146,3 +146,23 @@
 		/obj/item/organ/internal/nerve/sensitive_nerve,
 		/obj/item/organ/internal/nerve/sensitive_nerve)
 
+/datum/genetics/mutation/sac_contents/eyes
+	name = "Humanoid eyes"
+	key = "MUTATION_EYES"
+	desc = "When cloned in an organ sac, produces functional eyes from an unidentified substance."
+	sac_desc_modifier = "It focuses on its surroundings."
+	loot = list(/obj/item/organ/internal/eyes)
+
+/datum/genetics/mutation/sac_contents/marqua_eyes
+	name = "Marqua eye"
+	key = "MUTATION_MARQUA_EYES"
+	desc = "When cloned in an organ sac, produces a single Mar'qua-like eye from an unidentified substance."
+	sac_desc_modifier = "It watches the world around it."
+	loot = list(/obj/item/organ/internal/eyes/marqua)
+
+/datum/genetics/mutation/sac_contents/slime_bone
+	name = "Slime bone"
+	key = "MUTATION_SLIME_BONE"
+	desc = "When cloned in an organ sac, creates a slimy cartilage from an unidentified substance."
+	sac_desc_modifier = "It wobbles and jiggles."
+	loot = list(/obj/item/organ/internal/bone/slime)

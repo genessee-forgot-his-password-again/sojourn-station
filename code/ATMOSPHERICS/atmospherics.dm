@@ -11,11 +11,9 @@ Pipelines + Other Objects -> Pipe network
 */
 /obj/machinery/atmospherics
 
-	var/has_errored = FALSE //Used to get a debug message
-
 	auto_init = 0
 
-	anchored = 1
+	anchored = TRUE
 	idle_power_usage = 0
 	active_power_usage = 0
 	power_channel = STATIC_ENVIRON

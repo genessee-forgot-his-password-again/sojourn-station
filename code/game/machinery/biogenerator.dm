@@ -20,18 +20,19 @@
 		"Food",
 			list(name="Milk, 30u", cost=60, reagent="milk"),
 			list(name="Soy Milk, 30u", cost=60, reagent="soymilk"),
-			list(name="Black Pepper, 30u", cost=60, reagent="blackpepper"),
+			list(name="Black Pepper, 30u", cost=30, reagent="blackpepper"), //Cost reduced to be in line with Sugar
 			list(name="Flour, 30u", cost=600, reagent="flour"), //Got to be really lazy
 			list(name="Rice, 30u", cost=600, reagent="rice"), //Got to be really lazy
-			list(name="Salt, 30u", cost=600, reagent="sodiumchloride"), //Got to be really lazy
+			list(name="Salt, 30u", cost=30, reagent="sodiumchloride"), //Cost reduced to be in line with Sugar
 			list(name="Sugar, 30u", cost=30, reagent="sugar"),
-			list(name="Box of eggs", cost=6400, path=/obj/item/storage/fancy/egg_box), //lets not completely replace hens
-			list(name="Slab of meat", cost=50, path=/obj/item/reagent_containers/food/snacks/meat),
+			list(name="Box of eggs", cost=3200, path=/obj/item/storage/fancy/egg_box), //lets not completely replace hens, but at a more reasonable price.
+			list(name="Slab of meat", cost=50, path=/obj/item/reagent_containers/snacks/meat),
 		"Nutrient",
 			list(name="EZ-Nutrient, 30u", cost=30, reagent="eznutrient"),
 			list(name="Left4Zed, 30u", cost=60, reagent="left4zed"),
 			list(name="Robust Harvest, 30u", cost=75, reagent="robustharvest"),
 			list(name="Mineral Water", cost=80, path=/obj/item/plantspray/water),
+			list(name="Diethylamine, 30u", cost=150, reagent="diethylamine"), //Obtainable with a silver coin, but this is more for Hunters than Gardeners anyway.
 		"Weedkillers",
 			list(name="Weed Killer", cost=30, path=/obj/item/plantspray/weeds),
 			list(name="Pest Killer", cost=60, path=/obj/item/plantspray/pests),
@@ -40,9 +41,9 @@
 			list(name="Phosmet", cost=75, path=/obj/item/plantspray/pests/old/phosmet),
 		"Leather",
 			list(name="Cloth Sheet", cost=50, path=/obj/item/stack/material/cloth),
-			list(name="Cloth Sheet x5", cost=310, path=/obj/item/storage/box/clothbulk),
+			list(name="Cloth Sheet x5", cost=250, path=/obj/item/stack/material/cloth/biogen),
 			list(name="Leather Sheet", cost=800, path=/obj/item/stack/material/leather),//exspensive to make sure that hunters always have a better deal
-			list(name="Leather Sheet x5", cost=4060, path=/obj/item/storage/box/leatherbulk),//5 times the cost +60 for the 'cardboard' used for the box.
+			list(name="Leather Sheet x5", cost=4000, path=/obj/item/stack/material/leather/biogen),//Where we're going, we dont need to have boxes for our leather!
 			list(name="Wallet", cost=100, path=/obj/item/storage/wallet),
 			list(name="Botanical gloves", cost=250, path=/obj/item/clothing/gloves/botanic_leather),
 			list(name="Utility belt", cost=300, path=/obj/item/storage/belt/utility),
@@ -56,10 +57,12 @@
 		"Medicine",
 			list(name="Medical splints", cost=100, path=/obj/item/stack/medical/splint),
 			list(name="Roll of gauze", cost=100, path=/obj/item/stack/medical/bruise_pack),
+			list(name="Roll of gauze * 5", cost=560, path=/obj/item/storage/box/gauzebulk),
 			list(name="Ointment", cost=100, path=/obj/item/stack/medical/ointment),
-			list(name="Advanced trauma kit", cost=200, path=/obj/item/stack/medical/advanced/bruise_pack),
+			list(name="Ointment * 5", cost=560, path=/obj/item/storage/box/ointmentbulk),
+			list(name="Advanced trauma kit", cost=200, path=/obj/item/stack/medical/bruise_pack/advanced),
 			list(name="Advanced trauma kit x5", cost=1060, path=/obj/item/storage/box/advancedtraumakit),
-			list(name="Advanced burn kit", cost=200, path=/obj/item/stack/medical/advanced/ointment),
+			list(name="Advanced burn kit", cost=200, path=/obj/item/stack/medical/ointment/advanced),
 			list(name="Advanced burn kit x5", cost=1060, path=/obj/item/storage/box/advancedburnkit),
 		"Carpet",
 			list(name="Red Carpet", cost=12, path=/obj/item/stack/tile/carpet),
@@ -119,13 +122,14 @@
 	else if(processing)
 		to_chat(user, SPAN_NOTICE("\The [src] is currently processing."))
 	else if(istype(I, /obj/item/storage/bag/produce))
+		var/obj/item/storage/bag/produce/produce_bag = I
 		var/i = 0
-		for(var/obj/item/reagent_containers/food/snacks/grown/G in contents)
+		for(var/obj/item/reagent_containers/snacks/grown/G in contents)
 			i++
 		if(i >= 10)
 			to_chat(user, SPAN_NOTICE("\The [src] is already full! Activate it."))
 		else
-			for(var/obj/item/reagent_containers/food/snacks/grown/G in I.contents)
+			for(var/obj/item/reagent_containers/snacks/grown/G in I.contents)
 				G.loc = src
 				i++
 				if(i >= 10)
@@ -133,13 +137,14 @@
 					break
 			if(i < 10)
 				to_chat(user, SPAN_NOTICE("You empty \the [I] into \the [src]."))
+		produce_bag.refresh_all()
 
 
-	else if(!istype(I, /obj/item/reagent_containers/food/snacks/grown))
+	else if(!istype(I, /obj/item/reagent_containers/snacks/grown))
 		to_chat(user, SPAN_NOTICE("You cannot put this in \the [src]."))
 	else
 		var/i = 0
-		for(var/obj/item/reagent_containers/food/snacks/grown/G in contents)
+		for(var/obj/item/reagent_containers/snacks/grown/G in contents)
 			i++
 		if(i >= 10)
 			to_chat(user, SPAN_NOTICE("\The [src] is full! Activate it."))
@@ -150,7 +155,7 @@
 	update_icon()
 	return
 
-/obj/machinery/biogenerator/nano_ui_interact(var/mob/user, var/ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state =GLOB.outside_state)
+/obj/machinery/biogenerator/nano_ui_interact(var/mob/user, var/ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state =GLOB.outside_state)
 	user.set_machine(src)
 	var/list/data = list()
 	data["points"] = points
@@ -207,7 +212,7 @@
 		to_chat(usr, SPAN_NOTICE("The biogenerator is in the process of working."))
 		return
 	var/S = 0
-	for(var/obj/item/reagent_containers/food/snacks/grown/I in contents)
+	for(var/obj/item/reagent_containers/snacks/grown/I in contents)
 		S += 5
 		if(I.reagents.get_reagent_amount("nutriment") < 0.1)
 			points += 1
@@ -258,7 +263,8 @@
 	var/creating = recipe["path"]
 	var/reagent = recipe["reagent"]
 	if(reagent) //For reagents like milk
-		beaker.reagents.add_reagent(reagent, 30)
+		if(beaker)
+			beaker.reagents.add_reagent(reagent, 30)
 	else
 		for(var/i in 1 to amount)
 			new creating(loc)

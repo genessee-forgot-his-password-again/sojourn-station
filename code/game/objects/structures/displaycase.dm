@@ -43,9 +43,11 @@
 
 
 /obj/structure/displaycase/bullet_act(var/obj/item/projectile/Proj)
-	health -= Proj.get_structure_damage()
+	if (!(Proj.testing))
+		health -= Proj.get_structure_damage()
 	..()
-	src.healthCheck()
+	if (!(Proj.testing))
+		src.healthCheck()
 	return
 
 /obj/structure/displaycase/healthCheck()
@@ -56,6 +58,7 @@
 			src.locked = FALSE
 			new /obj/item/material/shard( src.loc )
 			playsound(src, "shatter", 70, 1)
+			sanity_damage = 0.5 //Broken window theory
 			update_icon()
 	else
 		playsound(src.loc, 'sound/effects/Glasshit.ogg', 75, 1)

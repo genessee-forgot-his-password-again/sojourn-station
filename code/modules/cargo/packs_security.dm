@@ -19,7 +19,6 @@
 /datum/supply_pack/pistol_35_pack
 	name = "35 Pistol Pack Weapons Crate"
 	contains = list(/obj/item/gun/projectile/glock, //400
-				/obj/item/gun/projectile/firefly, //375
 				/obj/item/gun/projectile/giskard, //150
 				/obj/item/gun/projectile/olivaw, //225
 				/obj/item/gun/projectile/mk58) //325
@@ -32,7 +31,7 @@
 	name = "Stylish Revolver Pack Weapons Crate"
 	contains = list(/obj/item/gun/projectile/revolver/deckard, //700
 				/obj/item/gun/projectile/revolver/mistral, //450
-				/obj/item/gun/projectile/revolver/mateba, //500
+				/obj/item/gun/projectile/revolver/hornet, //500
 				/obj/item/gun/projectile/revolver/lemant) //225
 	cost = 1875
 	containertype = /obj/structure/closet/crate/secure/weapon
@@ -42,7 +41,7 @@
 /datum/supply_pack/fssmall
 	name = "HS Cheap Sidearms Crate"
 	contains = list(/obj/item/gun/projectile/colt, //225
-			/obj/item/gun/projectile/clarissa, //125
+			/obj/item/gun/projectile/giskard, //125
 			/obj/item/gun/projectile/olivaw) //225
 	cost = 575
 	containertype = /obj/structure/closet/crate/secure/weapon
@@ -57,6 +56,7 @@
 	crate_name = "long revolver crate"
 	group = "Enforcement"
 
+/* - To op for common getting
 /datum/supply_pack/littlecomet
 	name = "Little Comet Sidearm Crate"
 	contains = list(/obj/item/gun/projectile/revolver/little_comet)
@@ -64,6 +64,7 @@
 	containertype = /obj/structure/closet/crate/serbcrate_gray
 	crate_name = "Little Comet Sidearm Crate"
 	group = "Enforcement"
+*/
 
 //Specialty packs that have a theme, these come with a single handgun, ammo, and something thematic. -Kaz
 /datum/supply_pack/westernshootercrate
@@ -102,14 +103,14 @@
 
 /datum/supply_pack/kickasscrate
 	name = "LS Time to Kick Ass Specialty Crate"
-	contains = list(/obj/item/gun/projectile/avasarala, //600
-					/obj/item/ammo_magazine/kurtz_50,
-					/obj/item/ammo_magazine/kurtz_50,
+	contains = list(/obj/item/gun/projectile/revolver/rev10/mateba, //1500
+					/obj/item/ammo_magazine/speed_loader_kurtz_50,
+					/obj/item/ammo_magazine/speed_loader_kurtz_50,
 					/obj/item/clothing/gloves/thick/combat,
 					/obj/item/clothing/shoes/combat,
 					/obj/item/clothing/under/johnny,
-					/obj/item/reagent_containers/food/snacks/candy_drop_blue)
-	cost = 1000
+					/obj/item/reagent_containers/snacks/candy_drop_blue)
+	cost = 1900
 	containertype = /obj/structure/closet/crate/secure/weapon
 	crate_name = "LS Time to Kick Ass Specialty Crate"
 	group = "Enforcement"
@@ -134,7 +135,7 @@
 					/obj/item/ammo_magazine/ammobox/pistol_35,
 					/obj/item/ammo_magazine/ammobox/pistol_35,
 					/obj/item/clothing/head/helmet/faceshield/altyn,
-					/obj/item/clothing/suit/armor/flackvest/full,
+					/obj/item/clothing/suit/armor/flakvest/full,
 					/obj/item/grenade/flashbang,
 					/obj/item/grenade/flashbang)
 	cost = 900
@@ -144,7 +145,7 @@
 
 //AMMUNITION
 /datum/supply_pack/thirtyfive_ammo
-	name = "HS .35 Handgun Ammunition Crate"
+	name = "HS 9mm Handgun Ammunition Crate"
 	contains = list(/obj/item/ammo_magazine/ammobox/pistol_35,
 					/obj/item/ammo_magazine/ammobox/pistol_35,
 					/obj/item/ammo_magazine/ammobox/pistol_35,
@@ -155,11 +156,11 @@
 					/obj/item/ammo_magazine/speed_loader_pistol_35,
 					/obj/item/ammo_magazine/speed_loader_pistol_35)
 	cost = 650
-	crate_name = "HS .35 ammunition crate"
+	crate_name = "HS 9mm ammunition crate"
 	group = "Enforcement"
 
 /datum/supply_pack/thirtyfive_ammo_nl
-	name = "HS .35 Handgun Non-Lethal Ammunition Crate"
+	name = "HS 9mm Handgun Non-Lethal Ammunition Crate"
 	contains = list(/obj/item/ammo_magazine/ammobox/pistol_35/rubber,
 					/obj/item/ammo_magazine/ammobox/pistol_35/rubber,
 					/obj/item/ammo_magazine/ammobox/pistol_35/rubber,
@@ -170,11 +171,11 @@
 					/obj/item/ammo_magazine/speed_loader_pistol_35/rubber,
 					/obj/item/ammo_magazine/speed_loader_pistol_35/rubber)
 	cost = 450
-	crate_name = "HS .35 Non-Lethal ammunition crate"
+	crate_name = "HS 9mm Non-Lethal ammunition crate"
 	group = "Enforcement"
 
 /datum/supply_pack/fourty_ammo
-	name = "HS .40 Ammunition Crate"
+	name = "HS 10mm Ammunition Crate"
 	contains = list(/obj/item/ammo_magazine/ammobox/magnum_40,
 					/obj/item/ammo_magazine/ammobox/magnum_40,
 					/obj/item/ammo_magazine/ammobox/magnum_40,
@@ -185,11 +186,11 @@
 					/obj/item/ammo_magazine/speed_loader_magnum_40,
 					/obj/item/ammo_magazine/speed_loader_magnum_40)
 	cost = 750
-	crate_name = "HS .40 ammunition crate"
+	crate_name = "HS 10mm ammunition crate"
 	group = "Enforcement"
 
 /datum/supply_pack/fourty_ammo_nl
-	name = "HS .40 Non-Lethal Ammunition Crate"
+	name = "HS 10mm Non-Lethal Ammunition Crate"
 	contains = list(/obj/item/ammo_magazine/ammobox/magnum_40/rubber,
 					/obj/item/ammo_magazine/ammobox/magnum_40/rubber,
 					/obj/item/ammo_magazine/ammobox/magnum_40/rubber,
@@ -200,11 +201,11 @@
 					/obj/item/ammo_magazine/speed_loader_magnum_40/rubber,
 					/obj/item/ammo_magazine/speed_loader_magnum_40/rubber)
 	cost = 550
-	crate_name = "HS .40 Non-Lethal ammunition crate"
+	crate_name = "HS 10mm Non-Lethal ammunition crate"
 	group = "Enforcement"
 
 /datum/supply_pack/kurtz_ammo
-	name = "HS .50 Kurtz Ammunition Crate"
+	name = "HS 12mm Ammunition Crate"
 	contains = list(/obj/item/ammo_magazine/ammobox/kurtz_50,
 					/obj/item/ammo_magazine/ammobox/kurtz_50,
 					/obj/item/ammo_magazine/ammobox/kurtz_50,
@@ -215,11 +216,11 @@
 					/obj/item/ammo_magazine/speed_loader_kurtz_50,
 					/obj/item/ammo_magazine/speed_loader_kurtz_50)
 	cost = 950
-	crate_name = "HS .50 Kurtz ammunition crate"
+	crate_name = "HS 12mm ammunition crate"
 	group = "Enforcement"
 
 /datum/supply_pack/kurtz_ammo_nl
-	name = "HS .50 Kurtz Non-Lethal Ammunition Crate"
+	name = "HS 12mm Less-Than-Lethal Ammunition Crate"
 	contains = list(/obj/item/ammo_magazine/ammobox/kurtz_50,
 					/obj/item/ammo_magazine/ammobox/kurtz_50,
 					/obj/item/ammo_magazine/ammobox/kurtz_50,
@@ -230,17 +231,59 @@
 					/obj/item/ammo_magazine/speed_loader_kurtz_50,
 					/obj/item/ammo_magazine/speed_loader_kurtz_50)
 	cost = 750
-	crate_name = "HS .50 Kurtz Non-Lethal ammunition crate"
+	crate_name = "HS 12mm Less-Than-Lethal ammunition crate"
+	group = "Enforcement"
+
+/datum/supply_pack/ammo_disks_1
+	name = "SA Always prepared Ammunition Disks Pack"
+	contains = list(/obj/item/pc_part/drive/disk/design/lethal_ammo,
+					/obj/item/pc_part/drive/disk/design/ammo_boxes_rifle)
+	cost = 2200
+	crate_name = "Standard Ammunition Disks Crate"
+	group = "Enforcement"
+
+
+/datum/supply_pack/rifle_75and257
+	name = "Rifle and Carbine Ammunition Pack"
+	contains = list(/obj/item/ammo_magazine/rifle_75,
+					/obj/item/ammo_magazine/rifle_75,
+					/obj/item/ammo_magazine/ammobox/rifle_75,
+					/obj/item/ammo_magazine/ammobox/light_rifle_257,
+					/obj/item/ammo_magazine/light_rifle_257,
+					/obj/item/ammo_magazine/light_rifle_257)
+
+	cost = 980
+	crate_name = "7.62mm and 6.5mm Ammunition Crate"
+	group = "Enforcement"
+
+
+/datum/supply_pack/Heavyrifle_ammo
+	name = "Heavy Rifle Ammunition Pack"
+	contains = list(/obj/item/ammo_magazine/heavy_rifle_408,
+					/obj/item/ammo_magazine/heavy_rifle_408,
+					/obj/item/ammo_magazine/ammobox/heavy_rifle_408,
+					/obj/item/ammo_magazine/ammobox/heavy_rifle_408)
+
+	cost = 1200
+	crate_name = "Heavy Rifle Ammunition Crate"
+	group = "Enforcement"
+
+/datum/supply_pack/exotic_ammo_disk
+	name = "SA Exotic Ammunition Disk Pack"
+	contains = list(/obj/item/pc_part/drive/disk/design/exotic_ammo)
+
+	cost = 1500
+	crate_name = "Exotic Ammunition Disk Crate"
 	group = "Enforcement"
 
 /datum/supply_pack/ntweapons
 	name = "CA Energy Weapons Crate"
 	contains = list(/obj/item/gun/energy/laser,
 				/obj/item/gun/energy/laser,
-				/obj/item/gun/energy/taser,
-				/obj/item/gun/energy/taser,
 				/obj/item/gun/energy/ntpistol,
-				/obj/item/gun/energy/ntpistol)
+				/obj/item/gun/energy/ntpistol,
+				/obj/item/gun/energy/taser,
+				/obj/item/gun/energy/taser)
 	cost = 4000
 	containertype = /obj/structure/closet/crate/secure/weapon
 	crate_name = "CA energy weapons crate"
@@ -364,6 +407,17 @@
 	crate_name = "Void Wolf HellFire Crate"
 	group = "Xanorath Syndicate"
 
+
+/datum/supply_pack/voidwolfmarksman
+	name = "Void Marksman Kit"
+	contains = list(/obj/item/gun/projectile/boltgun/scout,
+					/obj/item/ammo_magazine/ammobox/heavy_rifle_408_small/hv,
+					/obj/item/gun_upgrade/barrel/gauss)
+
+	cost = 1600
+	crate_name = "Void Wolf Marksman Kit"
+	group = "Xanorath Syndicate"
+
 /datum/supply_pack/voidwolfflamer_ammo
 	name = "Void Wolf HellFire Canisters Crate"
 	contains = list(/obj/item/weldpack/canister/flamethrower,
@@ -386,12 +440,12 @@
 					/obj/item/reagent_containers/pill/happy,
 					/obj/item/seeds/ambrosiadeusseed,
 					/obj/item/seeds/ambrosiavulgarisseed,
-					/obj/item/reagent_containers/food/snacks/grown/ambrosiadeus,
-					/obj/item/reagent_containers/food/snacks/grown/ambrosiadeus,
-					/obj/item/reagent_containers/food/snacks/grown/ambrosiadeus,
-					/obj/item/reagent_containers/food/snacks/grown/ambrosiavulgaris,
-					/obj/item/reagent_containers/food/snacks/grown/ambrosiavulgaris,
-					/obj/item/reagent_containers/food/snacks/grown/ambrosiavulgaris)
+					/obj/item/reagent_containers/snacks/grown/ambrosiadeus,
+					/obj/item/reagent_containers/snacks/grown/ambrosiadeus,
+					/obj/item/reagent_containers/snacks/grown/ambrosiadeus,
+					/obj/item/reagent_containers/snacks/grown/ambrosiavulgaris,
+					/obj/item/reagent_containers/snacks/grown/ambrosiavulgaris,
+					/obj/item/reagent_containers/snacks/grown/ambrosiavulgaris)
 	cost = 600
 	containertype = /obj/structure/closet/crate/serbcrate
 	crate_name = "Void Wolf Recreations Crate"
@@ -429,7 +483,7 @@
 	containertype = /obj/structure/closet/crate/serbcrate_gray
 	crate_name = "Void Wolf Red Armor Crate"
 	group = "Xanorath Syndicate"
-
+/*
 //Sold for actual value, given its explosive, very powerful, and difficult to get ammo for. -Kaz
 /datum/supply_pack/voidwolfemporer
 	name = "Void Wolf Emporer Crate"
@@ -440,7 +494,8 @@
 	containertype = /obj/structure/closet/crate/serbcrate_gray
 	crate_name = "Void Wolf Emporer Crate"
 	group = "Xanorath Syndicate"
-	
+
+
 /datum/supply_pack/admin_armory
 	name = "Standard BLR Muniti-Kit"
 	contains = list(/obj/item/gun/projectile/mk58,
@@ -647,8 +702,9 @@
 					/obj/item/reagent_containers/food/snacks/openable/candy,
 					/obj/item/reagent_containers/food/snacks/openable/candy,
 					/obj/item/reagent_containers/food/snacks/openable/candy
-					) 
+					)
 	cost = 100
 	containertype = /obj/structure/closet/crate/secure/weapon
 	crate_name = "bluespace remnants enforcer box"
 	group = "Enforcement"
+

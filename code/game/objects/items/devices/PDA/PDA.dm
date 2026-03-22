@@ -256,14 +256,14 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	if(usr.stat == 2)
 		to_chat(usr, "You can't do that because you are dead!")
 		return
-	var/HTML = "<html><head><title>AI PDA Message Log</title></head><body>"
+	var/HTML = ""
 	for(var/index in tnote)
 		if(index["sent"])
 			HTML += addtext("<i><b>&rarr; To <a href='byond://?src=\ref[src];choice=Message;notap=1;target=",index["src"],"'>", index["owner"],"</a>:</b></i><br>", index["message"], "<br>")
 		else
 			HTML += addtext("<i><b>&larr; From <a href='byond://?src=\ref[src];choice=Message;notap=1;target=",index["target"],"'>", index["owner"],"</a>:</b></i><br>", index["message"], "<br>")
-	HTML +="</body></html>"
-	usr << browse(HTML, "window=log;size=400x444;border=1;can_resize=1;can_close=1;can_minimize=0")
+
+	usr << browse(HTML_SKELETON_TITLE("AI PDA Message Log",HTML), "window=log;size=400x444;border=1;can_resize=1;can_close=1;can_minimize=0")
 
 
 /obj/item/device/pda/ai/can_use()
@@ -488,7 +488,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 				for(var/datum/feed_message/FM in FC.messages)
 					++index
 					if(FM.img)
-						send_asset(usr.client, "newscaster_photo_[sanitize(FC.channel_name)]_[index].png")
+						user << browse_rsc(FM.img, "tmp_photo[index].png")
 					// News stories are HTML-stripped but require newline replacement to be properly displayed in NanoUI
 					var/body = replacetext(FM.body, "\n", "<br>")
 					messages[++messages.len] = list("author" = FM.author, "body" = body, "message_type" = FM.message_type, "time_stamp" = FM.time_stamp, "has_image" = (FM.img != null), "caption" = FM.caption, "index" = index)

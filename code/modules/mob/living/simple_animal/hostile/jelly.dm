@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/jelly
+/mob/living/simple/hostile/jelly
 	name = "jelly blob"
 	desc = "Some sort of undulating blob of slime."
 	icon = 'icons/mob/mobs-monster.dmi'
@@ -14,11 +14,13 @@
 	emote_see = list("undulates quietly")
 	leather_amount = 0
 	bones_amount = 0
+	sanity_damage = 1
 
-	armor = list(melee = 50, bullet = 80, energy = 10, bomb = 25, bio = 100, rad = 100) //Were basiclly ballastic jell
+	armor = list(melee = 8, bullet = 20, energy = 2, bomb = 25, bio = 100, rad = 100) //Were basiclly ballastic jell
 
+	research_value = 175
 
-/mob/living/simple_animal/hostile/jelly/bloat
+/mob/living/simple/hostile/jelly/bloat
 	name = "jelly bloat"
 	desc = "Some sort of undulating blob of slime. This one has feasted recently."
 	icon_state = "jellybig"

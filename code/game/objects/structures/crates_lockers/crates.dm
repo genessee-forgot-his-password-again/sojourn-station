@@ -91,6 +91,9 @@
 	icon_state = "o2crate"
 
 /obj/structure/closet/crate/internals/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/tank/emergency_oxygen(src)
 	new /obj/item/tank/emergency_oxygen(src)
 	new /obj/item/tank/emergency_oxygen(src)
@@ -142,6 +145,9 @@
 	icon_state = "crate"
 
 /obj/structure/closet/crate/rcd/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/stack/material/compressed_matter(src,30)
 	new /obj/item/rcd(src)
 
@@ -149,6 +155,9 @@
 	name = "solar pack crate"
 
 /obj/structure/closet/crate/solar/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/solar_assembly(src)
 	new /obj/item/solar_assembly(src)
 	new /obj/item/solar_assembly(src)
@@ -185,10 +194,13 @@
 
 
 /obj/structure/closet/crate/freezer/rations/populate_contents()
-	new /obj/item/reagent_containers/food/snacks/liquidfood(src)
-	new /obj/item/reagent_containers/food/snacks/liquidfood(src)
-	new /obj/item/reagent_containers/food/snacks/liquidfood(src)
-	new /obj/item/reagent_containers/food/snacks/liquidfood(src)
+	if(populated_contents)
+		return
+	populated_contents = TRUE
+	new /obj/item/reagent_containers/snacks/openable/liquidfood(src)
+	new /obj/item/reagent_containers/snacks/openable/liquidfood(src)
+	new /obj/item/reagent_containers/snacks/openable/liquidfood(src)
+	new /obj/item/reagent_containers/snacks/openable/liquidfood(src)
 
 /obj/structure/closet/crate/bin
 	name = "large bin"
@@ -202,6 +214,9 @@
 	icon_state = "radiation"
 
 /obj/structure/closet/crate/radiation/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/suit/radiation(src)
 	new /obj/item/clothing/head/radiation(src)
 	new /obj/item/clothing/suit/radiation(src)
@@ -335,6 +350,33 @@
 	desc = "A secure wooden crate."
 	name = "Secure wooden crate"
 	icon_state = "serbcrate"
+
+/obj/structure/closet/crate/voidwolf
+	desc = "A secure wooden crate."
+	name = "Secure wooden crate"
+	icon_state = "serbcrate"
+
+/obj/structure/closet/crate/voidwolf/voidwolfdrugs
+
+/obj/structure/closet/crate/voidwolf/voidwolfdrugs/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
+	new /obj/item/reagent_containers/hypospray/autoinjector/drugs(src)
+	new /obj/item/reagent_containers/hypospray/autoinjector/drugs(src)
+	new /obj/item/reagent_containers/syringe/drugs(src)
+	new /obj/item/reagent_containers/syringe/drugs(src)
+	new /obj/item/reagent_containers/pill/zoom(src)
+	new /obj/item/reagent_containers/pill/happy(src)
+	new /obj/item/seeds/ambrosiadeusseed(src)
+	new /obj/item/seeds/ambrosiavulgarisseed(src)
+	new /obj/item/reagent_containers/snacks/grown/ambrosiadeus(src)
+	new /obj/item/reagent_containers/snacks/grown/ambrosiadeus(src)
+	new /obj/item/reagent_containers/snacks/grown/ambrosiadeus(src)
+	new /obj/item/reagent_containers/snacks/grown/ambrosiavulgaris(src)
+	new /obj/item/reagent_containers/snacks/grown/ambrosiavulgaris(src)
+	new /obj/item/reagent_containers/snacks/grown/ambrosiavulgaris(src)
+
 
 /obj/structure/closet/crate/serbcrate_gray
 	desc = "A secure metallic crate."

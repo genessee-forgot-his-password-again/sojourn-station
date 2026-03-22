@@ -10,6 +10,7 @@
 	body_parts_covered = UPPER_TORSO
 	allowed = list (/obj/item/gun/energy/lasertag)
 	siemens_coefficient = 3.0
+	tally_locking = 2
 
 /obj/item/clothing/suit/fluff/redtag
 	name = "red plasma tag armour"
@@ -20,6 +21,7 @@
 	body_parts_covered = UPPER_TORSO
 	allowed = list (/obj/item/gun/energy/lasertag)
 	siemens_coefficient = 3.0
+	tally_locking = 2
 
 /obj/item/clothing/suit/fluff/greentag
 	name = "green plasma tag armour"
@@ -30,6 +32,7 @@
 	body_parts_covered = UPPER_TORSO
 	allowed = list (/obj/item/gun/energy/lasertag)
 	siemens_coefficient = 3.0
+	tally_locking = 2
 
 /obj/item/clothing/suit/fluff/yellowtag
 	name = "yellow plasma tag armour"
@@ -40,6 +43,7 @@
 	body_parts_covered = UPPER_TORSO
 	allowed = list (/obj/item/gun/energy/lasertag)
 	siemens_coefficient = 3.0
+	tally_locking = 2
 
 /obj/item/clothing/suit/cyborg_suit
 	name = "cyborg suit"
@@ -55,11 +59,26 @@ obj/item/clothing/suit/fluff/kimono
 	desc = "A traditional Japanese kimono."
 	icon_state = "kimono"
 
+obj/item/clothing/suit/fluff/miko
+	name = "miko dress"
+	desc = "A traditional purple Japanese miko dress."
+	icon_state = "miko"
+
 /obj/item/clothing/suit/fluff/customs
 	name = "customs jacket"
 	desc = "A standard SolFed Customs formal jacket."
 	icon_state = "customs_jacket"
 	item_state_slots = list(slot_r_hand_str = "suit_blue", slot_l_hand_str = "suit_blue")
+
+obj/item/clothing/suit/gownrisque
+	name = "delicate gown"
+	desc = "A particularly daring gown. Suited for only the bravest colonists."
+	icon_state = "gown_risque"
+
+obj/item/clothing/suit/gownrisque/alt
+	name = "fine gown"
+	desc = "A particularly daring gown. Suited for only the bravest colonists."
+	icon_state = "gown_risque_alt"
 
 /*
  * Misc
@@ -73,66 +92,6 @@ obj/item/clothing/suit/fluff/kimono
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT|HIDETAIL
 	allowed = list(/obj/item/tank)
-
-/*Swimsuit*/
-
-/obj/item/clothing/under/swimsuit/
-	siemens_coefficient = 1
-	body_parts_covered = 0
-
-/obj/item/clothing/under/swimsuit/black
-	name = "black swimsuit"
-	desc = "A black swimsuit perfect for the pool."
-	icon_state = "swim_black"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit/blue
-	name = "blue swimsuit"
-	desc = "A blue swimsuit perfect for the pool."
-	icon_state = "swim_blue"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit/earth
-	name = "earth swimsuit"
-	desc = "A earth swimsuit perfect for the pool."
-	icon_state = "swim_earth"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit/green
-	name = "green swimsuit"
-	desc = "A green swimsuit perfect for the pool."
-	icon_state = "swim_green"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit/purple
-	name = "purple swimsuit"
-	desc = "A purple swimsuit perfect for the pool."
-	icon_state = "swim_purp"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit/red
-	name = "red swimsuit"
-	desc = "A red swimsuit perfect for the pool."
-	icon_state = "swim_red"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit/striped
-	name = "striped swimsuit"
-	desc = "A striped swimsuit perfect for the pool."
-	icon_state = "swim_striped"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit
-	name = "white swimsuit"
-	desc = "A white swimsuit perfect for the pool."
-	icon_state = "swim_white"
-	siemens_coefficient = 1
-
-/obj/item/clothing/under/swimsuit/ntswimsuit
-	name = "Absolutist swimsuit"
-	desc = "A fine, white and gold trim swimsuit produced and often worn by those of the faith"
-	icon_state = "swim_nt"
-	siemens_coefficient = 1
 
 /*Poncho*/
 
@@ -177,6 +136,13 @@ obj/item/clothing/suit/fluff/kimono
 	desc = "A simple, comfortable poncho in blue colors."
 	icon_state = "tacticalponcho"
 	item_state = "tacticalponcho"
+
+// Umi_Cloak
+/obj/item/clothing/suit/orsicoat
+	name = "Red Winter Cape"
+	desc = "A soft red cape with synthetic white fur trim."
+	icon_state = "orsicoat"
+	item_state = "orsicoat"
 
 /*Shirts*/
 
@@ -223,33 +189,27 @@ obj/item/clothing/suit/fluff/kimono
 
 /obj/item/clothing/suit/sling
 	name = "universal sling"
-	desc = "A generic universal equipment sling for whatever you could need on your back."
+	desc = "A generic universal equipment sling for whatever you could need on your back. More versatile then other choices just don't expect it to protect you from anything."
 	icon_state = "universal_sling"
-	allowed = list (/obj/item/gun,
-	/obj/item/device,
-	/obj/item/material,
-	/obj/item/storage/pouch,
-	/obj/item/storage/box,
+	extra_allowed = list(
 	/obj/item/storage/firstaid,
 	/obj/item/storage/lockbox,
 	/obj/item/storage/part_replacer,
 	/obj/item/storage/secure,
 	/obj/item/storage/toolbox,
 	/obj/item/storage/briefcase,
-	/obj/item/tank,
-	/obj/item/ammo_magazine,
-	/obj/item/ammo_magazine/ammobox/
-	)
+	/obj/item/material,
+	/obj/item/device)
 
 /obj/item/clothing/suit/storage/punkvest
 	name = "punk vest"
 	desc = "Sleek grey vest with pockets in it. You feel absolutely punk wearing this sturdy leather coat."
 	icon_state = "punk_vest"
 	item_state = "punk_vest"
-	armor = list(
-		melee = 5,
-		bullet = 5,
-		energy = 5,
+	armor_list = list(
+		melee = 1,
+		bullet = 1,
+		energy = 1,
 		bomb = 0,
 		bio = 0,
 		rad = 0
@@ -257,13 +217,13 @@ obj/item/clothing/suit/fluff/kimono
 	body_parts_covered = UPPER_TORSO
 
 
-/obj/item/clothing/suit/ivory
+/obj/item/clothing/suit/tabard
 	name = "ivory tabard"
 	desc = "A somewhat revealing ivory tabard favored by older orders for ceremony, used often for funerals and coupled with dark under clothes."
 	icon_state = "white_tabard"
 	item_state = "white_tabard"
 
-/obj/item/clothing/suit/blacksilk
+/obj/item/clothing/suit/tabard/blacksilk
 	name = "blacksilk tabard"
 	desc = "A somewhat revealing black and gold tabard favored by older orders for ceremony, used often for funerals and coupled with light under clothes."
 	icon_state = "church_blacksilk_suit"
@@ -274,9 +234,9 @@ obj/item/clothing/suit/fluff/kimono
 	desc = "A dark vest made out of light, breathable fabric. Feeling lucky, punk?"
 	icon_state = "punkvest"
 	item_state = "punkvest"
-	armor = list(
-		melee = 5,
-		bullet = 5,
+	armor_list = list(
+		melee = 1,
+		bullet = 1,
 		energy = 0,
 		bomb = 0,
 		bio = 0,
@@ -291,10 +251,10 @@ obj/item/clothing/suit/fluff/kimono
 	item_state = "windbreaker" //Is this even used for anything?
 	icon_open = "windbreaker_open"
 	icon_closed = "windbreaker"
-	armor = list(
+	armor_list = list(
 		melee = 0,
 		bullet = 0,
-		energy = 5,
+		energy = 1,
 		bomb = 0,
 		bio = 30,
 		rad = 10
@@ -306,10 +266,10 @@ obj/item/clothing/suit/fluff/kimono
 	desc = "A red vest with golden streaks. It's made out of tough materials, and can protect fairly well against bullets. Wake the fuck up, Samurai."
 	icon_state = "cyberpunk"
 	item_state = "cyberpunk"
-	armor = list(
-		melee = 10,
-		bullet = 10,
-		energy = 10,
+	armor_list = list(
+		melee = 2,
+		bullet = 2,
+		energy = 2,
 		bomb = 0,
 		bio = 0,
 		rad = 0
@@ -317,18 +277,22 @@ obj/item/clothing/suit/fluff/kimono
 
 /obj/item/clothing/suit/storage/scavengerarmor
 	name = "scavenger armor"
-	desc = "A rigged yet sturdy scavenger armor. Strong and protective as most vests, it is made entirely from reclaimed materials. It even has pockets!"
+	desc = "A rigged yet sturdy scavenger armor. Strong and protective as most vests, it is made entirely from reclaimed materials. It even has pockets as well as room for additional plates of armor to be added."
 	icon_state = "scav_armor"
 	item_state = "scav_armor"
-	armor = list(
-		melee = 35, //Not the best armor, but easily crafted and adds some utility with decent protection all round.
-		bullet = 35,
-		energy = 35,
+	tool_qualities = list(QUALITY_ARMOR = 100)
+	max_upgrades = 2
+	stiffness = MEDIUM_STIFFNESS
+	equip_delay = 2 SECONDS
+	armor_list = list(
+		melee = 7, //Not the best armor, but easily crafted and adds some utility with decent protection all round.
+		bullet = 5,
+		energy = 6,
 		bomb = 25,
 		bio = 0,
 		rad = 0
 	)
-	matter = list(MATERIAL_PLASTEEL = 5, MATERIAL_GLASS = 10, MATERIAL_STEEL = 10)
+	matter = list(MATERIAL_PLASTEEL = 5, MATERIAL_GLASS = 10, MATERIAL_STEEL = 10, MATERIAL_PLATINUM = 2)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	siemens_coefficient = 0.7
 
@@ -355,15 +319,53 @@ obj/item/clothing/suit/fluff/kimono
 		usr.update_action_buttons()
 		return 1
 
+/obj/item/clothing/suit/storage/scav_heavy
+	name = "scavenger plate armor"
+	desc = "A set of scavenger armor with additional armour plating installed. Though the haphazardly-made plates are heavy and don't exactly excel against projectiles, they shrug off melee attacks nicely."
+	icon_state = "scav_heavy"
+	item_state = "scav_heavy"
+	armor_list = list(
+		melee = 12, //A bit worse than riot armour
+		bullet = 6,
+		energy = 6,
+		bomb = 25,
+		bio = 0,
+		rad = 0
+	)
+	slowdown = 0.9
+
+/obj/item/clothing/suit/storage/scav_heavy/verb/toggle_style()
+	set name = "Adjust Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["scavenger plate"] = "scav_heavy"
+	options["alt scavenger plate"] = "scav_heavy_alt"
+
+	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		to_chat(M, "You adjusted your attire's style into [choice] mode.")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
+
 /obj/item/clothing/suit/storage/triad
 	name = "triad jacket"//RUINER reference
 	desc = "A well armoured trench coat. The label on the inside claims it comes from somewhere dangerous."
 	icon_state = "triadkillers"
 	item_state = "triadkillers"
-	armor = list(
-		melee = 10,
-		bullet = 5,
-		energy = 5,
+	armor_list = list(
+		melee = 2,
+		bullet = 1,
+		energy = 1,
 		bomb = 0,
 		bio = 0,
 		rad = 0
@@ -377,10 +379,10 @@ obj/item/clothing/suit/fluff/kimono
 	desc = "A red jacket designed for riding on a bike. Has a pill icon on the back."
 	icon_state = "akira"
 	item_state = "akira"
-	armor = list(
-		melee = 10,
-		bullet = 10,
-		energy = 10,
+	armor_list = list(
+		melee = 2,
+		bullet = 2,
+		energy = 2,
 		bomb = 0,
 		bio = 0,
 		rad = 0
@@ -393,10 +395,10 @@ obj/item/clothing/suit/fluff/kimono
 	desc = "A haphazardly-made cloak made of reclaimed leather and other fiber materials, it's all you have for protection... for now."
 	icon_state = "outcast_cloak"
 	item_state = "outcast_cloak"
-	armor = list(
-		melee = 20,
-		bullet = 10,
-		energy = 20, //Decent starting armor but intentionally shitty because outsiders are hard mode. Scavenge better. Triumph or die! -Kaz
+	armor_list = list(
+		melee = 5,
+		bullet = 2,
+		energy = 5,
 		bomb = 10,
 		bio = 5,
 		rad = 5
@@ -406,15 +408,15 @@ obj/item/clothing/suit/fluff/kimono
 	min_cold_protection_temperature = T0C - 20
 	price_tag = 50
 
-/obj/item/clothing/suit/storage/numericalgarb
-	name = "numerical garb"
-	desc = "A padded cloak meant for numerical, made to be biomatter resistant. The cloak is reversible, with its switchable colors being red and grey."
-	icon_state = "numericalgarb"
-	item_state = "numericalgarb"
-	armor = list(
-		melee = 10,
+/obj/item/clothing/suit/storage/surtout
+	name = "Absolute surtout"
+	desc = "A padded surtout, made to be biomatter resistant. The surtout is reversible, with its switchable colors being red and purple."
+	icon_state = "field_numerical"
+	item_state = "field_numerical"
+	armor_list = list(
+		melee = 2,
 		bullet = 0, //well armored its not going to help a bullet
-		energy = 10,
+		energy = 2,
 		bomb = 5,
 		bio = 100,
 		rad = 0
@@ -422,7 +424,7 @@ obj/item/clothing/suit/fluff/kimono
 	body_parts_covered = UPPER_TORSO|ARMS
 	price_tag = 60
 
-/obj/item/clothing/suit/storage/numericalgarb/verb/toggle_style()
+/obj/item/clothing/suit/storage/surtout/verb/toggle_style()
 	set name = "Adjust Style"
 	set category = "Object"
 	set src in usr
@@ -432,8 +434,8 @@ obj/item/clothing/suit/fluff/kimono
 
 	var/mob/M = usr
 	var/list/options = list()
-	options["Red Garb"] = "numericalgarb"
-	options["Gray Garb"] = "numericalgarbgrey"
+	options["Red Garb"] = "field_numerical"
+	options["Purple Garb"] = "field_numerical_alt"
 
 	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
 
@@ -444,3 +446,84 @@ obj/item/clothing/suit/fluff/kimono
 		update_wear_icon()
 		usr.update_action_buttons()
 		return 1
+
+
+// Miscs
+
+/obj/item/clothing/suit/storage/omni_robes
+	name = "religious robe"
+	desc = "A robe made of cloth that can be colored."
+	icon_state = "general_priest_cloth"
+	item_state = "general_priest_cloth"
+	armor_list = list(
+		melee = 2,
+		bullet = 1,
+		energy = 0,
+		bomb = 0,
+		bio = 0,
+		rad = 0
+		)
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO
+	min_cold_protection_temperature = T0C - 20
+	price_tag = 50
+
+/obj/item/clothing/suit/hev
+	name = "Hazardous Enviroment Protection suit" //funny reference suit. stronk rare and includes some degree of fire and hazard protection just not a space suit.
+	desc = "An advanced suit designed to protect you from the harshest of enviroments as long as that enviroment is not space. A shame most of it's systems seem broken down..."
+	icon_state = "rad"
+	item_state = "rad_suit"
+	w_class = ITEM_SIZE_BULKY
+	stiffness = LIGHT_STIFFNESS
+	gas_transfer_coefficient = 0.01
+	permeability_coefficient = 0.01
+	siemens_coefficient = 0.4
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor_list = list(
+		melee = 16,
+		bullet = 15,
+		energy = 13,
+		bomb = 75,
+		bio = 100,
+		rad = 100
+	)
+	equip_delay = 2 SECONDS
+	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT|HIDETAIL
+	item_flags = COVER_PREVENT_MANIPULATION
+	heat_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
+	min_cold_protection_temperature= SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
+	unacidable = TRUE
+	price_tag = 2000
+
+/obj/item/clothing/suit/stamped_suit
+	name = "\"Wired\" Executive Suit"
+	desc = "A stiff and dreary looking suit, seems to have metal wire woven as in every thread"
+	icon_state = "checkered_suit"
+	item_state = "checkered_suit"
+	w_class = ITEM_SIZE_BULKY
+	stiffness = MEDIUM_STIFFNESS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor_list = list(
+		melee = 9,
+		bullet = 12,
+		energy = 3, //Its made of metal lasers heat us up and burn us
+		bomb = 10,
+		bio = 50,
+		rad = 50
+	)
+	//Cheap armor
+	matter = list(MATERIAL_STEEL = 5, MATERIAL_PLASTIC = 2)
+	equip_delay = 1 SECONDS
+	price_tag = 600
+
+/obj/item/clothing/suit/stamped_suit/examine(mob/user)
+	..()
+	if(ishuman(user))
+		var/mob/living/carbon/human/H = user
+		if(istype(H.glasses, /obj/item/clothing/glasses/stamped_lens))
+			to_chat(user, SPAN_NOTICE("According to [H.glasses]'s info on, this is a STAMP CORP executive suit used for protecting VIP's with a specal type of metal wire weaving, \
+			thats designed to stop bullets and reduce impacts."))
+
+			to_chat(user, SPAN_NOTICE("Legal Code 9223: Illegal production of STAMP CORP protective gear."))

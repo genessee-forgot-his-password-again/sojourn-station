@@ -1,9 +1,9 @@
 /*
-=================The Belvoix scanner=================
+=================The Blue-Ink scanner=================
 This is a bugtesting item, please forgive the memes.
 */
-/obj/item/device/scanner/belvoix_scanner
-	name = "Belvoix Scanner"
+/obj/item/device/scanner/gene_debug_scanner
+	name = "Blue-Ink Debug Scanner"
 	desc = "A worryingly small device for extracting, analyzing and modifying genetic information. Never saw production in Soteria, as it was deemed too humane and convenient for regular use."
 	icon_state = "spectrometer"
 	item_state = "analyzer"
@@ -11,14 +11,14 @@ This is a bugtesting item, please forgive the memes.
 	charge_per_use = 0
 	var/datum/genetics/genetics_holder/held_mutations
 
-/obj/item/device/scanner/belvoix_scanner/is_valid_scan_target(atom/target)
-	if(!istype(target, /mob/living) && !istype(target, /obj/item/reagent_containers/food/snacks/meat))
+/obj/item/device/scanner/gene_debug_scanner/is_valid_scan_target(atom/target)
+	if(!istype(target, /mob/living) && !istype(target, /obj/item/reagent_containers/snacks/meat))
 		to_chat(usr, SPAN_WARNING("A red dot blips, the scan target [target] is invalid."))
 		return FALSE
 	return TRUE
 
 
-/obj/item/device/scanner/belvoix_scanner/scan(atom/target, mob/user)
+/obj/item/device/scanner/gene_debug_scanner/scan(atom/target, mob/user)
 	if(user.a_intent == I_HELP)
 		if(target != src)
 			to_chat(user, SPAN_NOTICE("\The [src] takes a sample out of \the [target]"))
@@ -27,17 +27,17 @@ This is a bugtesting item, please forgive the memes.
 		if(istype(target, /mob/living))
 			var/mob/living/living_target = target
 			held_mutations.initializeFromMob(living_target)
-		else if (istype(target, /obj/item/reagent_containers/food/snacks/meat))
-			var/obj/item/reagent_containers/food/snacks/meat/meat_target = target
+		else if (istype(target, /obj/item/reagent_containers/snacks/meat))
+			var/obj/item/reagent_containers/snacks/meat/meat_target = target
 			held_mutations.initializeFromMeat(meat_target)
-		scan_title = "Belvoix Scanner - [target]"
-		scan_data = belvoix_scan(held_mutations)
+		scan_title = "Blue-Ink Scanner - [target]"
+		scan_data = soteria_scan(held_mutations)
 		user.show_message(scan_data)
 	else if(user.a_intent == I_HURT)
 		to_chat(user, SPAN_NOTICE("\The [src] injects a sample into \the [target]"))
 		held_mutations.inject_mutations(target)
 
-/proc/belvoix_scan(var/datum/genetics/genetics_holder/held_mutations)
+/proc/soteria_scan(var/datum/genetics/genetics_holder/held_mutations)
 	if(held_mutations.mutation_pool.len == 0)
 		return SPAN_WARNING("No genetic info found.</span>")
 	else
@@ -46,7 +46,7 @@ This is a bugtesting item, please forgive the memes.
 			dat += "[mutagen.name]([mutagen.active == TRUE ? "Active" : "Inactive"]): [mutagen.desc]"
 		return jointext(dat, "<br>")
 
-/obj/item/device/scanner/belvoix_scanner/verb/scramble()
+/obj/item/device/scanner/gene_debug_scanner/verb/scramble()
 	set category = "Object"
 	set name = "Scramble Activated Genes"
 	set src in view(1)
@@ -62,17 +62,17 @@ This is a bugtesting item, please forgive the memes.
 
 	held_mutations.randomizeActivations()
 
-	scan_data = belvoix_scan(held_mutations)
+	scan_data = soteria_scan(held_mutations)
 	usr.show_message(scan_data)
 
-/obj/item/device/scanner/belvoix_scanner/verb/makeSlide()
+/obj/item/device/scanner/gene_debug_scanner/verb/makeSlide()
 	set category = "Object"
 	set name = "Print Sample Plate"
 	set src in view(1)
 	var/obj/item/genetics/sample/new_sample = new /obj/item/genetics/sample(held_mutations)
 	usr.put_in_hands(new_sample)
 
-/obj/item/device/scanner/belvoix_scanner/verb/irradiateMutation()
+/obj/item/device/scanner/gene_debug_scanner/verb/irradiateMutation()
 	set category = "Object"
 	set name = "Irradiate Gene"
 	set src in view(1)
@@ -85,7 +85,7 @@ This is a bugtesting item, please forgive the memes.
 		held_mutations.irradiate(option_list[choice])
 	to_chat(usr, SPAN_NOTICE("\The [src] did not have a mutation to work with. Aborting."))
 
-/obj/item/device/scanner/belvoix_scanner/verb/combineMutation()
+/obj/item/device/scanner/gene_debug_scanner/verb/combineMutation()
 	set category = "Object"
 	set name = "Combine Genes"
 	set src in view(1)
@@ -134,7 +134,7 @@ This is a bugtesting item, please forgive the memes.
 
 /*
 ================="Petite" Mutagenic Scanner=================
-A more player-friendly version of the Belvoix scanner, reports basic information that can tell someone what tf is up with a person's genes.
+A more player-friendly version of the Blue-Ink scanner, reports basic information that can tell someone what tf is up with a person's genes.
 
 */
 /obj/item/device/scanner/petite_scanner
@@ -149,7 +149,7 @@ A more player-friendly version of the Belvoix scanner, reports basic information
 	var/datum/genetics/genetics_holder/held_mutations
 
 /obj/item/device/scanner/petite_scanner/is_valid_scan_target(atom/target)
-	if(!istype(target, /mob/living) && !istype(target, /obj/item/reagent_containers/food/snacks/meat))
+	if(!istype(target, /mob/living) && !istype(target, /obj/item/reagent_containers/snacks/meat))
 		to_chat(usr, SPAN_WARNING("A red dot blips, the scan target [target] is invalid."))
 		return FALSE
 	return TRUE
@@ -186,8 +186,8 @@ A more player-friendly version of the Belvoix scanner, reports basic information
 	if(istype(target, /mob/living))
 		var/mob/living/living_target = target
 		held_mutations = living_target.unnatural_mutations.Copy()
-	else if (istype(target, /obj/item/reagent_containers/food/snacks/meat))
-		var/obj/item/reagent_containers/food/snacks/meat/meat_target = target
+	else if (istype(target, /obj/item/reagent_containers/snacks/meat))
+		var/obj/item/reagent_containers/snacks/meat/meat_target = target
 		held_mutations.initializeFromMeat(meat_target)
 	scan_title = "Mutagenic Data - [target]"
 	scan_data = petite_scan()
@@ -234,6 +234,7 @@ It also resets instability to 0 so bad things don't happen.
 	matter = list(MATERIAL_PLASTIC = 2, MATERIAL_STEEL = 1, MATERIAL_URANIUM = 1)
 	origin_tech = list(TECH_MATERIAL = 2, TECH_MAGNET = 4, TECH_BIO = 6)
 	var/used = FALSE
+	var/datum/genetics/genetics_holder/held_mutations
 
 /obj/item/genetics/purger/attack(mob/living/target, mob/living/user)
 	if(!istype(target))
@@ -242,6 +243,16 @@ It also resets instability to 0 so bad things don't happen.
 	if(target.body_part_covered(user.targeted_organ))
 		to_chat(user, SPAN_WARNING("The needle can't pierce through clothes."))
 		return
+
+	if(issynthetic(target))
+		to_chat(user, SPAN_WARNING("The needle can't pierce synthetic casing- and anything held inside probably wouldn't work on a robot."))
+		return
+
+	if(istype(target, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = target
+		if(H && H.species && H.species.reagent_tag == IS_SYNTHETIC)
+			to_chat(user, SPAN_WARNING("The needle can't pierce synthetic casing- and anything held inside probably wouldn't work on a robot."))
+			return
 
 	if(used)
 		to_chat(user, SPAN_WARNING("The purger has been used!"))
@@ -255,6 +266,7 @@ It also resets instability to 0 so bad things don't happen.
 		used = TRUE
 		to_chat(target, SPAN_NOTICE("You feel your body begin to stabilize, and your anomalous mutations leave you."))
 		target.unnatural_mutations.removeAllMutations()
+		target.unnatural_mutations.total_instability = 0 // Now it does reset instability to zero
 
 
 
@@ -293,7 +305,7 @@ Can also be loaded into a (Syringe probably) and injected into people. But that 
 	var/list/data = list()
 	data["name"] = name
 	data["unique_id"] = unique_id
-	data += genetics_holder.ui_data(known_mutations)
+	data += genetics_holder.nano_ui_data(known_mutations)
 	return data
 /*
 =================Mutagenic Implanter=================
@@ -321,6 +333,16 @@ Can also be loaded into a (Syringe probably) and injected into people. But that 
 	if(target.body_part_covered(user.targeted_organ))
 		to_chat(user, SPAN_WARNING("The needle can't pierce through clothes."))
 		return
+
+	if(issynthetic(target))
+		to_chat(user, SPAN_WARNING("The needle can't pierce synthetic casing- and anything held inside probably wouldn't work on a robot."))
+		return
+
+	if(istype(target, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = target
+		if(H && H.species && H.species.reagent_tag == IS_SYNTHETIC)
+			to_chat(user, SPAN_WARNING("The needle can't pierce synthetic casing- and anything held inside probably wouldn't work on a robot."))
+			return
 
 	if(!loaded_sample)
 		to_chat(user, SPAN_WARNING("The injector is empty!"))
@@ -371,7 +393,7 @@ icon_state='innards'
 /obj/item/genetics/reject
 	name = "Genetic Reject"
 	desc = "A product of hasty genetics work. Whatever this mound of flesh could have been, it will never see the light of day."
-	icon = 'icons/obj/genetics/dna_syringes.dmi'
+	icon = 'icons/obj/surgery.dmi'
 	icon_state = "innards"
 
 /obj/item/genetics/reject/New(var/parent_name)
@@ -409,7 +431,7 @@ A holder for items we make with Genetics. Helps add a visceral element to object
 			for(var/loot_item in loot)
 				if(ispath(loot_item, /obj))
 					var/obj/instanced_item = new loot_item()
-					instanced_item.loc = src.loc
+					instanced_item.loc = get_turf(src)
 			qdel(src)
 		else
 			playsound(src.loc, 'sound/effects/splat.ogg', 50, 1)
@@ -419,7 +441,7 @@ A holder for items we make with Genetics. Helps add a visceral element to object
 
 /obj/item/genetics/flesh_sac/greater
 	name = "Flesh Sac"
-	desc = "An undilating facsimile of life, carrying with it unknown contents. Seems capable of much holding more than usual."
+	desc = "An undilating facsimile of life, carrying with it unknown contents. Seems capable of holding much more than usual."
 	max_loot_size = 40
 
 /obj/item/genetics/flesh_sac/greater/superior
@@ -445,15 +467,15 @@ A holder for items we make with Genetics. Helps add a visceral element to object
 		/obj/item/organ/internal/blood_vessel/extensive,
 		/obj/item/organ/internal/blood_vessel/extensive,
 		/obj/item/organ/internal/liver/big,
-		/obj/item/organ/internal/lungs/long,
-		/obj/item/organ/internal/heart/huge)
+		/obj/item/organ/internal/vital/lungs/long,
+		/obj/item/organ/internal/vital/heart/huge)
 /*
 =================Genetics Circuits=================
 Circuit boards for different Genetics Machines.
 */
 
 /obj/item/circuitboard/genetics/cloner
-	build_name = "Belvoix Xenofauna Cloning Vat"
+	build_name = "Blue-Ink Xenofauna Cloning Vat"
 	build_path = /obj/machinery/genetics/cloner
 	board_type = "machine"
 	origin_tech = list(TECH_BIO = 6)
@@ -474,7 +496,7 @@ Circuit boards for different Genetics Machines.
 	origin_tech = list(TECH_DATA = 2, TECH_BIO = 3)
 
 /obj/item/circuitboard/genetics/gene_analyzer
-	build_name = "Belvoix Genetic Analyzer"
+	build_name = "Blue-Ink Genetic Analyzer"
 	build_path = /obj/machinery/genetics/gene_analyzer
 	board_type = "machine"
 	origin_tech = list(TECH_DATA = 2, TECH_BIO = 3)
@@ -483,7 +505,7 @@ Circuit boards for different Genetics Machines.
 		/obj/item/stock_parts/matter_bin = 4, //Affects Max Sample plates
 	)
 
-/obj/item/computer_hardware/hard_drive/portable/design/genetics_kit
+/obj/item/pc_part/drive/disk/design/genetics_kit
 	disk_name = "Genetics Studio Design Kit"
 	desc = "A disc containing patented designs for the Xenogenetics lab. Contains additional licensed products from the lab's creator."
 	icon = 'icons/obj/genetics/genetics_disks.dmi'
@@ -498,7 +520,7 @@ Circuit boards for different Genetics Machines.
 		/datum/design/autolathe/genetics/petite_scanner = 1
 	)
 
-/obj/item/computer_hardware/hard_drive/portable/design/genetics_kit_public
+/obj/item/pc_part/drive/disk/design/genetics_kit_public
 	disk_name = "Genetics Studio Resupply Kit"
 	desc = "A disc containing quality-of-life designs for the Xenogenetics lab."
 	icon = 'icons/obj/genetics/genetics_disks.dmi'
@@ -540,7 +562,12 @@ Neglects to mention where to find its pieces.
 		"Roach DNA can be irradiated into a plethora of different breeds!",
 		"Warning- The Gigantism gene combined with roach DNA can have hazardous results!",
 		"Spider DNA can be irradiated into a plethora of different breeds!",
-		"The Gigantism gene only produces an Empress spider when combined with egg-laying spider DNA",
+		"Termite DNA can be irradiated to a plethora of different breeds!",
+		"Some termites can be made even larger!",
+		"Loud sounds mixed with specific friends can lead to buddy's when you need it most.",
+		"Cats can be made both bigger and smaller!",
+		"Making a dog too big will result in a bear.",
+		"The Gigantism gene only produces an Empress spider when combined with egg-laying spider DNA.",
 		"The Gigantism gene only produces an Emperor spider when combined with Tarantula-type spider DNA.",
 		"Do NOT, under ANY CIRCUMSTANCES, clone the combination of an emperor and an empress spider.",
 		"When you get right down to it, Tatonkas are really just two cows stitched together.",
@@ -576,9 +603,22 @@ Neglects to mention where to find its pieces.
 		"The Hyperion mutation can enhance cloned organs, like the Blood Vessels.",
 		"The Hyperion mutation can enhance cloned organs, like the Nerves.",
 		"The Hyperion mutation can enhance cloned organs, like the Muscles.",
+		"Hell Divers are just a really hungry and leathery opossum if you don't think too much about it!",
+		"The flesh sacs with protein milk can lead to heavier hands.",
+		"Baldness and coughing when combined can lead to protective coating for genes.",
+		"DNA Mending and Epilepsy can create another layer of DNA protection.",
+		"DNA Mending and Nervousness can create another layer of DNA protection.",
+		"Mixed with a cloaking mutation, the Hyperion mutation can be combined to cause phasing.",
+		"A greater cloaking mutation can be irradiated to cause phasing.",
+		"The DNA of a golden roach can be combined with an imbecile mutation to make a mutagen that enforces docility.",
+		"The barotrauma mutation can be irradiated to make a strain that removes a need for breathing.",
+		"The Bald mutation, combined with the Gigantism mutation, result in a Hulk mutation.",
 		"Flesh sacs can be achieved through irradiated human DNA- if you're a bad person.",
 		"Flesh sacs can be achieved through irradiated vatgrown DNA- if you're a morally ambiguous person.",
 		"Flesh sacs can be achieved through irradiated monkey DNA with only limited moral quandaries!",
+		"Bank to Bank, River to River, Ocean to Ocean, weaved together to make a Temple.",
+		"Mix Unstable foot, Eye's of a cat and dwarfism to create something any miner would love.",
+		"Belly of a beast, a bank of blood, and eye's of a cat will make a most regal sickness.",
 		"If you combine the mutations that make roaches and spiders accept you, you can create a mutation that will cause them to ignore you."))
 	desc = "Xenogenetics fact of the day: [blurb]"
 

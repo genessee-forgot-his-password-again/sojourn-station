@@ -53,11 +53,13 @@
 		/obj/item/seeds/appleseed = 3,
 		/obj/item/seeds/bananaseed = 3,
 		/obj/item/seeds/berryseed = 3,
+		/obj/item/seeds/blueberryseed = 3,
 		/obj/item/seeds/cabbageseed = 3,
 		/obj/item/seeds/carrotseed = 3,
 		/obj/item/seeds/chantermycelium = 3,
 		/obj/item/seeds/cherryseed = 3,
 		/obj/item/seeds/chiliseed = 3,
+		/obj/item/seeds/cinnamonseed = 2,
 		/obj/item/seeds/cocoapodseed = 3,
 		/obj/item/seeds/cornseed = 3,
 		/obj/item/seeds/eggplantseed = 3,
@@ -65,9 +67,12 @@
 		/obj/item/seeds/grassseed = 3,
 		/obj/item/seeds/lemonseed = 3,
 		/obj/item/seeds/limeseed = 3,
-		/obj/item/seeds/mtearseed = 2,
+		/obj/item/seeds/linenseed = 3,
+		/obj/item/seeds/mintseed = 2,
+		/obj/item/seeds/moontearseed = 2,
 		/obj/item/seeds/orangeseed = 3,
 		/obj/item/seeds/peanutseed = 3,
+		/obj/item/seeds/pineappleseed = 2,
 		/obj/item/seeds/plumpmycelium = 3,
 		/obj/item/seeds/poppyseed = 3,
 		/obj/item/seeds/potatoseed = 3,
@@ -76,7 +81,8 @@
 		/obj/item/seeds/soyaseed = 3,
 		/obj/item/seeds/sugarcaneseed = 3,
 		/obj/item/seeds/sunflowerseed = 3,
-		/obj/item/seeds/shandseed = 2,
+		/obj/item/seeds/spacealocasiaseed = 2,
+		/obj/item/seeds/strawberryseed = 3,
 		/obj/item/seeds/tomatoseed = 3,
 		/obj/item/seeds/towermycelium = 3,
 		/obj/item/seeds/watermelonseed = 3,
@@ -93,11 +99,14 @@
 		/obj/item/seeds/amanitamycelium = 2,
 		/obj/item/seeds/bananaseed = 3,
 		/obj/item/seeds/berryseed = 3,
+		/obj/item/seeds/blueberryseed = 3,
+		/obj/item/seeds/brootseed = 2,
 		/obj/item/seeds/cabbageseed = 3,
 		/obj/item/seeds/carrotseed = 3,
 		/obj/item/seeds/chantermycelium = 3,
 		/obj/item/seeds/cherryseed = 3,
 		/obj/item/seeds/chiliseed = 3,
+		/obj/item/seeds/cinnamonseed = 2,
 		/obj/item/seeds/cocoapodseed = 3,
 		/obj/item/seeds/cornseed = 3,
 		/obj/item/seeds/eggplantseed = 3,
@@ -108,10 +117,13 @@
 		/obj/item/seeds/lemonseed = 3,
 		/obj/item/seeds/libertymycelium = 2,
 		/obj/item/seeds/limeseed = 3,
+		/obj/item/seeds/linenseed = 3,
+		/obj/item/seeds/mintseed = 2,
 		/obj/item/seeds/mtearseed = 2,
 		/obj/item/seeds/nettleseed = 2,
 		/obj/item/seeds/orangeseed = 3,
 		/obj/item/seeds/peanutseed = 3,
+		/obj/item/seeds/pineappleseed = 2,
 		/obj/item/seeds/plastiseed = 3,
 		/obj/item/seeds/plumpmycelium = 3,
 		/obj/item/seeds/poppyseed = 3,
@@ -123,6 +135,7 @@
 		/obj/item/seeds/sugarcaneseed = 3,
 		/obj/item/seeds/sunflowerseed = 3,
 		/obj/item/seeds/shandseed = 2,
+		/obj/item/seeds/strawberryseed = 3,
 		/obj/item/seeds/tomatoseed = 3,
 		/obj/item/seeds/towermycelium = 3,
 		/obj/item/seeds/watermelonseed = 3,
@@ -136,6 +149,8 @@
 		/obj/item/seeds/surik = 2,
 		/obj/item/seeds/telriis = 2,
 		/obj/item/seeds/thaadra = 2,
+		/obj/item/seeds/moontearseed = 2,
+		/obj/item/seeds/spacealocasiaseed = 2,
 		/obj/item/seeds/random = 6
 	)
 
@@ -252,7 +267,7 @@
 			dat += "</tr>"
 		dat += "</table>"
 
-	user << browse(dat, "window=seedstorage")
+	user << browse(HTML_SKELETON(dat), "window=seedstorage")
 	onclose(user, "seedstorage")
 
 /obj/machinery/seed_storage/Topic(var/href, var/list/href_list)

@@ -19,7 +19,7 @@ LEGACY_RECORD_STRUCTURE(all_warrants, warrant)
 	name = "Warrant Assistant"
 	var/datum/computer_file/data/warrant/activewarrant
 
-/datum/nano_module/digitalwarrant/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state = GLOB.default_state)
+/datum/nano_module/digitalwarrant/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state = GLOB.default_state)
 	var/list/data = host.initial_data()
 
 	if(activewarrant)
@@ -160,17 +160,26 @@ LEGACY_RECORD_STRUCTURE(all_warrants, warrant)
 			activewarrant.fields["namewarrant"] = new_name
 			activewarrant.fields["jobwarrant"] = new_job
 
-	if(href_list["editwarrantnamelocation"])
+	if(href_list["editwarrantnamesearch"])
 		. = 1
-		var/new_name = sanitize(input("Please input name or location") as null|text)
+		var/new_name = sanitize(input("Please input name of suspect or location") as null|text)
 		if(CanInteract(user, GLOB.default_state))
 			if (!new_name || !activewarrant)
 				return
 			activewarrant.fields["namewarrant"] = new_name
+			activewarrant.fields["jobwarrant"] = "N/A"
 
 	if(href_list["editwarrantcharges"])
 		. = 1
 		var/new_charges = sanitize(input("Please input charges", "Charges", activewarrant.fields["charges"]) as text|null)
+		if(CanInteract(user, GLOB.default_state))
+			if (!new_charges || !activewarrant)
+				return
+			activewarrant.fields["charges"] = new_charges
+
+	if(href_list["editwarrantsearchreason"])
+		. = 1
+		var/new_charges = sanitize(input("Please input reason for search", "Reason", activewarrant.fields["charges"]) as text|null)
 		if(CanInteract(user, GLOB.default_state))
 			if (!new_charges || !activewarrant)
 				return

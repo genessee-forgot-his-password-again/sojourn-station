@@ -12,6 +12,20 @@
 	icon_state = "blue_pyjamas"
 	item_state = "w_suit"
 
+
+/obj/item/clothing/under/dodgeball_red
+	name = "red dodgeball uniform"
+	desc = "A red threaded uniform for gym dodgeball activities."
+	icon_state = "gym_red"
+	item_state = "gym_red"
+
+// Proc for gender change deleted as it's no longer necessary - Seb
+/obj/item/clothing/under/dodgeball_blue
+	name = "blue dodgeball uniform"
+	desc = "A blue threaded uniform for gym dodgeball activities."
+	icon_state = "gym_blue"
+	item_state = "gym_blue"
+
 /*Gowns and stuff*/
 
 /obj/item/clothing/under/bathrobe
@@ -63,7 +77,7 @@
 	gas_transfer_coefficient = 0.01
 	permeability_coefficient = 0.01
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 100, bullet = 100, energy = 100, bomb = 100, bio = 100, rad = 100)
+	armor_list = list(melee = 100, bullet = 100, energy = 100, bomb = 100, bio = 100, rad = 100)
 	cold_protection = UPPER_TORSO | LOWER_TORSO | LEGS | ARMS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	siemens_coefficient = 0
@@ -72,12 +86,12 @@
 
 /obj/item/clothing/under/loincloth
 	name = "loincloth"
-	desc = "A sturdy cloth that covers the private areas."
+	desc = "A sturdy cloth that covers just the groin."
 	icon_state = "loincloth"
 
 /obj/item/clothing/under/chestwrap
-	name = "chest wrap"
-	desc = "A sturdy cloth that covers the private areas of females."
+	name = "rag wraps"
+	desc = "A sturdy cloth that covers the private areas of the body."
 	icon_state = "chestwrap"
 
 /obj/item/clothing/under/gharness
@@ -218,7 +232,7 @@
 	icon_state = "gorka_ih_med_b"
 	item_state = "gorka_ih_med_b"
 	permeability_coefficient = 0.50
-	armor = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
+	armor_list = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
 
 /obj/item/clothing/under/rank/medspec/gorka_ih_med_g
 	name = "medical specialist gorka"
@@ -226,7 +240,32 @@
 	icon_state = "gorka_ih_med_g"
 	item_state = "gorka_ih_med_g"
 	permeability_coefficient = 0.50
-	armor = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
+	armor_list = list(melee = 0, bullet = 0, energy = 0, bomb = 0, bio = 10, rad = 0)
+
+/obj/item/clothing/under/rank/medspec/gorka_ih_med_g/verb/toggle_style()
+	set name = "Adjust Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["medical specialist gorka"] = "gorka_ih_med_g"
+	options["medical specialist gorka alt"] = "gorka_ih_med_green"
+
+	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		item_state = options[choice]
+		item_state_slots = null
+		to_chat(M, "You adjust your [choice].")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
 
 /obj/item/clothing/under/rank/medical/gorka_crew_med
 	name = "medical crew gorka"
@@ -308,6 +347,17 @@
 		update_wear_icon()
 		usr.update_action_buttons()
 		return 1
+
+
+/obj/item/clothing/under/os_jumpsuit/bdu/nova
+	name = "Greyson Star Traders Battle Dress Uniform"
+	desc = "A Battle Dress Uniform produced by Greyson Star Traders based of the actual Greyson Positronics, for their more style oriented personnel"
+	icon_state = "bdugreyson"
+
+/obj/item/clothing/under/os_jumpsuit/nova
+	name = "Greyson Star Traders jumpsuit"
+	desc = "An uniform that was produced by Greyson Star Traders, cleaning to enginering this over engineered suit was used. Surprisingly the suit senors still work. Perfect for a dangerous colony in middle of fucking nowhere!"
+	icon_state = "os_jumpsuit"
 
 //Excelsior
 /obj/item/clothing/under/excelsior
@@ -455,8 +505,8 @@
 /obj/item/clothing/under/leisure
 	name = "leisure outfit"
 	desc = "A leisure outfit with brown jacket. Sometimes you just want to wear what is comfortable."
-	icon_state = "leisuroutfit"
-	item_state = "leisuroutfit"
+	icon_state = "leisureoutfit"
+	item_state = "leisureoutfit"
 
 /obj/item/clothing/under/leisure/white
 	name = "white blouse"
@@ -581,49 +631,49 @@
 	price_tag = 45
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
-/obj/item/clothing/under/dress/casual/blackdress
+/obj/item/clothing/under/dress/blackdress
 	name = "cocktail dress"
 	desc = "A flattering black cocktail dress."
 	icon_state = "blackdress"
 	item_state = "blackdress"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/blackdressalt
+/obj/item/clothing/under/dress/blackdressalt
 	name = "skater dress"
 	desc = "A lovely black skater dress"
 	icon_state = "blackdress2"
 	item_state = "blackdress2"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/flowerdress
+/obj/item/clothing/under/dress/flowerdress
 	name = "flower pattern dress"
 	desc = "A rather loud, flower patterned dress. Aloha!"
 	icon_state = "flower_dress"
 	item_state = "flower_dress"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/sweptdress
+/obj/item/clothing/under/dress/sweptdress
 	name = "red swept dress"
 	desc = "A simple, asymmetrical red dress and belt. Perfect for a night on the town!"
 	icon_state = "red_swept_dress"
 	item_state = "red_swept_dress"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/sevillanadress
+/obj/item/clothing/under/dress/sevillanadress
 	name = "Sevillana dress"
 	desc = "A traditional garb from an ancient nation of old terra."
 	icon_state = "flamenco"
 	item_state = "flamenco"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/westernbustle
+/obj/item/clothing/under/dress/westernbustle
 	name = "western barmaids dress"
 	desc = "For those saloon workers who spend more time behind the counters than under them"
 	icon_state = "westernbustle"
 	item_state = "westernbustle"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/casual/lilac
+/obj/item/clothing/under/dress/lilac
 	name = "lilac dress"
 	desc = "A simple, lilac dress."
 	icon_state = "lilacdress"
@@ -631,47 +681,105 @@
 	price_tag = 45
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
-/obj/item/clothing/under/dress/casual/bluedress
+/obj/item/clothing/under/dress/bluedress
 	name = "blue dress"
 	desc = "A comfortable, breezy blue summer dress."
 	icon_state = "bluedress"
 	item_state = "bluedress"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/rattydress
+/obj/item/clothing/under/dress/rattydress
 	name = "skimpy black dress"
 	desc = "A short black dress, skimpy enough to qualify as a tank-top for many"
 	icon_state = "rattydress"
 	item_state = "rattydress"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/littleblackdress
+/obj/item/clothing/under/dress/littleblackdress
 	name = "little black dress"
 	desc = "A short cut, black cocktail dress. Considered a must have by the out of touch for at least 500 years!"
 	icon_state = "littleblackdress"
 	item_state = "littleblackdress"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/pinkdress
+/obj/item/clothing/under/dress/pinkdress
 	name = "pink skirt"
 	desc = "A simple pink skirt."
 	icon_state = "pinktutu"
 	item_state = "pinktutu"
 	price_tag = 45
 
-/obj/item/clothing/under/dress/casual/barmaid
-	name = "barmaids dress"
-	desc = "The bar-wench standard for a thousand years!"
-	icon_state = "barmaid"
-	item_state = "barmaid"
+/obj/item/clothing/under/dress/barmaid
+	name = "fantasy bartender outfit"
+	desc = "The bar standard for a thousand years!"
+	icon_state = "bartender"
+	item_state = "bartender"
 	price_tag = 45
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
+/obj/item/clothing/under/dress/barmaid/alt
+	name = "fantasy barmaids outfit"
+	desc = "The bar standard for a thousand years! Yarr"
+	icon_state = "barmaid_but_better"
+	item_state = "barmaid_but_better"
+
+/obj/item/clothing/under/dress/jill
+	name = "cyberpunk bartender outfit"
+	desc = "Time to mix drinks and change lives."
+	icon_state = "cba" // Cyberpunk Bartender Action
+	item_state = "cba"
+	price_tag = 50
+
+/obj/item/clothing/under/fancy_redish_suit
+	name = "expensive brown suit"
+	desc = "A brown suit with a white undershirt and tie, its higher value comes form its likeness to being worn by many movie stars form Sol movies. Its also just well made."
+	icon_state = "apsuit"
+	item_state = "apsuit"
+	price_tag = 50
+
 /obj/item/clothing/under/helltaker
-	name = "charming outfit"//Helltaker reference
-	desc = "A red shirt with a black tie and black pants. Stylish enough to impress the devil."
+	name = "black charming outfit" // Helltaker reference
+	desc = "A red suit shirt with a black bottom and optional tie. Stylish enough to impress the devil." // Accomodating description for the alt sprites - Seb
 	icon_state = "helltaker"
 	item_state = "helltaker"
+	price_tag = 45
+
+/obj/item/clothing/under/helltaker/verb/toggle_style() // Alt styles to impersonate the most unique ones, made by me. - Seb
+	set name = "Adjust Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["default"] = "helltaker" // Lucy and Cerberus are both this one, no need for more alts. - Seb
+	options["sour gamer"] = "malina"
+	options["tired sadist"] = "pandemonica"
+	options["bratty masochist"] = "zdrada"
+	options["the cool one"] = "justice"
+	options["the lustful one"] = "modeus"
+
+	var/choice = input(M,"What kind of demon do you want to be?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		item_state = options[choice]
+		item_state_slots = list(
+			slot_back_str = options[choice]
+		)
+		to_chat(M, "You adjusted your attire's style into [choice] mode.")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
+
+/obj/item/clothing/under/helltaker_m
+	name = "white charming outfit"
+	desc = "A collared, loose red shirt with white pants and a stout belt. Go get your own demon harem, now."
+	icon_state = "helltaker_m" // The Helltaker dude himself - Seb
+	item_state = "helltaker_m"
 	price_tag = 45
 
 /obj/item/clothing/under/colony
@@ -687,10 +795,10 @@
 	icon_state = "johnny"
 	item_state = "johnny"
 	price_tag = 60
-	armor = list(
-		melee = 10,
-		bullet = 5,
-		energy = 5,
+	armor_list = list(
+		melee = 2,
+		bullet = 1,
+		energy = 1,
 		bomb = 0,
 		bio = 0,
 		rad = 0
@@ -702,10 +810,10 @@
 	icon_state = "raider"
 	item_state = "raider"
 	price_tag = 60
-	armor = list(
-		melee = 10,
-		bullet = 5,
-		energy = 5,
+	armor_list = list(
+		melee = 2,
+		bullet = 1,
+		energy = 1,
 		bomb = 0,
 		bio = 0,
 		rad = 0
@@ -716,14 +824,15 @@
 	icon_state = "tribalm"
 	item_state = "tribalm"
 	price_tag = 50
-	armor = list(
-		melee = 10,
-		bullet = 5,
-		energy = 5,
+	armor_list = list(
+		melee = 2,
+		bullet = 1,
+		energy = 1,
 		bomb = 0,
 		bio = 0,
 		rad = 0
 	)
+
 /obj/item/clothing/under/tribalhide/verb/toggle_style()
 	set name = "Adjust Style"
 	set category = "Object"
@@ -746,3 +855,63 @@
 		update_wear_icon()
 		usr.update_action_buttons()
 		return 1
+
+/obj/item/clothing/under/ashigaru
+	name = "Ashigaru"
+	desc = "A lightly armored apron designed as a homage to jana foot soldiers."
+	icon_state = "ashigaru"
+	armor_list = list(melee = 1, bullet = 1, energy = 1, bomb = 0, bio = 0, rad = 0)
+
+/*Swimsuit*/
+
+/obj/item/clothing/under/swimsuit
+	name = "white swimsuit"
+	desc = "A white swimsuit perfect for the pool."
+	icon_state = "swim_white"
+	siemens_coefficient = 1
+	body_parts_covered = 0
+
+/obj/item/clothing/under/swimsuit/black
+	name = "black swimsuit"
+	desc = "A black swimsuit perfect for the pool."
+	icon_state = "swim_black"
+
+/obj/item/clothing/under/swimsuit/blue
+	name = "blue swimsuit"
+	desc = "A blue swimsuit perfect for the pool."
+	icon_state = "swim_blue"
+
+/obj/item/clothing/under/swimsuit/earth
+	name = "earth swimsuit"
+	desc = "A earth swimsuit perfect for the pool."
+	icon_state = "swim_earth"
+
+/obj/item/clothing/under/swimsuit/green
+	name = "green swimsuit"
+	desc = "A green swimsuit perfect for the pool."
+	icon_state = "swim_green"
+
+/obj/item/clothing/under/swimsuit/purple
+	name = "purple swimsuit"
+	desc = "A purple swimsuit perfect for the pool."
+	icon_state = "swim_purp"
+
+/obj/item/clothing/under/swimsuit/red
+	name = "red swimsuit"
+	desc = "A red swimsuit perfect for the pool."
+	icon_state = "swim_red"
+
+/obj/item/clothing/under/swimsuit/striped
+	name = "striped swimsuit"
+	desc = "A striped swimsuit perfect for the pool."
+	icon_state = "swim_striped"
+
+/obj/item/clothing/under/swimsuit/ntswimsuit
+	name = "Absolutist swimsuit"
+	desc = "A fine, white and gold trim swimsuit produced and often worn by those of the faith"
+	icon_state = "swim_nt"
+
+/obj/item/clothing/under/swimsuit_c
+	name = "Skimpy swimsuit"
+	desc = "An absolutely scandalous swimsuit that scarcely covers anything. Fit for only the bravest beach-goers."
+	icon_state = "swim_risque"

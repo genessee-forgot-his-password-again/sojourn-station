@@ -2,18 +2,28 @@
 	name = "random roach"
 	icon_state = "hostilemob-brown"
 	alpha = 128
+	mobs = list(/mob/living/carbon/superior/roach = 9,
+				// /mob/living/carbon/superior/roach/fat = 2,
+				/mob/living/carbon/superior/roach/tank = 2,
+				/mob/living/carbon/superior/roach/toxic = 2,
+				/mob/living/carbon/superior/roach/glowing = 2,
+				/mob/living/carbon/superior/roach/nanite = 2,
+				/mob/living/carbon/superior/roach/glowing = 1,
+				/mob/living/carbon/superior/roach/hunter = 4,
+				/mob/living/carbon/superior/roach/support = 4
+				)
 
 /obj/random/mob/roaches/item_to_spawn()
-	return pickweight(list(/mob/living/carbon/superior_animal/roach = 9,
-				// /mob/living/carbon/superior_animal/roach/fat = 2,
-				/mob/living/carbon/superior_animal/roach/tank = 2,
-				/mob/living/carbon/superior_animal/roach/toxic = 2,
-				/mob/living/carbon/superior_animal/roach/glowing = 2,
-				/mob/living/carbon/superior_animal/roach/nanite = 2,
-				/mob/living/carbon/superior_animal/roach/glowing = 1,
-				/mob/living/carbon/superior_animal/roach/hunter = 4,
-				/mob/living/carbon/superior_animal/roach/support = 4,
-				/mob/living/carbon/superior_animal/roach/fuhrer = 0.5))
+	if(GLOB.chaos_level > 0) //Higher weights as chaose increase
+		mobs += list(/mob/living/carbon/superior/roach/fuhrer = (0.5 * GLOB.chaos_level))
+	if(GLOB.chaos_level > 1)
+		mobs += list(/mob/living/carbon/superior/roach/nitro = (0.5 * GLOB.chaos_level))
+	if(GLOB.chaos_level > 2)
+		mobs += list(/mob/living/carbon/superior/roach/elektromagnetisch = (0.1 * GLOB.chaos_level))
+	if(GLOB.chaos_level > 4)
+		mobs += list(/mob/living/carbon/superior/roach/kaiser = (0.02 * GLOB.chaos_level)) //0.1 then 0.12 ect ect 
+
+	return pickweight(mobs)
 
 /obj/random/mob/roaches/low_chance
 	name = "low chance random roach"
@@ -31,6 +41,17 @@
 /obj/random/cluster/roaches/item_to_spawn()
 	return /obj/random/mob/roaches
 
+/obj/random/cluster/roaches_hoard
+	name = "hoard of roaches"
+	icon_state = "hostilemob-brown-cluster"
+	alpha = 128
+	min_amount = 20
+	max_amount = 30
+	spread_range = 0
+
+/obj/random/cluster/roaches_hoard/item_to_spawn()
+	return /obj/random/mob/roaches
+
 /obj/random/cluster/roaches/low_chance
 	name = "low chance cluster of roaches"
 	icon_state = "hostilemob-brown-cluster-low"
@@ -43,4 +64,4 @@
 
 // For Scrap Beacon
 /obj/random/cluster/roaches/beacon/item_to_spawn()
-	return /mob/living/carbon/superior_animal/roach/nanite
+	return /mob/living/carbon/superior/roach/nanite

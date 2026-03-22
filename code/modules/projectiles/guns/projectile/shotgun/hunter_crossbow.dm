@@ -13,15 +13,21 @@
 	ammo_type = /obj/item/ammo_casing/crossbow_bolts
 	matter = list(MATERIAL_PLASTEEL = 20, MATERIAL_PLASTIC = 6)
 	price_tag = 750
-	recoil_buildup = 1
-	one_hand_penalty = 14
+	init_recoil = RIFLE_RECOIL(0.3)
 	saw_off = FALSE
 	gun_tags = list(GUN_PROJECTILE, GUN_INTERNAL_MAG, GUN_SCOPE)
-	pumpshotgun_sound = 'sound/weapons/guns/interact/hydra_crossbow_load.ogg'
+	cocked_sound = 'sound/weapons/guns/interact/hydra_crossbow_load.ogg'
+	serial_type = "INDEX"
+	serial_shown = FALSE
+	gun_parts = null
 
-/obj/item/gun/projectile/shotgun/pump/hunter_crossbow/handle_post_fire()
+/obj/item/gun/projectile/shotgun/pump/hunter_crossbow/handle_post_fire(mob/user)
 	..()
 	to_chat(usr, SPAN_WARNING("The bolt inside heats up to a dull red glow before being fired."))
+	if(user.stats.getPerk(PERK_BUTCHER) && loaded.len>0)
+		to_chat(user, SPAN_NOTICE("Your hands move instinctively to load the next bolt!"))
+		pump(user)
+		return
 
 /obj/item/gun/projectile/shotgun/pump/hunter_crossbow/update_icon()
 	..()
@@ -54,11 +60,10 @@
 	ammo_type = /obj/item/ammo_casing/crossbow_bolts
 	matter = list(MATERIAL_PLASTEEL = 20, MATERIAL_PLASTIC = 6)
 	price_tag = 750
-	recoil_buildup = 1
-	one_hand_penalty = 0
+	init_recoil = EMBEDDED_RECOIL(0.1)
 	saw_off = FALSE
 	gun_tags = list(GUN_PROJECTILE, GUN_INTERNAL_MAG, GUN_SCOPE)
-	pumpshotgun_sound = 'sound/weapons/guns/interact/hydra_crossbow_load.ogg'
+	cocked_sound = 'sound/weapons/guns/interact/hydra_crossbow_load.ogg'
 
 /obj/item/gun/projectile/shotgun/pump/hunter_crossbow_implanted/handle_post_fire()
 	..()

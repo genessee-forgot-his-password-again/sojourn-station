@@ -8,7 +8,6 @@
 	var/explosion_resistance
 
 
-
 var/list/explosion_turfs = list()
 
 var/explosion_in_progress = 0
@@ -26,7 +25,7 @@ proc/explosion_rec(turf/epicenter, power)
 	epicenter = get_turf(epicenter)
 	if(!epicenter) return
 	for(var/obj/item/device/radio/beacon/explosion_watcher/W in GLOB.explosion_watcher_list)
-		if(get_dist(W, epicenter) < 10)
+		if(get_dist(W, epicenter) < 10 && W.z == epicenter.z)
 			W.react_explosion(epicenter, power)
 
 	message_admins("Explosion with size ([power]) in area [epicenter.loc.name] ([epicenter.x],[epicenter.y],[epicenter.z])")

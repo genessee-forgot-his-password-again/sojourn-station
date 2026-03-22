@@ -4,7 +4,7 @@
 	nanomodule_path = /datum/nano_module/program/coin_miner
 	program_icon_state = "supply"
 	program_key_state = "rd_key"
-	program_menu_icon = "cart"
+	program_menu_icon = "coins"
 	extended_desc = "A endlessly compressed file that when processed turns into valueable credit on the non-solfed market. The bigger the file, the more its worth."
 	size = 1
 	available_on_ntnet = TRUE
@@ -29,9 +29,9 @@
 	. = ..()
 	if(!running)
 		return
-	var/obj/item/computer_hardware/processor_unit/CPU = computer.processor_unit
-	var/obj/item/computer_hardware/hard_drive/HD = computer.hard_drive
-	var/obj/item/computer_hardware/hard_drive/portable/PD = computer.portable_drive
+	var/obj/item/pc_part/processor_unit/CPU = computer.processor_unit
+	var/obj/item/pc_part/drive/HD = computer.hard_drive
+	var/obj/item/pc_part/drive/disk/PD = computer.portable_drive
 
 	if(!istype(CPU) || !CPU.check_functionality() || !istype(HD))
 		message = "A fatal hardware error has been detected."
@@ -75,7 +75,7 @@
 	if(href_list["PRG_execute"])
 		if(running)
 			return 1
-		var/obj/item/computer_hardware/processor_unit/CPU = computer.processor_unit
+		var/obj/item/pc_part/processor_unit/CPU = computer.processor_unit
 		if(!istype(CPU) || !CPU.check_functionality())
 			message = "A fatal hardware error has been detected."
 			return
@@ -84,7 +84,7 @@
 		return 1
 
 
-/datum/nano_module/program/coin_miner/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state = GLOB.default_state)
+/datum/nano_module/program/coin_miner/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state = GLOB.default_state)
 	if(!ntnet_global)
 		return
 	var/datum/computer_file/program/coin_miner/PRG = program

@@ -21,6 +21,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	var/list/bgstate_options = list("steel", "dark_steel", "white_tiles", "black_tiles", "wood", "carpet", "white", "black")
 
 	var/size_multiplier = RESIZE_NORMAL
+	var/scale_effect = 0
 
 	var/grad_style = 	"None"			//Gradient style
 	var/grad_color =	"#000000"		//Gradient Color
@@ -37,13 +38,15 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	from_file(S["skin_base"], pref.s_base)
 	from_file(S["hair_style_name"], pref.h_style)
 	from_file(S["facial_style_name"], pref.f_style)
-	pref.preview_icon = null
+	if (!pref.generating_preview)
+		pref.preview_icon = null
 	from_file(S["bgstate"], pref.bgstate)
 	from_file(S["eyes_color"], pref.eyes_color)
 	from_file(S["skin_color"], pref.skin_color)
 	from_file(S["hair_color"], pref.hair_color)
 	from_file(S["facial_color"], pref.facial_color)
 	from_file(S["size_multiplier"], pref.size_multiplier)
+	from_file(S["scale_effect"], pref.scale_effect)
 	from_file(S["gradient_style"], pref.grad_style)
 	from_file(S["gradient_color"], pref.grad_color)
 
@@ -60,6 +63,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	to_file(S["hair_color"], pref.hair_color)
 	to_file(S["facial_color"], pref.facial_color)
 	to_file(S["size_multiplier"], pref.size_multiplier)
+	to_file(S["scale_effect"], pref.scale_effect)
 	to_file(S["gradient_style"], pref.grad_style)
 	to_file(S["gradient_color"], pref.grad_color)
 
@@ -72,8 +76,12 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	pref.skin_color		= iscolor(pref.skin_color) ? pref.skin_color : "#FFE0D0"
 	pref.eyes_color		= iscolor(pref.eyes_color) ? pref.eyes_color : "#000000"
 	pref.grad_color		= iscolor(pref.grad_color) ? pref.grad_color : "#000000"
+
 	if(pref.size_multiplier == null || pref.size_multiplier < RESIZE_TINY || pref.size_multiplier > RESIZE_HUGE)
 		pref.size_multiplier = initial(pref.size_multiplier)
+	if (pref.size_multiplier != 1)
+		pref.scale_effect = round(pref.size_multiplier * 100 - 100)		//So players don't have to rewrite their char sizes
+		pref.size_multiplier = initial(pref.size_multiplier)	//We don't need obsolete vars on our chars
 
 	if(!pref.species || !(pref.species in global.playable_species))
 		pref.species = SPECIES_HUMAN
@@ -96,7 +104,8 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 /datum/category_item/player_setup_item/physical/body/content(var/mob/user)
 	if(!pref.preview_icon)
 		pref.update_preview_icon()
-	user << browse_rsc(pref.preview_icon, "previewicon.png")
+	if (pref.preview_icon) // failsafe, if the icon fails to render for whatever reason we at least have our customization options
+		user << browse_rsc(pref.preview_icon, "previewicon.png")
 
 	var/datum/species_form/mob_species_form = GLOB.all_species_form_list[pref.species_form]
 	. += "<style>span.color_holder_box{display: inline-block; width: 20px; height: 8px; border:1px solid #000; padding: 0px;}</style>"
@@ -147,7 +156,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	else if(has_flag(mob_species_form, HAS_SKIN_TONE))
 		. += "<b>Skin Tone: </b><a href='?src=\ref[src];skin_tone=1'>[-pref.s_tone + 35]/220</a><br>"
 
-	. += "<b>Scale:</b> <a href='?src=\ref[src];size_multiplier=1'>[round(pref.size_multiplier*100)]%</a><br>"
+	. += "<b>Scale:</b> <a href='?src=\ref[src];scale_effect=1'>[pref.scale_effect+100]%</a><br>"
 
 	. += "</td><td style = 'text-align:center;' width = 35%><b>Preview</b><br>"
 	. += "<div style ='padding-bottom:-2px;' class='statusDisplay'><img src=previewicon.png width=[pref.preview_icon.Width()] height=[pref.preview_icon.Height()]></div>"
@@ -221,7 +230,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		var/choice = input("Which species would you like to look at?") as null|anything in playable_species
 		if(choice)
 			var/datum/species/current_species = all_species[choice]
-			user << browse(current_species.get_description(), "window=species;size=700x400")
+			user << browse(HTML_SKELETON(current_species.get_description()), "window=species;size=700x400")
 			return TOPIC_HANDLED
 
 	else if(href_list["set_species"])
@@ -383,14 +392,21 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		if(new_f_style && CanUseTopic(user) && mob_species_form.get_facial_hair_styles())
 			pref.f_style = new_f_style
 			return TOPIC_REFRESH_UPDATE_PREVIEW
-	else if(href_list["size_multiplier"])
-		var/new_size = input(user, "Choose your character's size, ranging from 80% to 120% Please note that size is capped at these percentages. A size of 100 is considered close to 5'10 or 1.77 meters.", "Set Size") as num|null
-		if (!ISINRANGE(new_size,80,120))
-			pref.size_multiplier = 1
+	else if(href_list["scale_effect"])
+		var/new_size_mult = input(user, "Choose your character's size, ranging from -20% to +20% form normal sprite size. Note that 100% is roughly equals to 1.77 meters or 5'10.", "Set Size") as num|null
+		if (!ISINRANGE(new_size_mult,-20,20))
+			//pref.size_multiplier = 1 		Obsolete
+			pref.scale_effect = 0
 			to_chat(user, "<span class='notice'>Invalid size.</span>")
 			return TOPIC_REFRESH_UPDATE_PREVIEW
-		else if(new_size)
-			pref.size_multiplier = (new_size/100)
+		else if(new_size_mult == -10 || new_size_mult == 10)
+			to_chat(user, "<span class='notice'>You're trying to set character size value which will result broken sprites. Your scaling is auto adjusted.</span>")
+			if (new_size_mult == -10)
+				pref.scale_effect = -9
+			else pref.scale_effect = 9
+		else if(new_size_mult)
+		//	was pref.size_multiplier
+			pref.scale_effect = (new_size_mult)
 			return TOPIC_REFRESH_UPDATE_PREVIEW
 
 	return ..()

@@ -4,7 +4,7 @@
 	nanomodule_path = /datum/nano_module/program/card_mod
 	program_icon_state = "id"
 	program_key_state = "id_key"
-	program_menu_icon = "key"
+	program_menu_icon = "id-card"
 	extended_desc = "Program for programming crew ID cards."
 	requires_ntnet = 0
 	size = 8
@@ -15,7 +15,7 @@
 	var/is_centcom = 0
 	var/show_assignments = 0
 
-/datum/nano_module/program/card_mod/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state = GLOB.default_state)
+/datum/nano_module/program/card_mod/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state = GLOB.default_state)
 	var/list/data = host.initial_data()
 
 	data["src"] = "\ref[src]"
@@ -73,7 +73,7 @@
 			data["all_centcom_access"] = all_centcom_access
 		else
 			var/list/regions = list()
-			for(var/i = 1; i <= 7; i++)
+			for(var/i = 1; i <= 9; i++)
 				var/list/accesses = list()
 				for(var/access in get_region_accesses(i))
 					if (get_access_desc(access))
@@ -134,8 +134,8 @@
 			else
 				module.show_assignments = 1
 		if("print")
-			if(!authorized(user_id_card))
-				to_chat(usr, "<span class='warning'>Access denied.</span>")
+			if(!authorized_diet(user_id_card))
+				to_chat(usr, "<span class='warning'>Access Light Missing: Denied..</span>")
 				return
 			if(computer && computer.printer) //This option should never be called if there is no printer
 				if(module.mod_mode)
@@ -179,8 +179,8 @@
 				else
 					computer.attackby(user.get_active_hand(), user)
 		if("terminate")
-			if(!authorized(user_id_card))
-				to_chat(usr, "<span class='warning'>Access denied.</span>")
+			if(!authorized_diet(user_id_card))
+				to_chat(usr, "<span class='warning'>Access Light Missing: Denied.</span>")
 				return
 			if(computer && can_run(user, 1))
 				id_card.assignment = "Terminated"
@@ -188,7 +188,7 @@
 				callHook("terminate_employee", list(id_card))
 		if("edit")
 			if(!authorized(user_id_card))
-				to_chat(usr, "<span class='warning'>Access denied.</span>")
+				to_chat(usr, "<span class='warning'>Access Hard Missing: Denied.</span>")
 				return
 			if(computer && can_run(user, 1))
 				if(href_list["name"])
@@ -210,7 +210,7 @@
 					id_card.associated_email_login["password"] = email_password
 		if("assign")
 			if(!authorized(user_id_card))
-				to_chat(usr, "<span class='warning'>Access denied.</span>")
+				to_chat(usr, "<span class='warning'>Access Hard Missing: Denied.</span>")
 				return
 			if(computer && can_run(user, 1) && id_card)
 				var/t1 = href_list["assign_target"]
@@ -269,4 +269,9 @@
 /datum/computer_file/program/card_mod/proc/authorized(var/obj/item/card/id/id_card)
 	if (id_card)
 		return (access_change_ids in id_card.access)
+	return FALSE
+
+/datum/computer_file/program/card_mod/proc/authorized_diet(var/obj/item/card/id/id_card)
+	if (id_card)
+		return (access_heads in id_card.access)
 	return FALSE

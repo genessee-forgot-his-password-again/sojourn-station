@@ -26,7 +26,7 @@
 	//We'll pick space tiles which have windows nearby
 	//This means that drones will only be spawned in places where someone could see them
 		//And thusly, places where they might fire into the ship
-	var/area/spess = locate(/area/space) in world
+	var/area/spess = locate(/area/nadezhda/outside/forest) in world
 	for (var/turf/T in spess)
 		if (!(T.z in GLOB.maps_data.station_levels))
 			continue
@@ -36,7 +36,7 @@
 
 		//The number of windows near each tile is recorded
 		var/numwin
-		for (var/obj/structure/window/W in view(4, T))
+		for (var/turf/simulated/floor/asteroid/grass/W in view(4, T))
 			numwin++
 
 		//And the square of it is entered into the list as a weight
@@ -63,9 +63,9 @@
 	//Pick a list of spawn locatioons
 	var/list/spawn_locations = pickweight_mult(viable_turfs, drones_to_spawn)
 
-	log_and_message_admins("Spawning [drones_to_spawn]")
+	log_and_message_admins("Spawning [drones_to_spawn] drones!")
 	for(var/turf/T in spawn_locations)
-		var/mob/living/simple_animal/hostile/retaliate/malf_drone/D = new /mob/living/simple_animal/hostile/retaliate/malf_drone(T)
+		var/mob/living/simple/hostile/retaliate/malf_drone/D = new /mob/living/simple/hostile/retaliate/malf_drone(T)
 		drones_list.Add(D)
 		if (prob(25))
 			D.disabled = rand(15, 60)
@@ -76,7 +76,7 @@
 
 /datum/event/rogue_drone/end()
 	var/num_recovered = 0
-	for(var/mob/living/simple_animal/hostile/retaliate/malf_drone/D in drones_list)
+	for(var/mob/living/simple/hostile/retaliate/malf_drone/D in drones_list)
 		var/datum/effect/effect/system/spark_spread/sparks = new /datum/effect/effect/system/spark_spread()
 		sparks.set_up(3, 0, D.loc)
 		sparks.start()

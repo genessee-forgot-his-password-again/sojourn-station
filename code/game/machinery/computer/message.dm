@@ -86,7 +86,7 @@
 	//If the computer is being hacked or is emagged, display the reboot message.
 	if(hacking || emag)
 		message = rebootmsg
-	var/dat = "<head><title>Message Monitor Console</title></head><body>"
+	var/dat = ""
 	dat += "<center><h2>Message Monitor Console</h2></center><hr>"
 	dat += "<center><h4><font color='blue'[message]</h5></center>"
 
@@ -124,7 +124,7 @@
 				for(var/n = ++i; n <= optioncount; n++)
 					dat += "<dd><font color='blue'>&#09;[n]. ---------------</font><br></dd>"
 			if((isAI(user) || isrobot(user)) && (user.mind.antagonist.len && user.mind.original == user))
-				//Malf/Traitor AIs can bruteforce into the system to gain the Key.
+				//Malf/contractor AIs can bruteforce into the system to gain the Key.
 				dat += "<dd><A href='?src=\ref[src];hack=1'><i><font color='Red'>*&@#. Bruteforce Key</font></i></font></a><br></dd>"
 			else
 				dat += "<br>"
@@ -251,10 +251,8 @@
 			if (linkedServer.spamfilter.len < linkedServer.spamfilter_limit)
 				dat += "<a href='?src=\ref[src];addtoken=1'>Add token</a><br>"
 
-
-	dat += "</body>"
 	message = defaultmsg
-	user << browse(dat, "window=message;size=700x700")
+	user << browse(HTML_SKELETON_TITLE("Message Monitor Console", dat), "window=message;size=700x700")
 	onclose(user, "message")
 	return
 

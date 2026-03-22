@@ -59,9 +59,10 @@
 			if (prob(5))
 				explode()
 				return
-
-
-
+/obj/structure/reagent_dispensers/get_item_cost(export)
+	if(export)
+		return ..() + round(reagents.total_volume * 0.125)
+	return ..() + contents_cost
 
 //Dispensers
 /obj/structure/reagent_dispensers/watertank
@@ -174,12 +175,13 @@
 
 /obj/structure/reagent_dispensers/fueltank/bullet_act(var/obj/item/projectile/Proj)
 	if(Proj.get_structure_damage())
-		if(istype(Proj.firer))
-			message_admins("[key_name_admin(Proj.firer)] shot fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[loc.x];Y=[loc.y];Z=[loc.z]'>JMP</a>).")
-			log_game("[key_name(Proj.firer)] shot fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]).")
+		if (!(Proj.testing))
+			if(istype(Proj.firer))
+				message_admins("[key_name_admin(Proj.firer)] shot fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[loc.x];Y=[loc.y];Z=[loc.z]'>JMP</a>).")
+				log_game("[key_name(Proj.firer)] shot fueltank at [loc.loc.name] ([loc.x],[loc.y],[loc.z]).")
 
-		if(!istype(Proj ,/obj/item/projectile/plasma/lastertag) && !istype(Proj ,/obj/item/projectile/beam/practice) )
-			explode()
+			if(!istype(Proj ,/obj/item/projectile/plasma/lastertag) && !istype(Proj ,/obj/item/projectile/beam/practice) )
+				explode()
 
 /obj/structure/reagent_dispensers/fueltank/ex_act()
 	explode()
@@ -249,7 +251,8 @@
 	volume = 500
 	starting_reagent = "water"
 	var/cups = 20
-	var/cup_type = /obj/item/reagent_containers/food/drinks/sillycup
+	var/cup_type = /obj/item/reagent_containers/drinks/sillycup
+	sanity_damage = 0.1 //Talk around these RP!
 
 /obj/structure/reagent_dispensers/water_cooler/attack_hand(var/mob/user)
 	if(cups > 0)
@@ -312,16 +315,6 @@
 	starting_reagent = "ntcahors"
 	price_tag = 25
 	contents_cost = 950
-
-/obj/structure/reagent_dispensers/virusfood
-	name = "virus food dispenser"
-	desc = "A dispenser of virus food."
-	icon_state = "virusfoodtank"
-	amount_per_transfer_from_this = 10
-	anchored = 1
-	density = 0
-	volume = 50000
-	starting_reagent = "virusfood"
 
 /obj/structure/reagent_dispensers/acid
 	name = "sulphuric acid dispenser"

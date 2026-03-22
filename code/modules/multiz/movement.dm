@@ -140,7 +140,7 @@
 				return TRUE
 
 /mob/living/silicon/robot/can_ztravel(var/direction)
-	if(incapacitated() || is_dead())
+	if(incapacitated() || is_dead(src))
 		return FALSE
 
 	if(allow_spacemove()) //Checks for active jetpack
@@ -210,7 +210,7 @@
 		return FALSE
 
 	// The var/climbers API is implemented here.
-	if (LAZYLEN(dest.climbers) && (src in dest.climbers))
+	if(src in dest.climbers)
 		return FALSE
 
 	// True otherwise.
@@ -231,6 +231,15 @@
 
 
 /mob/living/carbon/human/can_fall(turf/below, turf/simulated/open/dest = src.loc)
+	// can't fall on walls anymore
+	var/turf/true_below = GetBelow(src)
+	for(var/obj/structure/possible_blocker in true_below.contents)
+		if(possible_blocker.density)
+			if(possible_blocker.climbable)
+				continue
+			else
+				return FALSE
+
 	// Special condition for jetpack mounted folk!
 	if (!restrained())
 		if (CanAvoidGravity())

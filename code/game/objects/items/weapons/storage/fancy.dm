@@ -51,13 +51,13 @@
 	name = "egg box"
 	storage_slots = 12
 	can_hold = list(
-		/obj/item/reagent_containers/food/snacks/egg,
-		/obj/item/reagent_containers/food/snacks/boiledegg
+		/obj/item/reagent_containers/snacks/egg,
+		/obj/item/reagent_containers/snacks/boiledegg
 		)
 
 /obj/item/storage/fancy/egg_box/populate_contents()
 	for(var/i in 1 to storage_slots)
-		new /obj/item/reagent_containers/food/snacks/egg(src)
+		new /obj/item/reagent_containers/snacks/egg(src)
 
 //MRE food
 /obj/item/storage/fancy/mre_cracker
@@ -66,12 +66,34 @@
 	storage_slots = 5
 	icon_type = "crackers"
 	can_hold = list(
-		/obj/item/reagent_containers/food/snacks/mre_cracker
+		/obj/item/reagent_containers/snacks/mre_cracker
 		)
 
 /obj/item/storage/fancy/mre_cracker/populate_contents()
 	for(var/i in 1 to storage_slots)
-		new /obj/item/reagent_containers/food/snacks/mre_cracker(src)
+		new /obj/item/reagent_containers/snacks/mre_cracker(src)
+
+
+//Kriosan treats
+
+obj/item/storage/fancy/dogtreats
+	icon_state = "dogtreat"
+	name = "\improper packet of Kriosan treats"
+	desc = "A small purple packet with a handful of Kriosan treats, a hardy snack well beloved by Kriosans the galaxy over."
+	storage_slots = 4
+	icon_type = "dogtreat"
+	can_hold = list(
+		/obj/item/reagent_containers/snacks/dogtreats
+		)
+
+obj/item/storage/fancy/dogtreats/populate_contents()
+	for(var/i in 1 to storage_slots)
+		new /obj/item/reagent_containers/snacks/dogtreats(src)
+	update_icon()
+
+/obj/item/storage/fancy/dogtreats/update_icon()
+	icon_state = "[initial(icon_state)][contents.len]"
+	return
 
 /*
  * Candle Box
@@ -103,6 +125,7 @@
 	desc = "A box of crayons for all your rune drawing needs."
 	icon = 'icons/obj/crayons.dmi'
 	icon_state = "crayonbox"
+	max_storage_space = 5 // Icon breaks if putting more than 5 candles in the box
 	w_class = ITEM_SIZE_SMALL
 	icon_type = "crayon"
 	can_hold = list(
@@ -313,8 +336,8 @@
 	create_reagents(10 * storage_slots)//so people can inject cigarettes without opening a packet, now with being able to inject the whole one
 
 /obj/item/storage/fancy/cigarettes/khi
-	name = "\improper Kitsuhana Singularity packet"
-	desc = "A packet of six Kitsuhana Singularity cigarettes. A brand made by LSD abusers who overdosed one night and invented these smokes, still finds popularity among retards with no sense of quality. WARNING: Contains the kind of chemicals needed to enjoy this type of brand."
+	name = "\improper Hippie's Delight packet"
+	desc = "A packet of six Hippie's Delight cigarettes. A brand of cigarettes favorited by those whom live in Astrovans on public and private beaches everywhere. CAUTION: Contents may contain chemicals unsuitable for some people. Ride the wave, surf's up bro!"
 	icon_state = "KhiCigPacket"
 	item_state = "KhiCigPacket"
 
@@ -375,7 +398,7 @@
 	reagent_flags = REFILLABLE | NO_REACT
 	var/open = FALSE
 
-/obj/item/storage/fancy/cigar/proc/can_interact(mob/user)
+/obj/item/storage/fancy/cigar/can_interact(mob/user, require_adjacent_turf = TRUE, show_message = TRUE)
 	if((!ishuman(user) && (loc != user)) || user.stat || user.restrained())
 		return 1
 	if(istype(loc, /obj/item/storage))
@@ -561,19 +584,19 @@ obj/item/storage/fancy/cigar/attackby(obj/item/W, mob/user)
 	max_storage_space = 6
 	max_w_class = ITEM_SIZE_SMALL
 	can_hold = list(
-		/obj/item/reagent_containers/food/snacks/chocolatepiece,
-		/obj/item/reagent_containers/food/snacks/chocolatepiece/white,
-		/obj/item/reagent_containers/food/snacks/chocolatepiece/truffle
+		/obj/item/reagent_containers/snacks/chocolatepiece,
+		/obj/item/reagent_containers/snacks/chocolatepiece/white,
+		/obj/item/reagent_containers/snacks/chocolatepiece/truffle
 		)
 
 /obj/item/storage/fancy/heartbox/New()
 	..()
-	new /obj/item/reagent_containers/food/snacks/chocolatepiece(src)
-	new /obj/item/reagent_containers/food/snacks/chocolatepiece(src)
-	new /obj/item/reagent_containers/food/snacks/chocolatepiece(src)
-	new /obj/item/reagent_containers/food/snacks/chocolatepiece/white(src)
-	new /obj/item/reagent_containers/food/snacks/chocolatepiece/white(src)
-	new /obj/item/reagent_containers/food/snacks/chocolatepiece/truffle(src)
+	new /obj/item/reagent_containers/snacks/chocolatepiece(src)
+	new /obj/item/reagent_containers/snacks/chocolatepiece(src)
+	new /obj/item/reagent_containers/snacks/chocolatepiece(src)
+	new /obj/item/reagent_containers/snacks/chocolatepiece/white(src)
+	new /obj/item/reagent_containers/snacks/chocolatepiece/white(src)
+	new /obj/item/reagent_containers/snacks/chocolatepiece/truffle(src)
 	update_icon()
 
 /obj/item/storage/fancy/heartbox/Initialize()

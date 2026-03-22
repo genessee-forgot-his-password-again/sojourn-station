@@ -31,7 +31,7 @@
 
 	var/datum/wires/alarm/wires
 
-	var/mode = AALARM_MODE_SCRUBBING
+	var/mode = AALARM_MODE_OFF
 	var/screen = AALARM_SCREEN_MAIN
 	var/area_uid
 	var/area/alarm_area
@@ -67,7 +67,7 @@
 	req_access = list(access_rd, access_atmospherics, access_engine_equip)
 	TLV["oxygen"] =			list(-1.0, -1.0,-1.0,-1.0) // Partial pressure, kpa
 	TLV["carbon dioxide"] = list(-1.0, -1.0,   5,  10) // Partial pressure, kpa
-	TLV["plasma"] =			list(-1.0, -1.0, 0.2, 0.5) // Partial pressure, kpa
+	TLV["plasma"] =			list(-1.0, -1.0, 0.01, 0.5) // Partial pressure, kpa
 	TLV["other"] =			list(-1.0, -1.0, 0.5, 1.0) // Partial pressure, kpa
 	TLV["pressure"] =		list(0, ONE_ATMOSPHERE * 0.10, ONE_ATMOSPHERE * 1.40, ONE_ATMOSPHERE * 1.60) /* kpa */
 	TLV["temperature"] =	list(20, 40, 140, 160) // K
@@ -112,7 +112,7 @@
 	// breathable air according to human/Life()
 	TLV["oxygen"] =			list(16, 19, 135, 140) // Partial pressure, kpa
 	TLV["carbon dioxide"] = list(-1.0, -1.0, 5, 10) // Partial pressure, kpa
-	TLV["plasma"] =			list(-1.0, -1.0, 0.2, 0.5) // Partial pressure, kpa
+	TLV["plasma"] =			list(-1.0, -1.0, 0.01, 0.5) // Partial pressure, kpa
 	TLV["other"] =			list(-1.0, -1.0, 0.5, 1.0) // Partial pressure, kpa
 	TLV["pressure"] =		list(ONE_ATMOSPHERE*0.80,ONE_ATMOSPHERE*0.90,ONE_ATMOSPHERE*1.10,ONE_ATMOSPHERE*1.20) /* kpa */
 	TLV["temperature"] =	list(T0C-26, T0C, T0C+40, T0C+66) // K
@@ -401,23 +401,19 @@
 		if(AALARM_MODE_SCRUBBING)
 			to_chat(usr, "Air Alarm mode changed to Filtering.")
 			for(var/device_id in alarm_area.air_scrub_names)
-				send_signal(device_id, list("power"= 0) )
-
+				send_signal(device_id, list("power"= 1, "co2_scrub"= 1, "scrubbing"= 1, "panic_siphon"= 0) )
 			for(var/device_id in alarm_area.air_vent_names)
-				send_signal(device_id, list("power"= 0) )
+				send_signal(device_id, list("power"= 1, "checks"= "default", "set_external_pressure"= "default") )
 
 		if(AALARM_MODE_PANIC, AALARM_MODE_CYCLE)
 			if(mode == AALARM_MODE_PANIC)
 				to_chat(usr, "Air Alarm mode changed to Panic.")
-				for(var/device_id in alarm_area.air_scrub_names)
-					send_signal(device_id, list("power"= 1, "panic_siphon"= 1) )
 			else
 				to_chat(usr, "Air Alarm mode changed to Cycle.")
-				for(var/device_id in alarm_area.air_scrub_names)
-					send_signal(device_id, list("power"= 1, "co2_scrub"= 1, "scrubbing"= 1, "panic_siphon"= 0) )
-
+			for(var/device_id in alarm_area.air_scrub_names)
+				send_signal(device_id, list("power"= 1, "panic_siphon"= 1) )
 			for(var/device_id in alarm_area.air_vent_names)
-				send_signal(device_id, list("power"= 1, "checks"= "default", "set_external_pressure"= "default") )
+				send_signal(device_id, list("power"= 0) )
 
 		if(AALARM_MODE_REPLACEMENT)
 			to_chat(usr, "Air Alarm mode changed to Replace Air.")
@@ -479,7 +475,7 @@
 	nano_ui_interact(user)
 	wires.Interact(user)
 
-/obj/machinery/alarm/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS, var/master_ui = null, var/datum/topic_state/state = GLOB.default_state)
+/obj/machinery/alarm/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS, var/master_ui = null, var/datum/nano_topic_state/state = GLOB.default_state)
 	var/data[0]
 	var/remote_connection = 0
 	var/remote_access = 0
@@ -607,7 +603,7 @@
 
 			data["thresholds"] = thresholds
 
-/obj/machinery/alarm/CanUseTopic(var/mob/user, var/datum/topic_state/state, var/href_list = list())
+/obj/machinery/alarm/CanUseTopic(var/mob/user, var/datum/nano_topic_state/state, var/href_list = list())
 	if(buildstage != 2)
 		return STATUS_CLOSE
 
@@ -631,7 +627,7 @@
 			AA.apply_danger_level(0)
 	update_icon()
 
-/obj/machinery/alarm/Topic(href, href_list, var/datum/topic_state/state)
+/obj/machinery/alarm/Topic(href, href_list, var/datum/nano_topic_state/state)
 	if(..(href, href_list, state))
 		return 1
 
@@ -980,10 +976,13 @@ FIRE ALARM
 	. = ..()
 	if (.)
 		return
-	return nano_ui_interact(user)
+	return ui_interact(user)
 
-/obj/machinery/firealarm/bullet_act()
-	return src.alarm()
+/obj/machinery/firealarm/bullet_act(var/obj/item/projectile/Proj)
+	if (!(Proj.testing))
+		return src.alarm()
+	else
+		return
 
 /obj/machinery/firealarm/emp_act(severity)
 	if(prob(50/severity))
@@ -1041,7 +1040,7 @@ FIRE ALARM
 			if(buildstage == 1)
 				if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_VERY_EASY, required_stat = STAT_MEC))
 					to_chat(user, "You pry out the circuit!")
-					var/obj/item/airalarm_electronics/circuit = new /obj/item/airalarm_electronics()
+					var/obj/item/firealarm_electronics/circuit = new /obj/item/firealarm_electronics()
 					circuit.loc = user.loc
 					buildstage = 0
 					update_icon()
@@ -1109,22 +1108,50 @@ FIRE ALARM
 	spawn(rand(0,15))
 		update_icon()
 
-/obj/machinery/firealarm/nano_ui_interact(var/mob/user, var/ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state = GLOB.outside_state)
-	var/data[0]
-	var/decl/security_state/security_state = decls_repository.get_decl(GLOB.maps_data.security_state)
-
-	data["seclevel"] = security_state.current_security_level.name
-	data["time"] = round(src.time)
-	data["timing"] = timing
-	var/area/A = get_area(src)
-	data["active"] = A.fire
-
-	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
+/obj/machinery/firealarm/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
-		ui = new(user, src, ui_key, "fire_alarm.tmpl", "Fire Alarm", 240, 330, state = state)
-		ui.set_initial_data(data)
+		ui = new(user, src, "FireAlarm", name)
 		ui.open()
-		ui.set_auto_update(1)
+
+/obj/machinery/firealarm/ui_data(mob/user)
+	var/list/data = list()
+
+	var/decl/security_state/security_state = decls_repository.get_decl(GLOB.maps_data.security_state)
+	data["seclevel"] = security_state.current_security_level.name
+
+	data["time"] = round(time)
+	data["timing"] = !!timing
+
+	var/area/A = get_area(src)
+	data["active"] = !!A.fire
+
+	return data
+
+/obj/machinery/firealarm/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+	. = ..()
+	if(.)
+		return
+
+	switch(action)
+		if("alarm_toggle")
+			var/area/A = get_area(src)
+			if(A.fire)
+				reset()
+			else
+				alarm()
+			. = TRUE
+
+		if("timer_set")
+			time = max(0, params["time"])
+			. = TRUE
+
+		if("timer_toggle")
+			timing = !timing
+			. = TRUE
+
+	if(.)
+		playsound(src, 'sound/machines/machine_switch.ogg', 100, 1)
 
 /obj/machinery/firealarm/CanUseTopic(user)
 	if(wiresexposed)
@@ -1133,28 +1160,6 @@ FIRE ALARM
 	if (buildstage != 2)
 		return STATUS_CLOSE
 	return ..()
-
-/obj/machinery/firealarm/Topic(href, href_list)
-	if(..())
-		return 1
-
-	playsound(loc, 'sound/machines/machine_switch.ogg', 100, 1)
-	if (href_list["status"] == "reset")
-		src.reset()
-		return TOPIC_REFRESH
-	else if (href_list["status"] == "alarm")
-		src.alarm()
-		return TOPIC_REFRESH
-	if (href_list["timer"] == "set")
-		time = max(0, input(usr, "Enter time delay", "Fire Alarm Timer", time) as num)
-	else if (href_list["timer"] == "start")
-		src.timing = 1
-		return TOPIC_REFRESH
-	else if (href_list["timer"] == "stop")
-		src.timing = 0
-		return TOPIC_REFRESH
-
-	return
 
 /obj/machinery/firealarm/proc/reset()
 	if (!( src.working ))
@@ -1254,8 +1259,8 @@ Just a object used in constructing fire alarms
 			d2 = text("<A href='?src=\ref[];time=1'>Initiate Time Lock</A>", src)
 		var/second = time % 60
 		var/minute = (time - second) / 60
-		var/dat = text("<HTML><HEAD></HEAD><BODY><TT><B>Party Button</B> []\n<HR>\nTimer System: []<BR>\nTime Left: [][] <A href='?src=\ref[];tp=-30'>-</A> <A href='?src=\ref[];tp=-1'>-</A> <A href='?src=\ref[];tp=1'>+</A> <A href='?src=\ref[];tp=30'>+</A>\n</TT></BODY></HTML>", d1, d2, (minute ? text("[]:", minute) : null), second, src, src, src, src)
-		user << browse(dat, "window=partyalarm")
+		var/dat = text("<TT><B>Party Button</B> []\n<HR>\nTimer System: []<BR>\nTime Left: [][] <A href='?src=\ref[];tp=-30'>-</A> <A href='?src=\ref[];tp=-1'>-</A> <A href='?src=\ref[];tp=1'>+</A> <A href='?src=\ref[];tp=30'>+</A>\n</TT>", d1, d2, (minute ? text("[]:", minute) : null), second, src, src, src, src)
+		user << browse(HTML_SKELETON_TITLE("Party Button",dat), "window=partyalarm")
 		onclose(user, "partyalarm")
 	else
 		if (A.fire)
@@ -1272,15 +1277,15 @@ Just a object used in constructing fire alarms
 		if(minute)
 			time_string = "[minute]:[second]"
 		var/dat = {"
-			<HTML><BODY><TT>
+			<TT>
 			<B>[stars("Party Button")]</B> [d1]<HR>
 			Timer System: [d2]<BR>
 			Time Left: [time_string]
 			<A href='?src=\ref[src];tp=-30'>-</A> <A href='?src=\ref[src];tp=-1'>-</A>
 			<A href='?src=\ref[src];tp=1'>+</A> <A href='?src=\ref[src];tp=30'>+</A>
-			</TT></BODY></HTML>
+			</TT>
 		"}
-		user << browse(dat, "window=partyalarm")
+		user << browse(HTML_SKELETON(dat), "window=partyalarm")
 		onclose(user, "partyalarm")
 	return
 

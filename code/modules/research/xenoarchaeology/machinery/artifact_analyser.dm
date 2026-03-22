@@ -52,7 +52,7 @@
 	dat += "<br>"
 	dat += "<hr>"
 	dat += "<a href='?src=\ref[src]'>Refresh</a> <a href='?src=\ref[src];close=1'>Close</a>"
-	user << browse(dat, "window=artanalyser;size=450x500")
+	user << browse(HTML_SKELETON(dat), "window=artanalyser;size=450x500")
 	user.set_machine(src)
 	onclose(user, "artanalyser")
 
@@ -85,7 +85,7 @@
 		P.info = "<b>[src] analysis report #[report_num]</b><br>"
 		P.info += "<br>"
 		P.info += "\icon[scanned_object] [results]"
-		P.copy_overlays(list("paper_stamped"), TRUE)
+		P.add_overlay(list("paper_stamped"), TRUE)
 		if(scanned_object)
 			P.artifact_type = scanned_object.type
 			if(istype(scanned_object, /obj/machinery/artifact))

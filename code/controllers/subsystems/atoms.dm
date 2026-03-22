@@ -29,7 +29,7 @@ SUBSYSTEM_DEF(atoms)
 	if(initialized == INITIALIZATION_INSSATOMS)
 		return
 
-	var/previous_state
+	var/previous_state = null
 	if(initialized != INITIALIZATION_INNEW_MAPLOAD)
 		previous_state = initialized
 		initialized = INITIALIZATION_INNEW_MAPLOAD
@@ -67,7 +67,8 @@ SUBSYSTEM_DEF(atoms)
 			//I hate that we need this
 			if(QDELETED(A))
 				continue
-			A.LateInitialize()
+			// mapload arg
+			A.LateInitialize(TRUE)
 		testing("Late initialized [late_loaders.len] atoms")
 		late_loaders.Cut()
 
@@ -160,4 +161,6 @@ ADMIN_VERB_ADD(/client/proc/cmd_display_init_log, R_DEBUG, null)
 	if(!LAZYLEN(SSatoms.BadInitializeCalls))
 		to_chat(usr, SPAN_NOTICE("BadInit list is empty."))
 	else
-		usr << browse(replacetext(SSatoms.InitLog(), "\n", "<br>"), "window=initlog")
+		var/datum/browser/browser = new(usr, "initlog", "Initialize Log", 500, 500)
+		browser.set_content(replacetext(SSatoms.InitLog(), "\n", "<br>"))
+		browser.open()

@@ -43,7 +43,6 @@ Notes:
 	if (C)
 		owner = C
 		owner << browse(file2text('code/modules/tooltip/tooltip.html'), "window=[control]")
-
 	..()
 
 
@@ -86,7 +85,7 @@ Notes:
 
 /datum/tooltip/proc/hide()
 	if (queueHide)
-		addtimer(CALLBACK(src, .proc/do_hide), 1)
+		addtimer(CALLBACK(src, PROC_REF(do_hide)), 1)
 	else
 		do_hide()
 

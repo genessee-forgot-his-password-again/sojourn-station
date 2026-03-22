@@ -33,7 +33,7 @@
 /obj/effect/plant/attack_hand(var/mob/user)
 	manual_unbuckle(user)
 
-/obj/effect/plant/attack_generic(var/mob/user)
+/obj/effect/plant/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(istype(user))
 		manual_unbuckle(user)
 
@@ -57,7 +57,7 @@
 			return
 		if(prob(70))
 			sampled = 1
-		seed.harvest(user,0,1)
+		seed.harvest(user,get_turf(src),0,1)
 		health -= (rand(3,5)*5)
 		sampled = 1
 		return

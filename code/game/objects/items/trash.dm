@@ -7,6 +7,7 @@
 	icon = 'icons/obj/trash.dmi'
 	w_class = ITEM_SIZE_SMALL
 	matter = list(MATERIAL_PLASTIC = 1)
+	preloaded_reagents = list("plasticide" = 4)
 
 /obj/item/trash/attack(mob/M, mob/living/user)
 	return
@@ -20,6 +21,11 @@
 	name = "candy bar"
 	desc = "An empty candy bar wrapper. Trash."
 	icon_state= "candy"
+
+/obj/item/trash/spacetwinkie
+	name = "space twinkie wrapper"
+	desc = "An empty candy bar wrapper not even a bit of filling stuck inside. Trash."
+	icon_state= "space_twinkie" //Sprite by Michiyamenotehifunana
 
 /obj/item/trash/candy/proteinbar
 	name = "protein bar"
@@ -64,7 +70,7 @@
 /obj/item/trash/syndi_cakes
 	name = "syndi cakes"
 	desc = "An empty box of syndi cakes.Trash."
-	icon_state = "syndi_cakes"
+	icon_state = "syndi_cakes" //Sprite by Michiyamenotehifunana
 
 /obj/item/trash/waffles
 	name = "dirty tray"
@@ -113,12 +119,12 @@
 /obj/item/trash/liquidfood
 	name = "\improper \"LiquidFood\" ration"
 	desc = "An empty ration packet. Trash."
-	icon_state = "liquidfood"
+	icon_state = "liquidfood" //Sprite by Michiyamenotehifunana
 
 /obj/item/trash/tastybread
 	name = "bread tube"
 	desc = "An empty bread tube. Trash."
-	icon_state = "tastybread"
+	icon_state = "tastybread" //Sprite by Michiyamenotehifunana
 
 /obj/item/trash/mre
 	name = "mre"
@@ -127,6 +133,7 @@
 /obj/item/trash/mre/alt
 	name = "mre"
 	icon_state = "wok"
+	matter = list(MATERIAL_CARDBOARD = 1)
 
 /obj/item/trash/mre_paste
 	name = "nutrient paste"
@@ -162,4 +169,36 @@
 	name = "icecream bowl"
 	desc = "This used to hold icecream on it, it has even been licked clean!"
 	icon_state = "icecreambowl"
+	matter = list(MATERIAL_GLASS = 1) // It is, after all, made of glass
+
+/obj/item/trash/mre/os
+	name = "gray cardboard takeout container"
+	desc = "A generic takeout container made of cardboard. Trash."
+	icon_state= "os_wok"
+	matter = list(MATERIAL_CARDBOARD = 1)
+
+/obj/item/trash/os_wrapper
+	name = "plastic wrapper"
+	desc = "A thick plastic wrapper from something. Trash."
+	icon_state= "os_wrapper"
+
+/obj/item/trash/os_soypack
+	name = "used liquid pack"
+	desc = "A gray plastic liquid pack without any contents. Trash."
+	icon_state= "os_soy"
+
+/obj/item/trash/os_coco_wrapper
+	name = "candy wrapper"
+	desc = "A plastic wrapper for candy. Trash."
+	icon_state= "os_coco_wrapper"
+
+/obj/item/trash/os_paste_empty
+	name = "plastic tube"
+	desc = "A plastic tube devoid of contents. Trash."
+	icon_state= "os_paste_empty"
+
+/obj/item/trash/teacup
+	name = "teacup"
+	desc = "A dirty, empty teacup. Trash."
+	icon_state = "teacup"
 	matter = list(MATERIAL_GLASS = 1) // It is, after all, made of glass

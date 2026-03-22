@@ -8,27 +8,35 @@
 
 /area/mine/prep
 	name = "Lonestar Mining Prep"
+	ship_area = TRUE
 
 /area/mine/processing
 	name = "Lonestar Ore Processing"
+	ship_area = TRUE
 
 /area/mine/hallway
 	name = "Lonestar General"
+	ship_area = TRUE
 
 /area/mine/medical
 	name = "Lonestar Triage"
+	ship_area = TRUE
 
 /area/mine/livingarea
 	name = "Lonestar Quarters"
+	ship_area = TRUE
 
 /area/mine/atmos
 	name = "Lonestar Atmos"
+	ship_area = TRUE
 
 /area/mine/power
 	name = "Lonestar Machine Room"
+	ship_area = TRUE
 
 /area/mine/lockers
 	name = "Lonestar Locker Room"
+	ship_area = TRUE
 
 /area/mine/explored
 	name = "Mine"
@@ -37,6 +45,11 @@
 /area/mine/unexplored
 	name = "Mine"
 	icon_state = "unexplored"
+	turf_initializer = new /datum/turf_initializer/mining()
+
+/area/mine/unexplored/deep
+	name = "Deep Mine"
+	area_light_color = "#808080" //A gray for any natural/built lighting
 
 /area/mine/gulag
 	name = "Labor Mines"
@@ -70,6 +83,18 @@
 	name = "Abandoned Fortress"
 	icon_state = "yellow"
 	requires_power = FALSE
+
+/area/outpost/abandoned_fortress/powered_lit
+	name = "Excelsior Fortress"
+	icon_state = "yellow"
+	requires_power = FALSE
+	dynamic_lighting = 0
+
+/area/outpost/gp_scrap_yard
+	name = "GP Automated Scrap Yard"
+	icon_state = "yellow"
+	dynamic_lighting = 0
+	is_gp = TRUE
 
 // Main mining outpost
 /area/outpost/mining_main

@@ -2,7 +2,7 @@
 // To make a design unprotect use -1
 
 // Soteria
-/obj/item/computer_hardware/hard_drive/portable/design/medical
+/obj/item/pc_part/drive/disk/design/medical
 	disk_name = "Soteria Medical Designs"
 	icon_state = "moebius"
 	license = 20
@@ -33,11 +33,11 @@
 		/datum/design/autolathe/misc/bodybag,
 		/datum/design/research/item/medical/autopsy_scanner,
 		/datum/design/research/item/medical/roller_bed,
-		/datum/design/autolathe/gun/dnalock_mod,
+		/datum/design/research/item/weapon/weapon_upgrade/dnalock_mod,
 		/datum/design/autolathe/container/hcase_med
 	)
 
-/obj/item/computer_hardware/hard_drive/portable/design/medical/advanced
+/obj/item/pc_part/drive/disk/design/medical/advanced
 	disk_name = "Soteria Advanced Medical Designs"
 	icon_state = "moebius"
 	license = 10
@@ -75,34 +75,49 @@
 		/datum/design/research/item/clothing/health = 2,
 		/datum/design/autolathe/clothing/si_xenobio_hood,
 		/datum/design/autolathe/clothing/si_xenobio_suit,
-		/datum/design/autolathe/gun/dnalock_mod,
+		/datum/design/research/item/weapon/weapon_upgrade/dnalock_mod,
 		/datum/design/autolathe/container/hcase_med
 	)
 
 
-/obj/item/computer_hardware/hard_drive/portable/design/medical/cmo
+/obj/item/pc_part/drive/disk/design/medical/cmo
 	disk_name = "Soteria Medical Factory"
 	license = -1 //Same disk, but for the CBO exclusively with endless uses.
 
-/obj/item/computer_hardware/hard_drive/portable/design/medical/advanced/cmo
+/obj/item/pc_part/drive/disk/design/medical/advanced/cmo
 	disk_name = "Soteria Advanced Medical Designs Factory"
 	license = -1 //Same disk, but for the CBO exclusively with endless uses.
 
-/obj/item/computer_hardware/hard_drive/portable/design/surgery
+/obj/item/pc_part/drive/disk/design/medical/surgery
+	disk_name = "Soteria Standard Organs"
+	license = -1
+	designs = list(
+		/datum/design/organ/heart,
+		/datum/design/organ/lungs,
+		/datum/design/organ/kidney_left,
+		/datum/design/organ/kidney_right,
+		/datum/design/organ/liver,
+		/datum/design/organ/eyes,
+		/datum/design/organ/nerves,
+		/datum/design/organ/muscle,
+		/datum/design/organ/blood_vessel
+	)
+
+/obj/item/pc_part/drive/disk/design/surgery
 	disk_name = "Back Alley Organs"
 	icon_state = "moebius"
 
 	license = 5
 	designs = list(
-		/datum/design/bioprinter/lungs,
-		/datum/design/bioprinter/heart,
-		/datum/design/bioprinter/liver,
-		/datum/design/bioprinter/nerves,
-		/datum/design/bioprinter/muscle,
-		/datum/design/bioprinter/blood_vessel
+		/datum/design/organ/back_alley/ex_lungs,
+		/datum/design/organ/back_alley/huge_heart,
+		/datum/design/organ/back_alley/big_liver,
+		/datum/design/organ/back_alley/hyper_nerves,
+		/datum/design/organ/back_alley/super_muscle,
+		/datum/design/organ/back_alley/ex_blood_vessel
 	)
 
-/obj/item/computer_hardware/hard_drive/portable/design/computer
+/obj/item/pc_part/drive/disk/design/computer
 	disk_name = "Soteria Computer Parts"
 	icon_state = "moebius"
 	license = 20
@@ -110,6 +125,7 @@
 		/datum/design/autolathe/computer_part/frame_pda,
 		/datum/design/autolathe/computer_part/frame_tablet,
 		/datum/design/autolathe/computer_part/frame_laptop,
+		/datum/design/autolathe/computer_part/frame_wristmount,
 		/datum/design/research/item/computer_part/disk/micro,
 		/datum/design/research/item/computer_part/disk/small,
 		/datum/design/research/item/computer_part/disk/normal,
@@ -128,6 +144,7 @@
 		/datum/design/research/item/computer_part/printer,
 		/datum/design/research/item/computer_part/led,
 		/datum/design/research/item/computer_part/led/adv = 2,
+		/datum/design/research/item/omnitranslator_handheld,
 		/datum/design/autolathe/part/cable_coil,
 		/datum/design/autolathe/device/camera,
 		/datum/design/autolathe/device/camerafilm,
@@ -141,11 +158,11 @@
 		/datum/design/autolathe/computer_part/scanner/atmos,
 	)
 
-/obj/item/computer_hardware/hard_drive/portable/design/computer/rd
+/obj/item/pc_part/drive/disk/design/computer/rd
 	disk_name = "Soteria Computer Factory"
 	license = -1
 
-/obj/item/computer_hardware/hard_drive/portable/design/rped
+/obj/item/pc_part/drive/disk/design/rped
 	disk_name = "Soteria RnD Stock Parts Designs"
 	icon_state = "moebius"
 	license = 20
@@ -166,6 +183,7 @@
 		/datum/design/research/item/part/basic_sensor,
 		/datum/design/research/item/part/adv_sensor = 2,
 		/datum/design/research/item/part/phasic_sensor = 3,
+		/datum/design/research/item/omnitranslator_handheld,
 		/datum/design/autolathe/part/cable_coil,
 		/datum/design/autolathe/part/igniter,
 		/datum/design/autolathe/part/signaler,
@@ -179,11 +197,11 @@
 		/datum/design/autolathe/part/consolescreen
 	)
 
-/obj/item/computer_hardware/hard_drive/portable/design/rped/rd
+/obj/item/pc_part/drive/disk/design/rped/rd
 	disk_name = "Soteria Stock Parts Factory"
 	license = -1
 
-/obj/item/computer_hardware/hard_drive/portable/design/xenobio
+/obj/item/pc_part/drive/disk/design/xenobio
 	disk_name = "Soteria Xenobio Equipment Designs"
 	icon_state = "moebius"
 	license = 10
@@ -197,6 +215,6 @@
 		/datum/design/autolathe/clothing/si_xenobio_suit
 	)
 
-/obj/item/computer_hardware/hard_drive/portable/design/xenobio/rd
+/obj/item/pc_part/drive/disk/design/xenobio/rd
 	disk_name = "Soteria Xenobio Equipment Factory"
 	license = -1

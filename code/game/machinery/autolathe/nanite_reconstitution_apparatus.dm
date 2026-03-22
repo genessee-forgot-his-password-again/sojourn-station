@@ -98,7 +98,7 @@
 
 	return data
 
-/obj/machinery/nanite_reconstitution_apparatus/ui_data() //UI Stuffs. Used in templates
+/obj/machinery/nanite_reconstitution_apparatus/nano_ui_data() //UI Stuffs. Used in templates
 	var/list/data = list()
 
 	data["currentItem"] = loaded_item?.name
@@ -113,7 +113,7 @@
 
 
 /obj/machinery/nanite_reconstitution_apparatus/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS) //Calls specific templates for the UI
-	var/list/data = ui_data(user, ui_key)
+	var/list/data = nano_ui_data(user, ui_key)
 
 	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
@@ -296,13 +296,13 @@
 		return
 
 	if(!loaded_item && istype(I))															//If no loaded item and it's an item, Remove obj from user, set to busy,
-		if(istype(I, /obj/item/gun) || istype(I, /obj/item/clothing) || istype(I, /obj/item/ammo_magazine) || istype(I, /obj/item/ammo_kit))
+		if(istype(I, /obj/item/gun) || istype(I, /obj/item/clothing) || istype(I, /obj/item/ammo_magazine) || istype(I, /obj/item/ammo_kit)  || istype(I, /obj/item/part/gun))
 			if(user.unEquip(I, src))
 				busy = TRUE
 				loaded_item = I
 				to_chat(user, SPAN_NOTICE("You add \the [I] to \the [src]."))
 				flick("d_analyzer_la", src)
-				addtimer(CALLBACK(src, .proc/reset_busy), 1 SECONDS)
+				addtimer(CALLBACK(src, PROC_REF(reset_busy)), 1 SECONDS)
 				user.set_machine(src)
 				nano_ui_interact(user)
 		else

@@ -201,7 +201,7 @@
 			L.visible_message(SPAN("danger", "[acting_object] is trying to inject [L]!"), \
 								SPAN("danger", "[acting_object] is trying to inject you!"))
 			busy = TRUE
-			addtimer(CALLBACK(src, .proc/inject_after, WEAKREF(L)), injection_status * 3 SECONDS)
+			addtimer(CALLBACK(src, PROC_REF(inject_after), WEAKREF(L)), injection_status * 3 SECONDS)
 			return
 		else
 			if(!AM.is_open_container())
@@ -228,7 +228,7 @@
 			C.visible_message(SPAN("danger", "[acting_object] takes a blood sample from [C]!"), \
 			SPAN("danger", "[acting_object] takes a blood sample from you!"))
 			busy = TRUE
-			addtimer(CALLBACK(src, .proc/draw_after, WEAKREF(C), tramount), injection_status * 3 SECONDS)
+			addtimer(CALLBACK(src, PROC_REF(draw_after), WEAKREF(C), tramount), injection_status * 3 SECONDS)
 			return
 
 		else
@@ -710,6 +710,35 @@
 	if(istype(loc,/obj/item/integrated_circuit/input/beaker_connector))
 		var/obj/item/integrated_circuit/input/beaker_connector/current_circuit = loc
 		current_circuit.push_vol()
+
+
+/obj/item/integrated_circuit/reagent/purger
+	name = "reagent purger"
+	desc = "A safe way to dispose of unwanted fluids."
+	icon_state = "smoke"
+	extended_desc = "The purger clears its storage when pulsed."
+	reagent_flags = OPENCONTAINER
+	volume = 60
+	complexity = 4
+	cooldown_per_use = 1
+	inputs = list()
+	outputs = list(
+		"volume used" = IC_PINTYPE_NUMBER,
+		"self reference" = IC_PINTYPE_SELFREF
+		)
+	activators = list(
+		"purge" = IC_PINTYPE_PULSE_IN,
+		"on purged" = IC_PINTYPE_PULSE_OUT
+		)
+	spawn_flags = IC_SPAWN_RESEARCH
+	power_draw_per_use = 2
+
+/obj/item/integrated_circuit/reagent/purger/on_reagent_change()
+	push_vol()
+
+/obj/item/integrated_circuit/reagent/purger/do_work()
+	reagents.clear_reagents()
+	activate_pin(2)
 
 #undef IC_REAGENTS_DRAW
 #undef IC_REAGENTS_INJECT

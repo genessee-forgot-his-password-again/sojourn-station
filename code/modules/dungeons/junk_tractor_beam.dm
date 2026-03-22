@@ -1,7 +1,8 @@
 #define BEAM_IDLE        0
 #define BEAM_CAPTURING   1
-#define BEAM_STABILIZED  2
-#define BEAM_COOLDOWN    3
+#define BEAM_STABILIZING 2
+#define BEAM_STABILIZED  3
+#define BEAM_COOLDOWN    4
 
 #define JTB_EDGE     3
 #define JTB_MAXX   100
@@ -20,7 +21,7 @@
 		"Greyson" = 3,
 		"Military" = 3,
 		"Void Wolf" = 3,
-		"SpaceWrecks" = 0
+		//"SpaceWrecks" = 0 caused runtimes and ci failures
 		) // available affinities
 
 /datum/junk_field/New(var/ID, var/field_affinity = null)
@@ -135,7 +136,7 @@
 	beam_state = BEAM_CAPTURING
 	spawn(beam_capture_time)
 		if(src && beam_state == BEAM_CAPTURING)  // Check if jtb_generator has not been destroyed during spawn time and if capture has not been cancelled
-			beam_state = BEAM_STABILIZED
+			beam_state = BEAM_STABILIZING  // Junk field is being created
 
 			generate_junk_field()  // Generate the junk field
 
@@ -145,6 +146,7 @@
 				jf_counter++
 
 			create_link_portal(T)
+			beam_state = BEAM_STABILIZED  // Junk field has been created and portals linked
 	return
 
 /obj/jtb_generator/proc/create_link_portal(var/turf/T)
@@ -691,15 +693,15 @@
 				jtb_gen.create_link_portal(get_turf(locate(x+5, y, z)))
 			has_been_init = TRUE
 	if(!jtb_gen)
-		playsound(src.loc, 'sound/machines/twobeep.ogg', 50, 1)
-		src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: Critical error. No tractor beam detected.'</span>")
+		playsound(loc, 'sound/machines/twobeep.ogg', 50, 1)
+		audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: Critical error. No tractor beam detected.'"))
 		return
 	nano_ui_interact(user)
 
 /obj/machinery/computer/jtb_console/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
 	if(!jtb_gen)
-		playsound(src.loc, 'sound/machines/twobeep.ogg', 50, 1)
-		src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: Critical error. No tractor beam detected.'</span>")
+		playsound(loc, 'sound/machines/twobeep.ogg', 50, 1)
+		audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: Critical error. No tractor beam detected.'"))
 		return
 
 	var/data[0]
@@ -741,8 +743,8 @@
 		if(possible_fields.len)
 			JF = input("Choose Junk Field", "Junk Field") as null|anything in possible_fields
 		else
-			playsound(src.loc, 'sound/machines/twobeep.ogg', 50, 1)
-			src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: No junk field in range.'</span>")
+			playsound(loc, 'sound/machines/twobeep.ogg', 50, 1)
+			audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: No junk field in range.'"))
 		possible_fields = get_possible_fields()
 		if(CanInteract(usr,GLOB.default_state) && (JF in possible_fields))
 			set_field(possible_fields[JF])
@@ -777,26 +779,26 @@
 	return jtb_gen.beam_state == BEAM_STABILIZED
 
 /obj/machinery/computer/jtb_console/proc/field_capture()
-	playsound(src.loc, 'sound/machines/twobeep.ogg', 50, 1)
+	playsound(loc, 'sound/machines/twobeep.ogg', 50, 1)
 	if(check_pillars())
-		src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: Starting capture of targeted junk field.'</span>")
+		audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: Starting capture of targeted junk field.'"))
 		jtb_gen.field_capture(get_turf(locate(x+5, y, z)))
 	else
-		src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: Interference dampening pillars not detected.'</span>")
+		audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: Interference dampening pillars not detected.'"))
 	return
 
 /obj/machinery/computer/jtb_console/proc/field_cancel()
-	playsound(src.loc, 'sound/machines/twobeep.ogg', 50, 1)
-	src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: Canceling capture of junk field.'</span>")
+	playsound(loc, 'sound/machines/twobeep.ogg', 50, 1)
+	audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: Canceling capture of junk field.'"))
 	jtb_gen.field_cancel()
 	return
 
 /obj/machinery/computer/jtb_console/proc/field_release()
-	playsound(src.loc, 'sound/machines/twobeep.ogg', 50, 1)
+	playsound(loc, 'sound/machines/twobeep.ogg', 50, 1)
 	if(check_biosignature())
-		src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: Sentient signature detected in junk field. Release blocked by security protocols.'</span>")
+		audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: Sentient signature detected in junk field. Release blocked by security protocols.'"))
 	else
-		src.audible_message("<span class='warning'>The junk tractor beam console beeps: 'NOTICE: Releasing captured junk field.'</span>")
+		audible_message(SPAN_WARNING("The junk tractor beam console beeps: 'NOTICE: Releasing captured junk field.'"))
 		jtb_gen.field_release()
 	return
 
@@ -906,8 +908,9 @@
 // Machinery that stabilizes the portal
 //////////////////////////////
 /obj/structure/jtb_pillar
-	name = "space-time interference dampener"
-	desc = "An ominous pillar that can stabilize a bluespace portal by dampening local space-time interferences."
+	name = "bluespace anchoring pylon"
+	desc = "An ominous pylon that can stabilize a short range of bluespace for a singular portal teleportation to nearby ship wrecks and astroid fields littered with potential salvage. \
+	While stable, it is not quite fully understood, being the product of Soteria's captured Greyson Positronics AI, Brynn. For an unknown reason, the pylons only work in the presence of obelisks."
 	icon = 'icons/obj/structures/junk_tractor_beam.dmi'
 	icon_state = "pillar"
 	layer = ABOVE_MOB_LAYER
@@ -924,6 +927,7 @@
 
 #undef BEAM_IDLE
 #undef BEAM_CAPTURING
+#undef BEAM_STABILIZING
 #undef BEAM_STABILIZED
 #undef JTB_EDGE
 #undef JTB_MAXX

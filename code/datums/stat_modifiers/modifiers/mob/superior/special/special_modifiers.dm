@@ -1,0 +1,92 @@
+/datum/stat_modifier/mob/living/carbon/superior/aggressive
+
+	prefix = "Aggressive"
+
+	description = "This one seems to be somewhat more aggressive than the others. It's likely to chase you down if it can't see you."
+
+	stattags = RANGED_STATTAG //advancing only supported by ranged mobs
+
+/datum/stat_modifier/mob/living/carbon/superior/aggressive/remove()
+
+	. = ..()
+
+	if (issuperioranimal(holder))
+		var/mob/living/carbon/superior/superior_holder = holder
+
+		superior_holder.advance = initial(superior_holder.advance)
+		superior_holder.advance_if_cant_see = initial(superior_holder.advance_if_cant_see) //reset the values
+
+/datum/stat_modifier/mob/living/carbon/superior/aggressive/apply_to(atom/target)
+
+	. = ..()
+
+	if (issuperioranimal(target))
+		var/mob/living/carbon/superior/superior_target = target
+
+		superior_target.advance = TRUE
+		superior_target.advance_if_cant_see = TRUE
+
+
+//Gives a perk thats affectively +3 armor when blocking
+/datum/stat_modifier/mob/living/carbon/superior/resilience_perk
+
+	prefix = "Resilience"
+
+	description = "This one dosnt give up easily on life, when blocking it will be even harder to damage."
+
+
+	stattags = DEFENSE_STATTAG
+
+/datum/stat_modifier/mob/living/carbon/superior/resilience_perk/remove()
+
+	. = ..()
+
+	if (issuperioranimal(holder))
+		var/mob/living/carbon/superior/superior_holder = holder
+		superior_holder.stats.removePerk(PERK_RESILIENCE)
+
+/datum/stat_modifier/mob/living/carbon/superior/resilience_perk/apply_to(atom/target)
+
+	. = ..()
+
+	if (issuperioranimal(target))
+		var/mob/living/carbon/superior/superior_target = target
+
+		//For mobs this is done in New(), well stat_modifiers are on init. So we got to do this a bit early
+		if (!superior_target.stats)
+			superior_target.stats = new /datum/stat_holder(superior_target)
+
+		superior_target.stats.addPerk(PERK_RESILIENCE)
+
+/datum/stat_modifier/mob/living/carbon/superior/aggressive/savage
+
+	armor_adjustment = list(
+		melee = -10,
+		bullet = -8,
+		energy = -8,
+		bomb = -40,
+		agony = 12 //it doesnt care, it just wants you dead
+	)
+
+	maxHealth_mult = 0.8 //80% hp
+
+	move_to_delay_increment = -1.3 // fast
+
+	projectile_armor_divisor_mult_increment = 0.5
+	armor_divisor_mult = 1.5
+	armor_divisor_zeroth = 0.1
+
+	melee_damage_lower_mult = 1.5
+	melee_damage_upper_mult = 1.5
+
+	inherent_projectile_mult_increment = 0.5
+
+	mutually_exclusive_with = list(
+		/datum/stat_modifier/mob/living/carbon/superior/aggressive
+	)
+
+	prefix = "Savage"
+
+	stattags = RANGED_STATTAG | MELEE_STATTAG | NEGATIVE_DEFENSE_STATTAG
+
+	description = "This one is always in a combat pose, looking for something to kill. You get the impression it might be too busy trying to kill you to care about it's own health."

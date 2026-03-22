@@ -46,12 +46,15 @@
 	w_class = ITEM_SIZE_SMALL
 	sharp = TRUE
 	edge = TRUE
-	armor_penetration = ARMOR_PEN_SHALLOW
+	armor_divisor = ARMOR_PEN_SHALLOW
 	origin_tech = list(TECH_MATERIAL = 2, TECH_COMBAT = 1)
 	attack_verb = list("chopped", "torn", "cut")
 	tool_qualities = list(QUALITY_CUTTING = 20, QUALITY_SAWING = 15)
 	worksound = WORKSOUND_HARD_SLASH
 	price_tag = 30
+
+/obj/item/tool/hatchet/robo //for the service borg
+	embed_mult = 0
 
 /obj/item/tool/fireaxe
 	name = "fire axe"
@@ -61,7 +64,7 @@
 	wielded_icon = "fireaxe1"
 	sharp = TRUE
 	edge = TRUE
-	armor_penetration = ARMOR_PEN_MODERATE
+	armor_divisor = ARMOR_PEN_DEEP
 	tool_qualities = list(QUALITY_CUTTING = 10, QUALITY_PRYING = 20, QUALITY_SAWING = 15)
 	w_class = ITEM_SIZE_HUGE
 	slot_flags = SLOT_BACK
@@ -69,7 +72,7 @@
 	attack_verb = list("attacked", "chopped", "cleaved", "torn", "cut")
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	structure_damage_factor = STRUCTURE_DAMAGE_BREACHING
-	embed_mult = 1 //Axes cut deep, and their hooked shape catches on things
+	embed_mult = 1.2 //Axes cut deep, and their hooked shape catches on things
 	worksound = WORKSOUND_HARD_SLASH
 	price_tag = 190
 	item_icons = list(
@@ -97,17 +100,46 @@
 	w_class = ITEM_SIZE_BULKY
 	price_tag = 30
 
+	has_alt_mode = TRUE
+	alt_mode_damagetype = HALLOSS
+	alt_mode_verbs = list("bashes", "beats", "clobbers")
+	alt_mode_sharp = FALSE
+	alt_mode_toggle = "flips the axe to its broad side"
+
 /obj/item/tool/fireaxe/militia_tomahawk
 	name = "blackshield tactical tomahawk"
-	desc = "For cutting, sawing, prying, and throwing at targets mid back-flip."
+	desc = "For cutting, sawing, prying, and throwing at targets mid back-flip. Surprisingly portable!"
 	icon_state = "sec_tomahawk"
 	wielded_icon = "sec_tomahawk"
-	force = WEAPON_FORCE_DANGEROUS
-	throwforce = WEAPON_FORCE_BRUTAL
+	force = WEAPON_FORCE_ROBUST + 4 // Better than the cheap axe
+	throwforce = WEAPON_FORCE_LETHAL // Meant to be a throwing weapon
 	slot_flags = SLOT_BELT|SLOT_BACK
 	tool_qualities = list(QUALITY_CUTTING = 30, QUALITY_SAWING = 25, QUALITY_PRYING = 15)
-	w_class = ITEM_SIZE_NORMAL
+	w_class = ITEM_SIZE_SMALL //just let the shield have their webbing-portable tomahawk.
 	price_tag = 45
+
+/obj/item/tool/fireaxe/handmade
+	name = "makeshift axe"
+	desc = "A heavy plasteel blade affixed to a welded metal shaft, for close up carnage."
+	icon_state = "makeshift_axe"
+	item_state = "makeshift_axe"
+	wielded_icon = "makeshift_axe_wielded"
+	matter = list(MATERIAL_STEEL = 3, MATERIAL_PLASTEEL = 3)
+	force = WEAPON_FORCE_DANGEROUS
+	throwforce = WEAPON_FORCE_NORMAL
+	armor_divisor = ARMOR_PEN_MODERATE
+	w_class = ITEM_SIZE_NORMAL
+	attack_verb = list("chopped", "torn", "cut", "cleaved", "slashed")
+	tool_qualities = list(QUALITY_CUTTING = 10)
+	structure_damage_factor = STRUCTURE_DAMAGE_BREACHING
+	embed_mult = 1.1
+	degradation = 1.5
+	max_upgrades = 5
+	has_alt_mode = TRUE
+	alt_mode_damagetype = HALLOSS
+	alt_mode_verbs = list("bashes", "beats", "clobbers")
+	alt_mode_sharp = FALSE
+	alt_mode_toggle = "flips the axe to its broad side"
 
 /obj/item/tool/minihoe
 	name = "mini hoe"
@@ -128,6 +160,7 @@
 	desc = "A sharp and curved blade on a long fiber-metal handle, this tool makes it easy to reap what you sow."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "scythe0"
+	item_state = "scythe0"
 	matter = list(MATERIAL_PLASTEEL = 7, MATERIAL_PLASTIC = 3)
 	sharp = TRUE
 	edge = TRUE
@@ -144,6 +177,12 @@
 		slot_back_str = "scythe0_back"
 		)
 
+	has_alt_mode = TRUE
+	alt_mode_damagetype = HALLOSS
+	alt_mode_verbs = list("jabs", "prods", "wacks")
+	alt_mode_sharp = FALSE
+	alt_mode_toggle = "flips the scythe backwards to use as a blunt spear"
+	alt_mode_lossrate = 0.3
 
 //Flails
 /obj/item/tool/chainofcommand
@@ -162,6 +201,12 @@
 	max_upgrades = 2
 	tool_qualities = list(QUALITY_HAMMERING = 5)
 
+	has_alt_mode = TRUE
+	alt_mode_damagetype = HALLOSS
+	alt_mode_verbs = list("flogged", "whipped", "lashed", "disciplined")
+	alt_mode_toggle = "loosens their hand on the grip"
+	alt_mode_lossrate = 0.7
+
 /obj/item/tool/disciplinary_action
 	name = "Disciplinary Action"
 	desc = "A long whip of steel chains used by Blackshield for when someone acts out of line."
@@ -178,232 +223,141 @@
 	max_upgrades = 3
 	tool_qualities = list(QUALITY_HAMMERING = 5)
 
+	has_alt_mode = TRUE
+	alt_mode_damagetype = HALLOSS
+	alt_mode_verbs = list("flogged", "whipped", "lashed", "disciplined")
+	alt_mode_toggle = "loosens their hand on the grip"
+	alt_mode_lossrate = 0.7
 
-//Swords
-
-/obj/item/tool/sword
-	name = "claymore"
-	desc = "What are you standing around staring at this for? Get to killing!"
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "claymore"
-	item_state = "claymore"
-	matter = list(MATERIAL_PLASTEEL = 15, MATERIAL_PLASTIC = 5)
+/obj/item/tool/cannibal_scythe
+	name = "\"Cannibal Strike\" scythe"
+	desc = "A heavy grotesque handmade scythe made from parts of the most terrible creatures living on Amethyn. A real hunter's weapon that requires serious skills to handle itself.\
+	 What are you waiting for, hunter? The Matriarch is calling for a great hunt!"
+	icon = 'icons/obj/cannibal_scythe.dmi'
+	icon_state = "cannibal"
+	item_state = "cannibal"
+	wielded_icon = "_doble"
+	hitsound = 'sound/weapons/flamesword.ogg'
+	toggleable = TRUE
 	sharp = TRUE
 	edge = TRUE
-	w_class = ITEM_SIZE_NORMAL
-	slot_flags = SLOT_BELT
-	worksound = WORKSOUND_HARD_SLASH
-	force = WEAPON_FORCE_ROBUST
-	armor_penetration = ARMOR_PEN_DEEP
-
-	throwforce = WEAPON_FORCE_NORMAL
-	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
-	hitsound = 'sound/weapons/bladeslice.ogg'
-	tool_qualities = list(QUALITY_CUTTING = 10, QUALITY_SAWING = 10)
-	structure_damage_factor = STRUCTURE_DAMAGE_BLADE
-	w_class = ITEM_SIZE_BULKY
-	price_tag = 100
-
-/obj/item/tool/sword/katana
-	name = "katana"
-	desc = "Modern Japanese-style blade that has no curve to it. This one looks pretty sharp."
-	icon_state = "katana"
-	item_state = "katana"
-	matter = list(MATERIAL_PLASTEEL = 10, MATERIAL_STEEL = 5, MATERIAL_DIAMOND = 1) //sharpened using diamond dust or whatever
-	slot_flags = SLOT_BELT | SLOT_BACK
-	force = WEAPON_FORCE_BRUTAL
-	armor_penetration = ARMOR_PEN_SHALLOW
+	slot_flags = SLOT_BACK
+	max_upgrades = 3
+	degradation = 0.3 //high quality hunting weapon.
+	tool_qualities = list(QUALITY_CUTTING = 40,  QUALITY_SAWING = 35)
+	force = WEAPON_FORCE_LETHAL + 20
+	switched_on_forcemult = 0.7
+	no_swing = TRUE
+	throwforce = WEAPON_FORCE_LETHAL
+	armor_divisor = ARMOR_PEN_MODERATE
+	w_class = ITEM_SIZE_HUGE
+	origin_tech = list(TECH_COMBAT = 5)
+	attack_verb = list("chopped", "sliced", "cut", "reaped", "lacerated", "slashed")
+	price_tag = 4000 //megafauna parts.
+	use_power_cost = 0
+	toggleable = TRUE
+	suitable_cell = /obj/item/cell/large/potato
+	double_tact_required = TRUE
+	var/coin_tracker = 0 //Number not false
+	var/tracker
+	var/last_launch
 	item_icons = list(
-		slot_back_str = 'icons/inventory/back/mob.dmi')
+		slot_back_str = 'icons/obj/cannibal_scythe.dmi',
+		slot_s_store_str = 'icons/obj/cannibal_scythe.dmi',
+		slot_l_hand_str = 'icons/obj/cannibal_scythe.dmi',
+		slot_r_hand_str = 'icons/obj/cannibal_scythe.dmi'
+		)
 	item_state_slots = list(
-		slot_back_str = "katana_back"
+		slot_l_hand_str = "lefthand",
+		slot_r_hand_str = "righthand",
+		slot_back_str   = "back",
+		slot_s_store_str= "onsuit"
 		)
 
-/obj/item/tool/sword/katana_makeshift
-	name = "makeshift katana"
-	desc = "Modern Japanese-style blade that has no curve to it. This one is two knives welded together, proving where there's a will and a weeb there's a way."
-	icon_state = "katana_improv"
-	item_state = "katana_improv"
-	matter = list(MATERIAL_STEEL = 6, MATERIAL_PLASTIC = 2) //twice the value of a kitche knife
-	slot_flags = SLOT_BELT|SLOT_BACK
-	force = WEAPON_FORCE_DANGEROUS
-	armor_penetration = ARMOR_PEN_SHALLOW
-	price_tag = 40
-
-/obj/item/tool/sword/katana/nano
-	name = "\improper Soteria \"Muramasa\" katana"
-	desc = "After an extensive binge of ancient animated recordings, a scientist decided to upgrade a recovered katana."
-	icon_state = "eutactic_katana"
-	item_state = "eutactic_katana"
-	toggleable = TRUE
-
-	suitable_cell = /obj/item/cell/small
-
-	use_power_cost = 0.4
-	passive_power_cost = 0.4
-
-	switched_on_qualities = list(QUALITY_CUTTING = 25, QUALITY_SAWING = 15)
-	origin_tech = list(TECH_COMBAT = 5, TECH_MATERIAL = 6)
-	switched_on_force = WEAPON_FORCE_LETHAL
-	price_tag = 800
-
-/obj/item/tool/sword/katana/nano/turn_on(mob/user)
-	.=..()
-	if(.)
-		embed_mult = 0
-		playsound(user, 'sound/weapons/saberon.ogg', 50, 1)
-
-/obj/item/tool/sword/katana/nano/turn_off(mob/user)
+/obj/item/tool/cannibal_scythe/pre_attack(atom/a, mob/user, var/params)
+	if(!wielded)
+		return TRUE
 	..()
-	embed_mult = initial(embed_mult)
-	playsound(user, 'sound/weapons/saberoff.ogg', 50, 1)
 
-/obj/item/tool/sword/katana/nano/update_icon()
-	..()
-	if(cell)
-		overlays += "[icon_state]_cell"
-	if(switched_on)
-		overlays += "[icon_state]_power_on"
-	else
-		overlays += "[icon_state]_power_off"
+/obj/item/tool/cannibal_scythe/afterattack(mob/living/M, mob/living/user, target_zone)
+	if(!wielded)
+		to_chat(user, SPAN_DANGER("\The [src.name] is too heavy to swing with one hand!"))
+		return FALSE
 
-/obj/item/tool/sword/katana/firebrand //Firebrand. Sprited and Implemented by Sieghardt
-	name = "Artificer Firebrand"
-	desc = "Originally the fever dream of an brave guild master looking for a better way to deal with roaches, the Firebrand ended up as a hellish implement of war. While turned off, this is a blunted hunk of metal. When turned on the Firebrand becomes a bringer of fiery doom to anyone unlucky enough to be its path."
-	icon_state = "firebrand"
-	item_state = "firebrand"
-	toggleable = TRUE
+/obj/item/tool/cannibal_scythe/MouseDrop(over_object)
+	if(suitable_cell)
+		to_chat(usr, SPAN_WARNING("You study the shaft of the scythe, but you find absolutely nothing unusual!"))
 
-	max_fuel = 100
-	use_fuel_cost = 0.5
-	passive_fuel_cost = 0.1
-	price_tag = 700
+/obj/item/tool/cannibal_scythe/resolve_attackby(atom/target, mob/user, give_coin = TRUE)
+	clickdelay_offset = 2
+	if(ishuman(user))
+		var/mob/living/carbon/human/H = user
+		var/speedy_dashing = H.momentum_speed
+		if(speedy_dashing > 0)
+			//Unlike dusk sabor we dont punish folks for not always being speedy
+			clickdelay_offset = -speedy_dashing
+			//Normally momentum can get upto like 3-4
+			armor_divisor += (speedy_dashing * 3)
+			force += (speedy_dashing * 3)
+			if(tracker == target.name && give_coin)
+				coin_tracker += 1
+				to_chat(user, SPAN_DANGER("You are gaining momentum for the next hit!"))
+			else
+				if(ismob(target))
+					tracker = target.name
+					coin_tracker = 0
+			//Do we have gained coins?
+			if(coin_tracker)
+				//If we do add are coins as pure damage and then 1/10th of an AD
+				armor_divisor += (coin_tracker * 0.1)
+				force += coin_tracker
 
-	switched_on_qualities = list(QUALITY_CUTTING = 25, QUALITY_SAWING = 15, QUALITY_CAUTERIZING = 10, QUALITY_WELDING = 15)
-	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 4)
-	force = WEAPON_FORCE_NORMAL
-	switched_on_force = WEAPON_FORCE_BRUTAL
-	//Weaker than the Muramasa and other high end weapons, as it's not LETHAL, but sets the target on fire. 1 stack though.
-	structure_damage_factor = STRUCTURE_DAMAGE_BLUNT
-	//A heated blade can not be sharp, it's just shaped like a sword while being a blunt object. When turned off it has as much damage as other blunt implements.
-	heat = 2250
-	glow_color = COLOR_ORANGE
-	//Stronger when turned on. Will emit heat, turn its damage type to burn and set targets on fire.
-
-/obj/item/tool/sword/katana/firebrand/is_hot()
-	if(switched_on)
-		return heat
-
-/obj/item/tool/sword/katana/firebrand/turn_on(mob/user)
 	.=..()
-	if(.)
-		embed_mult = 0
-		damtype = BURN
-		set_light(2)
-		playsound(loc, 'sound/items/welderactivate.ogg', 50, 1)
-		//Too hot to get stuck into crud.
+	refresh_upgrades()
 
-/obj/item/tool/sword/katana/firebrand/apply_hit_effect(atom/target, blocked=FALSE)
-	.=..()
-	if(iscarbon(target) && switched_on)
-		var/mob/living/carbon/M = target
-		M.adjust_fire_stacks(1)
-		M.IgniteMob()
-		//Sets the target on fire, however only 1 stack at a time rather than 4 like most incendiary ammo.
-
-/obj/item/tool/sword/katana/firebrand/turn_off(mob/user)
+/obj/item/tool/cannibal_scythe/turn_on(mob/user)
+	item_state = "cannibal"
+	icon_state = "cannibal"
+	to_chat(user, SPAN_NOTICE("You take a mobile stand, ready to take off at any moment or make a wide swing with your body!"))
+	playsound(loc, 'sound/weapons/scabbard.ogg', 50, 1)
+	no_swing = FALSE
 	..()
-	embed_mult = initial(embed_mult)
-	damtype = initial(damtype)
-	set_light(0)
-	playsound(loc, 'sound/items/welderdeactivate.ogg', 50, 1)
 
-/obj/item/tool/sword/katana/firebrand/update_icon()
+/obj/item/tool/cannibal_scythe/turn_off(mob/user)
+	no_swing = TRUE
+	to_chat(user, SPAN_NOTICE("You're taking up a defensive stance, preparing to fight something serious! Your every stroke is full of precision!"))
+	playsound(loc, 'sound/weapons/scabbard.ogg', 50, 1)
+	..()
+
+/obj/item/tool/cannibal_scythe/refresh_upgrades()
 	..()
 	if(switched_on)
-		icon_state = "firebrand_on"
-		item_state = "firebrand_on"
-	else
-		icon_state = initial(icon_state)
-		item_state = initial(item_state)
+		no_swing = FALSE
 
-/obj/item/tool/sword/saber
-	name = "decorative saber"
-	desc = "A finely made formal blade as a ornamental show of class or force. Despite being primarily for show it cuts deep and painfully."
-	icon = 'icons/obj/weapons-blades.dmi'
-	icon_state = "saber"
-	item_state = "saber"
-	armor_penetration = ARMOR_PEN_SHALLOW
-	price_tag = 400
+/obj/item/tool/cannibal_scythe/afterattack(atom/target, mob/user, proximity_flag, params)
+	if(!switched_on || world.time < last_launch + 3 SECONDS)
+		return
+	var/cost = 0 * get_dist(target, user)
+	if(user.check_gravity())
+		cost *= (user.mob_size/10)
 
-/obj/item/tool/sword/saber/cutlass
-	name = "cutlass"
-	desc = "A finely made sword for pirates or military men who take themselves too seriously."
-	icon_state = "cutlass"
-	item_state = "cutlass"
-	price_tag = 300
-
-/obj/item/tool/sword/saber/militiacommander
-	name = "Officer's Saber"
-	desc = "A masterfully forged Saber to be carried by the Blackshield Commander, Despite it fact for Ceremonial use. It can also be used in combat, if they're crazy enough."
-	icon = 'icons/obj/weapons-blades.dmi'
-	icon_state = "saber"
-	item_state = "saber"
-	armor_penetration = ARMOR_PEN_SHALLOW
-	price_tag = 350
-
-/obj/item/tool/sword/saber/militiasergeant
-	name = "Sergeant's Saber"
-	desc = "An Saber made for the Senior Enlisted of Blackshield, Usually used for Ceremonial usage but can also be used in combat, Preferably used by a maniac who likes to charge into battle without helmet or armour."
-	icon_state = "cutlass"
-	item_state = "cutlass"
-	armor_penetration = ARMOR_PEN_SHALLOW
-	price_tag = 325
-
-/obj/item/tool/sword/machete
-	name = "machete"
-	desc = "An explorer's best friend and trust back up plan. Or primary plan for those who like to get in there personally."
-	icon = 'icons/obj/weapons-blades.dmi'
-	icon_state = "machete"
-	item_state = "machete"
-	tool_qualities = list(QUALITY_CUTTING = 10,  QUALITY_SAWING = 20) //So we can cut down trees
-	force = WEAPON_FORCE_ROBUST
-	w_class = ITEM_SIZE_NORMAL
-	price_tag = 120
-
-/obj/item/tool/sword/cleaver
-	name = "sun cleaver"
-	desc = "A weapon designed by the Hunting Lodge, this massive sword is especially effective against tengolos, xenomorphs, and tengolo berserkers, dealing double its normal damage with every strike."
-	icon = 'icons/obj/weapons-blades.dmi'
-	icon_state = "cleaver"
-	item_state = "cleaver"
-	tool_qualities = list(QUALITY_CUTTING = 30)
-	force = WEAPON_FORCE_BRUTAL
-	armor_penetration = ARMOR_PEN_SHALLOW
-	w_class = ITEM_SIZE_BULKY
-	effective_faction = list("tengo", "tengolo_berserker", "xenomorph") // Which faction the cleaver is effective against.
-	damage_mult = 2 // The damage multiplier the cleaver get when attacking that faction.
-	price_tag = 200
-	item_icons = list(
-		slot_back_str = 'icons/obj/weapons-blades.dmi')
-	item_state_slots = list(
-		slot_back_str = "cleaver_back"
-		)
-
-/obj/item/tool/sword/huntingclaw
-	name = "hunting claw"
-	desc = "The second best friend a hunter could ask for, this one handed blade is lightweight and razor sharp thanks to its starworks-grade alloy construction.\
-	 The hilt is made out of wood with gold looking trimmings. A Black Bear has been beautifully etched on the wood. All craftsmanship is of the highest quality."
-	icon = 'icons/obj/weapons-blades.dmi'
-	icon_state = "huntingclaw"
-	item_state = "huntingclaw"
-	matter = list(MATERIAL_STEEL = 5, MATERIAL_WOOD = 2)
-	slot_flags = SLOT_BELT | SLOT_BACK
-	tool_qualities = list(QUALITY_CUTTING = 20,  QUALITY_SAWING = 20) //Very sharp blade, serrated back
-	force = WEAPON_FORCE_ROBUST
-	armor_penetration = ARMOR_PEN_SHALLOW
-	w_class = ITEM_SIZE_NORMAL
-	price_tag = 500
+	if(cell?.checked_use(cost))
+		if(!wielded)
+			var/drop_prob = 80
+			if(ishuman(user))
+				var/mob/living/carbon/human/H = user
+				drop_prob *= H.stats.getMult(STAT_ROB, STAT_LEVEL_EXPERT)
+			if(prob(drop_prob))
+				to_chat(user, SPAN_WARNING("\The [src] launches from your grasp!"))
+				user.drop_item(src)
+				playsound(src, 'sound/misc/sandjump.ogg', 50, 0, 0)
+				throw_at(target, get_dist(target, user), 1, user)
+				last_launch = world.time
+				return
+		last_launch = world.time
+		to_chat(usr, SPAN_WARNING("You takes off from his place, making a sharp dodge in the style of a leap hunter!"))
+		playsound(src, 'sound/misc/sandjump.ogg', 50, 0, 0)
+		user.throw_at(target, get_dist(target, user), 1, user)
 
 /obj/item/tool/gauntlet
 	name = "render gauntlet"
@@ -412,7 +366,7 @@
 	icon_state = "gauntlet"
 	tool_qualities = list(QUALITY_CUTTING = 20,  QUALITY_SAWING = 20) //Cuts people down just like trees.
 	force = WEAPON_FORCE_BRUTAL
-	armor_penetration = ARMOR_PEN_MODERATE
+	armor_divisor = ARMOR_PEN_HALF //same pen as a dagger. This is a fairly rare weapon that require fighting on of the more dangerous mobs.
 	w_class = ITEM_SIZE_NORMAL
 	origin_tech = list(TECH_COMBAT = 5)
 	attack_verb = list("clawed", "scratched", "lacerated", "slashed")
@@ -426,8 +380,8 @@
 	item_state = "powerfist"
 	toggleable = TRUE
 	worksound = WORKSOUND_HAMMER
-	switched_on_force = WEAPON_FORCE_BRUTAL
-	armor_penetration = ARMOR_PEN_MODERATE
+	switched_on_forcemult = 3.3 //33
+	armor_divisor = ARMOR_PEN_MODERATE
 	w_class = ITEM_SIZE_NORMAL
 	origin_tech = list(TECH_COMBAT = 7)
 	attack_verb = list("punched", "decked", "haymakered", "uppercut")
@@ -438,6 +392,13 @@
 	switched_off_qualities = list(QUALITY_HAMMERING = 10)
 	hitsound = 'sound/weapons/smash.ogg'
 	price_tag = 300
+
+	has_alt_mode = TRUE
+	alt_mode_damagetype = HALLOSS
+	alt_mode_sharp = FALSE
+	alt_mode_verbs = list("bashes", "stunts", "wacks", "blunts")
+	alt_mode_toggle = "adjusts their grip to strike lightly"
+	alt_mode_lossrate = 0.9
 
 /obj/item/tool/power_fist/turn_on(mob/user)
 	if (cell && cell.charge > 0)
@@ -454,44 +415,3 @@
 	playsound(loc, 'sound/effects/sparks4.ogg', 50, 1)
 	to_chat(user, SPAN_NOTICE("You switch [src] off."))
 	..()
-
-//POLEARMS
-/obj/item/tool/spear
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "spearglass0"
-	wielded_icon = "spearglass1"
-	name = "spear"
-	desc = "A spiky bit of material tied onto a metal pole with some wire. It's an insult to spears across the galaxy - but it can still do some nasty damage and has some decent armor-piercing capabilities. Spears like these are often seen in the hands of vagrants, muggers, or desperate militias. Due to this weapon - if you could call it that - being so long, you're able to attack enemies from up to a tile away."
-	force = WEAPON_FORCE_PAINFUL
-	throwforce = WEAPON_FORCE_ROBUST // It's meant to be thrown
-	armor_penetration = ARMOR_PEN_MODERATE // It's a SPEAR!
-	structure_damage_factor = STRUCTURE_DAMAGE_WEAK
-	w_class = ITEM_SIZE_HUGE
-	slot_flags = SLOT_BACK
-	throw_speed = 3
-	edge = TRUE
-	sharp = TRUE
-	tool_qualities = list(QUALITY_CUTTING = 10)
-	origin_tech = list(TECH_COMBAT = 1)
-	hitsound = 'sound/weapons/slice.ogg' // Sounds more like a stab than a cut.
-	attack_verb = list("attacked", "poked", "jabbed", "torn", "gored")
-	embed_mult = 1.5
-	price_tag = 50
-	//attack_distance = 2
-	item_icons = list(
-		slot_back_str = 'icons/inventory/back/mob.dmi')
-	item_state_slots = list(
-		slot_back_str = "spearglass0_back"
-		)
-
-/obj/item/tool/spear/hunter_halberd
-	name = "halberd"
-	desc = "A hand-crafted halberd with a red cloth wrapped around the base of the blade itself; "
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "hunter_halberd"
-	item_state = "hunter_halberd"
-	wielded_icon = "hunter_halberd_wielded"
-	force = WEAPON_FORCE_BRUTAL
-	armor_penetration = ARMOR_PEN_DEEP
-	price_tag = 500
-	matter = list(MATERIAL_STEEL = 22, MATERIAL_WOOD = 10, MATERIAL_PLASTEEL = 4)

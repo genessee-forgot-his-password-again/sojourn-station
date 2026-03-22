@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/alien
+/mob/living/simple/hostile/alien
 	name = "alien hunter"
 	desc = "Hiss!"
 	icon = 'icons/mob/alien.dmi'
@@ -9,7 +9,7 @@
 	response_disarm = "shoves"
 	response_harm = "hits"
 	speed = -1
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/xenomeat
+	meat_type = /obj/item/reagent_containers/snacks/meat/xenomeat
 	maxHealth = 100
 	health = 100
 	harm_intent_damage = 5
@@ -32,9 +32,10 @@
 	status_flags = CANPUSH
 	minbodytemp = 0
 	heat_damage_per_tick = 20
+	sanity_damage = 2
 
 
-/mob/living/simple_animal/hostile/alien/drone
+/mob/living/simple/hostile/alien/drone
 	name = "alien drone"
 	icon_state = "aliend_running"
 	icon_dead = "aliend_l"
@@ -42,7 +43,7 @@
 	melee_damage_lower = 15
 	melee_damage_upper = 15
 
-/mob/living/simple_animal/hostile/alien/sentinel
+/mob/living/simple/hostile/alien/sentinel
 	name = "alien sentinel"
 	icon_state = "aliens_running"
 	icon_dead = "aliens_l"
@@ -54,7 +55,7 @@
 	projectilesound = 'sound/weapons/pierce.ogg'
 
 
-/mob/living/simple_animal/hostile/alien/queen
+/mob/living/simple/hostile/alien/queen
 	name = "alien queen"
 	icon_state = "alienq_running"
 	icon_dead = "alienq_l"
@@ -68,8 +69,9 @@
 	projectilesound = 'sound/weapons/pierce.ogg'
 	rapid = 1
 	status_flags = 0
+	sanity_damage = 4
 
-/mob/living/simple_animal/hostile/alien/queen/large
+/mob/living/simple/hostile/alien/queen/large
 	name = "alien empress"
 	icon = 'icons/mob/64x64.dmi'
 	icon_state = "queen_s"
@@ -82,7 +84,7 @@
 	damage_types = list(BURN = 30)
 	icon_state = "toxin"
 
-/mob/living/simple_animal/hostile/alien/death()
+/mob/living/simple/hostile/alien/death()
 	..()
 	visible_message("[src] lets out a waning guttural screech, green blood bubbling from its maw...")
 	playsound(src, 'sound/voice/hiss6.ogg', 100, 1)

@@ -8,21 +8,24 @@
 	item_state = "deagle"
 	force = WEAPON_FORCE_PAINFUL
 	caliber = CAL_50
-	load_method = MAGAZINE
+	load_method = SINGLE_CASING|MAGAZINE
 	mag_well = MAG_WELL_PISTOL|MAG_WELL_H_PISTOL
 	matter = list(MATERIAL_PLASTEEL = 15, MATERIAL_PLASTIC = 8)
 	price_tag = 1750
 	can_dual = TRUE
 	damage_multiplier = 1.4
 	penetration_multiplier = 1.3
-	recoil_buildup = 6
-	one_hand_penalty = 10
-	fire_sound = 'sound/weapons/guns/fire/deckard_fire.ogg'
+	init_recoil = HANDGUN_RECOIL(1.3)
+	fire_sound 		= 'sound/weapons/guns/fire/deagle_fire.ogg' // Sound taken from JSRS SOUND MOD https://www.moddb.com/mods/stalker-anomaly/addons/solarint-gunshot-overhaul
 	unload_sound 	= 'sound/weapons/guns/interact/hpistol_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/hpistol_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/hpistol_cock.ogg'
 	auto_eject = 1
-	gun_tags = list(GUN_PROJECTILE, GUN_MAGWELL, GUN_CALIBRE_50, GUN_CALIBRE_35)
+	gun_tags = list(GUN_PROJECTILE, GUN_MAGWELL, GUN_CALIBRE_12MM, GUN_CALIBRE_9MM)
+	serial_type = "BlueCross"
+
+	wield_delay = 0.6 SECOND
+	wield_delay_factor = 0.6 // 60 vig
 
 /obj/item/gun/projectile/deaglebolt/verb/change_caliber()
 	set name = "Change Caliber"
@@ -31,15 +34,18 @@
 
 	playsound(src.loc, 'sound/weapons/guns/interact/chaingun_cock.ogg', 100, 1)
 	if(caliber == CAL_50)
-		caliber = CAL_MAGNUM
-		visible_message(SPAN_NOTICE("\The [usr] clicks a button on \the [src], a beep and metallic whirr is heard before it changes to .40 magnum caliber!"), \
-		SPAN_NOTICE("You hear something metallic whirr and beep."))
-	else if(caliber == CAL_MAGNUM)
 		caliber = CAL_PISTOL
-		visible_message(SPAN_NOTICE("\The [usr] clicks a button on \the [src], a beep and metallic whirr is heard before it changes to .35 pistol caliber!"), \
+		fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+		visible_message(SPAN_NOTICE("\The [usr] clicks a button on \the [src], a beep and a metallic whirr are heard before it changes to 9mm pistol caliber!"), \
 		SPAN_NOTICE("You hear something metallic whirr and beep."))
-	else if (caliber == CAL_PISTOL)
+	else if(caliber == CAL_PISTOL)
+		caliber = CAL_MAGNUM
+		fire_sound = 'sound/weapons/guns/fire/1911_fire.ogg'
+		visible_message(SPAN_NOTICE("\The [usr] clicks a button on \the [src], a beep and a metallic whirr are heard before it changes to 10mm magnum caliber!"), \
+		SPAN_NOTICE("You hear something metallic whirr and beep."))
+	else if (caliber == CAL_MAGNUM)
 		caliber = CAL_50
-		visible_message(SPAN_NOTICE("\The [usr] clicks a button on \the [src], a beep and metallic whirr is heard before it changes to .50 kurtz caliber!"), \
+		fire_sound = initial(fire_sound)
+		visible_message(SPAN_NOTICE("\The [usr] clicks a button on \the [src], a beep and a metallic whirr are heard before it changes to 12mm heavy pistol caliber!"), \
 		SPAN_NOTICE("You hear something metallic whirr and beep."))
 	refresh_upgrades()

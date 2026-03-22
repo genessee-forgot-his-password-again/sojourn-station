@@ -33,6 +33,7 @@
 
 	//Overwrite whatever was populated before. A shard contains <1 unit of a single material
 	matter = list(material.name = amount)
+	add_new_transformation(/datum/transform_type/shard/variable_size)
 	update_icon()
 
 /obj/item/material/shard/set_material(var/new_material, var/update)
@@ -73,16 +74,9 @@
 	else
 		icon_state = "[material.shard_icon]["small"]"
 	//variable rotation based on randomness
-	var/rot = rand(0, 360)
-	var/matrix/M = matrix()
-	M.Turn(rot)
+	add_new_transformation(/datum/transform_type/random_rotation)
 
-	//Variable icon size based on material quantity
-	//Shards will scale from 0.6 to 1.25 scale, in the range of 0..1 amount
-	if (amount < 1)
-		M.Scale(((1.25 - 0.8)*amount)+0.8)
-
-	transform = M
+	. = ..()
 
 /obj/item/material/shard/attackby(obj/item/I, mob/user)
 	if(QUALITY_WELDING in I.tool_qualities)
@@ -164,10 +158,10 @@
 				if(affecting)
 					if(BP_IS_ROBOTIC(affecting))
 						return
-					if(affecting.take_damage(5, 0))
+					if(affecting.take_damage(5, BRUTE))
 						H.UpdateDamageIcon()
 					H.updatehealth()
-					if(!(H.species.flags & NO_PAIN))
+					if(!((H.species.flags & NO_PAIN) || (PAIN_LESS in H.mutations)))
 						H.Weaken(3)
 					return
 				check -= picked
@@ -176,6 +170,16 @@
 // Preset types - left here for the code that uses them
 /obj/item/material/shard/shrapnel
 	name = "shrapnel" //Needed for crafting
+	var/gun_number = ""
+
+/obj/item/material/shard/shrapnel/attackby(obj/item/I, mob/user)
+	..()
+	if(istype(I, /obj/item/device/bullet_scanner))
+		if(gun_number)
+			to_chat(user, "<span class='info'>Bullet Hole Caliberation: [gun_number].</span>")
+			return
+		else
+			to_chat(user, "<span class='info'>Bullet Hole Caliberation: ERROR.</span>")
 
 /obj/item/material/shard/shrapnel/New(loc)
 
@@ -187,3 +191,15 @@
 
 /obj/item/material/shard/plasma/New(loc)
 	..(loc, MATERIAL_PLASMAGLASS)
+
+/obj/item/material/shard/ameridian
+	name = "ameridian"
+
+/obj/item/material/shard/ameridian/New(loc)
+	..(loc, MATERIAL_AMERIDIAN)
+
+/obj/item/material/shard/wood
+	name = "splinters"
+
+/obj/item/material/shard/wood/New(loc)
+	..(loc, MATERIAL_WOOD)

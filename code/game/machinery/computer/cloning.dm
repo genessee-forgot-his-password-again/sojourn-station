@@ -212,7 +212,7 @@
 			dat += "<b><a href='byond://?src=\ref[src];menu=3'>No</a></b>"
 
 
-	user << browse(dat, "window=cloning")
+	user << browse(HTML_SKELETON(dat), "window=cloning")
 	onclose(user, "cloning")
 	return
 
@@ -410,7 +410,7 @@
 	else
 		R.implant = "\ref[imp]"
 
-	if (!isnull(subject.mind)) //Save that mind so traitors can continue traitoring after cloning.
+	if (!isnull(subject.mind)) //Save that mind so contractors can continue contractoring after cloning.
 		R.mind = "\ref[subject.mind]"
 
 	src.records += R

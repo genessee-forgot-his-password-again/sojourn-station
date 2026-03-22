@@ -21,7 +21,8 @@
 		return "I cannot feed on other slimes..."
 	if (!Adjacent(M))
 		return "This subject is too far away..."
-	if (iscarbon(M) && M.getFireLoss() >= M.maxHealth * 1.5 || isanimal(M) && M.stat == DEAD)
+		//Dead things dont have life also overly burned do not as well, walking corps
+	if (M.getFireLoss() >= M.maxHealth * 1.5 || M.stat == DEAD)
 		return "This subject does not have an edible life energy..."
 	for(var/mob/living/carbon/slime/met in view())
 		if(met.Victim == M && met != src)
@@ -44,9 +45,10 @@
 
 			if(iscarbon(M))
 				Victim.adjustFireLoss(rand(5,6))
-				Victim.adjustToxLoss(rand(1,2))
+				Victim.adjustCloneLoss(rand(6,8))
 				if(Victim.health <= 0)
-					Victim.adjustToxLoss(rand(2,4))
+					Victim.adjustCloneLoss(rand(8,12))
+					Victim.adjustFireLoss(rand(10,12))
 
 			else if(isanimal(M))
 				Victim.adjustBruteLoss(is_adult ? rand(7, 15) : rand(4, 12))
@@ -63,7 +65,7 @@
 					H.custom_pain(painMes)
 				else if (iscarbon(M))
 					var/mob/living/carbon/C = M
-					if (!(C.species && (C.species.flags & NO_PAIN)))
+					if (!((C.species.flags & NO_PAIN) || (PAIN_LESS in C.mutations)))
 						to_chat(M, SPAN_DANGER("[painMes]"))
 
 			gain_nutrition(rand(20,25))
@@ -85,11 +87,12 @@
 
 	if(M && invalidFeedTarget(M)) // This means that the slime drained the victim
 		if(!client)
-			if(Victim && !rabid && !attacked && Victim.LAssailant && Victim.LAssailant != Victim && prob(50))
-				if(!(Victim.LAssailant in Friends))
-					Friends[Victim.LAssailant] = 1
+			var/mob/living/carbon/LAssailant = (Victim.LAssailant_weakref?.resolve())
+			if(Victim && !rabid && !attacked && LAssailant != Victim && prob(50))
+				if(!(LAssailant in Friends))
+					Friends[LAssailant] = 1
 				else
-					++Friends[Victim.LAssailant]
+					++Friends[LAssailant]
 
 		else
 			to_chat(src, SPAN_NOTICE("This subject does not have a strong enough life energy anymore..."))

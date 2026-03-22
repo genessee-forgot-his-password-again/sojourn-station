@@ -30,7 +30,10 @@
 	//Used for the /random subtypes of material stacks. any stack works
 	var/rand_min = 0
 	var/rand_max = 0
+	var/stacktype_alt = null
 
+/// bandaid until new inventorycode
+	var/mid_delete = FALSE
 
 
 
@@ -67,16 +70,28 @@
 		//return 1
 	if (src && usr && usr.machine == src)
 		usr << browse(null, "window=stack")
-
+	mid_delete = TRUE
 
 	return ..()
+
+/obj/item/stack/Crossed(atom/movable/crossing)
+	if(!crossing.throwing)
+		if(!istype(crossing, /obj/item/stack))
+			return ..()
+		if(isturf(loc) && isturf(crossing.loc))
+			var/obj/item/stack/crostack = crossing
+			if(mid_delete || crostack.mid_delete)	// bandaid until new inventory code
+				return FALSE
+			src.transfer_to(crostack)
+	. = ..()
 
 /obj/item/stack/examine(mob/user)
 	if(..(user, 1))
 		if(!uses_charge)
-			to_chat(user, "There [src.amount == 1 ? "is" : "are"] [src.amount] [src.singular_name]\s in the stack.")
+			to_chat(user, SPAN_NOTICE("There [src.amount == 1 ? "is" : "are"] [src.amount] [src.singular_name]\s in the stack."))
+			to_chat(user, SPAN_NOTICE("Ctrl-Shift-Click to take a custom amount."))
 		else
-			to_chat(user, "There is enough charge for [get_amount()].")
+			to_chat(user, SPAN_NOTICE("There is enough charge for [get_amount()]."))
 
 /obj/item/stack/attack_self(mob/user as mob)
 	list_recipes(user)
@@ -91,7 +106,8 @@
 	if (recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
-	var/t1 = text("<HTML><HEAD><title>Constructions from []</title></HEAD><body><TT>Amount Left: []<br>", src, src.get_amount())
+
+	var/t1 = "<TT>Amount Left: [src.get_amount()]<br>"
 	for(var/i=1;i<=recipe_list.len,i++)
 		var/E = recipe_list[i]
 		if (isnull(E))
@@ -131,8 +147,8 @@
 				if (!(max_multiplier in multipliers))
 					t1 += " <A href='?src=\ref[src];make=[i];multiplier=[max_multiplier]'>[max_multiplier*R.res_amount]x</A>"
 
-	t1 += "</TT></body></HTML>"
-	user << browse(t1, "window=stack")
+	t1 += "</TT>"
+	user << browse(HTML_SKELETON_TITLE("Constructions from [src]",t1), "window=stack")
 	onclose(user, "stack")
 	return
 
@@ -187,7 +203,9 @@
 		list_recipes(usr, text2num(href_list["sublist"]))
 
 	if (href_list["make"])
-		if (src.get_amount() < 1) qdel(src) //Never should happen
+		if (src.get_amount() < 1)
+			if(consumable)
+				qdel(src) //Never should happen
 
 		var/list/recipes_list = recipes
 		if (href_list["sublist"])
@@ -207,6 +225,15 @@
 			return
 	return
 
+/obj/item/stack/proc/can_merge(obj/item/stack/other)
+	if(!istype(other))
+		return FALSE
+	if(QDELETED(src) || QDELETED(other))
+		return FALSE
+	if((other == src))
+		return FALSE
+	return other.stacktype == stacktype
+
 //Return 1 if an immediate subsequent call to use() would succeed.
 //Ensures that code dealing with stacks uses the same logic
 /obj/item/stack/proc/can_use(var/used)
@@ -220,8 +247,10 @@
 	if(!uses_charge)
 		amount -= used
 		if (amount <= 0 && consumable)	// Only proceed with deletion if the item is supposed to disappear entirely after being used up
-			if(usr)
-				usr.remove_from_mob(src)
+			mid_delete = TRUE
+			if(ismob(loc))
+				var/mob/M = loc
+				M.remove_from_mob(src, null)
 			qdel(src) //should be safe to qdel immediately since if someone is still using this stack it will persist for a little while longer
 		update_icon()
 		return 1
@@ -234,7 +263,7 @@
 		return 1
 
 /obj/item/stack/proc/add(var/extra)
-	if(amount < 1)
+	if(amount < 1 && consumable)
 		qdel(src)
 	if(!uses_charge)
 		if(amount + extra > get_max_amount())
@@ -260,8 +289,13 @@
 /obj/item/stack/proc/transfer_to(obj/item/stack/S, var/tamount=null, var/type_verified)
 	if (!get_amount())
 		return 0
+	if(!istype(S))
+		return FALSE
 	if ((stacktype != S.stacktype) && !type_verified)
-		return 0
+		if((stacktype != S.stacktype_alt) && !type_verified)
+			return 0
+	if(mid_delete || S.mid_delete)	// bandaid until new inventory code
+		return FALSE
 	if (isnull(tamount))
 		tamount = src.get_amount()
 
@@ -273,10 +307,37 @@
 		if (prob(transfer/orig_amount * 100))
 			transfer_fingerprints_to(S)
 			if(blood_DNA)
+				if(!S.blood_DNA || !istype(S.blood_DNA, /list))	//if our list of DNA doesn't exist yet (or isn't a list) initialise it.
+					S.blood_DNA = list()
 				LAZYINITLIST(S.blood_DNA)
 				S.blood_DNA |= blood_DNA
+
+		//Hack to prevent reagent loss
+		if(reagents)
+			reagent_flags |= REFILLABLE | DRAINABLE | DRAWABLE | INJECTABLE
+
+			var/difference = abs(orig_amount - transfer)
+			var/transfer_persent = difference / orig_amount
+
+			reagents.trans_to_obj(S, reagents.total_volume * transfer_persent)
+			reagent_flags = initial(reagent_flags)
+
+
 		return transfer
 	return 0
+
+/obj/item/stack/proc/merge(obj/item/stack/S) //Merge src into S, as much as possible
+	if(mid_delete || S.mid_delete || (S == src)) //amusingly this can cause a stack to consume itself, let's not allow that.
+		return
+	var/transfer = get_amount()
+	if(S.uses_charge)
+		transfer = min(transfer, S.get_max_amount() - S.get_amount())
+	else
+		transfer = min(transfer, S.max_amount - S.amount)
+	if(pulledby)
+		pulledby.start_pulling(S)
+	src.transfer_to(S, transfer)
+	return transfer
 
 //creates a new stack with the specified amount
 /obj/item/stack/proc/split(var/tamount)
@@ -291,13 +352,30 @@
 
 	var/orig_amount = src.amount
 	if (transfer && src.use(transfer))
-		var/obj/item/stack/newstack = new src.type(loc, transfer)
-		newstack.color = color
+		var/obj/item/stack/S = new src.type(loc, transfer)
+
+		//Prevents douping with preloaded reagents
+		if(S.reagents)
+			S.reagents.clear_reagents()
+
+		//Hack to prevent reagent loss
+		if(reagents)
+			reagent_flags |= REFILLABLE | DRAINABLE | DRAWABLE | INJECTABLE
+
+			var/difference = abs(orig_amount - transfer)
+			var/transfer_persent = difference / orig_amount
+
+			reagents.trans_to_obj(S, reagents.total_volume * transfer_persent)
+			reagent_flags = initial(reagent_flags)
+
+		S.color = color
 		if (prob(transfer/orig_amount * 100))
-			transfer_fingerprints_to(newstack)
+			transfer_fingerprints_to(S)
 			if(blood_DNA)
-				newstack.blood_DNA = blood_DNA.Copy()
-		return newstack
+				if(!S.blood_DNA || !istype(S.blood_DNA, /list))	//if our list of DNA doesn't exist yet (or isn't a list) initialise it.
+					S.blood_DNA = list()
+				S.blood_DNA |= blood_DNA
+		return S
 	return null
 
 /obj/item/stack/proc/get_amount()
@@ -350,6 +428,9 @@
 		..()
 	return
 
+/obj/item/stack/CtrlShiftClick(var/mob/living/user)
+	try_split(user)
+
 /obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack))
 		var/obj/item/stack/S = W
@@ -366,16 +447,10 @@
 	else
 		return ..()
 
-//Verb to split stacks
-/obj/item/stack/verb/split_verb()
-	set src in view(1)
-	set name = "Split"
-	set category = "Object"
-
+// Function to split the stack, shared between verb and Ctrl Shift Click
+/obj/item/stack/proc/try_split(var/mob/usr)
 	if (!usr.IsAdvancedToolUser())
 		return
-
-
 
 	var/quantity = input(usr,
 	"This stack contains [amount]/[max_amount]. How many would you like to split off into a new stack?\n\
@@ -398,6 +473,16 @@
 			//If that fails, leave it beside the original stack
 			S.forceMove(get_turf(src))
 
+//Verb to split stacks
+/obj/item/stack/verb/split_verb()
+	set src in view(1)
+	set name = "Split"
+	set category = "Object"
+
+	try_split(usr)
+
+/obj/item/stack/get_item_cost(export)
+	return amount * ..()
 
 /*
  * Recipe datum
@@ -433,6 +518,3 @@
 	New(title, recipes)
 		src.title = title
 		src.recipes = recipes
-
-
-

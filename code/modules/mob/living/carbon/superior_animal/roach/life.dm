@@ -1,16 +1,26 @@
+/mob/living/carbon/superior/roach/movement_delay()
+
+	var/tally = ..()
+
+	if(reagents.has_reagent("starkellin"))
+		tally -= 0.5 //We get a speed boost by this
+
+	return tally
+
+
 #define MOVING_TO_TARGET 1
 #define EATING_TARGET 2
 #define LAYING_EGG 3
 
-/mob/living/carbon/superior_animal/roach/proc/GiveUp(var/C)
-	spawn(100)
+/mob/living/carbon/superior/roach/proc/GiveUp(var/C)
+	if(give_up_timer <= world.time + 100)
 		if(busy == MOVING_TO_TARGET)
 			if(eat_target == C && get_dist(src,eat_target) > 1)
 				eat_target = null
 				busy = 0
 				stop_automated_movement = 0
 
-/mob/living/carbon/superior_animal/roach/handle_ai()
+/mob/living/carbon/superior/roach/handle_ai()
 	..()
 	if(stance == HOSTILE_STANCE_IDLE)
 		switch(busy)
@@ -18,54 +28,71 @@
 				if(prob(35))	// 35 percents chance that the roach is hungry
 					//first, check for potential food nearby
 					var/list/eatTargets = new
-					for(var/mob/living/carbon/C in getPotentialTargets())
-						if ((C.stat == DEAD) && ((istype(C, /mob/living/carbon/human)) || (istype(C, /mob/living/carbon/superior_animal))))
-							eatTargets += C
+					var/turf/our_turf = get_turf(src)
+					if (our_turf) //If we're not in anything, continue
+						for(var/mob/living/carbon/C as anything in hearers(src, viewRange))
+							if ((C.stat == DEAD) && ((istype(C, /mob/living/carbon/human)) || (istype(C, /mob/living/carbon/superior))))
+								eatTargets += C
 
-					for(var/obj/effect/spider/S in getPotentialTargets()) //S for Spider
-						if (((istype(S, /obj/effect/spider/eggcluster)) || (istype(S, /obj/effect/spider/spiderling))))
-							eatTargets += S
+						for(var/obj/effect/spider/S in view(src, viewRange)) //S for Spider
+							if (((istype(S, /obj/effect/spider/eggcluster)) || (istype(S, /obj/effect/spider/spiderling))))
+								eatTargets += S
 
-					if(snacker)
-						for(var/obj/item/reagent_containers/food/snacks/food in oview(src,3))
-							if(istype(food.loc, /turf))
-								eatTargets += food
-
+						if(snacker)
+							for(var/obj/item/reagent_containers/snacks/food in view(src,3))
+								if(istype(food.loc, /turf))
+									eatTargets += food
 
 					eat_target = safepick(nearestObjectsInList(eatTargets,src,1))
 					if (eat_target)
+						give_up_timer = world.time
 						busy = MOVING_TO_TARGET
-						set_glide_size(DELAY2GLIDESIZE(move_to_delay))
-						walk_to(src, eat_target, 1, move_to_delay)
-						GiveUp(eat_target) //give up if we can't reach target
+						set_glide_size(DELAY2GLIDESIZE(movement_delay()))
+						if (stat != DEAD)
+							SSmove_manager.move_to(src, eat_target, 1, movement_delay())
 						return
+					//We are hurt, eat one of are own of a lower rank to heal and make more young
+					if(health < maxHealth * 0.8)
+						for(var/mob/living/carbon/superior/roach/R in orange(1, src))
+							if(R.faction == faction && R.hierarchy < hierarchy)
+								visible_message(SPAN_WARNING("[src] starts to chew on [R.name] slaying it as it sucks out the brains."),"", SPAN_NOTICE("You hear something eating something."))
+								R.death() //Respect the hierarchy, allow your death to feed those higher then you
+								eat_target = R
+								busy = MOVING_TO_TARGET
+								set_glide_size(DELAY2GLIDESIZE(movement_delay()))
+								give_up_timer = world.time
+								if (stat != DEAD)
+									SSmove_manager.move_to(src, eat_target, 1, movement_delay())
+								break
+
 				else if(prob(probability_egg_laying)) // chance to lay an egg
 					var/obj/effect/spider/eggcluster/tasty_eggs = locate(/obj/effect/spider/eggcluster) in get_turf(src)
 					var/obj/effect/spider/spiderling/tasty_bugs = locate(/obj/effect/spider/spiderling) in orange(1, src)//cant as easy scuttle away
 					if(tasty_eggs)
 						visible_message(SPAN_WARNING("[src] eats [tasty_eggs]."),"", SPAN_NOTICE("You hear something eating something."))
-						tasty_eggs.Destroy()
+						tasty_eggs.die()
 						fed += rand(3, 12) // this would otherwise pop out this many big spiders
 					if(tasty_bugs)
 						visible_message(SPAN_WARNING("[src] eats [tasty_bugs]."),"", SPAN_NOTICE("You hear something eating something."))
-						tasty_bugs.Destroy()
+						tasty_bugs.die()
 						fed += rand(0, 1) //Some times a single bug isnt all that filling
 
-					else if(fed <= 0)
+					if(fed <= 0)
 						return
-						
+
 					busy = LAYING_EGG
 					src.visible_message(SPAN_NOTICE("\The [src] begins to lay an egg."))
 					stop_automated_movement = 1
-					busy_start_time = world.timeofday
+					busy_start_time = world.time
 			if(MOVING_TO_TARGET)
 				if (eat_target)
+					GiveUp()
 					if(get_dist(src, eat_target) <= 1)
 						busy = EATING_TARGET
 						stop_automated_movement = 1
 						src.visible_message(SPAN_NOTICE("\The [src] begins to eat \the [eat_target]."))
-						walk(src,0)
-						busy_start_time = world.timeofday
+						SSmove_manager.stop_looping(src)
+						busy_start_time = world.time
 						if (istype(eat_target, /mob/living/carbon/human))
 							eating_time = 15 MINUTES
 							// how much time it takes to it a corpse
@@ -74,7 +101,7 @@
 							// If disturbed the roach has to start back from 0
 
 			if(EATING_TARGET)
-				if (world.timeofday >= busy_start_time + eating_time)
+				if (world.time >= busy_start_time + eating_time)
 					if(eat_target && istype(eat_target.loc, /turf) && get_dist(src,eat_target) <= 1)
 						var/turf/targetTurf = eat_target.loc
 						if(istype(eat_target, /mob/living/carbon))
@@ -101,25 +128,30 @@
 									src.visible_message(SPAN_WARNING("\The [src] finishes eating \the [eat_target], leaving only bones."))
 									// Get fed
 									fed += rand(4,6)
-								else if (istype(M, /mob/living/carbon/superior_animal) && (M.icon)) // Eating a spider or roach
+								else if (istype(M, /mob/living/carbon/superior) && (M.icon)) // Eating a spider or roach
 									// Gib victim
-									var/mob/living/carbon/superior_animal/tasty = M
+									var/mob/living/carbon/superior/tasty = M
 									M.gib(null, FALSE)
 									gibs(targetTurf, null, /obj/effect/gibspawner/generic, fleshcolor, bloodcolor)
 									// End message
 									src.visible_message(SPAN_WARNING("\The [src] finishes eating \the [eat_target], leaving only bones."))
 									// Get fed
 									fed += rand(1,tasty.meat_amount)
+									adjustOxyLoss(-30)
+									adjustFireLoss(-20)
+									adjustBruteLoss(-40)
+									adjustToxLoss(-30)
+									updatehealth()
 									if (isroach(tasty))
-										var/mob/living/carbon/superior_animal/roach/cannibalism = tasty
+										var/mob/living/carbon/superior/roach/cannibalism = tasty
 										fed += cannibalism.fed
-									if(istype(src, /mob/living/carbon/superior_animal/roach/roachling))
+									if(istype(src, /mob/living/carbon/superior/roach/roachling))
 										if(tasty.meat_amount >= 6)// ate a fuhrer or kaiser
-											var/mob/living/carbon/superior_animal/roach/roachling/bigboss = src
+											var/mob/living/carbon/superior/roach/roachling/bigboss = src
 											bigboss.big_boss = TRUE
-						else if(snacker && istype(eat_target, /obj/item/reagent_containers/food/snacks))
+						else if(snacker && istype(eat_target, /obj/item/reagent_containers/snacks))
 							src.visible_message(SPAN_WARNING("\The [src] finishes eating \the [eat_target]."))
-							var/obj/item/reagent_containers/food/snacks/snack = eat_target
+							var/obj/item/reagent_containers/snacks/snack = eat_target
 							if(snack.trash)
 								if(ispath(snack.trash,/obj/item))
 									var/obj/item/TrashItem = new snack.trash()
@@ -132,13 +164,13 @@
 					stop_automated_movement = 0
 
 			if(LAYING_EGG)
-				if (world.timeofday >= busy_start_time + eating_time * 0.5) //Takes half as long to lay an egg then it is to eat a dead body
-					if (istype(src, /mob/living/carbon/superior_animal/roach/kaiser))// kaiser roaches now lay roachcubes
-						var/roachcube = pick(subtypesof(/obj/item/reagent_containers/food/snacks/cube/roach))
+				if (world.time >= busy_start_time + eating_time * 0.5) //Takes half as long to lay an egg then it is to eat a dead body
+					if (istype(src, /mob/living/carbon/superior/roach/kaiser))// kaiser roaches now lay roachcubes
+						var/roachcube = pick(subtypesof(/obj/item/reagent_containers/snacks/cube/roach))
 						new roachcube(get_turf(src))
 					else
 						var/obj/item/roach_egg/egg
-						if (istype(src, /mob/living/carbon/superior_animal/roach/golden))// kaiser roaches now lay roachcubes
+						if (istype(src, /mob/living/carbon/superior/roach/golden))// kaiser roaches now lay roachcubes
 							egg = new /obj/item/roach_egg/gold(loc, src)
 						else
 							egg = new /obj/item/roach_egg(loc, src)

@@ -25,7 +25,7 @@
 #define PARROT_FLEE 64		//Flying away from its attacker
 
 
-/mob/living/simple_animal/parrot
+/mob/living/simple/parrot
 	name = "\improper Parrot"
 	desc = "The parrot squaks, \"It's a Parrot! BAWWK!\""
 	icon = 'icons/mob/mobs-domestic.dmi'
@@ -40,7 +40,7 @@
 
 	speak_chance = 1//1% (1 in 100) chance every tick; So about once per 150 seconds, assuming an average tick is 1.5s
 	turns_per_move = 5
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/chicken // Enough with the cracker meme.
+	meat_type = /obj/item/reagent_containers/snacks/meat/chicken // Enough with the cracker meme.
 	meat_amount = 2
 
 	response_help  = "pets"
@@ -86,8 +86,9 @@
 	//Parrots are kleptomaniacs. This variable ... stores the item a parrot is holding.
 	var/obj/item/held_item = null
 
+	sanity_damage = -1
 
-/mob/living/simple_animal/parrot/New()
+/mob/living/simple/parrot/New()
 	..()
 	if(!ears)
 		var/headset = pick(/obj/item/device/radio/headset/headset_sec, \
@@ -100,28 +101,28 @@
 	parrot_sleep_dur = parrot_sleep_max //In case someone decides to change the max without changing the duration var
 
 	verbs.Add(
-		/mob/living/simple_animal/parrot/proc/steal_from_ground,
-		/mob/living/simple_animal/parrot/proc/steal_from_mob,
-		/mob/living/simple_animal/parrot/verb/drop_held_item_player,
-		/mob/living/simple_animal/parrot/proc/perch_player
+		/mob/living/simple/parrot/proc/steal_from_ground,
+		/mob/living/simple/parrot/proc/steal_from_mob,
+		/mob/living/simple/parrot/verb/drop_held_item_player,
+		/mob/living/simple/parrot/proc/perch_player
 	)
 
 
-/mob/living/simple_animal/parrot/death()
+/mob/living/simple/parrot/death()
 	if(held_item)
 		held_item.loc = src.loc
 		held_item = null
-	walk(src,0)
+	SSmove_manager.stop_looping(src)
 	..()
 
-/mob/living/simple_animal/parrot/Stat()
+/mob/living/simple/parrot/get_status_tab_items()
 	. = ..()
-	stat("Held Item", held_item)
+	. += "Held Item: [held_item]"
 
 /*
  * Inventory
  */
-/mob/living/simple_animal/parrot/show_inv(mob/user as mob)
+/mob/living/simple/parrot/show_inv(mob/user as mob)
 	user.set_machine(src)
 	if(user.stat) return
 
@@ -131,11 +132,11 @@
 	else
 		dat +=	"<br><b>Headset:</b> <a href='?src=\ref[src];add_inv=ears'>Nothing</a>"
 
-	user << browse(dat, text("window=mob[];size=325x500", name))
+	user << browse(HTML_SKELETON(dat), text("window=mob[];size=325x500", name))
 	onclose(user, "mob[real_name]")
 	return
 
-/mob/living/simple_animal/parrot/Topic(href, href_list)
+/mob/living/simple/parrot/Topic(href, href_list)
 
 	//Can the usr physically do this?
 	if(!usr.canmove || usr.stat || usr.restrained() || !in_range(loc, usr))
@@ -215,7 +216,7 @@
  * Attack responces
  */
 //Humans, monkeys, aliens
-/mob/living/simple_animal/parrot/attack_hand(mob/living/carbon/M as mob)
+/mob/living/simple/parrot/attack_hand(mob/living/carbon/M as mob)
 	..()
 	if(client) return
 	if(!stat && M.a_intent == I_HURT)
@@ -236,7 +237,7 @@
 	return
 
 //Mobs with objects
-/mob/living/simple_animal/parrot/attackby(var/obj/item/O as obj, var/mob/user as mob)
+/mob/living/simple/parrot/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	..()
 	if(!stat && !client && !istype(O, /obj/item/stack/medical))
 		if(O.force)
@@ -250,24 +251,25 @@
 	return
 
 //Bullets
-/mob/living/simple_animal/parrot/bullet_act(var/obj/item/projectile/Proj)
+/mob/living/simple/parrot/bullet_act(var/obj/item/projectile/Proj)
 	..()
-	if(!stat && !client)
-		if(parrot_state == PARROT_PERCH)
-			parrot_sleep_dur = parrot_sleep_max //Reset it's sleep timer if it was perched
+	if (!(Proj.testing))
+		if(!stat && !client)
+			if(parrot_state == PARROT_PERCH)
+				parrot_sleep_dur = parrot_sleep_max //Reset it's sleep timer if it was perched
 
-		parrot_interest = null
-		parrot_state = PARROT_WANDER //OWFUCK, Been shot! RUN LIKE HELL!
-		parrot_been_shot += 5
-		icon_state = "parrot_fly"
-		drop_held_item(0)
+			parrot_interest = null
+			parrot_state = PARROT_WANDER //OWFUCK, Been shot! RUN LIKE HELL!
+			parrot_been_shot += 5
+			icon_state = "parrot_fly"
+			drop_held_item(0)
 	return
 
 
 /*
  * AI - Not really intelligent, but I'm calling it AI anyway.
  */
-/mob/living/simple_animal/parrot/Life()
+/mob/living/simple/parrot/Life()
 	..()
 
 	//Sprite and AI update for when a parrot gets pulled
@@ -353,7 +355,7 @@
 //-----WANDERING - This is basically a 'I dont know what to do yet' state
 	else if(parrot_state == PARROT_WANDER)
 		//Stop movement, we'll set it later
-		walk(src, 0)
+		SSmove_manager.stop_looping(src)
 		parrot_interest = null
 
 		//Wander around aimlessly. This will help keep the loops from searches down
@@ -392,7 +394,7 @@
 				return
 //-----STEALING
 	else if(parrot_state == (PARROT_SWOOP | PARROT_STEAL))
-		walk(src,0)
+		SSmove_manager.stop_looping(src)
 		if(!parrot_interest || held_item)
 			parrot_state = PARROT_SWOOP | PARROT_RETURN
 			return
@@ -416,12 +418,13 @@
 			parrot_state = PARROT_SWOOP | PARROT_RETURN
 			return
 
-		walk_to(src, parrot_interest, 1, parrot_speed)
+		if (stat != DEAD)
+			SSmove_manager.move_to(src, parrot_interest, 1, parrot_speed)
 		return
 
 //-----RETURNING TO PERCH
 	else if(parrot_state == (PARROT_SWOOP | PARROT_RETURN))
-		walk(src, 0)
+		SSmove_manager.stop_looping(src)
 		if(!parrot_perch || !isturf(parrot_perch.loc)) //Make sure the perch exists and somehow isnt inside of something else.
 			parrot_perch = null
 			parrot_state = PARROT_WANDER
@@ -434,16 +437,17 @@
 			icon_state = "parrot_sit"
 			return
 
-		walk_to(src, parrot_perch, 1, parrot_speed)
+		if (stat != DEAD)
+			SSmove_manager.move_to(src, parrot_perch, 1, parrot_speed)
 		return
 
 //-----FLEEING
 	else if(parrot_state == (PARROT_SWOOP | PARROT_FLEE))
-		walk(src,0)
+		SSmove_manager.stop_looping(src)
 		if(!parrot_interest || !isliving(parrot_interest)) //Sanity
 			parrot_state = PARROT_WANDER
 
-		walk_away(src, parrot_interest, 1, parrot_speed-parrot_been_shot)
+		SSmove_manager.move_away(src, parrot_interest, 1, parrot_speed-parrot_been_shot)
 		parrot_been_shot--
 		return
 
@@ -480,7 +484,7 @@
 			if(ishuman(parrot_interest))
 				var/mob/living/carbon/human/H = parrot_interest
 				var/obj/item/organ/external/affecting = H.get_organ(ran_zone(pick(parrot_dam_zone)))
-				H.damage_through_armor(damage, BRUTE, affecting, ARMOR_MELEE, 0, 0, sharp = 1)
+				H.damage_through_armor(damage, BRUTE, affecting, ARMOR_MELEE, null, null, sharp = TRUE)
 				var/msg3 = (pick("pecks [H]'s [affecting].", "cuts [H]'s [affecting] with its talons."))
 				src.visible_message("<span class='name'>[src]</span> [msg3].")
 			else
@@ -490,12 +494,12 @@
 			return
 
 		//Otherwise, fly towards the mob!
-		else
-			walk_to(src, parrot_interest, 1, parrot_speed)
+		else if (stat != DEAD)
+			SSmove_manager.move_to(src, parrot_interest, 1, parrot_speed)
 		return
 //-----STATE MISHAP
 	else //This should not happen. If it does lets reset everything and try again
-		walk(src,0)
+		SSmove_manager.stop_looping(src)
 		parrot_interest = null
 		parrot_perch = null
 		drop_held_item()
@@ -506,12 +510,12 @@
  * Procs
  */
 
-/mob/living/simple_animal/parrot/movement_delay()
+/mob/living/simple/parrot/movement_delay()
 	if(client && stat == CONSCIOUS && parrot_state != "parrot_fly")
 		icon_state = "parrot_fly"
 	return ..()
 
-/mob/living/simple_animal/parrot/proc/search_for_item()
+/mob/living/simple/parrot/proc/search_for_item()
 	for(var/atom/movable/AM in view(src))
 		//Skip items we already stole or are wearing or are too big
 		if(parrot_perch && AM.loc == parrot_perch.loc || AM.loc == src)
@@ -528,7 +532,7 @@
 				return C
 	return null
 
-/mob/living/simple_animal/parrot/proc/search_for_perch()
+/mob/living/simple/parrot/proc/search_for_perch()
 	for(var/obj/O in view(src))
 		for(var/path in desired_perches)
 			if(istype(O, path))
@@ -536,7 +540,7 @@
 	return null
 
 //This proc was made to save on doing two 'in view' loops seperatly
-/mob/living/simple_animal/parrot/proc/search_for_perch_and_item()
+/mob/living/simple/parrot/proc/search_for_perch_and_item()
 	for(var/atom/movable/AM in view(src))
 		for(var/perch_path in desired_perches)
 			if(istype(AM, perch_path))
@@ -561,7 +565,7 @@
 /*
  * Verbs - These are actually procs, but can be used as verbs by player-controlled parrots.
  */
-/mob/living/simple_animal/parrot/proc/steal_from_ground()
+/mob/living/simple/parrot/proc/steal_from_ground()
 	set name = "Steal from ground"
 	set category = "Parrot"
 	set desc = "Grabs a nearby item."
@@ -589,7 +593,7 @@
 	to_chat(src, "\red There is nothing of interest to take.")
 	return 0
 
-/mob/living/simple_animal/parrot/proc/steal_from_mob()
+/mob/living/simple/parrot/proc/steal_from_mob()
 	set name = "Steal from mob"
 	set category = "Parrot"
 	set desc = "Steals an item right out of a person's hand!"
@@ -624,7 +628,7 @@
 	to_chat(src, "\red There is nothing of interest to take.")
 	return 0
 
-/mob/living/simple_animal/parrot/verb/drop_held_item_player()
+/mob/living/simple/parrot/verb/drop_held_item_player()
 	set name = "Drop held item"
 	set category = "Parrot"
 	set desc = "Drop the item you're holding."
@@ -636,7 +640,7 @@
 
 	return
 
-/mob/living/simple_animal/parrot/proc/drop_held_item(var/drop_gently = 1)
+/mob/living/simple/parrot/proc/drop_held_item(var/drop_gently = 1)
 	set name = "Drop held item"
 	set category = "Parrot"
 	set desc = "Drop the item you're holding."
@@ -663,7 +667,7 @@
 	held_item = null
 	return 1
 
-/mob/living/simple_animal/parrot/proc/perch_player()
+/mob/living/simple/parrot/proc/perch_player()
 	set name = "Sit"
 	set category = "Parrot"
 	set desc = "Sit on a nice comfy perch."
@@ -684,7 +688,7 @@
 /*
  * Sub-types
  */
-/mob/living/simple_animal/parrot/Poly
+/mob/living/simple/parrot/Poly
 	name = "Poly"
 	desc = "Poly the Parrot. An expert on quantum cracker theory."
 	speak = list(
@@ -695,12 +699,12 @@
 		":e OH GOD ITS FREE CALL THE SHUTTLE"
 	)
 
-/mob/living/simple_animal/parrot/Poly/New()
+/mob/living/simple/parrot/Poly/New()
 	ears = new /obj/item/device/radio/headset/headset_eng(src)
 	available_channels = list(":e")
 	..()
 
-/mob/living/simple_animal/parrot/say(var/message)
+/mob/living/simple/parrot/say(var/message)
 
 	if(stat)
 		return
@@ -733,25 +737,25 @@
 	..(message)
 
 
-/mob/living/simple_animal/parrot/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = 0, var/mob/speaker = null)
+/mob/living/simple/parrot/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = 0, var/mob/speaker = null)
 	if(prob(50))
 		parrot_hear(message)
 	..(message,verb,language,alt_name,italics,speaker)
 
 
 
-/mob/living/simple_animal/parrot/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/part_a, var/part_b, part_c, var/mob/speaker = null, var/hard_to_hear = 0)
+/mob/living/simple/parrot/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/part_a, var/part_b, part_c, var/mob/speaker = null, var/hard_to_hear = 0)
 	if(prob(50))
 		parrot_hear("[pick(available_channels)] [message]")
 	..(message,verb,language,part_a,part_b,speaker,hard_to_hear)
 
 
-/mob/living/simple_animal/parrot/proc/parrot_hear(var/message="")
+/mob/living/simple/parrot/proc/parrot_hear(var/message="")
 	if(!message || stat)
 		return
 	speech_buffer.Add(message)
 
-/mob/living/simple_animal/parrot/attack_generic(var/mob/user, var/damage, var/attack_message)
+/mob/living/simple/parrot/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 
 	var/success = ..()
 
@@ -769,15 +773,16 @@
 	icon_state = "parrot_fly"
 	return success
 
-/mob/living/simple_animal/jungle_bird
+/mob/living/simple/jungle_bird
 	name = "bird"
 	desc = "One of the local birds, looks uncannily like the ones from earth save that they can mimic anything they hear and have a habit of stealing things."
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
 	faction = "pond"
 	speak_chance = 5
+	sanity_damage = -1
 
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/chicken // You monster.
+	meat_type = /obj/item/reagent_containers/snacks/meat/chicken // You monster.
 	meat_amount = 2
 
 	speak_emote = list("squawks","says","yells")
@@ -795,6 +800,6 @@
 	colony_friend = TRUE
 	friendly_to_colony = TRUE
 
-/mob/living/simple_animal/jungle_bird/Initialize()
+/mob/living/simple/jungle_bird/Initialize()
 	icon_state = "bird-[rand(1, 17)]"
 	icon_dead = (icon_state + "_dead")

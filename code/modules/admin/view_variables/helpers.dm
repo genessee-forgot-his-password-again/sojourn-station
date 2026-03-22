@@ -35,8 +35,6 @@
 		<option value='?_src_=vars;mob_player_panel=\ref[src]'>Show player panel</option>
 		<option>---</option>
 		<option value='?_src_=vars;give_spell=\ref[src]'>Give Spell</option>
-		<option value='?_src_=vars;give_disease2=\ref[src]'>Give Disease</option>
-		<option value='?_src_=vars;give_disease=\ref[src]'>Give TG-style Disease</option>
 		<option value='?_src_=vars;godmode=\ref[src]'>Toggle Godmode</option>
 		<option value='?_src_=vars;build_mode=\ref[src]'>Toggle Build Mode</option>
 
@@ -84,6 +82,8 @@
 	. = ..()
 	if(reagents)
 		. += "<option value='?_src_=vars;addreagent=\ref[src]'>Add reagent</option>"
+	. += "<option value='?_src_=vars;saveCopy=\ref[src]'>Save as Copy</option>"
+
 
 
 /atom/movable/get_view_variables_options()

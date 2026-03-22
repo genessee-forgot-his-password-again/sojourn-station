@@ -1,15 +1,18 @@
 /datum/trade_station/mechas
-	name_pool = list("UCCSJ 'Junker'" = "Urianth Construction Company Construction Shuttle 'Junker'. Seems that they construct and sell exosuits. Sensors showing that they have a roving vessel, maybe they have one last batch for sale.\
-		\"Hey, dudes, it seems you want some mechas? We currently got a surplus and spare parts.\"")
+	name_pool = list("UCCSJ 'Junker'" = "Urianth Construction Company Construction Shuttle 'Junker'. Seems that they construct and sell rare exosuit parts. Sensors showing that they have a roving vessel, maybe they have one last batch for sale.\
+		\"Hey, dudes, it seems you want some mechas? We currently got surplus and spare parts.\"")
+	icon_states = list("htu_frigate", "ship")
+	tree_x = 0.78
+	tree_y = 0.8
 	base_income = 1600
 	wealth = 0
-	markup = UNCOMMON_GOODS
-	secret_inv_threshold = 32000
+	markup = COMMON_GOODS
+	hidden_inv_threshold = 6000
 	start_discovered = TRUE
 	spawn_always = TRUE
 	uid = "mecha"
-	recommendations_needed = 2
-	assortiment = list(
+	//recommendations_needed = 2
+	inventory = list(
 		"Exosuit Parts" = list(
 			/obj/item/mecha_parts/chassis/ripley,
 			/obj/item/mecha_parts/part/ripley_torso,
@@ -33,7 +36,7 @@
 			/obj/item/circuitboard/mecha/main,
 			/obj/item/circuitboard/mecha/peripherals
 		),
-		"Exosuit Auxillery Parts" = list(
+		"Exosuit Auxilliary Parts" = list(
 			/obj/item/rig_module/vision/medhud,
 			/obj/item/tool_upgrade/reinforcement/heatsink,
 			/obj/item/tool_upgrade/augment/cell_mount,
@@ -60,12 +63,11 @@
 			/obj/item/mecha_parts/mecha_equipment/tool/drill/diamonddrill,
 			/obj/item/mecha_parts/mecha_equipment/tool/extinguisher,
 			/obj/item/mecha_parts/mecha_equipment/tool/sleeper,
-			/obj/item/mecha_parts/mecha_equipment/ranged_weapon/energy/riggedlaser,
-			/obj/item/mecha_parts/mecha_equipment/ranged_weapon/ballistic/scattershot/flak/loaded,
+			/obj/item/mecha_parts/mecha_equipment/ranged_weapon/ballistic/flak/loaded,
 			/obj/item/mecha_parts/mecha_equipment/thruster
 		)
 	)
-	secret_inventory = list(
+	hidden_inventory = list(
 		"Pre-Made Mechs" = list(
 			/obj/mecha/working/hoverpod/cargo_imported = custom_good_amount_range(list(1, 2)),
 			/obj/mecha/working/ripley/cargo_imported = custom_good_amount_range(list(-2, 3)),
@@ -74,18 +76,20 @@
 	)
 
 	offer_types = list(
-		/obj/item/mech_ammo_box/scattershot = offer_data("LBX AC 10 ammunition box", 350, 5),
-		/obj/item/mech_ammo_box/lmg = offer_data("Ultra AC 2 ammunition box", 350, 5),
+		/obj/item/mech_ammo_box/scattershot = offer_data("50mm HEAD ammunition box", 350, 5),
+		/obj/item/mech_ammo_box/ultracannon = offer_data("30mm HEAD ammunition box", 350, 5),
 		/obj/item/tool_upgrade/reinforcement/plating = offer_data("reinforced plating", 120, 2),
 		/obj/item/gun_upgrade/mechanism/overdrive = offer_data("overdrive chip", 175, 2),
-		/obj/item/cell/large/moebius/nuclear = offer_data("Soteria \"Atomcell 14000L\"", 575, 3)
+		/obj/item/cell/large/moebius/nuclear = offer_data("Soteria \"Atomcell 14000L\"", 700, 3),
+		/obj/item/cell/large/greyson = offer_data("GP_SI \"Posi-cell 16000L\"", 1250, 2),
+		/obj/item/tool/polytool = offer_data("Jolly Co-Operation polytool", 4500, 2)
 	)
 
 /obj/mecha/working/hoverpod/cargo_imported
-	price_tag = 3000
+	price_tag = 6000
 
 /obj/mecha/working/ripley/cargo_imported
-	price_tag = 5500
+	price_tag = 10000
 
 /obj/mecha/working/ivan/cargo_imported
-	price_tag = 4000
+	price_tag = 7500

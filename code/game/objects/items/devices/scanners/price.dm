@@ -17,6 +17,10 @@
 /obj/item/device/scanner/price/scan(atom/movable/target, mob/user)
 	scan_title = "Price estimations"
 
+	if(!istype(target, /atom/movable))
+		to_chat(user, SPAN_WARNING("This is a invalid target for scanning."))
+		return
+
 	if(!scan_data)
 		scan_data = price_scan_results(target)
 	else
@@ -31,11 +35,22 @@
 
 /proc/price_scan_results(atom/movable/target)
 	var/list/data = list()
-	var/price = SStrade.get_export_cost(target)
+	var/price = SStrade.get_price(target)
+	var/tax_thingy = SStrade.get_export_price_multiplier(target)
+	var/tax_persent = 0
+	var/tax_takeoff = 0
+
+	if(!tax_thingy)
+		tax_thingy = 1
+
+	tax_persent = 1 - tax_thingy
+	tax_takeoff = price * tax_persent
+	tax_persent = (tax_persent * 100)
+	price = price - tax_takeoff
 
 	if(price)
-		data += "<span class='notice'>Scanned [target], value: <b>[price]</b> \
-			credits[target.contents.len ? " (contents included)" : ""]. [target.surplus_tag?"(surplus)":""]</span>"
+		data += "<span class='notice'>Scanned [target], value: <b>[price]</b> (Tax included)) \
+			credits[target.contents.len ? " (contents included)" : ""]; [target.surplus_tag?"(surplus)":""] With an estimated export tax of [tax_persent]%</span>"
 	else
 		data += "<span class='warning'>Scanned [target], no export value. \
 			</span>"

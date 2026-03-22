@@ -71,8 +71,7 @@ SUBSYSTEM_DEF(air)
 	msg += "ZTU:[zones_to_update.len]|"
 	msg += "E:[edges.len]|"
 	msg += "Z:[zones.len]|"
-	..(msg)
-
+	return ..()
 
 /datum/controller/subsystem/air/Initialize(timeofday)
 	map_loading = FALSE
@@ -202,7 +201,9 @@ SUBSYSTEM_DEF(air)
 		tiles_to_update.len--
 
 		// Check if the turf is self-zone-blocked
-		if(T.c_airblock(T) & ZONE_BLOCKED)
+		var/block
+		ATMOS_CANPASS_TURF(block, T, T)
+		if (block & ZONE_BLOCKED)
 			deferred_tiles += T
 			if (MC_TICK_CHECK)
 				return
@@ -332,10 +333,13 @@ SUBSYSTEM_DEF(air)
 	ASSERT(isturf(B))
 	#endif
 
-	var/ablock = A.c_airblock(B)
+	var/ablock
+	ATMOS_CANPASS_TURF(ablock, A, B)
 	if(ablock == BLOCKED)
 		return BLOCKED
-	return ablock | B.c_airblock(A)
+	var/bblock
+	ATMOS_CANPASS_TURF(bblock, B, A)
+	return ablock | bblock
 
 /datum/controller/subsystem/air/proc/has_valid_zone(turf/simulated/T)
 	#ifdef ZASDBG

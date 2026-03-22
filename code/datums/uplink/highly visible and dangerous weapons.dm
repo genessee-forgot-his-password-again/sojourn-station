@@ -8,7 +8,7 @@
 	name = "\"Makarov\" pistol"
 	desc = "Ammo not induced."
 	item_cost = 2 //Ammo not induced
-	path = /obj/item/gun/projectile/clarissa/makarov
+	path = /obj/item/gun/projectile/makarov
 
 /datum/uplink_item/item/visible_weapons/dartgun
 	name = "Dart Gun"
@@ -26,26 +26,26 @@
 	path = /obj/item/melee/energy/sword
 
 /datum/uplink_item/item/visible_weapons/rafale
-	name = "Silenced .40 pistol"
+	name = "Silenced 10mm pistol"
 	item_cost = 6
 	path = /obj/item/storage/box/syndie_kit/pistol
 
-/datum/uplink_item/item/visible_weapons/akurra
-	name = "Silenced .50 pistol"
+/datum/uplink_item/item/visible_weapons/socom
+	name = "Silenced 12mm pistol"
 	item_cost = 8
 	path = /obj/item/storage/box/syndie_kit/hpistol
 
-/datum/uplink_item/item/visible_weapons/riggedlaser
-	name = "Exosuit (APLU) Rigged Laser"
-	item_cost = 4
-	path = /obj/item/mecha_parts/mecha_equipment/ranged_weapon/energy/riggedlaser
+/datum/uplink_item/item/visible_weapons/painrevolver
+	name = "12mm Hornet Revolver"
+	item_cost = 8
+	path = /obj/item/storage/box/syndie_kit/painrevolver
 
 /datum/uplink_item/item/visible_weapons/revolver
 	name = "Revolver"
 	item_cost = 7
 	path = /obj/item/storage/box/syndie_kit/revolver
 
-//These are for traitors (or other antags, perhaps) to have the option of purchasing some merc gear.
+//These are for contractors (or other antags, perhaps) to have the option of purchasing some merc gear.
 /datum/uplink_item/item/visible_weapons/submachinegun
 	name = "Sub-Machine Gun"
 	item_cost = 7
@@ -64,4 +64,4 @@
 /datum/uplink_item/item/visible_weapons/heavysniper
 	name = "Anti-Materiel Rifle"
 	item_cost = 20
-	path = /obj/item/storage/box/syndie_kit/antimaterial_rifle
+	path = /obj/item/storage/box/syndie_kit/antimateriel_rifle

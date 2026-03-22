@@ -24,7 +24,7 @@
 /obj/item/biosyphon/Destroy()
 	STOP_PROCESSING(SSobj, src)
 	for(var/mob/living/carbon/human/H in viewers(get_turf(src)))
-		SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
+		LEGACY_SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
 	GLOB.all_faction_items -= src
 	GLOB.ironhammer_faction_item_loss++
 	. = ..()
@@ -42,7 +42,7 @@
 
 /obj/item/device/von_krabin
 	name = "Von-Krabin Stimulator"
-	desc = "A strange anomalous item given to the research directors of Soteria as its latent effects enhance the mind. Some say this is an unfinished prototype of the technology the church of absolute uses to enhance the abilities of others."
+	desc = "A strange anomalous item given to the research directors of Soteria as its latent effects enhance the mind. Some say this is an unfinished prototype of the technology the church of the absolute uses to enhance the abilities of others."
 	icon = 'icons/obj/device.dmi'
 	icon_state = "von-krabin"
 	item_state = "von-krabin"
@@ -58,12 +58,12 @@
 	var/active = FALSE
 	var/area_radius = 7
 
-	var/buff_power = 5
+	var/buff_power = 15 //Makes it viable to have around
 
 	var/stats_buff = list(STAT_BIO, STAT_COG, STAT_MEC)
 	var/list/mob/living/carbon/human/currently_affected = list()
 
-/obj/item/von_krabin/New()
+/obj/item/device/von_krabin/New()
 	..()
 	GLOB.all_faction_items[src] = GLOB.department_moebius
 
@@ -71,7 +71,7 @@
 	STOP_PROCESSING(SSobj, src)
 	check_for_faithful(list())
 	for(var/mob/living/carbon/human/H in viewers(get_turf(src)))
-		SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
+		LEGACY_SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
 	GLOB.all_faction_items -= src
 	GLOB.moebius_faction_item_loss++
 	..()
@@ -148,7 +148,7 @@
 
 /obj/item/reagent_containers/enricher/Destroy()
 	for(var/mob/living/carbon/human/H in viewers(get_turf(src)))
-		SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
+		LEGACY_SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
 	GLOB.all_faction_items -= src
 	GLOB.moebius_faction_item_loss++
 	..()
@@ -173,7 +173,7 @@
 
 		if(blood_amount)
 			var/obj/item/reagent_containers/blood/empty/blood_pack = new /obj/item/reagent_containers/blood/empty(get_turf(src))
-			blood_pack.reagents.add_reagent("blood", blood_amount, list("donor"=null,"viruses"=null,"blood_DNA"=null,"blood_type"="O-","resistances"=null,"trace_chem"=null))
+			blood_pack.reagents.add_reagent("blood", blood_amount, list("donor"=null,"blood_DNA"=null,"blood_type"="O-","resistances"=null,"trace_chem"=null))
 			blood_amount = 0
 			visible_message(SPAN_NOTICE("[src] drop [blood_pack]."))
 		else
@@ -213,10 +213,21 @@
 	item_state = "techno_tribalism"
 	origin_tech = list(TECH_MATERIAL = 8, TECH_ENGINEERING = 7, TECH_POWER = 2)
 	price_tag = 20000
-	var/list/oddity_stats = list(STAT_MEC = 0, STAT_COG = 0, STAT_BIO = 0, STAT_ROB = 0, STAT_TGH = 0, STAT_VIG = 0)
+	var/list/oddity_stats = list(STAT_MEC = 0, STAT_COG = 0, STAT_BIO = 0, STAT_ROB = 0, STAT_TGH = 0, STAT_VIG = 0, STAT_VIV = 0, STAT_ANA = 0)
 	var/last_produce = -30 MINUTES
 	var/items_count = 0
-	var/max_count = 5
+/*
+Z:/FloppyDisk/TRILBYMOD: //It had to be done.
+Z:/FloppyDisk/TRILBYMOD: var/max_count = 5
+Z:/FloppyDisk/TRILBYMOD: DEPLOY CUBE NERF
+*/
+	var/max_count = 3
+/*
+Trilby... Did you?
+You tampered with my cube
+You thought it too powerful no doubt. But Please...
+No more of that.
+*/
 	var/cooldown = 30 MINUTES
 
 /obj/item/device/techno_tribalism/New()
@@ -225,7 +236,7 @@
 
 /obj/item/device/techno_tribalism/Destroy()
 	for(var/mob/living/carbon/human/H in viewers(get_turf(src)))
-		SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
+		LEGACY_SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
 	GLOB.all_faction_items -= src
 	GLOB.technomancer_faction_item_loss++
 	..()
@@ -239,25 +250,35 @@
 				oddity_stats[STAT_COG] += 3
 				oddity_stats[STAT_BIO] += 3
 				oddity_stats[STAT_MEC] += 3
+				oddity_stats[STAT_ANA] += 1
+				oddity_stats[STAT_VIV] += 1
 			else if(GLOB.all_faction_items[W] == GLOB.department_security)
 				oddity_stats[STAT_VIG] += 3
 				oddity_stats[STAT_TGH] += 3
 				oddity_stats[STAT_ROB] += 3
+				oddity_stats[STAT_ANA] += 1
+				oddity_stats[STAT_VIV] += 1
 			else if(GLOB.all_faction_items[W] == GLOB.department_church)
 				oddity_stats[STAT_BIO] += 3
 				oddity_stats[STAT_COG] += 2
 				oddity_stats[STAT_VIG] += 2
 				oddity_stats[STAT_TGH] += 2
+				oddity_stats[STAT_ANA] += 1
+				oddity_stats[STAT_VIV] += 1
 			else if(GLOB.all_faction_items[W] == GLOB.department_guild)
 				oddity_stats[STAT_COG] += 3
 				oddity_stats[STAT_MEC] += 3
 				oddity_stats[STAT_ROB] += 1
 				oddity_stats[STAT_VIG] += 2
+				oddity_stats[STAT_ANA] += 1
+				oddity_stats[STAT_VIV] += 1
 			else if(GLOB.all_faction_items[W] == GLOB.department_engineering)
 				oddity_stats[STAT_MEC] += 5
 				oddity_stats[STAT_COG] += 2
 				oddity_stats[STAT_TGH] += 1
 				oddity_stats[STAT_VIG] += 1
+				oddity_stats[STAT_ANA] += 1
+				oddity_stats[STAT_VIV] += 1
 			else if(GLOB.all_faction_items[W] == GLOB.department_command)
 				oddity_stats[STAT_ROB] += 2
 				oddity_stats[STAT_TGH] += 1
@@ -265,10 +286,12 @@
 				oddity_stats[STAT_MEC] += 1
 				oddity_stats[STAT_VIG] += 3
 				oddity_stats[STAT_COG] += 1
+				oddity_stats[STAT_ANA] += 1
+				oddity_stats[STAT_VIV] += 1
 			else
-				crash_with("[W], incompatible department")
+				CRASH("[W], incompatible department")
 
-		else if(istype(W, /obj/item/tool))
+		else if(istype(W, /obj/item/tool) && !istype(W, /obj/item/tool/psionic_omnitool))
 			var/useful = FALSE
 			if(W.tool_qualities)
 
@@ -345,9 +368,8 @@
 		else
 			to_chat(user, SPAN_WARNING("The [W] is not suitable for [src]!"))
 			return
-
 		to_chat(user, SPAN_NOTICE("You feed [W] to [src]."))
-		SEND_SIGNAL(user, COMSIG_OBJ_TECHNO_TRIBALISM, W)
+		LEGACY_SEND_SIGNAL(user, COMSIG_OBJ_TECHNO_TRIBALISM, W)
 		items_count += 1
 		qdel(W)
 
@@ -399,7 +421,7 @@
 /obj/item/maneki_neko/Destroy()
 	STOP_PROCESSING(SSobj, src)
 	for(var/mob/living/carbon/human/H in viewers(get_turf(src)))
-		SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
+		LEGACY_SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
 	GLOB.all_faction_items -= src
 	GLOB.guild_faction_item_loss++
 	..()
@@ -439,7 +461,7 @@
 /obj/item/maneki_neko/proc/destroy_lifes()
 	for(var/mob/living/carbon/human/H in followers)
 
-		for(var/stat in ALL_STATS)
+		for(var/stat in ALL_STATS_FOR_LEVEL_UP)
 			H.stats.changeStat(stat, -10)
 		var/neko = uppertext(src.name)
 		to_chat(H, SPAN_DANGER(pick("LIFE IS RUINED FOR ME! I CANNOT FIND [neko]!", "WHO STOLE MY [neko]!", "WHERE IS [neko]?!", "WHY I CANNOT FIND [neko]?!")))
@@ -471,7 +493,7 @@
 
 /obj/item/tool/sword/nt_sword/Destroy()
 	for(var/mob/living/carbon/human/H in viewers(get_turf(src)))
-		SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
+		LEGACY_SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
 	GLOB.all_faction_items -= src
 	GLOB.neotheology_faction_item_loss++
 	..()
@@ -482,9 +504,6 @@
 	..()
 
 /obj/item/tool/sword/crusader/nt_sword_truth/attack_self(mob/user)
-	if(isBroken)
-		to_chat(user, SPAN_WARNING("\The [src] is broken."))
-		return
 	if(!wielded)
 		to_chat(user, SPAN_WARNING("You cannot use [src] special ability with one hand!"))
 		return
@@ -525,7 +544,7 @@
 
 	for(var/obj/effect/blob/B in hear(8,get_turf(src)))       		//Blob damage here
 		var/damage = round(30/(get_dist(B,get_turf(src))+1))
-		B.health -= damage
+		B.take_damage(damage)
 		B.update_icon()
 
 	new/obj/effect/sparks(loc)
@@ -631,7 +650,7 @@
 /obj/item/reagent_containers/atomic_distillery/Destroy()
 	STOP_PROCESSING(SSobj, src)
 	for(var/mob/living/carbon/human/H in viewers(get_turf(src)))
-		SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
+		LEGACY_SEND_SIGNAL(H, COMSIG_OBJ_FACTION_ITEM_DESTROY, src)
 	GLOB.all_faction_items -= src
 	. = ..()
 
@@ -703,8 +722,142 @@
 					"corn",
 					"eggplant",
 					"chili",
-					"mushrooms",
+					"chanterelle",
 					"wheat",
 					"potato",
 					"rice")]
-				S.harvest(get_turf(src),0,0,1)
+				S.harvest(get_turf(src),get_turf(src),0,0,1)
+
+
+
+/obj/item/direct_line
+	name = "direct phone line"
+	desc = "A powerful direct hotline to local ships in the area, as well as having a slot to charge the phone with cashcards to directly fund a station of the CEO's choice."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "phone"
+	flags = CONDUCT
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	throw_speed = 1
+	throw_range = 4
+	w_class = ITEM_SIZE_SMALL
+	price_tag = 4000
+	attack_verb = list("liquidates", "divests", "outsources", "lays off", "downsizes")
+	hitsound = 'sound/weapons/ring.ogg'
+	matter = list(MATERIAL_STEEL = 2, MATERIAL_PLASTIC = 4)
+	preloaded_reagents = list("plasticide" = 20, "copper" = 6, "silicon" = 10)
+	var/unlocks_left = 1
+	var/credits_to_fund = 0
+	var/favours_to_call = 0
+	var/anti_cheat = FALSE
+
+/obj/item/direct_line/examine(mob/user)
+	..()
+	to_chat(user, "<span class='info'>The little tracker on the said that lists of transferable funds reads as: [credits_to_fund]</span>")
+
+//This code is a mess
+
+/obj/item/direct_line/attack_self(mob/user as mob)
+
+	if(anti_cheat)
+		to_chat(user, "The line is busy with other deals, wait your turn.")
+		return
+
+	var/choice = input(user, "What do you want to call in?") as null|anything in list("Funding Operations","Aggressive Sales Market") //,"Call in a Favour"
+
+	if(anti_cheat)
+		to_chat(user, "The line is busy with other deals, wait your turn.")
+		return
+
+	switch(choice)
+
+		if("Funding Operations")
+			if(credits_to_fund)
+				var/list/stations_list_for_fund = list()
+				for(var/stations_to_fund in SStrade.discovered_stations)
+					var/datum/trade_station/O = stations_to_fund
+					stations_list_for_fund += O
+
+				if(!stations_list_for_fund)
+					to_chat(user, SPAN_NOTICE("When you ring the line, you hear an annoyed voice say \"I'm prepared to close this deal quickly\", followed by a silent dial tone. Seems like there are no stations willing to trade with the colony."))
+					return
+
+				var/datum/trade_station/station_choice = input(user, "What Station do you want to force sales with?") as null|anything in stations_list_for_fund
+				if(!station_choice)	// user can cancel
+					to_chat(user, SPAN_NOTICE("You quickly hang up the phone."))
+					return
+				station_choice.wealth += credits_to_fund
+				to_chat(user, SPAN_NOTICE("Before you work out a deal to transfer the funding you hear ''[pick("You rang?","I was planning on running into you.","This caller always collects.","I'm one smooth operator.","I always make my calls direct.")]'' and then the line goes silent, as the counter on the side for funding slowly ticks down..."))
+				credits_to_fund = 0
+			else
+				to_chat(user, SPAN_NOTICE("When you ring the line, you hear an annoyed voice say \"Sorry, we cannot give credit. Call back when you're a little mmm.... richer.\" followed by a silent dial tone. It's likely due to the phone not having enough money to directly fund a station."))
+/*
+		if("Call in a Favour")
+			if(credits_to_fund >= 1000) //Random number 1k seems fair?
+				var/list/stations_list_for_favour = list()
+				for(var/stations_to_favour in list_of_stations)
+					var/datum/trade_station/O = stations_to_fund
+					stations_list_for_favour += O
+
+				if(!stations_list_for_favour)
+					to_chat(user, SPAN_NOTICE("When you ring the line, you hear an annoyed voice say ''I'm prepared to close this deal quickly.'' and then the line goes silent. Seems like their is no stations willing to trade with the colony."))
+					return
+
+				var/datum/trade_station/station_choice = input(user, "What Station do you want to force sales with you?") as null|anything in stations_list_for_favour
+				if(!station_choice)	// user can cancel
+					to_chat(user, SPAN_NOTICE("You quickly hang up the phone."))
+					return
+				station_choice.offer_tick() //Forcefully refreshes trade deals
+				to_chat(user, SPAN_NOTICE("Before you work out a deal to transfer the funding you hear ''[pick("You rang?","I was planning on running into you.","This caller always collects.","I'm one smooth operator.","I always make my calls direct.")]'' and then the line goes silent, as the counter on the side for funding slowly ticks down..."))
+				credits_to_fund -= 1000
+			else
+				to_chat(user, SPAN_NOTICE("When you ring the line, you hear an annoyed voice say ''I'm prepared to close this deal quickly.'' and then the line goes silent. You likely need more funds to ensentives the station request your goods."))
+*/
+
+
+		if("Aggressive Sales Market")
+			if(unlocks_left)
+				anti_cheat = TRUE
+				var/list/stations_list_for_phone = list()
+				for(var/stations_to_unlock in SStrade.all_stations)
+					if(stations_to_unlock in SStrade.discovered_stations)
+						continue
+					var/datum/trade_station/O = stations_to_unlock
+					stations_list_for_phone += O
+
+				if(!stations_list_for_phone)
+					to_chat(user, SPAN_NOTICE("When you ring the line, you hear an annoyed voice say \"I'm prepared to close this deal quickly.\" followed by a silent dial tone. Looks like they are not in any mood to do more Aggressive Sales Market."))
+					return
+
+				if(!unlocks_left)
+					to_chat(user, SPAN_NOTICE("When you ring the line, you hear an annoyed voice say \"I'm prepared to close this deal quickly.\" followed by a silent dial tone. Looks like they are not in any mood to do more Aggressive Sales Market."))
+					return
+
+				var/station_choice = input(user, "What Station do you want to force sales with you?") as null|anything in stations_list_for_phone
+				if(!station_choice)	// user can cancel
+					anti_cheat = FALSE
+					to_chat(user, SPAN_NOTICE("You quickly hang up the phone."))
+					return
+				SStrade.discovered_stations |= station_choice
+				unlocks_left -= 1
+				anti_cheat = FALSE
+			else
+				to_chat(user, SPAN_NOTICE("When you ring the line, you hear an annoyed voice say \"I'm prepared to close this deal quickly.\" followed by a silent dial tone. Looks like they are not in any mood to do more Aggressive Sales Market."))
+
+
+		else
+			return
+
+
+/obj/item/direct_line/attackby(obj/item/I, mob/living/user, params)
+	if(istype(I, /obj/item/spacecash/ewallet))
+		var/obj/item/spacecash/ewallet/C = I
+		if(C.worth <= 0)
+			to_chat(user, SPAN_NOTICE("When you try to transfer the e-wallet funds to the line, you hear \"Sorry, we cannot give credit. Call back when you're a little mmm.... richer.\" followed by a silent dial tone. It's likely due to not having enough funds on it..."))
+		else
+			to_chat(user, SPAN_NOTICE("When you try to transfer the ewallet you hear on the line ''[pick("Surprised to hear from me?","I was planning on running into you.","I have some costly items for you today.","I'm one smooth operator.","I'm going to cause a ringing sensation.")]'' and then the line goes silent, as the counter on the side for funding slowly ticks up..."))
+			credits_to_fund += C.worth
+			C.worth = 0
+			C.update_icon() //Incase
+
+	..()

@@ -60,16 +60,13 @@
 	add_fingerprint(user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	var/rotting = (locate(/obj/effect/overlay/wallrot) in src)
-	if (HULK in user.mutations)
-		if (rotting || !prob(material.hardness))
-			success_smash(user)
-		else
-			fail_smash(user)
-			return 1
+	if (HULK in user.mutations && !user.a_intent == I_HELP)
+		take_damage(75)
+		return TRUE
 
 	try_touch(user, rotting)
 
-/turf/simulated/wall/attack_generic(var/mob/user, var/damage, var/attack_message, var/wallbreaker)
+/turf/simulated/wall/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 
 	radiate()
 	if(!istype(user))
@@ -77,18 +74,26 @@
 
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	var/rotting = (locate(/obj/effect/overlay/wallrot) in src)
-	if(!damage || !wallbreaker)
+	if(!damage)
 		try_touch(user, rotting)
 		return
 
 	if(rotting)
-		return success_smash(user)
+		damage *= 2.5 //If we are rotting then deal more damage
 
 	if(reinf_material)
-		if((wallbreaker == 2) || (damage >= max(material.hardness,reinf_material.hardness)))
-			return success_smash(user)
-	else if(damage >= material.hardness)
-		return success_smash(user)
+		if(damage - (material.hardness + reinf_material.hardness) > 0)
+			take_damage(damage - (material.hardness + reinf_material.hardness))
+			to_chat(user, SPAN_DANGER("You hit the wall with all your might leaving some damage!"))
+			user.do_attack_animation(src)
+			return
+		else
+			return fail_smash(user)
+	else if(damage > material.hardness)
+		take_damage(damage - material.hardness)
+		to_chat(user, SPAN_DANGER("You hit the wall with all your might leaving some damage!"))
+		user.do_attack_animation(src)
+		return
 	return fail_smash(user)
 
 /turf/simulated/wall/attackby(obj/item/I, mob/user)
@@ -98,9 +103,10 @@
 		to_chat(user, SPAN_WARNING("You don't have the dexterity to do this!"))
 		return
 
-	//get the user's location
-	if(!istype(user.loc, /turf))
-		return	//can't do this stuff whilst inside objects and such
+
+	if(!istype(I, /obj/item/mecha_parts/mecha_equipment)) //make sure you're not in a mech
+		if(!istype(user.loc, /turf)) //get the user's location
+			return	//can't do this stuff whilst inside objects and such
 
 	if(I)
 		radiate()
@@ -120,99 +126,100 @@
 		usable_qualities.Add(QUALITY_WIRE_CUTTING)
 
 	var/tool_type = I.get_tool_type(user, usable_qualities, src)
-	switch(tool_type)
+	if (user.a_intent != I_HURT)//we don't wanna do tool stuff if we're on harm intent.
+		switch(tool_type)
 
-		if(QUALITY_BOLT_TURNING)
-			if(construction_stage == 2)
-				to_chat(user, SPAN_NOTICE("You begin removing the bolts anchoring the support rods..."))
-				if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					construction_stage = 1
-					update_icon()
-					to_chat(user, SPAN_NOTICE("You remove the bolts anchoring the support rods."))
-					return
-			return
+			if(QUALITY_BOLT_TURNING)
+				if(construction_stage == 2)
+					to_chat(user, SPAN_NOTICE("You begin removing the bolts anchoring the support rods..."))
+					if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						construction_stage = 1
+						update_icon()
+						to_chat(user, SPAN_NOTICE("You remove the bolts anchoring the support rods."))
+						return
+				return
 
-		if(QUALITY_WELDING)
-			if(locate(/obj/effect/overlay/wallrot) in src)
-				if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					to_chat(user, SPAN_NOTICE("You burn away the fungi with \the [I]."))
-					for(var/obj/effect/overlay/wallrot/WR in src)
-						qdel(WR)
-					return
-			if(thermite)
-				if(I.use_tool(user, src, WORKTIME_INSTANT,tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					to_chat(user, SPAN_NOTICE("You ignite the termit with the [I]!"))
-					thermitemelt(user)
-					return
-			if(damage)
-				if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					to_chat(user, SPAN_NOTICE("You repair the damage to [src]."))
-					clear_bulletholes()
-					take_damage(-damage)
-					return
-			if(isnull(construction_stage) || !reinf_material)
-				to_chat(user, SPAN_NOTICE("You begin removing the outer plating..."))
-				if(I.use_tool(user, src, WORKTIME_LONG, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					to_chat(user, SPAN_NOTICE("You remove the outer plating."))
-					dismantle_wall(user)
-					user.visible_message(SPAN_WARNING("The wall was torn open by [user]!"))
-					return
-			if(construction_stage == 4)
-				to_chat(user, SPAN_NOTICE("You begin removing the outer plating..."))
-				if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					construction_stage = 3
-					update_icon()
-					to_chat(user, SPAN_NOTICE("You press firmly on the cover, dislodging it."))
-					return
-			if(construction_stage == 1)
-				to_chat(user, SPAN_NOTICE("You begin removing the support rods..."))
-				if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					construction_stage = 0
-					update_icon()
-					new /obj/item/stack/rods(user.loc)
-					to_chat(user, SPAN_NOTICE("The support rods drop out as you cut them loose from the frame."))
-					return
-			return
+			if(QUALITY_WELDING)
+				if(locate(/obj/effect/overlay/wallrot) in src)
+					if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						to_chat(user, SPAN_NOTICE("You burn away the fungi with \the [I]."))
+						for(var/obj/effect/overlay/wallrot/WR in src)
+							qdel(WR)
+						return
+				if(thermite)
+					if(I.use_tool(user, src, WORKTIME_INSTANT,tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						to_chat(user, SPAN_NOTICE("You ignite the termit with the [I]!"))
+						thermitemelt(user)
+						return
+				if(damage)
+					if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						to_chat(user, SPAN_NOTICE("You repair the damage to [src]."))
+						clear_bulletholes()
+						take_damage(-damage)
+						return
+				if(isnull(construction_stage) || !reinf_material)
+					to_chat(user, SPAN_NOTICE("You begin removing the outer plating..."))
+					if(I.use_tool(user, src, WORKTIME_LONG, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						to_chat(user, SPAN_NOTICE("You remove the outer plating."))
+						dismantle_wall(user)
+						user.visible_message(SPAN_WARNING("The wall was torn open by [user]!"))
+						return
+				if(construction_stage == 4)
+					to_chat(user, SPAN_NOTICE("You begin removing the outer plating..."))
+					if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						construction_stage = 3
+						update_icon()
+						to_chat(user, SPAN_NOTICE("You press firmly on the cover, dislodging it."))
+						return
+				if(construction_stage == 1)
+					to_chat(user, SPAN_NOTICE("You begin removing the support rods..."))
+					if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						construction_stage = 0
+						update_icon()
+						new /obj/item/stack/rods(user.loc)
+						to_chat(user, SPAN_NOTICE("The support rods drop out as you cut them loose from the frame."))
+						return
+				return
 
-		if(QUALITY_PRYING)
-			if(construction_stage == 3)
-				to_chat(user, SPAN_NOTICE("You begin to prying off the cover..."))
-				if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					construction_stage = 2
-					update_icon()
-					to_chat(user, SPAN_NOTICE("You pry off the cover."))
-					return
-			if(construction_stage == 0)
-				to_chat(user, SPAN_NOTICE("You struggle to pry off the outer sheath..."))
-				if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					to_chat(user, SPAN_NOTICE("You pry off the outer sheath."))
-					dismantle_wall(user)
-					return
-			return
+			if(QUALITY_PRYING)
+				if(construction_stage == 3)
+					to_chat(user, SPAN_NOTICE("You begin to prying off the cover..."))
+					if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						construction_stage = 2
+						update_icon()
+						to_chat(user, SPAN_NOTICE("You pry off the cover."))
+						return
+				if(construction_stage == 0)
+					to_chat(user, SPAN_NOTICE("You struggle to pry off the outer sheath..."))
+					if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						to_chat(user, SPAN_NOTICE("You pry off the outer sheath."))
+						dismantle_wall(user)
+						return
+				return
 
-		if(QUALITY_WIRE_CUTTING)
-			if(construction_stage == 6)
-				to_chat(user, SPAN_NOTICE("You begin removing the outer grille..."))
-				if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					construction_stage = 5
-					new /obj/item/stack/rods(user.loc)
-					to_chat(user, SPAN_NOTICE("You removing the outer grille."))
-					update_icon()
-					return
-			return
+			if(QUALITY_WIRE_CUTTING)
+				if(construction_stage == 6)
+					to_chat(user, SPAN_NOTICE("You begin removing the outer grille..."))
+					if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						construction_stage = 5
+						new /obj/item/stack/rods(user.loc)
+						to_chat(user, SPAN_NOTICE("You removing the outer grille."))
+						update_icon()
+						return
+				return
 
-		if(QUALITY_SCREW_DRIVING)
-			if(construction_stage == 5)
-				to_chat(user, SPAN_NOTICE("You begin removing the support lines..."))
-				if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
-					construction_stage = 4
-					update_icon()
-					to_chat(user, SPAN_NOTICE("You remove the support lines."))
-					return
-			return
+			if(QUALITY_SCREW_DRIVING)
+				if(construction_stage == 5)
+					to_chat(user, SPAN_NOTICE("You begin removing the support lines..."))
+					if(I.use_tool(user, src, WORKTIME_FAST, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
+						construction_stage = 4
+						update_icon()
+						to_chat(user, SPAN_NOTICE("You remove the support lines."))
+						return
+				return
 
-		if(ABORT_CHECK)
-			return
+			if(ABORT_CHECK)
+				return
 
 	if(istype(I, /obj/item/stack/rods))
 		if(construction_stage == 5)
@@ -230,23 +237,31 @@
 		return
 
 	else if(!istype(I,/obj/item/rcd) && !istype(I, /obj/item/reagent_containers))
+
 		if(!I.force)
 			return attack_hand(user)
+
 		var/attackforce = I.force*I.structure_damage_factor
-		var/dam_threshhold = material.integrity
-		if(reinf_material)
-			dam_threshhold = CEILING(max(dam_threshhold,reinf_material.integrity) * 0.5, 1)
-		var/dam_prob = min(100,material.hardness*1.5)
+
 		if (locate(/obj/effect/overlay/wallrot) in src)
-			dam_prob *= 0.5 //Rot makes reinforced walls breakable
-		if(dam_prob < 100 && attackforce > (dam_threshhold/10))
-			playsound(src, hitsound, 80, 1)
-			if(!prob(dam_prob))
-				visible_message(SPAN_DANGER("\The [user] attacks \the [src] with \the [I] and it [material.destruction_desc]!"))
-				dismantle_wall(1)
-			else
-				visible_message(SPAN_DANGER("\The [user] attacks \the [src] with \the [I]!"))
+			attackforce *= 2.5 //Rot makes breaking walls way easyer
+
+		if(reinf_material)
+			if(attackforce > material.hardness + reinf_material.hardness)
+				take_damage(attackforce - (material.hardness + reinf_material.hardness))
+				playsound(src, hitsound, 80, 1)
+				to_chat(user, SPAN_DANGER("You hit the wall with [I] leaving some damage!"))
+				user.do_attack_animation(src)
+				return
 		else
-			visible_message(SPAN_DANGER("\The [user] attacks \the [src] with \the [I], but it bounces off!"))
+			if(attackforce > material.hardness)
+				take_damage(attackforce - material.hardness)
+				playsound(src, hitsound, 80, 1)
+				to_chat(user, SPAN_DANGER("You hit the wall with [I] leaving some damage!"))
+				user.do_attack_animation(src)
+				return
+
+		visible_message(SPAN_DANGER("\The [user] attacks \the [src] with \the [I], but it bounces off!"))
 		user.do_attack_animation(src)
 		return
+

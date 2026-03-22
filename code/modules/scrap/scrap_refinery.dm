@@ -112,7 +112,7 @@
 	if(!istype(I, /obj/item/scrap_lump))
 		chance_mod = chance_to_recycle
 	if(prob(chance_to_recycle - chance_mod)) //changes it so that only lumps of scrap can be used to make refined scrap.
-		new /obj/item/stack/sheet/refined_scrap(loc)
+		new /obj/item/stack/material/refined_scrap(loc)
 	qdel(I)
 
 /obj/machinery/recycler/proc/stop(mob/living/L)
@@ -134,14 +134,14 @@
 	if(issilicon(L))
 		playsound(src.loc, 'sound/items/Welder.ogg', 50, 1)
 	else
-		L.emote("scream", , , 1)
+		L.emote("painscream", , , 1)
 
 	var/gib = TRUE
 	// By default, the emagged recycler will gib all non-carbons. (human simple animal mobs don't count)
 	if(iscarbon(L))
 		gib = FALSE
 		if(L.stat == CONSCIOUS)
-			L.emote("scream", , , 1)
+			L.emote("painscream", , , 1)
 		add_blood(L)
 
 	if(!blood && !issilicon(L))

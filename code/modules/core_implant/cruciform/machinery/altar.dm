@@ -11,9 +11,19 @@
 	/obj/item/implant/core_implant/cruciform/lemniscate,
 	/obj/item/implant/core_implant/cruciform/monomial,
 	/obj/item/implant/core_implant/cruciform/divisor,
-	/obj/item/cruciform_upgrade
+	/obj/item/cruciform_upgrade,
+	/obj/item/cruciform_upgrade/natures_blessing,
+	/obj/item/cruciform_upgrade/faiths_shield,
+	/obj/item/cruciform_upgrade/cleansing_presence,
+	/obj/item/cruciform_upgrade/martyr_gift,
+	/obj/item/cruciform_upgrade/wrath_of_god,
+	/obj/item/cruciform_upgrade/speed_of_the_chosen,
+	/obj/item/cruciform_upgrade/the_feathers,
+	/obj/item/cruciform_upgrade/the_inks,
+	/obj/item/cruciform_upgrade/the_verses_wrote
 	)
 	var/list/available_slots = list()
+	var/request_cooldown = FALSE //Whether this altar has had an item requested from it in the last 10 minutes
 
 /obj/machinery/optable/altar/New()
 	//bottom left
@@ -21,6 +31,7 @@
 	//bottom right
 	available_slots += list(list("offset" = list("x" = 8 , "y" = -3), "item" = null))
 	..()
+
 /obj/machinery/optable/altar/attackby(obj/item/I, mob/user)
 	if(!istype(I) || !(I.type in acceptable_items))
 		return
@@ -49,3 +60,9 @@
 		if(!(available_slots[j]["item"] in T.contents))
 			available_slots[j]["item"] = null
 
+/obj/machinery/optable/altar/proc/cooldown(var/T)
+	request_cooldown = TRUE
+	addtimer(CALLBACK(src, PROC_REF(cooled_off)), T)
+
+/obj/machinery/optable/altar/proc/cooled_off()
+	request_cooldown = FALSE

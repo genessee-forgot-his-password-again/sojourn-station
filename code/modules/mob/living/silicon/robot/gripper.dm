@@ -4,12 +4,16 @@
 	name = "magnetic gripper"
 	desc = "A simple grasping tool specialized in construction and engineering work."
 	icon = 'icons/obj/device.dmi'
+
+	description_info = "Can be used to remove sticky tape from cameras on help intent."
+	description_antag = "Can be used for a strong brute attack on humans using harm intent."
 	icon_state = "gripper"
 
 	flags = NOBLUDGEON
 
 	//Has a list of items that it can hold.
 	var/list/can_hold = list(
+		/obj/item/extinguisher,
 		/obj/item/cell,
 		/obj/item/firealarm_electronics,
 		/obj/item/airalarm_electronics,
@@ -21,9 +25,14 @@
 		/obj/item/tank,
 		/obj/item/circuitboard,
 		/obj/item/device/assembly,//Primarily for making improved cameras, but opens many possibilities
-		/obj/item/computer_hardware,
+		/obj/item/pc_part,
 		/obj/item/tool_upgrade,
-		/obj/item/stack/tile //Repair floors yay
+		/obj/item/am_containment,
+		/obj/item/am_shielding_container,
+		/obj/item/stack/tile, //Repair floors yay
+		/obj/item/oddity/blackbox_nanoforge,
+		/obj/item/stack/cement_bag,
+		/obj/item/stack/ore //So they can craft cement bags
 		)
 
 	var/obj/item/wrapped = null // Item currently being held.
@@ -159,6 +168,14 @@
 	if(wrapped) //Already have an item.
 		return//This is handled in /mob/living/silicon/robot/GripperClickOn
 
+	if(istype(target, /obj/machinery/camera) && user.a_intent == I_HELP)
+		var/obj/machinery/camera/cam = target
+		if(cam.taped)
+			to_chat(user, SPAN_NOTICE("You remove the tape from \the [cam] using the edge of your magnetic gripper."))
+			cam.icon_state = "camera"
+			cam.taped = 0
+			cam.set_status(1)
+
 	else if (istype(target, /obj/item/storage) && !istype(target, /obj/item/storage/pill_bottle) && !istype(target, /obj/item/storage/secure))
 		var/obj/item/storage/S = target
 		for (var/obj/item/C in S.contents)
@@ -183,11 +200,6 @@
 	justdropped = 0
 
 
-
-
-
-
-
 /*
 	//Definitions of gripper subtypes
 */
@@ -201,6 +213,8 @@
 	can_hold = list(
 		/obj/item/cell,
 		/obj/item/stock_parts,
+		/obj/item/am_containment,
+		/obj/item/am_shielding_container,
 		/obj/item/circuitboard/miningdrill
 	)
 
@@ -218,7 +232,8 @@
 		/obj/item/photo,
 		/obj/item/spacecash,
 		/obj/item/coin,
-		/obj/item/device/toner
+		/obj/item/device/toner,
+		/obj/item/pc_part/drive/disk
 		)
 
 /obj/item/gripper/research //A general usage gripper, used for toxins/robotics/xenobio/etc
@@ -233,12 +248,13 @@
 		/obj/item/robot_parts,
 		/obj/item/borg/upgrade,
 		/obj/item/device/flash, //to build borgs,
-		/obj/item/organ/internal/brain, //to insert into MMIs,
+		/obj/item/organ/internal/vital/brain, //to insert into MMIs,
 		/obj/item/stack/cable_coil, //again, for borg building,
 		/obj/item/circuitboard,
 		/obj/item/slime_extract,
 		/obj/item/reagent_containers/glass,
-		/obj/item/reagent_containers/food/snacks/monkeycube,
+		/obj/item/reagent_containers/snacks/monkeycube,
+		/obj/item/reagent_containers/blood,
 		/obj/item/device/assembly,//For building bots and similar complex R&D devices
 		/obj/item/device/scanner/health,//For building medibots
 		/obj/item/disk,
@@ -246,33 +262,51 @@
 		/obj/item/tool/minihoe,//Farmbots and xenoflora
 		/obj/item/seeds,
 		/obj/item/tank,
-		/obj/item/computer_hardware,
+		/obj/item/pc_part,
+		/obj/item/am_containment,
+		/obj/item/am_shielding_container,
 		/obj/item/device/integrated_electronics,
-		/obj/item/integrated_circuit
+		/obj/item/integrated_circuit,
+		/obj/item/hydro_tray_plant_bag_water,
+		/obj/item/hydro_tray_plant_bag_nutrient
 		)
 
-/obj/item/gripper/chemistry //A gripper designed for chemistry, to allow borgs to work efficiently in the lab
-	name = "chemistry gripper"
+/obj/item/gripper/chemistry //A gripper designed for chemistry and medical, to allow borgs to work efficiently in the lab
+	name = "medical gripper"
 	icon_state = "gripper-sci"
-	desc = "A specialised grasping tool designed for working in chemistry and pharmaceutical labs"
+	desc = "A specialised grasping tool designed for working in chemistry and pharmaceutical labs, as well as have basic surgical uses."
 
 	can_hold = list(
 		/obj/item/reagent_containers/glass,
 		/obj/item/reagent_containers/pill,
 		/obj/item/reagent_containers/spray,
+		/obj/item/reagent_containers/blood,
+		/obj/item/reagent_containers/hypospray,
 		/obj/item/storage/pill_bottle,
 		/obj/item/hand_labeler,
+		/obj/item/am_containment,
+		/obj/item/am_shielding_container,
+		/obj/item/am_shielding_container,
+		/obj/item/organ,
+		/obj/item/organ_module,
+		/obj/item/modification/organ,
+		/obj/item/device/mmi,
+		/obj/item/tank,
+		/obj/item/reagent_containers/snacks/meat, //For grinding up roaches
+		/obj/item/reagent_containers/snacks/grown, //For grinding up herbs
+		/obj/item/genetics, //for doing genetics. Research borgs get this as well
 		/obj/item/stack/material/plasma
 		)
 
 /obj/item/gripper/service //Used to handle food, drinks, and seeds.
 	name = "service gripper"
 	icon_state = "gripper"
-	desc = "A simple grasping tool used to perform tasks in the service sector, such as handling food, drinks, and seeds."
+	desc = "A simple grasping tool used to perform tasks in the service sector, such as handling food, drinks, ores, and seeds."
 
 	can_hold = list(
 		/obj/item/reagent_containers/glass,
-		/obj/item/reagent_containers/food,
+		/obj/item/reagent_containers/drinks,
+		/obj/item/reagent_containers/condiment,
 		/obj/item/seeds,
 		/obj/item/grown,
 		/obj/item/trash,
@@ -280,8 +314,14 @@
 		/obj/item/paper,
 		/obj/item/newspaper,
 		/obj/item/circuitboard/broken,
+		/obj/item/am_containment,
+		/obj/item/am_shielding_container,
 		/obj/item/clothing/mask/smokable/cigarette,
-		///obj/item/reagent_containers/cooking_container //PArt of cooking overhaul, not yet ported
+		/obj/item/reagent_containers/cwj/container,
+		/obj/item/spatula,
+		/obj/item/hydro_tray_plant_bag_water,
+		/obj/item/hydro_tray_plant_bag_nutrient,
+		/obj/item/stack/ore //So they can craft some items
 		)
 
 /obj/item/gripper/ammo //Used to boxes, ammo and shells
@@ -293,6 +333,10 @@
 		/obj/item/ammo_casing,
 		/obj/item/ammo_kit,
 		/obj/item/ammo_magazine,
+		/obj/item/cell,
+		/obj/item/part/gun,
+		/obj/item/am_containment,
+		/obj/item/am_shielding_container,
 		/obj/item/mech_ammo_box
 		)
 
@@ -320,5 +364,5 @@
 
 	can_hold = list(
 		/obj/item/stack/material,
-		/obj/item/stack/sheet/refined_scrap
+		/obj/item/stack/material/refined_scrap
 		)

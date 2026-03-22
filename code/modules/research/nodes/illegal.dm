@@ -29,6 +29,24 @@
 	unlocks_designs = list(/datum/design/research/item/cleaner)
 
 
+/datum/technology/dart_plus
+	name = "SI \"Artemis\" Dart Carbine"
+	desc = "A gas-powered dart carbine capable of delivering chemical cocktails swiftly across short distances."
+	tech_type = RESEARCH_ILLEGAL
+
+	x = 0.3
+	y = 0.3
+	icon = "artemis"
+
+	required_tech_levels = list(/datum/technology/advanced_biotech)
+	required_tech_levels = list(RESEARCH_BIOTECH = 10, RESEARCH_ENGINEERING = 3, RESEARCH_COMBAT = 5)
+	cost = 2000
+
+	unlocks_designs = list(/datum/design/research/item/ammo/fancy_dart,
+							/datum/design/research/item/ammo/dart_mag,
+							/datum/design/research/item/weapon/carbine_dartgun)
+
+
 /datum/technology/night_sight
 	name = "Vision Augmentation" //Undark was a better name
 	desc = "A better look into the shadows that haunt the colony, allows for the manufacturing of night vision goggles and RIG night vision huds."
@@ -95,6 +113,7 @@
 
 	unlocks_designs = list(/datum/design/research/item/implant/freedom)
 
+/*
 /datum/technology/mind_biotech
 	name = "Mind Biotech"
 	desc = "Experimental biotechnology that explores the inner workings of sentient minds."
@@ -111,7 +130,7 @@
 	cost = 3000
 
 	unlocks_designs = list(	/datum/design/research/circuit/mindswapper)
-
+*/
 
 /datum/technology/tyrant_aimodule
 	name = "AI Core Module (T.Y.R.A.N.T.)"
@@ -161,3 +180,18 @@
 	cost = 2250
 
 	unlocks_designs = list(/datum/design/research/item/medical/combat_defibs)
+
+/datum/technology/arm_pouch
+	name = "Embedded Pouch"
+	desc = "A hidden pouch able to stow away small items, unable to be picked up on scanners."
+	tech_type = RESEARCH_ILLEGAL
+
+	x = 0.5
+	y = 0.2
+	icon = "scalpelmanager"
+
+	required_technologies = list(/datum/technology/combat_defibs)
+	required_tech_levels = list(RESEARCH_BIOTECH = 15, RESEARCH_ILLEGAL = 4, RESEARCH_COMBAT = 8)
+	cost = 3500
+
+	unlocks_designs = list(/datum/design/research/item/mechfab/modules/arm_pouch)

@@ -23,9 +23,8 @@
 	var/pulping = FALSE //Whether or not the device is extracting genetics
 
 /obj/machinery/genetics/pulper/attackby(obj/item/I, mob/user)
-	if(!user.stats?.getPerk(PERK_SI_SCI) && !usr.stat_check(STAT_COG, 35)) //So someone that has basic chems or level up can be an assent
-		to_chat(usr, SPAN_WARNING("This is a bit beyond your cognitive understanding."))
-		src.visible_message(SPAN_WARNING("The console pityingly suggests: \"Sorry hun, maybe you should get help from a scientist~?\""))
+	if(!user.stats?.getPerk(PERK_SI_SCI) && !usr.stat_check(STAT_COG, 35) && !user.stats?.getPerk(PERK_NERD) && !usr.stat_check(STAT_BIO, 70)) //So someone that has basic chems or level up can be an assent
+		to_chat(usr, SPAN_WARNING("The console pityingly suggests: \"Sorry hun, maybe you should get help from a scientist~?\""))
 		return
 
 	if(default_deconstruction(I, user))
@@ -40,7 +39,7 @@
 		return
 
 	//Inserting a sample
-	if(istype(I, /obj/item/reagent_containers/food/snacks/meat))
+	if(istype(I, /obj/item/reagent_containers/snacks/meat))
 		if(meat.len >= 5)
 			src.visible_message(SPAN_WARNING("The pulper says in a sing-song voice: \"The Pulper is full~!\""))
 			return
@@ -75,15 +74,18 @@
 	var/temp_meat_count = 0
 	var/temp_meat_type
 	if (isanimal(target))
-		var/mob/living/simple_animal/animal = target
-		if(ispath(animal.meat_type, /obj/item/reagent_containers/food/snacks/meat))
+		var/mob/living/simple/animal = target
+		if(ispath(animal.meat_type, /obj/item/reagent_containers/snacks/meat))
 			temp_meat_count = animal.meat_amount
 			temp_meat_type = animal.meat_type
 	else if (issuperioranimal(target))
-		var/mob/living/carbon/superior_animal/s_animal = target
-		if(ispath(s_animal.meat_type, /obj/item/reagent_containers/food/snacks/meat))
+		var/mob/living/carbon/superior/s_animal = target
+		if(ispath(s_animal.meat_type, /obj/item/reagent_containers/snacks/meat))
 			temp_meat_count = s_animal.meat_amount
 			temp_meat_type = s_animal.meat_type
+	else if(istype(target, /mob/living/carbon/slime))
+		temp_meat_count = 1 //slimes don't normally have meat. So we add one so we can pull a single sample off.
+		temp_meat_type = /obj/item/reagent_containers/snacks/meat
 
 	if(temp_meat_count <= 0)
 		src.visible_message(SPAN_WARNING("The pulper gently reminds: \"That is creature has no genetic material, hun~\""))
@@ -100,6 +102,9 @@
 	if(stat & (NOPOWER|BROKEN))
 		to_chat(user, SPAN_WARNING("The pulper is inactive and blessedly silent."))
 		return
+	if(!user.stats?.getPerk(PERK_SI_SCI) && !usr.stat_check(STAT_COG, 35) && !user.stats?.getPerk(PERK_NERD) && !usr.stat_check(STAT_BIO, 70)) //So someone that has basic chems or level up can be an assent
+		to_chat(usr, SPAN_WARNING("The console pityingly suggests: \"Sorry hun, maybe you should get help from a scientist~?\""))
+		return
 	if(pulping)
 		src.visible_message( SPAN_DANGER("The pulper trills: \"The pulper is running~! Wait for it to finish.\""))
 		return
@@ -110,8 +115,8 @@
 	if(pulping)
 		return
 
-	playsound(loc, 'sound/machines/blender.ogg', 50, 1)
 	if(!occupant && meat.len == 0)
+		playsound(loc, 'sound/machines/blender.ogg', 50, 1)
 		visible_message(SPAN_DANGER("You hear a loud metallic grinding sound."))
 		return
 
@@ -119,11 +124,12 @@
 
 	pulping = TRUE
 
+	playsound(loc, 'sound/machines/juicer.ogg', 50, 1)
 	visible_message(SPAN_DANGER("You hear a loud squelchy grinding sound."))
 
 	update_icon()
 	spawn(gib_time) //Escape in time?
-		if(occupant && (occupant.loc == src)  && occupant_meat_count && ispath(occupant_meat_type, /obj/item/reagent_containers/food/snacks/meat))
+		if(occupant && (occupant.loc == src)  && occupant_meat_count && ispath(occupant_meat_type, /obj/item/reagent_containers/snacks/meat))
 			src.visible_message(SPAN_WARNING("The pulper says ecstatically: \"Pulping~! Creature~!\""))
 			//big-range splatter
 			playsound(src.loc, 'sound/effects/splat.ogg', 50, 1)
@@ -136,6 +142,7 @@
 			var/sample_plates_to_make = occupant_meat_count + occupant_bonus
 			for(var/i=1 to sample_plates_to_make)
 				var/obj/item/genetics/sample/new_sample = new /obj/item/genetics/sample(mob_genes)
+				new_sample.name = "[new_sample.name] ([occupant.name])"
 				new_sample.forceMove(loc)
 
 			src.occupant.attack_log += "\[[time_stamp()]\] Was gibbed by <b>[user]/[user.ckey]</b>" //One shall not simply gib a mob unnoticed!
@@ -157,12 +164,13 @@
 			var/obj/effect/decal/cleanable/blood/splatter/animated/B = new(src.loc)
 			B.target_turf = pick(range(2, src))
 
-			for(var/obj/item/reagent_containers/food/snacks/meat/meat_target in meat)
+			for(var/obj/item/reagent_containers/snacks/meat/meat_target in meat)
 				//Ensures we only do this if the meat has genetics holders
 				if(meat_target.source_name)
 					var/datum/genetics/genetics_holder/meat_genes =  new /datum/genetics/genetics_holder()
 					meat_genes.initializeFromMeat(meat_target)
 					var/obj/item/genetics/sample/new_sample = new /obj/item/genetics/sample(meat_genes)
+					new_sample.name = "[new_sample.name] ([meat_target.name])"
 					new_sample.forceMove(loc)
 
 			meat = list()

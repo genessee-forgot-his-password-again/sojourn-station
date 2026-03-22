@@ -82,6 +82,11 @@
 	desc = "A pair of trendy jeans."
 	icon_state = "jeansyoungfolks"
 
+/obj/item/clothing/under/jeans/tojo
+	name = "tojo clan jeans"
+	desc = "A pair of flashy jeans belonging to an asian gangster of sorts."
+	icon_state = "tojopants"
+
 /obj/item/clothing/under/jeans
 	name = "trendy baggy jeans"
 	desc = "A pair of baggy trendy jeans."
@@ -103,6 +108,11 @@
 	name = "black pants"
 	desc = "A pair of black pants."
 	icon_state = "blackpants"
+
+/obj/item/clothing/under/pants/black/outlaw
+	name = "black pants with lucha belt"
+	desc = "A pair of skin-tight black pants with a red lucha belt."
+	icon_state = "randopants"
 
 /obj/item/clothing/under/pants/blackbaggy
 	name = "black baggy pants"

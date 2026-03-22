@@ -66,9 +66,13 @@
 		load_and_update_character()
 
 	sanitize_preferences()
-	if(client && istype(client.mob, /mob/new_player))
-		var/mob/new_player/np = client.mob
-		np.new_player_panel(TRUE)
+	if(client)
+		// Can't find anything else that modifies a client var like this, there 
+		// seems to be no better way to do it than this special exception
+		client.apply_fps(clientfps)
+		if(istype(client.mob, /mob/new_player))
+			var/mob/new_player/np = client.mob
+			np.new_player_panel(TRUE)
 
 /datum/preferences/proc/load_and_update_character(var/slot)
 	load_character(slot)
@@ -346,6 +350,7 @@
 		get_option(options_name).apply(character)
 
 	character.size_multiplier = size_multiplier
+	character.scale_effect = scale_effect
 
 /datum/preferences/proc/open_load_dialog(mob/user)
 	var/dat  = list()

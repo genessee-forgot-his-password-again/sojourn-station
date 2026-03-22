@@ -8,7 +8,7 @@
 	throw_range = 15
 	sharp = 1
 	edge =  1
-	embed_mult = 5 //We want these to embed
+	embed_mult = 20 //We want these to embed
 
 /obj/item/material/star/uranium
 	default_material = MATERIAL_URANIUM
@@ -22,7 +22,7 @@
 	..()
 	if(material && material.radioactivity>0 && isliving(hit_atom))
 		var/mob/living/M = hit_atom
-		M.adjustToxLoss(rand(20,40))
+		M.adjustCloneLoss(rand(20,40))
 
 /obj/item/material/star/ninja
 	default_material = MATERIAL_STEEL

@@ -64,17 +64,18 @@ var/global/excelsior_last_draft = 0
 		/obj/item/storage/firstaid/toxin = 100,
 		/obj/item/storage/firstaid/adv = 300,
 		/obj/item/storage/firstaid/surgery/traitor = 500,
-		/obj/item/computer_hardware/hard_drive/portable/design/excelsior = 1000,
-		/obj/item/computer_hardware/hard_drive/portable/design/excelsior_weapons = 500,
-		/obj/item/computer_hardware/hard_drive/portable/design/ex_parts = 450,
-		/obj/item/computer_hardware/hard_drive/portable/design/ex_cells = 200,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/ex_drozd = 100,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/ex_makarov = 50,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/ex_vintorez = 200,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/ex_boltgun = 50,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/ex_ak = 200,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/ex_ppsh = 300,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/ex_reclaimer = 300
+		/obj/item/storage/box/syndie_kit/exl_revolver = 800,
+		/obj/item/pc_part/drive/disk/design/excelsior = 1000,
+		/obj/item/pc_part/drive/disk/design/excelsior_weapons = 500,
+		/obj/item/pc_part/drive/disk/design/ex_parts = 450,
+		/obj/item/pc_part/drive/disk/design/ex_cells = 200,
+		/obj/item/pc_part/drive/disk/design/guns/ex_drozd = 100,
+		/obj/item/pc_part/drive/disk/design/guns/ex_makarov = 50,
+		/obj/item/pc_part/drive/disk/design/guns/ex_vintorez = 200,
+		/obj/item/pc_part/drive/disk/design/guns/ex_boltgun = 50,
+		/obj/item/pc_part/drive/disk/design/guns/ex_ak = 200,
+		/obj/item/pc_part/drive/disk/design/guns/ex_ppsh = 300,
+		/obj/item/pc_part/drive/disk/design/guns/ex_reclaimer = 300
 		)
 	var/entropy_value = 8
 
@@ -175,7 +176,7 @@ var/global/excelsior_last_draft = 0
 	if(stat & (BROKEN|NOPOWER)) return
 	if(user.stat || user.restrained()) return
 
-	var/list/data = ui_data()
+	var/list/data = nano_ui_data()
 
 	time_until_scan = time2text((1800 - ((world.time - round_start_time) % 1800)), "mm:ss")
 
@@ -185,7 +186,7 @@ var/global/excelsior_last_draft = 0
 		ui.set_initial_data(data)
 		ui.open()
 
-/obj/machinery/complant_teleporter/ui_data()
+/obj/machinery/complant_teleporter/nano_ui_data()
 	var/list/data = list()
 	data["energy"] = round(excelsior_energy)
 	data["maxEnergy"] = round(excelsior_max_energy)

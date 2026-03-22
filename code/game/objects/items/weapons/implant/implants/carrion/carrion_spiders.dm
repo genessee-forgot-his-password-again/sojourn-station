@@ -1,3 +1,8 @@
+ #define SPIDER_GROUP_1 1
+ #define SPIDER_GROUP_2 2
+ #define SPIDER_GROUP_3 4
+ #define SPIDER_GROUP_4 8
+
 /obj/item/implant/carrion_spider
 	name = "spooky spider"
 	desc = "Small spider filled with some sort of strange fluid."
@@ -13,13 +18,13 @@
 	var/gibs_color = "#666600"
 	var/last_stun_time = 0 //Used to avoid cheese
 	var/ignore_activate_all = FALSE
-
-	var/assigned_group_1 = FALSE
-	var/assigned_group_2 = FALSE
-	var/assigned_group_3 = FALSE
+	var/assigned_groups
 
 	var/obj/item/organ/internal/carrion/core/owner_core
 	var/mob/living/carbon/human/owner_mob
+
+	is_metal = FALSE
+	scanner_hidden = TRUE
 
 /obj/item/implant/carrion_spider/New()
 	. = ..()
@@ -36,8 +41,8 @@
 
 /obj/item/implant/carrion_spider/Process()
 	if(ready_to_attack && (last_stun_time <= world.time - 4 SECONDS))
-		for(var/mob/living/L in mobs_in_view(1, src))
-			if(istype(L, /mob/living/simple_animal) || istype(L, /mob/living/carbon))
+		for(var/mob/living/L in living_mobs_in_view(1, src))
+			if(istype(L, /mob/living/simple) || istype(L, /mob/living/carbon))
 				if(is_carrion(L))
 					continue
 				install(L)
@@ -55,7 +60,8 @@
 
 /obj/item/implant/carrion_spider/bullet_act(obj/item/projectile/P, def_zone)
 	..()
-	die_from_attack()
+	if (!(P.testing))
+		die_from_attack()
 
 /obj/item/implant/carrion_spider/proc/die_from_attack()
 	visible_message(SPAN_WARNING("[src] explodes into a bloody mess"))
@@ -69,7 +75,7 @@
 	qdel(src)
 
 /obj/item/implant/carrion_spider/attack(mob/living/M, mob/living/user)
-	if(!(istype(M, /mob/living/simple_animal) || istype(M, /mob/living/carbon)))
+	if(!(istype(M, /mob/living/simple) || istype(M, /mob/living/carbon)))
 		to_chat(user, SPAN_WARNING("You can't implant spiders into robots."))
 		return
 	user.drop_item()
@@ -106,10 +112,13 @@
 	owner_mob = owner_core.owner
 
 /obj/item/implant/carrion_spider/proc/toggle_group(group)
-	switch(group)
-		if(1)
-			assigned_group_1 = !assigned_group_1
-		if(2)
-			assigned_group_2 = !assigned_group_2
-		if(3)
-			assigned_group_3 = !assigned_group_3
+	if(check_group(group))
+		assigned_groups = assigned_groups & ~group
+	else
+		assigned_groups = assigned_groups | group
+
+/obj/item/implant/carrion_spider/proc/check_group(group)
+	if(assigned_groups & group)
+		return TRUE
+	else
+		return FALSE

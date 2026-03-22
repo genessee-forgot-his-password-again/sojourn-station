@@ -1,17 +1,19 @@
 /datum/gear/accessory
-	display_name = "wallet"
-	path = /obj/item/storage/wallet
+	display_name = "drop straps"
+	path = /obj/item/clothing/accessory/dropstraps
 	slot = slot_accessory_buffer
 	sort_category = "Accessories"
+	cost = 0
 
 /datum/gear/accessory/armband
 	display_name = "armband selection"
 	path = /obj/item/clothing/accessory/armband
 	flags = GEAR_HAS_TYPE_SELECTION
 
-/datum/gear/accessory/dropstraps
-	display_name = "drop straps"
-	path = /obj/item/clothing/accessory/dropstraps
+/datum/gear/accessory/sash
+	display_name = "colorable sash"
+	path = /obj/item/clothing/accessory/sash/color
+	flags = GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/accessory/legbrace
 	display_name = "leg brace"
@@ -21,13 +23,25 @@
 	display_name = "locket"
 	path = /obj/item/clothing/accessory/locket
 
-/datum/gear/accessory/metalnecklace
-	display_name = "metal necklace"
+/datum/gear/accessory/necklace
+	display_name = "necklace selection"
 	path = /obj/item/clothing/accessory/necklace
+	flags = GEAR_HAS_TYPE_SELECTION
 
-/datum/gear/accessory/fractalrosary
-	display_name = "fractal Rosary"
-	path = /obj/item/clothing/accessory/fractalrosary
+/datum/gear/accessory/choker
+	display_name = "choker selection"
+	path = /obj/item/clothing/accessory/choker
+	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/accessory/bracelet
+	display_name = "bracelet selection"
+	path = /obj/item/clothing/accessory/bracelet
+	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/accessory/tacticool_shirt
+	display_name = "UBAC selection"
+	path = /obj/item/clothing/accessory/tacticool
+	flags = GEAR_HAS_TYPE_SELECTION
 
 /datum/gear/accessory/neckbrace
 	display_name = "neck brace"
@@ -38,40 +52,45 @@
 	path = /obj/item/clothing/accessory/scarf/
 	flags = GEAR_HAS_TYPE_SELECTION
 
-/datum/gear/accessory/tie
-	display_name = "tie selection"
-	path = /obj/item/clothing/accessory/tie
+/datum/gear/accessory/shemaghbase
+	display_name = "shemagh"
+	path = /obj/item/clothing/accessory/shemagh
 	flags = GEAR_HAS_TYPE_SELECTION
 
+/datum/gear/accessory/shemagh
+	display_name = "colorable shemagh"
+	path = /obj/item/clothing/accessory/shemagh/recolor
+	flags = GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/accessory/tie
+	display_name = "colorable tie"
+	path = /obj/item/clothing/accessory/tie/color
+	flags = GEAR_HAS_COLOR_SELECTION
+
 /datum/gear/accessory/hawaiianshirt
-	display_name = "Hawaiian shirt selection"
+	display_name = "hawaiian shirt selection"
 	path = /obj/item/clothing/accessory/hawaiian
 	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/accessory/shirt
+	display_name = "colorable shirt selection"
+	path = /obj/item/clothing/accessory/shirt
+	flags = GEAR_HAS_TYPE_SELECTION | GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/accessory/sweater_color
+	display_name = "colorable sweater selection"
+	path = /obj/item/clothing/accessory/sweater
+	flags = GEAR_HAS_TYPE_SELECTION | GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/accessory/kneepad
 	display_name = "kneepad selection"
 	path = /obj/item/clothing/accessory/kneepads
 	flags = GEAR_HAS_TYPE_SELECTION
 
-/datum/gear/accessory/fluffycape
-	display_name = "fluffy cape"
+/datum/gear/accessory/capes
+	display_name = "cape selection"
 	path = /obj/item/clothing/accessory/cape
-
-/datum/gear/accessory/blackcape
-	display_name = "black cloak"
-	path = /obj/item/clothing/accessory/cape/black
-
-/datum/gear/accessory/blackcloak
-	display_name = "heavy black cloak"
-	path = /obj/item/clothing/accessory/cape/blackedge
-
-/datum/gear/accessory/browncloak
-	display_name = "heavy brown cloak"
-	path = /obj/item/clothing/accessory/cape/brown
-
-/datum/gear/accessory/greatcoat
-	display_name = "black greatcoat"
-	path = /obj/item/clothing/accessory/cape/blackalt
+	flags = GEAR_HAS_TYPE_SELECTION
 
 /datum/gear/accessory/tacticalponcho
 	display_name = "tactical poncho selection"
@@ -82,7 +101,63 @@
 	display_name = "tactical poncho hood selection"
 	path = /obj/item/clothing/head/tacticalhood
 	flags = GEAR_HAS_TYPE_SELECTION
+	slot = slot_head
+
+/datum/gear/accessory/poncho_color
+	display_name = "colorable poncho selection"
+	path = /obj/item/clothing/accessory/colorponcho
+	flags = GEAR_HAS_TYPE_SELECTION | GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/accessory/ponchohood_color
+	display_name = "colorable poncho hood"
+	path = /obj/item/clothing/head/tacticalhood_color
+	flags = GEAR_HAS_TYPE_SELECTION | GEAR_HAS_COLOR_SELECTION
+	slot = slot_head
+
+/datum/gear/accessory/sweatervest
+	display_name = "sweater vest selection"
+	path = /obj/item/clothing/accessory/swvest
+	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/accessory/waistcoat
+	display_name = "colorable waistcoat selection"
+	path = /obj/item/clothing/accessory/waistcoat/color
+	flags = GEAR_HAS_TYPE_SELECTION | GEAR_HAS_COLOR_SELECTION
+
+/datum/gear/accessory/colorablestraps
+	display_name = "colorable drop straps"
+	path = /obj/item/clothing/accessory/dropstraps
+	flags = GEAR_HAS_COLOR_SELECTION
 
 /datum/gear/accessory/blackshieldpatch
-	display_name = "Blackshield arm patch"
-	path = /obj/item/clothing/accessory/patches/blackshield
+	display_name = "blackshield patch selection"
+	description = "A selection of Blackshield patches."
+	path = /obj/item/clothing/accessory/patches
+
+/datum/gear/accessory/blackshieldpatch/New()
+	..()
+	var/patches = list(
+		"blackshield patch"				=	/obj/item/clothing/accessory/patches/blackshield,
+		"blackshield blank patch"		=	/obj/item/clothing/accessory/patches/blackshield_blank,
+		"blackshield volunteer patch"	=	/obj/item/clothing/accessory/patches/blackshield_volunteer,
+		"blackshield trooper patch"		=	/obj/item/clothing/accessory/patches/blackshield_trooper,
+		"blackshield corpsman patch"	=	/obj/item/clothing/accessory/patches/blackshield_corpsman,
+		"blackshield sergeant patch"	=	/obj/item/clothing/accessory/patches/blackshield_sergeant,
+		"blackshield commander patch"	=	/obj/item/clothing/accessory/patches/blackshield_commander,
+	)
+	gear_tweaks += new /datum/gear_tweak/path(patches)
+
+/datum/gear/accessory/pilotharness
+	display_name = "pilot harness"
+	path = /obj/item/clothing/accessory/pilotwebbing
+	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/accessory/pass
+	display_name = "passcard - work visa - passport  selection"
+	path = /obj/item/clothing/accessory/passcard
+	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/accessory/badge
+	display_name = "badge (colorable)"
+	path = /obj/item/clothing/accessory/pin
+	flags = GEAR_HAS_TYPE_SELECTION | GEAR_HAS_COLOR_SELECTION

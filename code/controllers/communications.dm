@@ -71,7 +71,7 @@ Radio:
 1351 - Science
 1353 - Command
 1355 - Medical
-1357 - Engineering
+1337 - Engineering
 1359 - Security
 1362 - Blackshield
 1363 - Marshalls
@@ -124,7 +124,7 @@ var/const/NT_FREQ = 1364
 var/const/SEC_FREQ = 1359
 var/const/BLS_FREQ = 1362
 var/const/MAR_FREQ = 1363
-var/const/ENG_FREQ = 1357
+var/const/ENG_FREQ = 1337 //very leet
 var/const/MED_FREQ = 1355
 var/const/SCI_FREQ = 1351
 var/const/SRV_FREQ = 1349
@@ -149,7 +149,7 @@ var/list/radiochannels = list(
 	"Engineering"	= ENG_FREQ,
 	"Security" 		= SEC_FREQ,
 	"Blackshield"   = BLS_FREQ,
-	"Marshal"      = MAR_FREQ,
+	"Marshal"       = MAR_FREQ,
 	"Special Ops" 	= DTH_FREQ,
 	"Mercenary" 	= SYND_FREQ,
 	"Supply" 		= SUP_FREQ,
@@ -203,6 +203,8 @@ var/list/DEPT_FREQS = list(AI_FREQ, COMM_FREQ, ENG_FREQ, MED_FREQ, NT_FREQ, PRO_
 		return "sciradio"
 	if(frequency == MED_FREQ)
 		return "medradio"
+	if(frequency == MED_I_FREQ)
+		return "medaltradio"
 	if(frequency == SUP_FREQ) // cargo
 		return "supradio"
 	if(frequency == SRV_FREQ) // service
@@ -213,15 +215,6 @@ var/list/DEPT_FREQS = list(AI_FREQ, COMM_FREQ, ENG_FREQ, MED_FREQ, NT_FREQ, PRO_
 		return "proradio"
 	if(frequency in DEPT_FREQS)
 		return "deptradio"
-//Plasma tag radio colours are all the same.
-	if(frequency in PT_BT_FREQ)
-		return "syndradio"
-	if(frequency in PT_RT_FREQ)
-		return "syndradio"
-	if(frequency in PT_YT_FREQ)
-		return "syndradio"
-	if(frequency in PT_GT_FREQ)
-		return "syndradio"
 
 	return "radio"
 
@@ -289,7 +282,7 @@ var/const/RADIO_MAGNETS = "radio_magnet"
 	if (!devices_line)
 		devices_line = new
 		devices[filter] = devices_line
-	devices_line+=device
+	devices_line|=device
 //			var/list/obj/devices_line___ = devices[filter_str]
 //			var/l = devices_line___.len
 	//log_admin("DEBUG: devices_line.len=[devices_line.len]")

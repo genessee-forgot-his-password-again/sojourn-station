@@ -28,9 +28,38 @@
 	structure_damage_factor = STRUCTURE_DAMAGE_BLUNT
 	matter = list(MATERIAL_STEEL = 10, MATERIAL_GLASS = 1, MATERIAL_PLASTIC = 10)
 
+/obj/item/tool/baton/maul
+	name = "shock maul"
+	desc = "A heavy duty stun-baton designed for riot control and in rare cases - coralling oversized faunda"
+	icon_state = "stunmaul"
+	icon = 'icons/obj/weapons.dmi'
+	item_state = "stunmaul"
+	wielded_icon = "stunmaul_wielded"
+	slot_flags = SLOT_BELT
+	toggleable = TRUE
+	force = WEAPON_FORCE_ROBUST
+	throwforce = WEAPON_FORCE_PAINFUL
+	w_class = ITEM_SIZE_HUGE
+	origin_tech = list(TECH_COMBAT = 2)
+	attack_verb = list("subjugated", "battered", "oppressed", "persecuted")
+	effective_faction = list("spider") // Spiders are weak to crushing.
+	price_tag = 800
+	stunforce = 0
+	agonyforce = 60
+	hitcost = 1000
+	switched_on_qualities = list(QUALITY_HAMMERING = 20, QUALITY_PULSING = 30)
+	switched_off_qualities = list(QUALITY_HAMMERING = 20)
+	use_power_cost = 0.8
+	suitable_cell = /obj/item/cell/large
+	glow_color = COLOR_LIGHTING_ORANGE_BRIGHT
+	cell = /obj/item/cell/large/high
+	structure_damage_factor = STRUCTURE_DAMAGE_BLUNT
+	matter = list(MATERIAL_STEEL = 20, MATERIAL_PLASTEEL = 15, MATERIAL_SILVER = 10)
+	clickdelay_offset = DEFAULT_ATTACK_COOLDOWN*1.5
+
 /obj/item/tool/baton/mini
 	name = "mini stun baton"
-	desc = "A small stun baton for self defence on a buget."
+	desc = "A small stun baton for self defense on a buget."
 	icon_state = "shocker"
 	item_state = "shocker"
 	force = WEAPON_FORCE_WEAK
@@ -115,7 +144,7 @@
 /obj/item/tool/baton/attack(mob/M, mob/user)
 	if(switched_on && (CLUMSY in user.mutations) && prob(50))
 		to_chat(user, SPAN_DANGER("You accidentally hit yourself with the [src]!"))
-		user.Weaken(30)
+		apply_hit_effect(user, user, BP_HEAD)
 		deductcharge(hitcost)
 		return
 	return ..()
@@ -218,7 +247,7 @@
 
 /obj/item/tool/baton/slimebaton
 	name = "xenobio baton"
-	desc = "A stunbaton that is designed against slimes and other lab misstakes."
+	desc = "A stunbaton that is designed against slimes and other lab mistakes."
 	icon_state = "prod_si"
 	item_state = "prod_si"
 	force = WEAPON_FORCE_NORMAL
@@ -248,7 +277,7 @@
 	use_power_cost = 1.2
 	sparks_on_use = TRUE
 	force = WEAPON_FORCE_WEAK
-	switched_on_force = WEAPON_FORCE_PAINFUL
+	switched_on_forcemult = 2.1 //15
 	throwforce = WEAPON_FORCE_WEAK
 	suitable_cell = /obj/item/cell/medium
 	toggleable = TRUE
@@ -257,6 +286,30 @@
 	max_upgrades = 3
 	agonyforce = 40
 	hitcost = 100
+
+/obj/item/tool/baton/arcwelder/marqua
+	name = "Mar'quaian arcwelder"
+	desc = "An ergonomic cell loading arc welder, made of a strange alloy, and seemingly constructed without any screws welds or bolts on its surface, perfectly polished. Uses a medium cell."
+	icon = 'icons/obj/tools.dmi'
+	icon_state = "skrell_welder_arc"
+	item_state = "skrell_welder_arc"
+	w_class = ITEM_SIZE_NORMAL
+	worksound = WORKSOUND_WELDING
+	switched_on_qualities = list(QUALITY_WELDING = 85, QUALITY_PULSING = 70, QUALITY_WIRE_CUTTING = 25, QUALITY_CAUTERIZING = 40)
+	matter = list(MATERIAL_PLASTEEL = 2, MATERIAL_PLASTIC = 3)
+	price_tag = 7000 //valuable given its design
+	use_power_cost = 0.2
+	sparks_on_use = FALSE
+	force = WEAPON_FORCE_WEAK
+	switched_on_forcemult = 3.1
+	throwforce = WEAPON_FORCE_WEAK
+	suitable_cell = /obj/item/cell/medium
+	toggleable = TRUE
+	create_hot_spot = TRUE
+	glow_color = COLOR_BLUE_LIGHT
+	max_upgrades = 0
+	agonyforce = 80
+	hitcost = 10
 
 /obj/item/tool/baton/arcwelder/cyborg
 	desc = "A specialized tool designed by the Artificer's Guild. It functions as a battery powered welder and multitool. This version has a regulation on it preventing it to be used as a taser."

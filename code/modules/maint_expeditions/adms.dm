@@ -12,7 +12,7 @@
 	circuit = /obj/item/circuitboard/adms
 	var/soundcooldown = 2
 	var/active = FALSE
-	var/obj/item/computer_hardware/hard_drive/portable/inserted_disk //Any portable drive works. When inserted, the adms installs the research point program
+	var/obj/item/pc_part/drive/disk/inserted_disk //Any portable drive works. When inserted, the adms installs the research point program
 	var/datum/computer_file/binary/research_points/inserted_disk_file //A ref to the research_points program
 	var/obj/item/cell/large/cell
 	//Upgrades
@@ -45,15 +45,19 @@
 		return
 
 	if(!use_cell_power())
-		system_error("charge error")//If the battery is dead, shut it down
+		system_error("Charge error")//If the battery is dead, shut it down
 		return
 
 	if(!inserted_disk)
-		system_error("no disk found")
+		system_error("No disk found")
+		return
+
+	if(locate(/turf/simulated/open) in range(5, src))
+		system_error("Surface unsteady")
 		return
 
 	if(inserted_disk.used_capacity >= inserted_disk.max_capacity)
-		system_error("disk full")
+		system_error("Disk full")
 		return
 
 	set_light(2,1)
@@ -71,24 +75,28 @@
 		give_points(1.2) //1000 research points PER size. 300 points per tick per tier of laser. ~1,000-5,000 before mobs spawn.
 		if(prob(3))
 			spawn_monsters(4) //Full Furher retinue
-			return
 
 	else if(istype(area, /area/mine/unexplored))
 		give_points(0.4) //100 points per tick per tier of laser
 		if(prob(2))
 			spawn_monsters(2) //Fewer than deepmaint, since this area is not as dangerous. Need to make a new spacemob spawner!
-			return
 
 	else if(istype(area, /area/awaymission))
 		give_points(0.8) //200 points per tick per tier of laser
 		if(prob(1))
 			spawn_monsters(2)
 
+	else if(istype(area, /area/nadezhda/rnd))
+		give_points(0.1) //Anti-Cheese
+		if(prob(10))
+			spawn_monsters(5)
+			spawn_monsters(1) //Some infighting
+			spawn_monsters(1) //Some infighting
+
 	else
 		give_points(0.2)
 		if(prob(10))
 			src.spawn_monsters(1)//On the station is just calls groups of roaches!
-			return
 
 /obj/machinery/exploration/adms/Destroy()
 	for(var/obj/A in contents)
@@ -118,7 +126,7 @@
 	sleep(9)
 	playsound(src.loc, 'sound/voice/shriek1.ogg', 100, 1, 8, 8)
 	if(emagged)
-		new /mob/living/carbon/superior_animal/roach/kaiser(src.loc)
+		new /mob/living/carbon/superior/roach/kaiser(src.loc)
 		visible_message(SPAN_DANGER("[src] get destroyed as a Kaiser emerge from underneath it!"))
 		Destroy()
 		return
@@ -147,16 +155,18 @@
 			new /obj/effect/decal/cleanable/rubble(FL)
 		switch(tag)
 			if("Roaches")
-				new /obj/random/cluster/roaches(burstup)
+				new /obj/random/cluster/roaches_hoard(burstup)
 			if("Spiders")
 				new /obj/random/cluster/spiders(burstup)
 			if("Xenomorph")
 				new /obj/random/cluster/xenomorphs(burstup)
 			if("Underground")
 				new /obj/random/mob/undergroundmob(burstup)
+			if("Termite")
+				new /obj/random/cluster/termite_no_despawn_hoard(burstup)
 	return
 
-/obj/item/computer_hardware/hard_drive/portable/research_points/adms //any research disk works in the adms, but it starts with an empty one!
+/obj/item/pc_part/drive/disk/research_points/adms //any research disk works in the adms, but it starts with an empty one!
 	min_points = 0
 	max_points = 0
 
@@ -214,7 +224,7 @@
 
 /obj/machinery/exploration/adms/attackby(obj/item/I, mob/user as mob)
 	..()
-	if(istype(I, /obj/item/computer_hardware/hard_drive/portable))//if the item is a portable disk
+	if(istype(I, /obj/item/pc_part/drive/disk))//if the item is a portable disk
 		if(inserted_disk)//and we already have a portable disk
 			to_chat(user, "The adms already has a disk inserted.")//fail out
 		else

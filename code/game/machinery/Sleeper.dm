@@ -4,7 +4,7 @@
 	name = "sleeper"
 	desc = "A fancy bed with built-in injectors, a dialysis machine, and a limited health scanner."
 	icon = 'icons/obj/Cryogenic2.dmi'
-	icon_state = "sleeper_0"
+	icon_state = "sleeper"
 	density = 1
 	anchored = 1
 	circuit = /obj/item/circuitboard/sleeper
@@ -29,14 +29,16 @@
 
 /obj/machinery/sleeper/hyper
 	name = "hyper-sleeper"
-	desc = "A fancy bed with built-in injectors, a dialysis machine, and a limited health scanner. Unlike standard sleepers this one comes with additional chemical synthesizers but is one of a kind."
+	desc = "A fancy bed with built-in injectors, a dialysis machine, and a limited health scanner. Unlike standard sleepers, this one comes with additional chemical synthesizers, but is one of a kind."
 	icon = 'icons/obj/Cryogenic2.dmi'
-	icon_state = "sleeper_0"
+	icon_state = "hypersleeper"
 	scanning = 4 //Hyper has 4 scanners.
+	idle_power_usage = 30 // Complicated, high power machinery
+	active_power_usage = 400
 	color = "#a4bdba"
 	circuit = /obj/item/circuitboard/sleeper/hyper
 	level0 = list(
-		"tricordrazine" ="Tricordrazine", "tramadol" = "Tramadol", "dexalinp" = "Dexalin Plus", "bicaridine" = "Bicaridine", "dermaline" = "Dermaline", "carthatoline" = "Carthatoline", "peridaxon" = "Peridaxon")
+		"tramadol" = "Tramadol", "dexalinp" = "Dexalin Plus", "bicaridine" = "Bicaridine", "dermaline" = "Dermaline", "carthatoline" = "Carthatoline", "peridaxon" = "Peridaxon")
 
 /obj/machinery/sleeper/Initialize()
 	. = ..()
@@ -61,9 +63,9 @@
 		available_chemicals += level1
 	if(man_rating >= 4) //Needs both manips to be level 3 - Pico (6 - 2)
 		available_chemicals += level2
-	if(man_rating >= 6) //Needs both manips to be level 4 - Exl (8 - 2)
+	if(man_rating >= 6) //Needs both manips to be level 4 - Greyson (8 - 2)
 		available_chemicals += level3
-	if(man_rating >= 8) //Needs both manips to be level 5 - Greyson (10 - 2)
+	if(man_rating >= 8) //Needs both manips to be level 5 - Excel (10 - 2)
 		available_chemicals += level4
 	if(man_rating >= 10) //Needs both manips to be level 6 - Alien (12 - 2)
 		available_chemicals += level5
@@ -103,10 +105,17 @@
 			toggle_pump()
 
 /obj/machinery/sleeper/update_icon()
-	icon_state = "sleeper_[occupant ? "1" : "0"]"
+	cut_overlays()
+	if(occupant)
+		icon_state = "[initial(icon_state)]-occupied"
+		return
+	else
+		icon_state = "[initial(icon_state)]"
+	if(panel_open)
+		add_overlay(image(icon, "sleeper-panel"))
 
 /obj/machinery/sleeper/attack_hand(var/mob/user)
-	if(!user.stats?.getPerk(PERK_MEDICAL_EXPERT) && !usr.stat_check(STAT_BIO, STAT_LEVEL_ADEPT) && !usr.stat_check(STAT_COG, 50)) //Are we missing the perk AND to low on bio? Needs bio 25 so cog 50 to bypass
+	if(!user.stats?.getPerk(PERK_MEDICAL_EXPERT) && !usr.stat_check(STAT_BIO, STAT_LEVEL_EXPERT) && !usr.stat_check(STAT_COG, 50)) //Are we missing the perk AND to low on bio? Needs bio 25 so cog 50 to bypass
 		to_chat(usr, SPAN_WARNING("Your biological understanding isn't enough to use this."))
 		return
 
@@ -115,7 +124,7 @@
 
 	nano_ui_interact(user)
 
-/obj/machinery/sleeper/nano_ui_interact(var/mob/user, var/ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state =GLOB.outside_state)
+/obj/machinery/sleeper/nano_ui_interact(var/mob/user, var/ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state =GLOB.outside_state)
 	var/data[0]
 
 	data["power"] = stat & (NOPOWER|BROKEN) ? 0 : 1
@@ -139,14 +148,22 @@
 				data["stat"] = "Unconscious"
 			if(DEAD)
 				data["stat"] = "<font color='red'>Dead</font>"
-		data["health"] = occupant.health
+		data["crit_health"] = round((occupant.health / occupant.maxHealth) * 100)
 		if(ishuman(occupant))
 			var/mob/living/carbon/human/H = occupant
 			data["pulse"] = H.get_pulse(GETPULSE_TOOL)
+			var/organ_health
+			var/organ_damage
+			for(var/obj/item/organ/external/E in H.organs)
+				organ_health += E.total_internal_health
+				organ_damage += E.severity_internal_wounds
+			data["internal_health"] = round((1 - (organ_health ? organ_damage / organ_health : 0)) * 100)
 		data["brute"] = occupant.getBruteLoss()
 		data["burn"] = occupant.getFireLoss()
 		data["oxy"] = occupant.getOxyLoss()
-		data["tox"] = occupant.getToxLoss()
+
+		var/tox_content = occupant.chem_effects[CE_TOXIN] + occupant.chem_effects[CE_ALCOHOL_TOXIC]
+		data["tox"] = tox_content ? tox_content : "0"
 	else
 		data["occupant"] = 0
 	if(beaker)
@@ -211,12 +228,43 @@
 
 
 /obj/machinery/sleeper/affect_grab(var/mob/user, var/mob/target)
-	go_in(target, user)
+	if(src.occupant)
+		to_chat(user, SPAN_NOTICE("The [src] is already occupied!"))
+		return
+	if(target.buckled)
+		to_chat(user, SPAN_NOTICE("Unbuckle the subject before attempting to move them."))
+		return
+	go_in(target, user) // Instant as with the body scanner, some patients require speed.
+	src.add_fingerprint(user)
+	return TRUE
 
 /obj/machinery/sleeper/MouseDrop_T(var/mob/target, var/mob/user)
-	if(user.stat || user.lying || !Adjacent(user) || !target.Adjacent(user)|| !ishuman(target))
+	if(!ismob(target))
 		return
-	go_in(target, user)
+	if (src.occupant)
+		to_chat(user, SPAN_WARNING("The scanner is already occupied!"))
+		return
+	if (target.buckled)
+		to_chat(user, SPAN_NOTICE("Unbuckle the subject before attempting to move them."))
+		return
+	var/mob/living/carbon/human/H = target
+	if(H.species.reagent_tag == IS_SYNTHETIC)
+		if(target == user)
+			visible_message("\The [user] tries climbing into \the [src] but it refuses a synthetic life form.")
+			return
+		else
+			visible_message("\The [user] tries putting [target] into \the [src] but it refuses a synthetic life form.")
+			return
+	if(target == user)
+		visible_message("\The [user] starts climbing into \the [src].")
+	else
+		visible_message("\The [user] starts putting [target] into \the [src].")
+
+	if(!do_after(user, 30, src) || !Adjacent(target))
+		return
+	go_in(target)
+	src.add_fingerprint(user)
+	return
 
 /obj/machinery/sleeper/relaymove(var/mob/user)
 	..()
@@ -248,41 +296,20 @@
 		return
 	pump = !pump
 
-
 /obj/machinery/sleeper/proc/go_in(var/mob/M, var/mob/user)
 	if(!M)
 		return
 	if(stat & (BROKEN|NOPOWER))
 		return
-	if(occupant)
-		to_chat(user, SPAN_WARNING("\The [src] is already occupied."))
-		return
-
-	var/mob/living/carbon/human/H = M
-	if(H.species.reagent_tag == IS_SYNTHETIC)
-		if(M == user)
-			visible_message("\The [user] tries climbing into \the [src] but it refuses a synthetic life form.")
-		else
-			visible_message("\The [user] tries putting [M] into \the [src] but it refuses a synthetic life form.")
-		return
-
-	if(M == user)
-		visible_message("\The [user] starts climbing into \the [src].")
-	else
-		visible_message("\The [user] starts putting [M] into \the [src].")
-
-	if(do_after(user, 20, src))
-		if(occupant)
-			to_chat(user, SPAN_WARNING("\The [src] is already occupied."))
-			return
-		M.stop_pulling()
-		if(M.client)
-			M.client.perspective = EYE_PERSPECTIVE
-			M.client.eye = src
-		M.loc = src
-		update_use_power(2)
-		occupant = M
-		update_icon()
+	M.stop_pulling()
+	if(M.client)
+		M.client.perspective = EYE_PERSPECTIVE
+		M.client.eye = src
+	M.loc = src
+	update_use_power(2)
+	occupant = M
+	flick("[initial(icon_state)]-anim", src)
+	update_icon()
 
 /obj/machinery/sleeper/verb/eject_occupant_verb()
 	set name = "Eject Occupant"
@@ -308,6 +335,7 @@
 			continue
 		A.loc = loc
 	update_use_power(1)
+	flick("[initial(icon_state)]-anim", src)
 	update_icon()
 	toggle_filter()
 

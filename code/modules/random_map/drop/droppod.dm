@@ -15,7 +15,7 @@
 	floor_type = /turf/simulated/floor/reinforced
 	var/list/supplied_drop_types = list()
 	var/door_type = /obj/structure/droppod_door
-	var/drop_type = /mob/living/simple_animal/parrot
+	var/drop_type = /mob/living/simple/parrot
 	var/auto_open_doors
 
 	var/placement_explosion_dev =   1
@@ -158,7 +158,7 @@
 
 ADMIN_VERB_ADD(/datum/admins/proc/call_drop_pod, R_FUN, FALSE)
 /datum/admins/proc/call_drop_pod()
-	set category = "Fun"
+	set category = "Admin.Events"
 	set desc = "Call an immediate drop pod on your location."
 	set name = "Call Drop Pod"
 

@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/tree
+/mob/living/simple/hostile/tree
 	name = "pine tree"
 	desc = "A pissed off tree-like alien. It seems annoyed with the festivities..."
 	icon = 'icons/obj/flora/pinetrees.dmi'
@@ -7,13 +7,14 @@
 	icon_gib = "pine_1"
 	speak_chance = 0
 	turns_per_move = 5
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/carp
+	meat_type = /obj/item/reagent_containers/snacks/meat/carp
 	response_help = "brushes"
 	response_disarm = "pushes"
 	response_harm = "hits"
 	speed = -1
-	maxHealth = 250
-	health = 250
+	maxHealth = 125
+	health = 125
+	sanity_damage = 1
 
 	pixel_x = -16
 
@@ -38,12 +39,12 @@
 
 	faction = "carp"
 
-/mob/living/simple_animal/hostile/tree/FindTarget()
+/mob/living/simple/hostile/tree/FindTarget()
 	. = ..()
 	if(.)
 		visible_message("growls at [.]")
 
-/mob/living/simple_animal/hostile/tree/AttackingTarget()
+/mob/living/simple/hostile/tree/AttackingTarget()
 	. =..()
 	var/mob/living/L = .
 	if(istype(L))
@@ -51,7 +52,7 @@
 			L.Weaken(3)
 			L.visible_message(SPAN_DANGER("\the [src] knocks down \the [L]!"))
 
-/mob/living/simple_animal/hostile/tree/death()
+/mob/living/simple/hostile/tree/death()
 	..(null,"is hacked into pieces!")
 	new /obj/item/stack/material/wood(loc)
 	qdel(src)

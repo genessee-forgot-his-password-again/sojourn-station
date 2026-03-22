@@ -9,6 +9,7 @@
 	w_class = ITEM_SIZE_BULKY
 	origin_tech = list(TECH_COMBAT = 3)
 	attack_verb = list("robusted", "slammed")
+	hitsound = 'sound/weapons/smash.ogg'
 	var/reinforced = FALSE
 	var/obj/item/storage/toolbox/toolbox = null
 	structure_damage_factor = STRUCTURE_DAMAGE_HEAVY
@@ -28,7 +29,7 @@
 	..()
 	cut_overlays()
 	if(reinforced)
-		add_overlay("[icon_state]-duct_tape")
+		add_overlay("hm_hammer-duct_tape")
 
 /obj/item/melee/toolbox_maul/proc/break_apart(var/mob/living/user)
 	qdel(src)

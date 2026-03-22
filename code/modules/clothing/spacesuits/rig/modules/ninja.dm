@@ -38,7 +38,7 @@
 
 	var/mob/living/carbon/human/H = holder.wearer
 
-	if(FALSE) //TODO: INSERT NINJA FULL SKILL CHECK HERE
+	/* if(FALSE) //TODO: INSERT NINJA FULL SKILL CHECK HERE
 		to_chat(H, "<font color='blue'><b>You are now invisible to normal detection.</b></font>")
 		H.invisibility = INVISIBILITY_LEVEL_TWO
 		H.alpha = 64
@@ -46,10 +46,10 @@
 		to_chat(H, "<font color='blue'<b>You are now cloaked to most observation.</b></font>")
 		H.invisibility = INVISIBILITY_WEAK
 		H.alpha = 8
-	else
-		to_chat(H, "<font color='blue'<b>You are now blending into your surroundings.</b></font>")
-		H.invisibility = INVISIBILITY_WEAK
-		H.alpha = 32
+	else */
+	to_chat(H, "<font color='blue'<b>You are now blending into your surroundings.</b></font>") //if this is ever fixed, turn this invisibility to weak, indent
+	H.invisibility = INVISIBILITY_LEVEL_TWO
+	H.alpha = 32
 
 	anim(get_turf(H), H, 'icons/effects/effects.dmi', "electricity",null,20,null)
 
@@ -72,6 +72,7 @@
 	for(var/mob/O in oviewers(H))
 		O.show_message("[H.name] appears from thin air!",1)
 	playsound(get_turf(H), 'sound/effects/stealthoff.ogg', 75, 1)
+
 
 
 /obj/item/rig_module/teleporter
@@ -98,42 +99,49 @@
 	if(!M || !T)
 		return
 
+
 	holder.spark_system.start()
 	playsound(T, 'sound/effects/phasein.ogg', 25, 1)
 	playsound(T, 'sound/effects/sparks2.ogg', 50, 1)
 	anim(T,M,'icons/mob/mob.dmi',,"phasein",,M.dir)
+
+	new /obj/item/bluespace_dust(T)
 
 /obj/item/rig_module/teleporter/proc/phase_out(var/mob/M,var/turf/T)
 
 	if(!M || !T)
 		return
 
-	playsound(T, "sparks", 50, 1)
-	anim(T,M,'icons/mob/mob.dmi',,"phaseout",,M.dir)
+	if (do_after(M, 10, src))
+		visible_message(SPAN_WARNING("\the [src] begins to spool up!"))
+		playsound(T, "sparks", 50, 1)
+		anim(T,M,'icons/mob/mob.dmi',,"phaseout",,M.dir)
+
+		new /obj/item/bluespace_dust(T)
 
 /obj/item/rig_module/teleporter/engage(atom/target, notify_ai)
 
-	if(!..()) return 0
+	if(!..()) return FALSE
 
 	var/mob/living/carbon/human/H = holder.wearer
 
 	if(!istype(H.loc, /turf))
 		to_chat(H, SPAN_WARNING("You cannot teleport out of your current location."))
-		return 0
+		return FALSE
 
 	var/turf/T
 	var/misalignment = round((realign_time - world.time)/90)
 	if(target)
 		T = get_turf(target)
-		if(!FALSE) //TODO: INSERT NINJA FULL SKILL CHECK HERE
-			if(misalignment > 0)
-				var/x_misalignment = rand(misalignment*2 + 1) - misalignment
-				var/y_misalignment = rand(misalignment*2 + 1) - misalignment
-				if(x_misalignment || y_misalignment)
-					T = locate(T.x + x_misalignment, T.y + y_misalignment, T.z)
-					to_chat(H, SPAN_WARNING("Your teleporter malfunctions!"))
-					if(!T)
-						T = get_turf(target)
+		//if(!FALSE) //TODO: INSERT NINJA FULL SKILL CHECK HERE
+		if(misalignment > 0) //if this is ever fixed, indent this block
+			var/x_misalignment = rand(misalignment*2 + 1) - misalignment
+			var/y_misalignment = rand(misalignment*2 + 1) - misalignment
+			if(x_misalignment || y_misalignment)
+				T = locate(T.x + x_misalignment, T.y + y_misalignment, T.z)
+				to_chat(H, SPAN_WARNING("Your teleporter malfunctions!"))
+				if(!T)
+					T = get_turf(target)
 		realign_time += 30
 	else
 		T = get_teleport_loc(get_turf(H), H, rand(5, 9+round(misalignment/2)))
@@ -141,19 +149,19 @@
 
 	if(!T || T.density)
 		to_chat(H, SPAN_WARNING("You cannot teleport into solid walls."))
-		return 0
+		return FALSE
 
 	if(isAdminLevel(T.z))
 		to_chat(H, SPAN_WARNING("You cannot use your teleporter on this Z-level."))
-		return 0
+		return FALSE
 
 	if(T.contains_dense_objects())
 		to_chat(H, SPAN_WARNING("You cannot teleport to a location with solid objects."))
-		return 0
+		return FALSE
 
 	if(T.z != H.z || get_dist(T, get_turf(H)) > world.view)
 		to_chat(H, SPAN_WARNING("You cannot teleport to such a distant object."))
-		return 0
+		return FALSE
 
 	phase_out(H,get_turf(H))
 	H.forceMove(T)
@@ -166,7 +174,7 @@
 			phase_in(G.affecting,get_turf(G.affecting))
 
 	realign_time = max(world.time, realign_time) + 30
-	return 1
+	return TRUE
 
 /obj/item/rig_module/fabricator/energy_net
 
@@ -203,7 +211,7 @@
 
 	interface_name = "dead man's switch"
 	interface_desc = "An integrated self-destruct module. When the wearer dies, so does the surrounding area. Do not press this button."
-	var/list/explosion_values = list(1,2,4,5)
+	var/list/explosion_values = list(2,2,4,5)
 
 /obj/item/rig_module/self_destruct/small
 	explosion_values = list(0,0,3,4)

@@ -3,10 +3,11 @@
 	desc = "A basic energy-based gun."
 	icon = 'icons/obj/guns/energy/energy.dmi'
 	icon_state = "energy"
-	fire_sound = 'sound/weapons/Taser.ogg'
+	fire_sound = 'sound/weapons/energy/Taser.ogg'
 	fire_sound_text = "laser blast"
+	gun_parts = null //No disassembling these by default, SOMEONE failed to give them any actual parts.
 
-	recoil_buildup = 0.5 //energy weapons have little to no recoil
+	init_recoil = HANDGUN_RECOIL(0.1)
 
 
 	var/charge_cost = 100 //How much energy is needed to fire.
@@ -24,13 +25,12 @@
 	var/disposable = FALSE
 	var/use_external_power = 0 //if set, the weapon will look for an external power source to draw from, otherwise it recharges magically
 	var/recharge_time = 4
+	var/recharge_amount = null //If set, the gun will recharge this many units per recharge_time, rather than restoring exactly enough for one shot
 	var/charge_tick = 0
 	gun_tags = list(GUN_ENERGY)
 
-	var/overcharge_timer //Holds ref to the timer used for overcharging
-	var/overcharge_rate = 1 //Base overcharge additive rate for the gun
-	var/overcharge_level = 0 //What our current overcharge level is. Peaks at overcharge_max
-	var/overcharge_max = 10
+	wield_delay = 0.4 SECOND
+	wield_delay_factor = 0.2 // 20 vig
 
 /obj/item/gun/energy/loadAmmoBestGuess()
 	var/obj/item/cell/chosenCell = null
@@ -47,6 +47,7 @@
 		if(chosenCell)
 			cell = new chosenCell
 			cell.loc = src
+	update_icon()
 
 
 /obj/item/gun/energy/switch_firemodes()
@@ -87,7 +88,10 @@
 			if(!external || !external.use(charge_cost)) //Take power from the borg...
 				return 0
 
-		cell.give(charge_cost) //... to recharge the shot
+		if(recharge_amount)
+			cell.give(recharge_amount)
+		else
+			cell.give(charge_cost) //... to recharge the shot
 		update_icon()
 	return 1
 
@@ -170,28 +174,63 @@
 		to_chat(usr, SPAN_WARNING("[src] is a disposable gun, its batteries cannot be removed!."))
 
 /obj/item/gun/energy/attackby(obj/item/C, mob/living/user)
+	..()
 	if(self_recharge)
 		to_chat(usr, SPAN_WARNING("[src] is a self-charging gun, it doesn't need more batteries."))
 		return
 	if(disposable)
 		to_chat(usr, SPAN_WARNING("[src] is a disposable gun, it doesn't need more batteries."))
 		return
-	if(cell)
-		to_chat(usr, SPAN_WARNING("[src] is already loaded."))
-		return
+	if(istype(C, suitable_cell))
+		if(cell)
+			if(replace_item(cell, C, user))
+				cell = C
+				update_icon()
+		else if(insert_item(C, user))
+			cell = C
+			update_icon()
 
 	if(istype(C, suitable_cell) && insert_item(C, user))
 		cell = C
 		update_icon()
 
+/obj/item/gun/energy/attack_self(mob/user)
+	if(!self_recharge && cell && cell.charge < charge_cost && eject_item(cell, user))
+		cell = null
+		update_icon()
+		return
+	..()
+
 /obj/item/gun/energy/ui_data(mob/user)
 	var/list/data = ..()
-	data["charge_cost"] = charge_cost
-	var/obj/item/cell/C = get_cell()
-	if(C)
-		data["cell_charge"] = C.percent()
-		data["shots_remaining"] = round(C.charge/charge_cost)
-		data["max_shots"] = round(C.maxcharge/charge_cost)
+
+	var/list/stats = data["stats"]
+
+	var/list/cell_stats = list()
+
+	cell_stats += list(list("name" = "Power Usage", "type" = "AnimatedNumber", "value" = charge_cost))
+
+	var/obj/item/cell/cell = get_cell()
+	if(cell)
+		cell_stats += list(list(
+			"name" = "Cell Charge",
+			"type" = "ProgressBar",
+			"value" = cell.percent(),
+			"unit" = "%",
+			"max" = 100,
+			"ranges" = list(
+				"good" = list(100, 100),
+				"average" = list(25, 100),
+				"bad" = list(0, 24.99)
+			)
+		))
+		var/shots_remaining = round(cell.charge / charge_cost)
+		cell_stats += list(list("name" = "Shots Remaining", "type" = "ProgressBar", "value" = shots_remaining, "unit" = shots_remaining == 1 ? " shot" : " shots", "max" = round(cell.maxcharge / charge_cost)))
+	else
+		cell_stats += list(list("name" = "Cell Charge", "type" = "String", "value" = "No Cell Installed"))
+
+	stats["Cell Stats"] = cell_stats
+
 	return data
 
 /obj/item/gun/energy/get_dud_projectile()

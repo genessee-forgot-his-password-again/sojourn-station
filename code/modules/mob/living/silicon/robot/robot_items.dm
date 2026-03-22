@@ -147,7 +147,7 @@
 
 		var addedSomething = 0
 
-		for(var/obj/item/reagent_containers/food/I in pickup)
+		for(var/obj/item/reagent_containers/I in pickup)
 
 
 			if( I != src && !I.anchored && !istype(I, /obj/item/clothing/under) && !istype(I, /obj/item/clothing/suit) && !istype(I, /obj/item/projectile) )
@@ -410,25 +410,51 @@
 	desc = "A large roll of fiber tape used by borgs and drones for large repairing projects, mostly windows."
 	max_stock = 2000 //So we dont waste it all on 1 window
 
-/obj/item/tool/robotic_omni_engi
-	name = "Engi omni tool"
-	desc = "Omni tool for Engineering borgs and the like has almost everything you need!"
+
+/obj/item/tool/robotic_omni
+	name = "robot omni tool"
+	desc = "Omni tool that all borg modules are based off. You should'n't have this..."
+	icon_state = "engimplant"
+	tool_qualities = list(QUALITY_CUTTING = 150)
+
+	force = WEAPON_FORCE_PAINFUL
+	use_power_cost = 0
+	suitable_cell = null
+	degradation = 0
+	sharp = 1
+	embed_mult = 0
+
+/obj/item/tool/robotic_omni/surgery
+	name = "Surgery omnitool"
+	desc = "A surgery omnitool for cyborgs, uses the cyborg's own power supply to function. Essentially a less mobile version of the Soteria branded omnitool."
+	icon_state = "medimplant"
+	tool_qualities = list(QUALITY_CLAMPING = 60,
+						  QUALITY_RETRACTING = 60,
+						  QUALITY_BONE_SETTING = 60,
+						  QUALITY_CAUTERIZING = 60,
+						  QUALITY_SAWING = 45,
+						  QUALITY_CUTTING = 60,
+						  QUALITY_WIRE_CUTTING = 55,
+						  QUALITY_BONE_GRAFTING = 80,
+						  QUALITY_DRILLING = 40)
+
+/obj/item/tool/robotic_omni/engi
+	name = "Engineering omnitool"
+	desc = "Omnitool for Engineering cyborgs and the like. Heavy duty monster of multifunctionality and quality."
 	icon_state = "engimplant"
 	tool_qualities = list(QUALITY_PRYING = 40,
-						  QUALITY_HAMMERING = 30,
+						  QUALITY_HAMMERING = 45,
 						  QUALITY_BOLT_TURNING = 40,
 						  QUALITY_WIRE_CUTTING = 40,
 						  QUALITY_CUTTING = 150, //So were faster at cutting up boddies
-						  QUALITY_SAWING = 30,
+						  QUALITY_SAWING = 60,
 						  QUALITY_DIGGING = 40,
-						  QUALITY_SCREW_DRIVING = 40)
-	use_power_cost = 0
-	suitable_cell = null
-	degradation = 0
+						  QUALITY_SCREW_DRIVING = 40,
+						  QUALITY_DRILLING = 60)
 
-/obj/item/tool/robotic_omni_standard
-	name = "Standard omni tool"
-	desc = "Omni tool for standard borgs and the like has almost everything you need!"
+/obj/item/tool/robotic_omni/standard
+	name = "Standard omnitool"
+	desc = "Omnitool for standard cyborgs and the like. Has basic, but well-performing qualities."
 	icon_state = "engimplant"
 	tool_qualities = list(QUALITY_PRYING = 40,
 						  QUALITY_HAMMERING = 30,
@@ -437,13 +463,10 @@
 						  QUALITY_SAWING = 30,
 						  QUALITY_DIGGING = 40,
 						  QUALITY_SCREW_DRIVING = 40)
-	use_power_cost = 0
-	suitable_cell = null
-	degradation = 0
 
-/obj/item/tool/robotic_omni_miner
-	name = "Miner omni tool"
-	desc = "Omni tool for mining borgs and the like has almost everything you need other then a way to drill..."
+/obj/item/tool/robotic_omni/miner
+	name = "Mining omnitool"
+	desc = "Omnitool for mining cyborgs and the like. Heavy duty utility in almost everything, with no way to mine rock."
 	icon_state = "engimplant"
 	tool_qualities = list(QUALITY_PRYING = 40,
 						  QUALITY_HAMMERING = 30,
@@ -451,44 +474,37 @@
 						  QUALITY_CUTTING = 150, //So were faster at cutting up boddies
 						  QUALITY_SAWING = 30,
 						  QUALITY_SCREW_DRIVING = 40)
-	use_power_cost = 0
-	suitable_cell = null
-	degradation = 0
 
-/obj/item/tool/robotic_omni_sec
-	name = "Security omni tool"
-	desc = "Omni tool for Security borgs, mostly just for cutting up body and clearing borrows."
+/obj/item/tool/robotic_omni/sec
+	name = "Security omnitool"
+	desc = "Omnitool for Security cyborgs. Used for upturning and sealing burrows as well as cut up carcasses. Has additional functionality for firearm manipulation."
 	icon_state = "engimplant"
 	tool_qualities = list(QUALITY_PRYING = 20,
-						  QUALITY_HAMMERING = 10, //For undoing random things like barrer placements
+						  QUALITY_HAMMERING = 35, //For undoing random things like barrer placements
 						  QUALITY_BOLT_TURNING = 10,
 						  QUALITY_SAWING = 15, //Sawing for guns
+						  QUALITY_WIRE_CUTTING = 20, //for removing grills and taking apart firearms
 						  QUALITY_CUTTING = 150, //So were faster at cutting up boddies
+						  QUALITY_SCREW_DRIVING = 40,
 						  QUALITY_DIGGING = 40)
-	use_power_cost = 0
-	suitable_cell = null
-	degradation = 0
 
-/obj/item/tool/robotic_omni_cleaner
-	name = "Borrow Omni tool"
-	desc = "Omni tool for Janitor borgs, mostly just for cutting up body and clearing borrows."
+/obj/item/tool/robotic_omni/cleaner
+	name = "Burrow Omnitool"
+	desc = "Omnitool for Custodial cyborgs. Used for upturning and sealing up burrows as well as cut up carcasses."
 	icon_state = "engimplant"
 	tool_qualities = list(QUALITY_PRYING = 20,
-						  QUALITY_HAMMERING = 10, //For undoing random things like barrer placements
+						  QUALITY_HAMMERING = 35, //For undoing random things like barrer placements
 						  QUALITY_BOLT_TURNING = 30,
 						  QUALITY_CUTTING = 150, //So were faster at cutting up boddies
 						  QUALITY_DIGGING = 40,
 						  QUALITY_SCREW_DRIVING = 40) //Tiles and the like
-	use_power_cost = 0
-	suitable_cell = null
-	degradation = 0
 
-/obj/item/tool/robotic_omni_sci
-	name = "Science Omni tool"
-	desc = "Omni tool for Science borgs, has a bit of everything but also leaves a lot to be wanted."
+/obj/item/tool/robotic_omni/sci
+	name = "Science Omnitool"
+	desc = "Omnitool for Science cyborgs. Has extensive tool qualities but subpar performance when compared to more specialized tools."
 	icon_state = "engimplant"
 	tool_qualities = list(QUALITY_PRYING = 30,
-						  QUALITY_HAMMERING = 10, //For undoing random things like barrer placements
+						  QUALITY_HAMMERING = 35, //For undoing random things like barrer placements
 						  QUALITY_BOLT_TURNING = 30,
 						  QUALITY_CUTTING = 150, //So were faster at cutting up boddies
 						  QUALITY_WIRE_CUTTING = 40,
@@ -496,32 +512,37 @@
 						  QUALITY_DIGGING = 40,
 						  QUALITY_EXCAVATION = 140, //we already get a slowdown per click when it asks if we want to dig or excavation
 						  QUALITY_SCREW_DRIVING = 40) //Tiles and the like
-	use_power_cost = 0
-	suitable_cell = null
-	degradation = 0
+
 
 /obj/item/tool/crowbar/robotic
 	icon = 'icons/obj/robot_items.dmi'
-	tool_qualities = list(QUALITY_PRYING = 40, QUALITY_HAMMERING = 10) //We can dig but not that fast!
+	tool_qualities = list(QUALITY_PRYING = 40, QUALITY_HAMMERING = 10, QUALITY_DIGGING = 20) //only used on the medical borg and they need burrow digging like the rest!
+	degradation = 0
 
 /obj/item/tool/wrench/robotic
 	icon = 'icons/obj/robot_items.dmi'
 	tool_qualities = list(QUALITY_BOLT_TURNING = 40)
+	degradation = 0
 
 /obj/item/tool/screwdriver/robotic
 	icon = 'icons/obj/robot_items.dmi'
 	//random_icon = FALSE
+	degradation = 0
 
 /obj/item/tool/multitool/robotic
 	icon = 'icons/obj/robot_items.dmi'
+	degradation = 0
 
 /obj/item/tool/wirecutters/robotic
 	icon = 'icons/obj/robot_items.dmi'
 	tool_qualities = list(QUALITY_WIRE_CUTTING = 40, QUALITY_CUTTING = 30)
+	degradation = 0
 
 /obj/item/tool/weldingtool/robotic
 	icon = 'icons/obj/robot_items.dmi'
 	switched_on_qualities = list(QUALITY_WELDING = 40, QUALITY_CAUTERIZING = 15, QUALITY_WIRE_CUTTING = 15)
+	max_fuel = 40
+	degradation = 0
 
 /obj/item/tool/weldingtool/robotic/weaker
 	name = "small welder"
@@ -529,21 +550,6 @@
 	icon = 'icons/obj/robot_items.dmi'
 	switched_on_qualities = list(QUALITY_WELDING = 30, QUALITY_CAUTERIZING = 5)
 	max_fuel = 15 //cracks
-
-/obj/item/tool/robotic_omni_surgery
-	name = "Surgery omni tool"
-	desc = "A surgery omni tool for borgs, uses internal power cell rather then its own."
-	icon_state = "medimplant_sci"
-	tool_qualities = list(QUALITY_CLAMPING = 30,
-						  QUALITY_RETRACTING = 30,
-						  QUALITY_BONE_SETTING = 30,
-						  QUALITY_CAUTERIZING = 30,
-						  QUALITY_SAWING = 15,
-						  QUALITY_CUTTING = 30,
-						  QUALITY_WIRE_CUTTING = 25,
-						  QUALITY_BONE_GRAFTING = 50)
-	use_power_cost = 0 //Dosnt legitmently use power
-	suitable_cell = null
 	degradation = 0
 
 // -----------------------------
@@ -620,6 +626,12 @@
 	return TRUE
 
 /obj/item/storage/bag/robotic/proc/add_to_storage(obj/item/target_item as obj)
+
+	if(max_w_class < target_item.w_class)
+		to_chat(usr, SPAN_NOTICE("[target_item] can not fit inside."))
+		return FALSE
+
+
 	if(used_storage_space < max_storage_space)
 		var/transfer //Used to track how much was transferred between stacks.
 		var/overfill_amount //Used to track just how much the bag would get filled over it's capacity.
@@ -679,7 +691,7 @@
 		to_chat(user, "<span class='notice'>You put everything in [src].</span>")
 	else if(!silent) //If transfer didn't succeed, it means no item can be picked up, we notify user here.
 		to_chat(user, "<span class='notice'>There is nothing to pick up with \the [src].</span>")
-	if(istype(user.pulling, /obj/structure/ore_box/) && src.contains(/obj/item/ore))
+	if(istype(user.pulling, /obj/structure/ore_box/) && src.contains(/obj/item/stack/ore))
 		//This is mainly used for ore bag, there is no point in making this bit universal, so it is only for ores.
 		//If the user is pulling an ore box, the ores from the ore bag will be transferred to it automatically.
 		var/obj/structure/ore_box/O = user.pulling
@@ -740,7 +752,7 @@
 	max_storage_space = 500 //Bonus capacity because of specialization.
 	max_w_class = ITEM_SIZE_NORMAL
 	can_hold = list (
-		/obj/item/ore
+		/obj/item/stack/ore
 	)
 
 /obj/item/storage/bag/robotic/produce
@@ -754,35 +766,14 @@
 	can_hold = list(
 		/obj/item/seeds,
 		/obj/item/grown,
-		/obj/item/reagent_containers/food/snacks/grown,
-		/obj/item/reagent_containers/food/snacks/egg,
-		/obj/item/reagent_containers/food/snacks/meat
+		/obj/item/reagent_containers/snacks/grown,
+		/obj/item/reagent_containers/snacks/egg,
+		/obj/item/reagent_containers/snacks/meat
 	)
 
-/obj/item/storage/bag/robotic/trash
+/obj/item/storage/bag/trash/big/robotic
 	name = "internal trash container"
 	desc = "An internalized trash container for gathering trash. Become a walking trash can, today!"
-	icon = 'icons/obj/janitor.dmi'
-	icon_state = "trashbag0"
-	item_state = "trashbag"
-	w_class = ITEM_SIZE_BULKY
-	max_storage_space = DEFAULT_BULKY_STORAGE * 2
-	max_w_class = ITEM_SIZE_SMALL
-	can_hold = list()
-	cant_hold = list(/obj/item/disk/nuclear)
-
-/obj/item/storage/bag/robotic/trash/autoload(mob/user as mob)
-	return //Prevent the trash bag from autoloading everything during movement, for sanity.
-
-/obj/item/storage/bag/robotic/trash/update_icon()
-	if(contents.len == 0)
-		icon_state = "trashbag0"
-	else if(contents.len < 24)
-		icon_state = "trashbag1"
-	else if(contents.len < 42)
-		icon_state = "trashbag2"
-	else
-		icon_state = "trashbag3"
 
 /obj/item/storage/bag/robotic/sheetsnatcher
 	name = "heavy-duty sheet snatcher"
@@ -803,12 +794,12 @@
 	max_w_class = ITEM_SIZE_BULKY
 	matter = list(MATERIAL_STEEL = 4, MATERIAL_GOLD = 4, MATERIAL_DIAMOND = 2, MATERIAL_URANIUM = 2)
 	origin_tech = list(TECH_BLUESPACE = 4)
-	can_hold = list(/obj/item/ore,
-	                /obj/item/reagent_containers/food/snacks/grown,
+	can_hold = list(/obj/item/stack/ore,
+	                /obj/item/reagent_containers/snacks/grown,
 	                /obj/item/seeds,
 	                /obj/item/grown,
-	                /obj/item/reagent_containers/food/snacks/egg,
-	                /obj/item/reagent_containers/food/snacks/meat)
+	                /obj/item/reagent_containers/snacks/egg,
+	                /obj/item/reagent_containers/snacks/meat)
 
 /obj/item/storage/bag/ore/holding/New()
 	..()

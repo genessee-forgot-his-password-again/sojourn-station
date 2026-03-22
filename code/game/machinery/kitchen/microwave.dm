@@ -46,7 +46,7 @@
 		// will also allow anything using the holder item to be microwaved into
 		// impure carbon. ~Z
 		acceptable_items |= /obj/item/holder
-		acceptable_items |= /obj/item/reagent_containers/food/snacks/grown
+		acceptable_items |= /obj/item/reagent_containers/snacks/grown
 
 /*******************
 *   Item Adding
@@ -68,13 +68,13 @@
 			if(QUALITY_SCREW_DRIVING)
 				if(broken == 2)
 					user.visible_message( \
-						SPAN_NOTICE("\The [user] starts to fix part of the [src]."), \
-						SPAN_NOTICE("You start to fix part of the [src].") \
+						SPAN_NOTICE("\The [user] starts to fix part of \the [src]."), \
+						SPAN_NOTICE("You start to fix part of \the [src].") \
 					)
 					if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
 						user.visible_message( \
-							SPAN_NOTICE("\The [user] fixes part of the [src]."), \
-							SPAN_NOTICE("You have fixed part of the [src].") \
+							SPAN_NOTICE("\The [user] fixes part of \the [src]."), \
+							SPAN_NOTICE("You have fixed part of \the [src].") \
 						)
 						src.broken = 1
 						return
@@ -83,13 +83,13 @@
 			if(QUALITY_BOLT_TURNING)
 				if(broken == 1)
 					user.visible_message( \
-						SPAN_NOTICE("\The [user] starts to fix part of the [src]."), \
-						SPAN_NOTICE("You start to fix part of the [src].") \
+						SPAN_NOTICE("\The [user] starts to fix part of \the [src]."), \
+						SPAN_NOTICE("You start to fix part of \the [src].") \
 					)
 					if(I.use_tool(user, src, WORKTIME_NORMAL, tool_type, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
 						user.visible_message( \
 							SPAN_NOTICE("\The [user] fixes the [src]."), \
-							SPAN_NOTICE("You have fixed the [src].") \
+							SPAN_NOTICE("You have fixed \the [src].") \
 						)
 						src.icon_state = "[initial(icon_state)]"
 						src.broken = 0 // Fix it!
@@ -108,13 +108,13 @@
 	else if(src.dirty==100) // The microwave is all dirty so can't be used!
 		if(istype(I, /obj/item/reagent_containers/spray  || /obj/item/reagent_containers/glass/rag || /obj/item/soap)) // If they're trying to clean it then let them
 			user.visible_message( \
-				SPAN_NOTICE("\The [user] starts to clean the [src]."), \
-				SPAN_NOTICE("You start to clean the [src].") \
+				SPAN_NOTICE("\The [user] starts to clean \the [src]."), \
+				SPAN_NOTICE("You start to clean \the [src].") \
 			)
 			if(do_after(user, 20, src))
 				user.visible_message( \
-					SPAN_NOTICE("\The [user] has cleaned the [src]."), \
-					SPAN_NOTICE("You have cleaned the [src].") \
+					SPAN_NOTICE("\The [user] has cleaned \the [src]."), \
+					SPAN_NOTICE("You have cleaned \the [src].") \
 				)
 				src.dirty = 0 // It's clean!
 				src.broken = 0 // just to be sure
@@ -125,7 +125,7 @@
 			return 1
 	else if(is_type_in_list(I,acceptable_items))
 		if(length(contents) >= max_n_of_items)
-			to_chat(user, SPAN_WARNING("The [src] is full of ingredients, you cannot put more."))
+			to_chat(user, SPAN_WARNING("\The [src] is full of ingredients, you cannot put more."))
 			return 1
 		if(istype(I, /obj/item/stack) && I:get_amount() > 1) // This is bad, but I can't think of how to change it
 			var/obj/item/stack/S = I
@@ -144,8 +144,8 @@
 				SPAN_NOTICE("You add \the [I] to \the [src]."))
 			return
 	else if(istype(I,/obj/item/reagent_containers/glass) || \
-	        istype(I,/obj/item/reagent_containers/food/drinks) || \
-	        istype(I,/obj/item/reagent_containers/food/condiment) \
+	        istype(I,/obj/item/reagent_containers/drinks) || \
+	        istype(I,/obj/item/reagent_containers/condiment) \
 		)
 		if(!I.reagents)
 			return 1
@@ -156,13 +156,13 @@
 		return
 	if(QUALITY_BOLT_TURNING in I.tool_qualities)
 		user.visible_message( \
-		"<span class='notice'>\The [user] begins [src.anchored ? "unsecuring" : "securing"] the [src].</span>", \
-		"<span class='notice'>You attempt to [src.anchored ? "unsecure" : "secure"] the [src].</span>"
+		"<span class='notice'>\The [user] begins [src.anchored ? "unsecuring" : "securing"] \the [src].</span>", \
+		"<span class='notice'>You attempt to [src.anchored ? "unsecure" : "secure"] \the [src].</span>"
 		)
 		if(I.use_tool(user, src, WORKTIME_FAST, QUALITY_BOLT_TURNING, FAILCHANCE_EASY,  required_stat = STAT_MEC))
 			user.visible_message( \
-			"<span class='notice'>\The [user] [src.anchored ? "unsecures" : "secures"] the [src].</span>", \
-			"<span class='notice'>You [src.anchored ? "unsecure" : "secure"] the [src].</span>"
+			"<span class='notice'>\The [user] [src.anchored ? "unsecures" : "secures"] \the [src].</span>", \
+			"<span class='notice'>You [src.anchored ? "unsecure" : "secure"] \the [src].</span>"
 			)
 			src.anchored = !src.anchored
 	else
@@ -201,20 +201,20 @@
 		var/list/items_measures_p = new
 		for (var/obj/O in contents)
 			var/display_name = O.name
-			if(istype(O,/obj/item/reagent_containers/food/snacks/egg))
+			if(istype(O,/obj/item/reagent_containers/snacks/egg))
 				items_measures[display_name] = "egg"
 				items_measures_p[display_name] = "eggs"
-			if(istype(O,/obj/item/reagent_containers/food/snacks/tofu))
+			if(istype(O,/obj/item/reagent_containers/snacks/tofu))
 				items_measures[display_name] = "tofu chunk"
 				items_measures_p[display_name] = "tofu chunks"
-			if(istype(O,/obj/item/reagent_containers/food/snacks/meat)) //any meat
+			if(istype(O,/obj/item/reagent_containers/snacks/meat)) //any meat
 				items_measures[display_name] = "slab of meat"
 				items_measures_p[display_name] = "slabs of meat"
-			if(istype(O,/obj/item/reagent_containers/food/snacks/donkpocket))
+			if(istype(O,/obj/item/reagent_containers/snacks/donkpocket))
 				display_name = "Donk Pockets"
 				items_measures[display_name] = "donk pocket"
 				items_measures_p[display_name] = "donk pockets"
-			if(istype(O,/obj/item/reagent_containers/food/snacks/meat/carp))
+			if(istype(O,/obj/item/reagent_containers/snacks/meat/carp))
 				items_measures[display_name] = "fillet of meat"
 				items_measures_p[display_name] = "fillets of meat"
 			items_counts[display_name]++
@@ -245,7 +245,7 @@
 <A href='?src=\ref[src];action=dispose'>Eject ingredients!<BR>\
 "}
 
-	user << browse("<HEAD><TITLE>[src] Options</TITLE></HEAD><TT>[dat]</TT>", "window=[src]")
+	user << browse(HTML_SKELETON_TITLE("[src] Options", "<TT>[dat]</TT>"), "window=[src]")
 	onclose(user, "[src]")
 	return
 
@@ -322,12 +322,12 @@
 
 /obj/machinery/microwave/proc/has_extra_item()
 	for (var/obj/O in contents)
-		if(!istype(O,/obj/item/reagent_containers/food) && !istype(O, /obj/item/grown))
+		if(!istype(O,/obj/item/reagent_containers) && !istype(O, /obj/item/grown))
 			return 1
 	return 0
 
 /obj/machinery/microwave/proc/start()
-	src.visible_message(SPAN_NOTICE("The [src] begins cooking."), SPAN_NOTICE("You hear a [src] cooking."))
+	src.visible_message(SPAN_NOTICE("\The [src] begins cooking."), SPAN_NOTICE("You hear a [src] cooking."))
 	src.operating = 1
 	src.icon_state = "[initial(icon_state)]-1"
 	src.updateUsrDialog()
@@ -350,7 +350,7 @@
 	if(reagents.total_volume)
 		dirty++
 	reagents.clear_reagents()
-	to_chat(usr, SPAN_NOTICE("You dispose of the [src]'s contents."))
+	to_chat(usr, SPAN_NOTICE("You dispose \the [src]'s contents."))
 	src.updateUsrDialog()
 
 /obj/machinery/microwave/proc/muck_start()
@@ -360,7 +360,7 @@
 /obj/machinery/microwave/proc/muck_finish()
 	if(dinger)
 		playsound(src.loc, 'sound/machines/ding.ogg', 50, 1)
-	src.visible_message(SPAN_WARNING("The [src] gets covered in muck!"))
+	src.visible_message(SPAN_WARNING("\The [src] gets covered in muck!"))
 	src.dirty = 100 // Make it dirty so it can't be used util cleaned
 	src.reagent_flags = NONE //So you can't add condiments
 	src.icon_state = "[initial(icon_state)]-bloody" // Make it look dirty too
@@ -372,14 +372,14 @@
 	s.set_up(2, 1, src)
 	s.start()
 	src.icon_state = "[initial(icon_state)]-br" // Make it look all busted up and shit
-	src.visible_message(SPAN_WARNING("The [src] breaks!")) //Let them know they're stupid
+	src.visible_message(SPAN_WARNING("\The [src] breaks!")) //Let them know they're stupid
 	src.broken = 2 // Make it broken so it can't be used util fixed
 	src.reagent_flags = NONE //So you can't add condiments
 	src.operating = 0 // Turn it off again aferwards
 	src.updateUsrDialog()
 
 /obj/machinery/microwave/proc/fail()
-	var/obj/item/reagent_containers/food/snacks/badrecipe/ffuu = new(src)
+	var/obj/item/reagent_containers/snacks/badrecipe/ffuu = new(src)
 	var/amount = 0
 	for (var/obj/O in contents-ffuu)
 		amount++

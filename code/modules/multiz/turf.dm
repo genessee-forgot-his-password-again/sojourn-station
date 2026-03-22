@@ -41,14 +41,14 @@ see multiz/movement.dm for some info.
 
 	var/open = FALSE
 	var/turf/below
-	var/list/underlay_references
-	var/global/overlay_map = list()
 	is_hole = TRUE
 
 	// A lazy list to contain a list of mobs who are currently scaling
 	// up this turf. Used in human/can_fall.
 
-	var/tmp/list/climbers = list()
+	var/tmp/list/climbers = null
+
+	pathing_pass_method = TURF_PATHING_PASS_PROC
 
 /turf/simulated/open/New()
 	icon_state = "transparentclickable"
@@ -107,7 +107,7 @@ see multiz/movement.dm for some info.
 		return
 
 
-	// No gravit, No fall.
+	// No gravity, No fall.
 	if(!has_gravity(src))
 		return
 
@@ -149,26 +149,47 @@ see multiz/movement.dm for some info.
 					"You hear a soft whoosh.[M.stat ? "" : ".. and some screaming."]"
 				)
 			else
-				M.visible_message(
-					"\The [mover] falls from the deck above and slams into \the [below]!",
-					"You land on \the [below].", "You hear a soft whoosh and a crunch"
-				)
+				for(var/mob/living/m in below)
+					if(istype(m))//is m real?
+
+						if(ishuman(mover))//REAL SHIT
+							var/mob/living/carbon/human/H = mover
+							if(H.a_intent == I_HURT && !(m == H))
+								M.visible_message(
+									SPAN_DANGER("\The [mover] falls from the deck above and slams elbow-first into [m]!"),
+									SPAN_DANGER("You slam elbow-first into [m]!"),
+									SPAN_NOTICE("You hear a soft whoosh and a crunch.")
+									)
+					else
+						M.visible_message(
+							"\The [mover] falls from the deck above and slams into \the [below]!",
+							"You land on \the [below].", "You hear a soft whoosh and a crunch."
+						)
 
 		// Handle people getting hurt, it's funny!
 		mover.fall_impact(src, below)
 
-
+		if(!isobj(mover))
+			return //Things that are not objs dont stun folks
 
 		for(var/mob/living/M in below)
 			var/fall_damage = mover.get_fall_damage()
+
+			if(ishuman(mover))
+				var/mob/living/carbon/human/H = mover
+				if(H.a_intent == I_HURT)
+					fall_damage = (H.mob_size + (min(min(H.stats.getStat(STAT_ROB), 1), 60) / 2)) //max is 50(a lot)
+
+			//We have the parkour perk just pass them, they can dodge it
+			if(ishuman(M))
+				if(M.stats.getPerk(PERK_PARKOUR))
+					continue
+
 			if(M == mover)
 				continue
-			if(ishuman(M))
-				if(!M.stats.getPerk(PERK_PARKOUR))
-					M.Weaken(10)
-			else
-				M.Weaken(10)
-				continue
+			//Armor + 5 so we dont get stunlocked by not waring a hat and someone throws like 1 bullet case at a time
+			if(M.getarmor(BP_HEAD, ARMOR_MELEE) + 5 < fall_damage || ismob(mover))
+				M.Weaken(clamp(1, 10, fall_damage - 5 -M.getarmor(BP_HEAD, ARMOR_MELEE)))
 			if(fall_damage >= FALL_GIB_DAMAGE)
 				M.gib()
 			else
@@ -274,20 +295,20 @@ see multiz/movement.dm for some info.
 
 	usr.visible_message(SPAN_WARNING("[user] starts descenting onto [structure]!"))
 	structure.visible_message(SPAN_WARNING("Someone starts descenting onto [structure]!"))
-	climbers |= user
+	LAZYOR(climbers, user)
 
 	var/delay = (issmall(user) ? 32 : 60) * user.mod_climb_delay
 	var/duration = max(delay * user.stats.getMult(STAT_VIG, STAT_LEVEL_EXPERT), delay * 0.66)
 	if(!do_after(user, duration, src))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	if(!can_descent(user, structure, post_descent_check = 1))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	usr.forceMove(GetBelow(src))
 
 	if(get_turf(user) == GetBelow(src))
 		usr.visible_message(SPAN_WARNING("[user] descents onto [structure]!"))
-	climbers -= user
+	LAZYREMOVE(climbers, user)

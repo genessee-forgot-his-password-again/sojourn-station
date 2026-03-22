@@ -60,7 +60,7 @@ AI MODULES
 			to_chat(usr, "You haven't selected a robot to transmit laws to!")
 			return
 
-		if (comp.current.stat == 2 || comp.current.emagged)
+		if (comp.current.stat == 2 || comp.current.HasTrait(CYBORG_TRAIT_EMAGGED))
 			to_chat(usr, "Upload failed. No signal is being detected from the robot.")
 		else if (comp.current.connected_ai)
 			to_chat(usr, "Upload failed. The robot is slaved to an AI.")
@@ -139,7 +139,7 @@ AI MODULES
 
 /obj/item/aiModule/oneHuman/addAdditionalLaws(var/mob/living/silicon/ai/target, var/mob/sender)
 	var/law = "Only [targetName] is a colonist."
-	if (!target.is_malf_or_traitor()) // Makes sure the AI isn't a traitor before changing their law 0. --NeoFite
+	if (!target.is_malf_or_contractor()) // Makes sure the AI isn't a contractor before changing their law 0. --NeoFite
 		to_chat(target, law)
 		target.set_zeroth_law(law)
 		lawchanges.Add("The law specified [targetName]")
@@ -244,7 +244,7 @@ AI MODULES
 /obj/item/aiModule/reset/transmitInstructions(var/mob/living/silicon/ai/target, var/mob/sender)
 	log_law_changes(target, sender)
 
-	if (!target.is_malf_or_traitor())
+	if (!target.is_malf_or_contractor())
 		target.set_zeroth_law("")
 	target.laws.clear_supplied_laws()
 	target.laws.clear_ion_laws()
@@ -262,7 +262,7 @@ AI MODULES
 /obj/item/aiModule/purge/transmitInstructions(var/mob/living/silicon/ai/target, var/mob/sender)
 	log_law_changes(target, sender)
 
-	if (!target.is_malf_or_traitor())
+	if (!target.is_malf_or_contractor())
 		target.set_zeroth_law("")
 	target.laws.clear_supplied_laws()
 	target.laws.clear_ion_laws()

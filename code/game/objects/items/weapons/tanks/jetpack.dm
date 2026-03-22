@@ -51,6 +51,9 @@
 	item_state = "jetpack"
 	default_gas = "oxygen"
 
+/obj/item/tank/jetpack/void/cope
+	name = "void jet pack (copium)"
+	desc = "A tank of compressed oxygen for use as propulsion in zero-gravity areas. The phrase 'Copium' is printed on the side in gold leaf."
 
 /obj/item/tank/jetpack/carbondioxide
 	name = "jet pack (carbon dioxide)"
@@ -206,7 +209,7 @@
 	//Setup a stabilize check, but only if this isn't already from one
 	if (!stabilization_check)
 		stabilize_done = FALSE
-		addtimer(CALLBACK(src, .proc/stabilize, user, world.time), user.total_movement_delay()*1.5)
+		addtimer(CALLBACK(src, PROC_REF(stabilize), user, world.time), user.total_movement_delay()*1.5)
 
 	var/datum/gas_mixture/G = get_gas().remove(num)
 

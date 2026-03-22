@@ -25,7 +25,6 @@
 	var/treatment_oxy = "tricordrazine"
 	var/treatment_fire = "tricordrazine"
 	var/treatment_tox = "tricordrazine"
-	var/treatment_virus = "spaceacillin"
 	var/treatment_emag = "toxin"
 	var/declare_treatment = 0 //When attempting to treat a patient, should it notify everyone wearing medhuds?
 
@@ -157,7 +156,7 @@
 
 		dat += "The speaker switch is [vocal ? "on" : "off"]. <a href='?src=\ref[src];togglevoice=[1]'>Toggle</a><br>"
 
-	user << browse("<HEAD><TITLE>Medibot v1.0 controls</TITLE></HEAD>[dat]", "window=automed")
+	user << browse(HTML_SKELETON_TITLE("Medibot v1.0 controls",dat), "window=automed")
 	onclose(user, "automed")
 	return
 

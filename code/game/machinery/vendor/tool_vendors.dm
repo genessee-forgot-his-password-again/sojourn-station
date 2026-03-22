@@ -11,7 +11,10 @@
 		/obj/item/device/assembly/timer = 10,
 		)
 	product_ads = "Only the finest!;Have some tools.;The most robust equipment.;The finest gear in space!"
+	shut_up = 1
 	auto_price = FALSE
+	give_discounts = FALSE
+	give_discount_points = FALSE
 
 /obj/machinery/vending/tool
 	name = "YouTool"
@@ -57,9 +60,12 @@
 	name = "Guild-Vend"
 	desc = "Spare tool vending. What? Did you expect some witty description?"
 	product_slogans = "Spare tools for your Engineering needs!;Forgot where we keep mesons again, didn't you?;Need a battery?;You need electronics? I got electronics."
+	shut_up = 1
 	icon_state = "engivend"
 	icon_deny = "engivend-deny"
 	products = list(/obj/item/clothing/glasses/powered/meson = 2,
+					/obj/item/clothing/glasses/welding = 2,
+					/obj/item/clothing/head/welding = 2,
 					/obj/item/tool/multitool = 4,
 					/obj/item/airlock_electronics = 10,
 					/obj/item/circuitboard/apc = 10,
@@ -79,9 +85,12 @@
 	product_ads = "Best tools!;Cheap!;Reliable!;Do-It-Yourself!"
 	icon_state = "engi"
 	icon_deny = "engi-deny"
+	vendor_department = DEPARTMENT_ENGINEERING
 	products = list(/obj/item/clothing/head/hardhat = 4,
 					/obj/item/storage/belt/utility = 4,
+					/obj/item/storage/belt/webbing/artificer = 2,
 					/obj/item/clothing/glasses/powered/meson = 4,
+					/obj/item/clothing/glasses/powered/night/guild = 4,
 					/obj/item/clothing/gloves/insulated = 4,
 					/obj/item/tool/screwdriver = 12,
 					/obj/item/tool/crowbar = 12,
@@ -96,8 +105,20 @@
 					/obj/item/clothing/head/welding = 8,
 					/obj/item/weldpack/canister = 4,
 					/obj/item/weldpack = 2,
-					/obj/item/light/tube = 10,
+					/obj/item/light/tube = 30,
+					/obj/item/light/tube/power_saver = 30,
+					/obj/item/light/tube/large = 15,
+					/obj/item/light/bulb = 30,
+					/obj/item/light/bulb/power_saver = 30,
+					/obj/item/light/bulb/spotlight = 15,
 					/obj/item/clothing/suit/fire = 4,
+					/obj/item/clothing/suit/armor/vest/technomancersuit = 3,
+					/obj/item/clothing/head/helmet/technomancersuit = 3,
+					/obj/item/storage/bag/sheetsnatcher/guild = 6,
+					/obj/item/tool_upgrade/reinforcement/plasmablock = 6,
+					/obj/item/tool_upgrade/reinforcement/rubbermesh = 6,
+					/obj/item/tool_upgrade/productivity/booster = 6,
+					/obj/item/tool_upgrade/productivity/injector = 6,
 					/obj/item/stock_parts/scanning_module = 5,
 					/obj/item/stock_parts/micro_laser = 5,
 					/obj/item/stock_parts/matter_bin = 5,
@@ -105,7 +126,9 @@
 					/obj/item/stock_parts/console_screen = 5)
 	prices = list(/obj/item/clothing/head/hardhat = 4,
 					/obj/item/storage/belt/utility = 75,
+					/obj/item/storage/belt/webbing/artificer = 2500,
 					/obj/item/clothing/glasses/powered/meson = 150,
+					/obj/item/clothing/glasses/powered/night/guild = 1200,
 					/obj/item/clothing/gloves/insulated = 600,
 					/obj/item/tool/screwdriver = 30,
 					/obj/item/tool/crowbar = 30,
@@ -121,12 +144,25 @@
 					/obj/item/weldpack/canister = 100,
 					/obj/item/weldpack = 200,
 					/obj/item/light/tube = 10,
+					/obj/item/light/tube/power_saver = 5,
+					/obj/item/light/tube/large = 20,
+					/obj/item/light/bulb = 5,
+					/obj/item/light/bulb/power_saver = 2,
+					/obj/item/light/bulb/spotlight = 15,
 					/obj/item/clothing/suit/fire = 150,
+					/obj/item/clothing/suit/armor/vest/technomancersuit = 3600,
+					/obj/item/clothing/head/helmet/technomancersuit = 1400,
+					/obj/item/storage/bag/sheetsnatcher/guild = 600,
+					/obj/item/tool_upgrade/reinforcement/plasmablock = 950,
+					/obj/item/tool_upgrade/reinforcement/rubbermesh = 950,
+					/obj/item/tool_upgrade/productivity/booster = 950,
+					/obj/item/tool_upgrade/productivity/injector = 950,
 					/obj/item/stock_parts/scanning_module = 40,
 					/obj/item/stock_parts/micro_laser = 40,
 					/obj/item/stock_parts/matter_bin = 40,
 					/obj/item/stock_parts/manipulator = 40,
 					/obj/item/stock_parts/console_screen = 40)
+
 
 //FOR ACTORS GUILD - Containers
 /obj/machinery/vending/containers
@@ -137,6 +173,8 @@
 					/obj/structure/closet = 3,
 					/obj/structure/closet/crate = 3)
 	auto_price = FALSE
+	give_discounts = FALSE
+	give_discount_points = FALSE
 
 /obj/machinery/vending/powermat
 	name = "Lonestar Power-Mat"
@@ -150,7 +188,7 @@
 					/obj/item/cell/medium/high = 15,
 					/obj/item/cell/small = 20,
 					/obj/item/cell/small/high = 20,
-					/obj/item/computer_hardware/hard_drive/portable/advanced/coin = 60)
+					/obj/item/pc_part/drive/disk/adv/coin = 60)
 	contraband = list(/obj/item/cell/large/super = 5,
 						/obj/item/cell/medium/super = 5,
 						/obj/item/cell/small/super = 5)
@@ -160,7 +198,7 @@
 					/obj/item/cell/medium/high = 400,
 					/obj/item/cell/small = 100,
 					/obj/item/cell/small/high = 200,
-					/obj/item/computer_hardware/hard_drive/portable/advanced/coin = 60,
+					/obj/item/pc_part/drive/disk/adv/coin = 60,
 					/obj/item/cell/large/super = 900,
 					/obj/item/cell/medium/super = 600,
 					/obj/item/cell/small/super = 300)
@@ -171,53 +209,91 @@
 	product_slogans = "Print your own gun TODAY!;The future is NOW!;Can't stop the industrial revolution!;Everything you can imagine, RIGHT HERE!;Don't copy that floppy!;Who needs dreams when you can print everything you need?"
 	product_ads = "Almost free!;Print it yourself!;Don't copy that floppy!;Industrial Revolution!;Future!;Print your dreams TODAY!;Cheap and reliable!"
 	icon_state = "discomat"
-	products = list(/obj/item/computer_hardware/hard_drive/portable = 20,
+	products = list(/obj/item/pc_part/drive/disk = 20,
 					 /obj/item/storage/box/data_disk/basic = 5,
-					 /obj/item/computer_hardware/hard_drive/portable/design/misc = 20,
-					 /obj/item/computer_hardware/hard_drive/portable/design/janitor = 10,
-					 /obj/item/computer_hardware/hard_drive/portable/design/components = 10,
-					 /obj/item/computer_hardware/hard_drive/portable/design/adv_tools = 5,
-					 /obj/item/computer_hardware/hard_drive/portable/design/circuits = 5,
-					 /obj/item/computer_hardware/hard_drive/portable/design/logistics = 2,
-					 /obj/item/computer_hardware/hard_drive/portable/design/medical = 10,
-					 /obj/item/computer_hardware/hard_drive/portable/design/computer = 10,
-					 /obj/item/computer_hardware/hard_drive/portable/design/security = 5,
-					 /obj/item/computer_hardware/hard_drive/portable/design/guns/cheap_guns = 5,
-					 /obj/item/computer_hardware/hard_drive/portable/design/guns/armstrong = 2,
-					 /obj/item/computer_hardware/hard_drive/portable/design/nonlethal_ammo = 10,
-					 /obj/item/computer_hardware/hard_drive/portable/design/blackshield/strelki = 2,
-					 /obj/item/computer_hardware/hard_drive/portable/design/guns/survivalrifle = 2,
-					 /obj/item/computer_hardware/hard_drive/portable/design/powerwork = 3,
-					 /obj/item/computer_hardware/hard_drive/portable/advanced/coin = 300,
+					 /obj/item/pc_part/drive/disk/design/misc = 20,
+					 /obj/item/pc_part/drive/disk/design/janitor = 10,
+					 /obj/item/pc_part/drive/disk/design/components = 10,
+					 /obj/item/pc_part/drive/disk/design/adv_tools = 5,
+					 /obj/item/pc_part/drive/disk/design/circuits = 5,
+					 /obj/item/pc_part/drive/disk/design/logistics = 2,
+					 /obj/item/pc_part/drive/disk/design/medical = 10,
+					 /obj/item/pc_part/drive/disk/design/computer = 10,
+					 /obj/item/pc_part/drive/disk/design/security = 5,
+					 /obj/item/pc_part/drive/disk/design/guns/cheap_guns = 5,
+					 /obj/item/pc_part/drive/disk/design/guns/armstrong = 2,
+					 /obj/item/pc_part/drive/disk/design/nonlethal_ammo = 10,
+					 /obj/item/pc_part/drive/disk/design/strelki = 2,
+					 /obj/item/pc_part/drive/disk/design/guns/survivalrifle = 2,
+					 /obj/item/pc_part/drive/disk/design/powerwork = 3,
+					 /obj/item/pc_part/drive/disk/adv/coin = 300,
 					 /obj/item/circuitboard/autolathe = 3,
-					 /obj/item/circuitboard/vending = 10)
-	contraband = list(/obj/item/computer_hardware/hard_drive/portable/design/ammo_boxes_smallarms = 3)
-	prices = list(/obj/item/computer_hardware/hard_drive/portable = 50,
+					 /obj/item/circuitboard/vending = 10,
+					 /obj/item/stack/material/plastic/five = 4,
+					 /obj/item/stack/material/plastic/ten = 6,
+					 /obj/item/stack/material/steel/five = 4,
+					 /obj/item/stack/material/steel/ten = 6,
+					 /obj/item/stack/material/glass/five = 4,
+					 /obj/item/stack/material/glass/ten = 6,
+					 /obj/item/stack/material/wood/five = 4,
+					 /obj/item/stack/material/wood/ten = 6,
+					 /obj/item/stack/material/cardboard/five = 4,
+					 /obj/item/stack/material/cardboard/ten = 6
+					 )
+	contraband = list(/obj/item/pc_part/drive/disk/design/ammo_boxes_smallarms = 3,
+						/obj/item/stack/material/iron/five = 4,
+						/obj/item/stack/material/iron/ten = 10,
+						/obj/item/stack/material/sandstone/five = 4,
+						/obj/item/stack/material/sandstone/ten = 10,
+						/obj/item/stack/material/marble/five = 4,
+						/obj/item/stack/material/marble/ten = 10,
+						/obj/item/stack/material/cloth/five = 4,
+						/obj/item/stack/material/cloth/ten = 10)
+	prices = list(/obj/item/pc_part/drive/disk = 50,
 				 /obj/item/storage/box/data_disk/basic = 100,
-				 /obj/item/computer_hardware/hard_drive/portable/design/misc = 200,
-				 /obj/item/computer_hardware/hard_drive/portable/design/janitor = 120,
-				 /obj/item/computer_hardware/hard_drive/portable/design/components = 250,
-				 /obj/item/computer_hardware/hard_drive/portable/design/adv_tools = 900,
-				 /obj/item/computer_hardware/hard_drive/portable/design/circuits = 300,
-				 /obj/item/computer_hardware/hard_drive/portable/design/logistics = 200,
-				 /obj/item/computer_hardware/hard_drive/portable/design/medical = 200,
-				 /obj/item/computer_hardware/hard_drive/portable/design/computer = 250,
-				 /obj/item/computer_hardware/hard_drive/portable/design/security = 300,
-				 /obj/item/computer_hardware/hard_drive/portable/design/guns/cheap_guns = 500,
-				 /obj/item/computer_hardware/hard_drive/portable/design/guns/armstrong = 600,
-				 /obj/item/computer_hardware/hard_drive/portable/design/nonlethal_ammo = 350,
-				 /obj/item/computer_hardware/hard_drive/portable/design/blackshield/strelki = 850,
-				 /obj/item/computer_hardware/hard_drive/portable/design/guns/survivalrifle = 750,
-				 /obj/item/computer_hardware/hard_drive/portable/advanced/coin = 60,
-				 /obj/item/computer_hardware/hard_drive/portable/design/powerwork = 300,
+				 /obj/item/pc_part/drive/disk/design/misc = 200,
+				 /obj/item/pc_part/drive/disk/design/janitor = 120,
+				 /obj/item/pc_part/drive/disk/design/components = 250,
+				 /obj/item/pc_part/drive/disk/design/adv_tools = 900,
+				 /obj/item/pc_part/drive/disk/design/circuits = 300,
+				 /obj/item/pc_part/drive/disk/design/logistics = 200,
+				 /obj/item/pc_part/drive/disk/design/medical = 200,
+				 /obj/item/pc_part/drive/disk/design/computer = 250,
+				 /obj/item/pc_part/drive/disk/design/security = 300,
+				 /obj/item/pc_part/drive/disk/design/guns/cheap_guns = 500,
+				 /obj/item/pc_part/drive/disk/design/guns/armstrong = 600,
+				 /obj/item/pc_part/drive/disk/design/nonlethal_ammo = 350,
+				 /obj/item/pc_part/drive/disk/design/strelki = 850,
+				 /obj/item/pc_part/drive/disk/design/guns/survivalrifle = 450,
+				 /obj/item/pc_part/drive/disk/adv/coin = 60,
+				 /obj/item/pc_part/drive/disk/design/powerwork = 300,
 				 /obj/item/circuitboard/autolathe = 350,
 				 /obj/item/circuitboard/vending = 200,
-				 /obj/item/computer_hardware/hard_drive/portable/design/ammo_boxes_smallarms = 400)
+				 /obj/item/stack/material/plastic/five = 150,
+				 /obj/item/stack/material/plastic/ten = 300,
+				 /obj/item/stack/material/steel/five = 150,
+				 /obj/item/stack/material/steel/ten = 300,
+				 /obj/item/stack/material/glass/five = 150,
+				 /obj/item/stack/material/glass/ten = 300,
+				 /obj/item/stack/material/wood/five = 150,
+				 /obj/item/stack/material/wood/ten = 300,
+				 /obj/item/stack/material/cardboard/five = 150,
+				 /obj/item/stack/material/cardboard/ten = 300,
+				 /obj/item/pc_part/drive/disk/design/ammo_boxes_smallarms = 400,
+				 /obj/item/stack/material/iron/five = 150,
+				 /obj/item/stack/material/iron/ten = 300,
+				 /obj/item/stack/material/sandstone/five = 150,
+				 /obj/item/stack/material/sandstone/ten = 300,
+				 /obj/item/stack/material/marble/five = 150,
+				 /obj/item/stack/material/marble/ten = 300,
+				 /obj/item/stack/material/cloth/five = 150,
+				 /obj/item/stack/material/cloth/ten = 300)
 
 //This one's from bay12
 /obj/machinery/vending/plasmaresearch
 	name = "Toximate 3000"
 	desc = "All the fine parts you need in one vending machine!"
+	shut_up = 1
 	products = list(/obj/item/clothing/under/rank/scientist = 6,
 					/obj/item/clothing/suit/bio_suit = 6,
 					/obj/item/clothing/head/bio_hood = 6,
@@ -228,6 +304,8 @@
 					/obj/item/device/assembly/prox_sensor = 6,
 					/obj/item/device/assembly/igniter = 6)
 	auto_price = FALSE
+	give_discounts = FALSE
+	give_discount_points = FALSE
 
 //This one's from bay12
 /obj/machinery/vending/robotics
@@ -252,6 +330,7 @@
 					/obj/item/tool/crowbar = 5,
 					/obj/item/weldpack/canister = 2,
 					/obj/item/weldpack = 1,
+					/obj/item/device/defib_kit/jumper_kit = 5,
 					//Drone Fabrication Kits
 					/obj/item/storage/box/roomba_kit = 3,
 					/obj/item/storage/box/sword_drone_kit = 1,
@@ -273,6 +352,7 @@
 					/obj/item/device/kit/paint/ripley/clark_veteran = 3,
 					//Ivan
 					/obj/item/device/kit/paint/rust_ivan = 3,
+					/obj/item/device/kit/paint/utility_ivan = 3,
 					//Ody
 					/obj/item/device/kit/paint/odysseus = 3,
 					/obj/item/device/kit/paint/odysseus/blue_racer = 3,
@@ -304,4 +384,3 @@
 					/obj/item/storage/box/mantis_drone_kit = 750)
 
 	auto_price = FALSE
-

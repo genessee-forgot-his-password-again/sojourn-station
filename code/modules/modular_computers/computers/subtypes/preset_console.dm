@@ -1,10 +1,10 @@
 /obj/item/modular_computer/console/preset/install_default_hardware()
 	..()
-	processor_unit = new/obj/item/computer_hardware/processor_unit(src)
-	tesla_link = new/obj/item/computer_hardware/tesla_link(src)
-	hard_drive = new/obj/item/computer_hardware/hard_drive/advanced(src)
-	network_card = new/obj/item/computer_hardware/network_card/wired(src)
-	scanner = new /obj/item/computer_hardware/scanner/paper(src)
+	processor_unit = new/obj/item/pc_part/processor_unit(src)
+	tesla_link = new/obj/item/pc_part/tesla_link(src)
+	hard_drive = new/obj/item/pc_part/drive/advanced(src)
+	network_card = new/obj/item/pc_part/network_card/wired(src)
+	scanner = new /obj/item/pc_part/scanner/paper(src)
 
 // Engineering
 /obj/item/modular_computer/console/preset/engineering/install_default_programs()
@@ -52,7 +52,7 @@
 // Medical
 /obj/item/modular_computer/console/preset/medical/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/medical/install_default_programs()
 	..()
@@ -75,7 +75,7 @@
 // Research
 /obj/item/modular_computer/console/preset/research/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/research/install_default_programs()
 	..()
@@ -86,7 +86,7 @@
 
 /obj/item/modular_computer/console/preset/pointminer/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/pointminer/install_default_programs()
 	..()
@@ -99,7 +99,7 @@
 /*
 /obj/item/modular_computer/console/preset/research/silicon/install_default_hardware()
 	..()
-	ai_slot = new/obj/item/computer_hardware/ai_slot(src)
+	ai_slot = new/obj/item/pc_part/ai_slot(src)
 
 /obj/item/modular_computer/console/preset/research/silicon/install_default_programs()
 	..()
@@ -115,8 +115,12 @@
 // Command
 /obj/item/modular_computer/console/preset/command/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
-	card_slot = new/obj/item/computer_hardware/card_slot(src)
+	processor_unit = new/obj/item/pc_part/processor_unit/adv(src)
+	tesla_link = new/obj/item/pc_part/tesla_link(src)
+	hard_drive = new/obj/item/pc_part/drive/advanced(src)
+	scanner = new /obj/item/pc_part/scanner/paper(src)
+	printer = new/obj/item/pc_part/printer(src)
+	card_slot = new/obj/item/pc_part/card_slot(src)
 
 /obj/item/modular_computer/console/preset/command/install_default_programs()
 	..()
@@ -129,6 +133,7 @@
 	hard_drive.store_file(new/datum/computer_file/program/reports())
 	hard_drive.store_file(new/datum/computer_file/program/comm())
 	hard_drive.store_file(new/datum/computer_file/program/card_mod())
+	hard_drive.store_file(new/datum/computer_file/program/tax())
 
 //First Officer
 /obj/item/modular_computer/console/preset/command/access/install_default_programs()
@@ -138,7 +143,7 @@
 // Security
 /obj/item/modular_computer/console/preset/security/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/security/install_default_programs()
 	..()
@@ -154,6 +159,23 @@
 /obj/item/modular_computer/console/preset/security/camera/install_default_programs()
 	..()
 	set_autorun("cammon")
+
+// Crew cams
+/obj/item/modular_computer/console/preset/crew_cams/install_default_hardware()
+	..()
+	printer = new/obj/item/pc_part/printer(src)
+
+/obj/item/modular_computer/console/preset/crew_cams/install_default_programs()
+	..()
+	hard_drive.store_file(new/datum/computer_file/program/wordprocessor())
+	hard_drive.store_file(new/datum/computer_file/program/newsbrowser())
+	hard_drive.store_file(new/datum/computer_file/program/camera_monitor())
+
+// Crew cameras
+/obj/item/modular_computer/console/preset/crew_cams/camera/install_default_programs()
+	..()
+	set_autorun("cammon")
+
 
 // Security records
 /obj/item/modular_computer/console/preset/security/records/install_default_programs()
@@ -176,7 +198,7 @@
 // Civilian Offices
 /obj/item/modular_computer/console/preset/civilian/professional/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/civilian/professional/install_default_programs()
 	..()
@@ -192,12 +214,19 @@
 // Trade Console
 /obj/item/modular_computer/console/preset/trade/install_default_hardware()
 	..()
-	card_slot = new/obj/item/computer_hardware/card_slot(src)
+	card_slot = new/obj/item/pc_part/card_slot(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/trade/install_default_programs()
 	..()
 	hard_drive.store_file(new /datum/computer_file/program/trade())
 	set_autorun("trade")
+
+// Trade Ordering Console
+/obj/item/modular_computer/console/preset/trade_orders/install_default_programs()
+	..()
+	hard_drive.store_file(new /datum/computer_file/program/trade/order())
+	set_autorun("trade_orders")
 
 // Nanobot integrated Console.
 /obj/item/modular_computer/console/preset/nanobot
@@ -206,16 +235,16 @@
 
 /obj/item/modular_computer/console/preset/nanobot/install_default_hardware()
 	..()
-	network_card = new /obj/item/computer_hardware/network_card/adv_wired(src)
-	processor_unit = new /obj/item/computer_hardware/processor_unit/super(src)
-	tesla_link = new /obj/item/computer_hardware/tesla_link(src)
-	hard_drive = new /obj/item/computer_hardware/hard_drive/cluster(src)
+	network_card = new /obj/item/pc_part/network_card/adv_wired(src)
+	processor_unit = new /obj/item/pc_part/processor_unit/super(src)
+	tesla_link = new /obj/item/pc_part/tesla_link(src)
+	hard_drive = new /obj/item/pc_part/drive/cluster(src)
 	cell = new /obj/item/cell/large/moebius/omega(src)
-	gps_sensor = new /obj/item/computer_hardware/gps_sensor(src)
-	led = new /obj/item/computer_hardware/led/adv(src)
-	scanner = new /obj/item/computer_hardware/scanner/reagent(src)
-	printer = new/obj/item/computer_hardware/printer(src)
-	card_slot = new/obj/item/computer_hardware/card_slot(src)
+	gps_sensor = new /obj/item/pc_part/gps_sensor(src)
+	led = new /obj/item/pc_part/led/adv(src)
+	scanner = new /obj/item/pc_part/scanner/reagent(src)
+	printer = new/obj/item/pc_part/printer(src)
+	card_slot = new/obj/item/pc_part/card_slot(src)
 	network_card.matter = list()
 	processor_unit.matter = list()
 	tesla_link.matter = list()
@@ -231,7 +260,7 @@
 /*
 /obj/item/modular_computer/console/preset/dock/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/dock/install_default_programs()
 	..()
@@ -244,7 +273,7 @@
 // Crew-facing supply ordering computer
 /obj/item/modular_computer/console/preset/supply/install_default_hardware()
 	..()
-	printer = new/obj/item/computer_hardware/printer(src)
+	printer = new/obj/item/pc_part/printer(src)
 
 /obj/item/modular_computer/console/preset/supply/install_default_programs()
 	..()
@@ -254,9 +283,9 @@
 // ERT
 /obj/item/modular_computer/console/preset/ert/install_default_hardware()
 	..()
-	ai_slot = new/obj/item/computer_hardware/ai_slot(src)
-	printer = new/obj/item/computer_hardware/printer(src)
-	card_slot = new/obj/item/computer_hardware/card_slot(src)
+	ai_slot = new/obj/item/pc_part/ai_slot(src)
+	printer = new/obj/item/pc_part/printer(src)
+	card_slot = new/obj/item/pc_part/card_slot(src)
 
 /obj/item/modular_computer/console/preset/ert/install_default_programs()
 	..()
@@ -274,9 +303,9 @@
 
 /obj/item/modular_computer/console/preset/mercenary/install_default_hardware()
 	..()
-	ai_slot = new/obj/item/computer_hardware/ai_slot(src)
-	printer = new/obj/item/computer_hardware/printer(src)
-	card_slot = new/obj/item/computer_hardware/card_slot(src)
+	ai_slot = new/obj/item/pc_part/ai_slot(src)
+	printer = new/obj/item/pc_part/printer(src)
+	card_slot = new/obj/item/pc_part/card_slot(src)
 
 /obj/item/modular_computer/console/preset/mercenary/install_default_programs()
 	..()

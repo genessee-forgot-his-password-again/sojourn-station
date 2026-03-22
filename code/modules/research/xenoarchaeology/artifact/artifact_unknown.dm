@@ -29,6 +29,9 @@
 	var/datum/artifact_effect/my_effect
 	var/datum/artifact_effect/secondary_effect
 	var/being_used = 0
+	var/psi_power_chance = 100 // Chance in % for a given artifact to hold a psionic power.
+	var/psi_power // The holder of the power we give
+	var/psi_text // Description that only psions can see.
 
 /obj/machinery/artifact/New()
 	..()
@@ -71,6 +74,54 @@
 		name = "sealed alien pod"
 		if(prob(75))
 			my_effect.trigger = rand(1,4)
+
+	if(prob(psi_power_chance)) // Roll of the dice to decide if we get a power
+		turn_psion()
+
+// Turn the artifact into a psionic artifact, here for modularity.
+/obj/machinery/artifact/proc/turn_psion()
+	psi_power = pick(RESEARCH_POWER)
+	switch(psi_power) // TODO : Better names and description, but do keep the purple text, I think it is neat. -R4d6
+		if(CRYO_BLASTER)
+			name = "Cryo-Blaster"
+			desc = "[desc]" // Placeholder
+			psi_text = "You hear a very faint voice in the back of your mind : \
+						[SPAN_PSION(" The cold and the winter are what has seperated the living from the doomed.")]"
+		if(PYRO_BLASTER)
+			name = "Pyro-Blaster"
+			desc = "[desc]" // Placeholder
+			psi_text = "You hear a very faint voice in the back of your mind : \
+						[SPAN_PSION(" Fire often destroys everything it touches, even if we wish it did not.")]"
+		if(ELECTRO_BLASTER)
+			name = "Electro-Blaster"
+			desc = "[desc]" // Placeholder
+			psi_text = "You hear a very faint voice in the back of your mind : \
+						[SPAN_PSION(" How shocking.")]"
+		if(KINETIC_BARRIER)
+			name = "Kinetic Barrier"
+			desc = "[desc]" // Placeholder
+			psi_text = "You hear a very faint voice in the back of your mind : \
+						[SPAN_PSION(" Protection of body and mind.")]"
+		if(CHOSEN_CONTROL)
+			name = "Chosen Control"
+			desc = "[desc]" // Placeholder
+			psi_text = "You hear a very faint voice in the back of your mind : \
+						[SPAN_PSION(" The universe bends to your will alone and at times, it must be reminded.")]"
+		if(DETECT_THOUGHTS)
+			name = "Detect Thoughts"
+			desc = "[desc]" // Placeholder
+			psi_text = "You hear a very faint voice in the back of your mind : \
+						[SPAN_PSION(" We all have some spark.")]"
+		if(PSYCHOACTIVE_MANIPULATION)
+			name = "Psychoactive Manipulation"
+			desc = "[desc]" // Placeholder
+			psi_text = "You hear a very faint voice in the back of your mind : \
+						[SPAN_PSION(" Are we truly changing anything?")]"
+
+/obj/machinery/artifact/examine(mob/user)
+	..()
+	if(psi_text && user.stats?.getPerk(PERK_PSION)) // Are we a psion and is there something to see?
+		to_chat(user, psi_text)
 
 /obj/machinery/artifact/Process()
 
@@ -226,7 +277,7 @@
 				my_effect.ToggleActivate()
 			if(secondary_effect && secondary_effect.trigger == TRIGGER_VOLATILE && prob(25))
 				secondary_effect.ToggleActivate(0)
-		else if(W.reagents.has_reagent("toxin", 1) || W.reagents.has_reagent("cyanide", 1) || W.reagents.has_reagent("amanitin", 1) || W.reagents.has_reagent("neurotoxin", 1))
+		else if(W.reagents.has_reagent("toxin", 1) || W.reagents.has_reagent("cyanide", 1) || W.reagents.has_reagent("neurotoxin", 1))
 			if(my_effect.trigger == TRIGGER_TOXIN)
 				my_effect.ToggleActivate()
 			if(secondary_effect && secondary_effect.trigger == TRIGGER_TOXIN && prob(25))
@@ -283,19 +334,20 @@
 	..()
 
 /obj/machinery/artifact/bullet_act(var/obj/item/projectile/P)
-	if(istype(P,/obj/item/projectile/bullet))
-		if(my_effect.trigger == TRIGGER_FORCE)
-			my_effect.ToggleActivate()
-		if(secondary_effect && secondary_effect.trigger == TRIGGER_FORCE && prob(25))
-			secondary_effect.ToggleActivate(0)
+	if (!(P.testing))
+		if(istype(P,/obj/item/projectile/bullet))
+			if(my_effect.trigger == TRIGGER_FORCE)
+				my_effect.ToggleActivate()
+			if(secondary_effect && secondary_effect.trigger == TRIGGER_FORCE && prob(25))
+				secondary_effect.ToggleActivate(0)
 
-	else if(istype(P,/obj/item/projectile/beam) ||\
-		istype(P,/obj/item/projectile/ion) ||\
-		istype(P,/obj/item/projectile/energy))
-		if(my_effect.trigger == TRIGGER_ENERGY)
-			my_effect.ToggleActivate()
-		if(secondary_effect && secondary_effect.trigger == TRIGGER_ENERGY && prob(25))
-			secondary_effect.ToggleActivate(0)
+		else if(istype(P,/obj/item/projectile/beam) ||\
+			istype(P,/obj/item/projectile/ion) ||\
+			istype(P,/obj/item/projectile/energy))
+			if(my_effect.trigger == TRIGGER_ENERGY)
+				my_effect.ToggleActivate()
+			if(secondary_effect && secondary_effect.trigger == TRIGGER_ENERGY && prob(25))
+				secondary_effect.ToggleActivate(0)
 
 /obj/machinery/artifact/ex_act(severity)
 	switch(severity)

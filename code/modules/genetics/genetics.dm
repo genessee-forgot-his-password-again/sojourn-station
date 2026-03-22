@@ -18,8 +18,8 @@
 *
 * ".Copy() just works"
 *
-* Example of an inherant_mutations list:
-* inherant_mutations= List(MUTATION_COW_SKIN, MUTATION_IMBECILE, MUTATION_MKNEWAIFUHAIR)
+* Example of an inherent_mutations list:
+* inherent_mutations= List(MUTATION_COW_SKIN, MUTATION_IMBECILE, MUTATION_MKNEWAIFUHAIR)
 **/
 //#define JANEDEBUG 1
 
@@ -38,6 +38,11 @@
 	var/max_copies = 0
 
 	var/total_instability = 0 //How much instability is present in the gene pool.
+
+	var/allowed_instability_was = DESTABILIZE_LEVEL_WAS //How much instability we allow before we start to mutate into a once was
+	var/allowed_instability_clone = DESTABILIZE_LEVEL_CLONE_DAMAGE //How much untill we take clone damage
+	var/allowed_instability_base = DESTABILIZE_LEVEL_BASE //How much untill we start destablization.
+
 
 	var/initialized = FALSE //Whether or not the held genes have been applied to the holder.
 
@@ -76,14 +81,14 @@
 	log_debug("func initializeFromMob called. Mob: [source]")
 	#endif
 	//No robots allowed.
-	if(issilicon(source))
+	if(issynthetic(source))
 		return
 	addInherentMutations(source.inherent_mutations, source.type, source.name)
 	addUnnaturalMutations(source.unnatural_mutations.mutation_pool)
 	attemptAddCopyMobMutation(source.type, source.name)
 
 //Initialize a genetics holder based on a slab of meat.
-/datum/genetics/genetics_holder/proc/initializeFromMeat(var/obj/item/reagent_containers/food/snacks/meat/gene_meat)
+/datum/genetics/genetics_holder/proc/initializeFromMeat(var/obj/item/reagent_containers/snacks/meat/gene_meat)
 	#ifdef JANEDEBUG
 	log_debug("func initializeFromMeat called. Meat: [gene_meat]")
 	#endif
@@ -151,7 +156,10 @@
 	for (var/datum/genetics/mutation/selected_mutation in mutation_pool)
 		if(selected_mutation.clone_gene && selected_mutation.active)
 			clone_mutation_pool += selected_mutation
-	return pick(clone_mutation_pool)
+	if(clone_mutation_pool.len)
+		return pick(clone_mutation_pool)
+	else
+		return null
 
 //Randomly toggle random mutations in a holder as active; helps obfuscate unidentified mutations.
 /datum/genetics/genetics_holder/proc/randomizeActivations()
@@ -327,7 +335,7 @@
 	#ifdef JANEDEBUG
 	log_debug("getRecipeResult: resulting recipe- [recipe.type]")
 	#endif
-	
+
 	var/datum/genetics/mutation/new_mutation = recipe.get_result()
 	new_mutation.active = pick(TRUE,FALSE)
 	return(new_mutation)
@@ -384,14 +392,6 @@
 
 /datum/genetics/genetics_holder/proc/removeAllMutations()
 	for (var/datum/genetics/mutation/mutation_to_remove in mutation_pool)
-		if(mutation_to_remove.active)
-			if(istype(holder, /mob/living/carbon/human))
-				#ifdef JANEDEBUG
-				log_debug("Calling On player Remove Script: [mutation_to_remove.name]")
-				#endif
-				mutation_to_remove.onPlayerRemove()
-			if(istype(holder, /mob/living))
-				mutation_to_remove.onMobRemove()
 		removeMutation(mutation_to_remove.key, mutation_to_remove.count)
 	initialized = FALSE
 
@@ -436,16 +436,18 @@
 	#endif
 
 	//No robots allowed.
-	if(issilicon(target))
+	if(issynthetic(target))
 		return FALSE
 
 	//Opifex or Nanogate can't use genetics. If they try, their body begins removing the affected cells- manually.
 	if(ishuman(target))
 		var/mob/living/carbon/human/human_target = target
-		var/obj/item/organ/internal/nanogate/nanogate = human_target.random_organ_by_process(BP_NANOGATE)
-		if(nanogate)
-			to_chat(human_target, SPAN_DANGER("You hear a synthetic voice, \"FOREIGN ORGANISM DETECTED. NEUTRALIZING\" before you feel something eating away at you on a celluar level."))
-			holder.adjustCloneLoss(2)
+		if(human_target.random_organ_by_process(BP_NANOGATE))
+			to_chat(human_target, SPAN_DANGER("You hear a synthetic voice, \"FOREIGN ORGANISM DETECTED. NEUTRALIZING\" before you feel something eating away at you on a cellular level."))
+			target.adjustCloneLoss(10)
+			return FALSE
+
+		if(human_target.species && human_target.species.reagent_tag == IS_SYNTHETIC)
 			return FALSE
 
 	//Add the mutations in a separate loop from the activation step.
@@ -502,14 +504,14 @@
 
 	if(processing_destabilization)
 		//Stop processing if we fall below the base value, or if the holder is already dead- Since we won't be needing it anymore
-		if(total_instability < DESTABILIZE_LEVEL_BASE)
+		if(total_instability < allowed_instability_base)
 			STOP_PROCESSING(SSprocessing, src)
 			stage = 0
 			processing_destabilization = FALSE
 			return "turning off destabilization"
 	else
 		//Start the process if we hit the threshold base value
-		if(total_instability >= DESTABILIZE_LEVEL_BASE)
+		if(total_instability >= allowed_instability_base)
 			last_destability_check = world.time
 			START_PROCESSING(SSprocessing, src)
 			processing_destabilization = TRUE
@@ -524,42 +526,38 @@
 
 	last_destability_check = world.time
 
-	if(total_instability >= DESTABILIZE_LEVEL_WAS)
+	if(total_instability >= allowed_instability_was)
 		stage++
 		switch(stage)
 			if(1)
 				to_chat(holder, SPAN_DANGER("You don't feel too good."))
 			if(6)
 				holder.visible_message(SPAN_DANGER("The muscles beneath the skin of \the [holder] ripple and bulge."))
-				to_chat(holder, SPAN_DANGER("Your form wavers. Ascention calls to you."))
+				to_chat(holder, SPAN_DANGER("Your form wavers. Ascension calls to you."))
 			if(12)
 				to_chat(holder, SPAN_DANGER("You feel yourself becoming... More. You answer the call."))
 			if(13)
 				holder.visible_message(SPAN_DANGER("[holder] shifts and reforms into... By science... What is that!?"))
-				new /mob/living/carbon/superior_animal/psi_monster/wasonce(holder)
-	if((total_instability >= DESTABILIZE_LEVEL_CLONE_DAMAGE) && (holder.getCloneLoss() < 30))
+				new /mob/living/carbon/superior/psi/wasonce(holder)
+	if((total_instability >= allowed_instability_clone) && (holder.getCloneLoss() < 30))
 		holder.adjustCloneLoss(1)
 
-
-
-
-
 //
-/datum/genetics/genetics_holder/ui_data(var/list/known_mutations)
+/datum/genetics/genetics_holder/nano_ui_data(var/list/known_mutations)
 	var/list/data = list()
 	data["instability"] = total_instability
 	var/list/mutation_pool_data = null
 	if(mutation_pool)
 		mutation_pool_data = list()
 		for(var/datum/genetics/mutation/selected_mutation in mutation_pool)
-			mutation_pool_data += list(selected_mutation.ui_data(known_mutations))
+			mutation_pool_data += list(selected_mutation.nano_ui_data(known_mutations))
 	data["mutation_pool"] = mutation_pool_data
 
 	return data
 
 //Quick Check if our holder is living
 /datum/genetics/genetics_holder/proc/holder_is_living()
-	return ((holder && istype(holder, /mob/living/carbon/human)) ? TRUE : FALSE)
+	return ((holder && istype(holder, /mob/living)) ? TRUE : FALSE)
 
 //Quick Check if our holder is human
 /datum/genetics/genetics_holder/proc/holder_is_human()
@@ -643,7 +641,7 @@
 	return duplicate
 
 //Obfuscate the data if we don't know it yet.
-/datum/genetics/mutation/ui_data(var/list/known_mutations)
+/datum/genetics/mutation/nano_ui_data(var/list/known_mutations)
 	var/list/data = list()
 	if(known_mutations[key])
 		data["source_mob"] = source_mob

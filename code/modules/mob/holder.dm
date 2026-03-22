@@ -68,9 +68,6 @@ var/list/holder_mob_icon_cache = list()
 	slot_flags = SLOT_HEAD | SLOT_OCLOTHING | SLOT_HOLSTER
 
 
-/obj/item/holder/borer
-	origin_tech = list(TECH_BIO = 8)
-
 /obj/item/holder/Process()
 	if (!contained)
 		qdel(src)
@@ -134,7 +131,7 @@ var/list/holder_mob_icon_cache = list()
 		//Repeat this check
 		//If we're still on the turf a few frames later, then we have actually been dropped or thrown
 		//Release the mob accordingly
-		//addtimer(CALLBACK(src, .proc/post_drop), 3)
+		//addtimer(CALLBACK(src, PROC_REF(post_drop)), 3)
 		//TODO: Uncomment the above once addtimer is ported
 		spawn(3)
 			post_drop()
@@ -216,7 +213,7 @@ var/list/holder_mob_icon_cache = list()
 		to_chat(grabber, "<span class='warning'>Your hand is full!</span>")
 		return
 
-	src.verbs += /mob/living/proc/get_holder_location//This has to be before we move the mob into the holder
+	add_verb(src, /mob/living/proc/get_holder_location) //This has to be before we move the mob into the holder
 
 
 	spawn(2)
@@ -256,7 +253,7 @@ var/list/holder_mob_icon_cache = list()
 			//If the scooping up failed something must have gone wrong
 			H.release_mob()
 
-		return success
+		return
 
 
 /mob/living/proc/get_holder_location()
@@ -281,14 +278,13 @@ var/list/holder_mob_icon_cache = list()
 
 /obj/item/holder/proc/sync(var/mob/living/M)
 	dir = 2
-	cut_overlays()
 	icon = M.icon
 	icon_state = M.icon_state
 	item_state = M.item_state
 	color = M.color
 	name = M.name
 	desc = M.desc
-	add_overlay(M.get_overlays())
+	copy_overlays(M, TRUE)
 	last_holder = loc
 	update_wear_icon()
 
@@ -526,13 +522,6 @@ var/list/holder_mob_icon_cache = list()
 	item_state = "corgi"
 	//contained_sprite = 1 //Part of contained sprite overhaul, not yet ported
 	w_class = ITEM_SIZE_NORMAL
-
-/obj/item/holder/borer
-	name = "cortical borer"
-	desc = "It's a slimy brain slug. Gross."
-	icon_state = "brainslug"
-	origin_tech = list(TECH_BIO = 6)
-	w_class = ITEM_SIZE_TINY
 
 /obj/item/holder/monkey
 	name = "monkey"

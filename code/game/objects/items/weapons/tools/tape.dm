@@ -47,11 +47,16 @@
 	preloaded_reagents = list("glue" = 15, "plasticide" = 5)
 	price_tag = 30
 
+/obj/item/tool/tape_roll/fiber/medical
+	name = "osseous tape"
+	desc = "A roll of flexible adhesive bioadaptive tape. Used for sealing minor damage to bones."
+	tool_qualities = list(QUALITY_ADHESIVE = 30, QUALITY_SEALING = 30)
+
 /obj/item/tool/tape_roll/repair_goo
 	name = "repair goo"
 	desc = "A wad of sticky gray goo capable of repairing tools and sealing cracks."
 	icon_state = "repair_goo"
-	tool_qualities = list(QUALITY_ADHESIVE = 50, QUALITY_SEALING = 50, QUALITY_CAUTERIZING = 5, QUALITY_BONE_GRAFTING = 25)
+	tool_qualities = list(QUALITY_ADHESIVE = 50, QUALITY_SEALING = 50, QUALITY_CAUTERIZING = 5, QUALITY_BONE_GRAFTING = 65)
 	matter = list(MATERIAL_PLASTIC = 20)
 	use_stock_cost = 0.10
 	max_stock = 100
@@ -69,6 +74,7 @@
 	price_tag = 1000 // Mythical
 
 /obj/item/tool/tape_roll/bonegel //Five stacks is too little for how often bones break. Tape-based stock system works just as fine.
+								//Now that it has a use in fracture repair, having a nigh infinite stock is too much. I'm cutting it down! -Dustan
 	name = "bone gel"
 	desc = "A gel-like calcium composite used as a surgical substitute for broken or missing bone pieces."
 	icon = 'icons/obj/stack/items.dmi'
@@ -79,18 +85,19 @@
 	matter = list(MATERIAL_PLASTIC = 20)
 	origin_tech = list(TECH_MATERIAL = 1, TECH_BIO = 3)
 	preloaded_reagents = list("milk" = 5)
-	tool_qualities = list(QUALITY_BONE_GRAFTING = 30)
-	max_stock = 100
+	tool_qualities = list(QUALITY_BONE_GRAFTING = 50)
+	max_stock = 20
 	use_stock_cost = 1
 	price_tag = 20
 
 /obj/item/tool/tape_roll/bonegel/si
-	name = "bone super gel"
-	desc = "A gel-like calcium composite used as a surgical substitute for broken or missing bone pieces."
+	name = "super bone gel"
+	desc = "An improved gel-like calcium composite formula used as an efficient surgical substitute for broken or missing bone pieces."
 	icon = 'icons/obj/stack/items.dmi'
 	icon_state = "bonegel_SI"
 	matter = list(MATERIAL_PLASTIC = 30, MATERIAL_STEEL = 3)
-	tool_qualities = list(QUALITY_BONE_GRAFTING = 50)
+	tool_qualities = list(QUALITY_BONE_GRAFTING = 100)
+	max_stock = 40
 	preloaded_reagents = null
 	price_tag = 200
 
@@ -161,6 +168,10 @@
 	if (!istype(target) || target.anchored)
 		return
 
+	if (istype(target, /obj/item/storage))
+		//dont tape storage items, just put them inside
+		return
+
 	if (target.w_class > ITEM_SIZE_SMALL)
 		to_chat(user, SPAN_WARNING("The [target] is too big to stick with tape!"))
 		return
@@ -209,8 +220,8 @@
 
 	if (istype(stuck, /obj/item/paper))
 		icon_state = stuck.icon_state
-		cut_overlays()
-		copy_overlays(stuck.overlays + "tape_overlay", TRUE)
+		copy_overlays(stuck, TRUE)
+		add_overlay("tape_overlay")
 	else
 		var/mutable_appearance/MA = new(stuck)
 		MA.layer = layer-0.1

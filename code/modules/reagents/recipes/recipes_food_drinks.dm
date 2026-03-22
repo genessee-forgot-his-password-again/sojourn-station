@@ -23,11 +23,6 @@
 	required_reagents = list("eznutrient" = 1, "sugar" = 3, "carbon" = 3)
 	result_amount = 7
 
-/datum/chemical_reaction/virus_food
-	result = "virusfood"
-	required_reagents = list("water" = 1, "milk" = 1)
-	result_amount = 5
-
 /* Food */
 
 /datum/chemical_reaction/tofu
@@ -36,33 +31,38 @@
 	catalysts = list("enzyme" = 5)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution solidifies into a block of tofu!"
 
 /datum/chemical_reaction/tofu/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/tofu(location)
+		new /obj/item/reagent_containers/snacks/tofu(location)
 
+/* Deprecated form of making chocolate_bar via chemical mix - Chocolate bar is now made in a Pot, recipe in VIRK
 /datum/chemical_reaction/chocolate_bar
 	result = null
 	required_reagents = list("soymilk" = 2, "coco" = 2, "sugar" = 2)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution solidifies into a chocolate bar!"
 
 /datum/chemical_reaction/chocolate_bar/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/chocolatebar(location)
+		new /obj/item/reagent_containers/snacks/chocolatebar(location)
 
 /datum/chemical_reaction/chocolate_bar2
 	result = null
-	required_reagents = list("milk" = 2, "coco" = 2, "sugar" = 2)
+	required_reagents = list("chocolatemilk" = 2, "coco" = 1, "sugar" = 2) // Not the prettiest fix but the most practical. -Seb
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution solidifies into a chocolate bar!"
 
 /datum/chemical_reaction/chocolate_bar2/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/chocolatebar(location)
+		new /obj/item/reagent_containers/snacks/chocolatebar(location)
+*/
 
 /datum/chemical_reaction/icecreambase
 	required_reagents = list("sugar" = 1, "ice" = 1, "cream" = 1)
@@ -75,20 +75,21 @@
 	required_reagents = list("icecreambase" = 10, "honey" = 5)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution freezes into icecream!"
 
 /datum/chemical_reaction/honey_icecream/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/honey_icecream(location)
+		new /obj/item/reagent_containers/snacks/honey_icecream(location)
 
 /datum/chemical_reaction/hot_coco
 	result = "hot_coco"
 	required_reagents = list("water" = 5, "coco" = 1)
 	result_amount = 5
 
-/datum/chemical_reaction/soysauce
+/datum/chemical_reaction/soysauce // Fermented soy, with the addition of wheat in a salt brine is a method for making Shoyu. Makes more sense than mixing soy "milk" with fucking SULPHURIC ACID. - Seb
 	result = "soysauce"
-	required_reagents = list("soymilk" = 4, "sacid" = 1)
+	required_reagents = list("soymilk" = 1, "sodiumchloride" = 1, "flour" = 1)
 	result_amount = 5
 
 /datum/chemical_reaction/ketchup
@@ -96,50 +97,66 @@
 	required_reagents = list("tomatojuice" = 2, "water" = 1, "sugar" = 1)
 	result_amount = 4
 
+/datum/chemical_reaction/vinegar
+	result = "vinegar"
+	required_reagents = list("wine" = 1, "water" = 1, "flour" = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/barbecue
+	result = "bbqsauce"
+	required_reagents = list("ketchup" = 1, "vinegar" = 1, "sugar" = 1)
+	result_amount = 3
+
 /datum/chemical_reaction/cheesewheel
 	result = null
 	required_reagents = list("milk" = 40)
 	catalysts = list("enzyme" = 5)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution solidifies into a wheel of cheese!"
 
 /datum/chemical_reaction/cheesewheel/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/sliceable/cheesewheel(location)
+		new /obj/item/reagent_containers/snacks/cheesewheel(location)
 
+/* Deprecated form of making meatball via chemical mix - Meatball is made in prep bowl, VIRK recipe
 /datum/chemical_reaction/meatball
 	result = null
 	required_reagents = list("protein" = 3, "flour" = 5)
 	result_amount = 3
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "You shape the mixture into a meatball."
 
 /datum/chemical_reaction/meatball/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/rawmeatball(location)
+		new /obj/item/reagent_containers/snacks/rawmeatball(location)
+*/
 
 /datum/chemical_reaction/dough
 	result = null
 	required_reagents = list("egg" = 3, "flour" = 10)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "You coax the mixture into a taut ball of dough."
 
 /datum/chemical_reaction/dough/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/dough(location)
+		new /obj/item/reagent_containers/snacks/dough(location)
 
 /datum/chemical_reaction/syntiflesh
 	result = null
-	required_reagents = list("blood" = 5, "clonexadone" = 1)
+	required_reagents = list("blood" = 5, "cronexidone" = 1)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The liquid tissue solidifies into a mass of meat."
 
 /datum/chemical_reaction/syntiflesh/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/meat/syntiflesh(location)
+		new /obj/item/reagent_containers/snacks/meat/syntiflesh(location)
 
 /datum/chemical_reaction/hot_ramen
 	result = "hot_ramen"
@@ -156,44 +173,48 @@
 	required_reagents = list("cream" = 5, "sodiumchloride" = 5) // Consider this a placeholder until there's a better way to make butter by churning - Seb
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution solidifies into a block of butter!"
 
 /datum/chemical_reaction/butter/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/sliceable/butterstick(location)
+		new /obj/item/reagent_containers/snacks/butterstick(location)
 
 /datum/chemical_reaction/vanillaicecream
 	result = null
 	required_reagents = list("icecreambase" = 10, "ice" = 5)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution freezes into icecream!"
 
 /datum/chemical_reaction/vanillaicecream/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/icecream(location)
+		new /obj/item/reagent_containers/snacks/icecream(location)
 
 /datum/chemical_reaction/chocolateicecream
 	result = null
 	required_reagents = list("icecreambase" = 10, "coco" = 5)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution freezes into icecream!"
 
 /datum/chemical_reaction/chocolateicecream/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/chocoicecream(location)
+		new /obj/item/reagent_containers/snacks/chocoicecream(location)
 
 /datum/chemical_reaction/strawberryicecream
 	result = null
-	required_reagents = list("icecreambase" = 10, "berryjuice" = 5)
+	required_reagents = list("icecreambase" = 10, "strawberryjuice" = 5)
 	result_amount = 1
 	blacklist_containers = list(/mob, /obj/machinery/microwave)
+	mix_message = "The solution freezes into icecream!"
 
 /datum/chemical_reaction/strawberryicecream/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/location = get_turf(holder.my_atom)
 	for(var/i = 1, i <= created_volume, i++)
-		new /obj/item/reagent_containers/food/snacks/strawberryicecream(location)
+		new /obj/item/reagent_containers/snacks/strawberryicecream(location)
 
 /* Aurora's Coffee */
 
@@ -250,6 +271,11 @@
 /datum/chemical_reaction/sromshine
 	result = "sromshine"
 	required_reagents = list("coffee" = 2, "orangejuice" = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/atomicoffee
+	result = "atomicoffee"
+	required_reagents = list("uranium" = 0.1, "espresso" = 3)
 	result_amount = 3
 
 /* Alcohol */
@@ -393,6 +419,12 @@
 	result = "gargleblaster"
 	required_reagents = list("vodka" = 2, "gin" = 1, "whiskey" = 1, "cognac" = 1, "limejuice" = 1)
 	result_amount = 6
+//Eris "lore frendly" verson, commited out do to being unsupported  with pressure
+//datum/chemical_reaction/gargle_blaster
+//	result = "gargleblaster"
+//	required_reagents = list("sbiten" = 1, "carpotoxin" = 1, "singulo" = 1, "pwine" = 1, "fuhrerole" = 1, "limejuice" = 1)
+//	result_amount = 2
+//	maximum_pressure = 80
 
 /datum/chemical_reaction/brave_bull
 	result = "bravebull"
@@ -687,6 +719,11 @@
 	required_reagents = list("rum" = 3, "limejuice" = 2, "sugar" = 1)
 	result_amount = 5
 
+/datum/chemical_reaction/drinks/daiquiri_strawberry
+	result = "daiquiri_strawberry"
+	required_reagents = list("daiquiri" = 1, "strawberryjuice" = 1)
+	result_amount = 2
+
 /datum/chemical_reaction/drinks/whiskeysour
 	result = "whiskeysour"
 	required_reagents = list("whiskey" = 2, "lemonjuice" = 1, "sugar" = 1)
@@ -750,7 +787,7 @@
 
 /datum/chemical_reaction/strawberrymilk
 	result = "strawberrymilk"
-	required_reagents = list("berryjuice" = 1, "milk" = 1)
+	required_reagents = list("strawberryjuice" = 1, "milk" = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/drinks/fernetcola
@@ -763,6 +800,12 @@
 	required_reagents = list("manhattan" = 1, "fernet" = 1)
 	result_amount = 2
 
+/datum/chemical_reaction/drinks/jagerbomb
+	result = "jagerbomb"
+	required_reagents = list("fernet" = 1, "energy_drink_monster" = 1)
+	result_amount = 2
+	mix_message = "The bitter shot falls into the energy drink with a plop!"
+
 /datum/chemical_reaction/drinks/antidepressant
 	result = "antidepressant"
 	required_reagents = list("space_up" = 10, "triplecitrus" = 20, "sugarrush" = 10, "ice" = 5, "cola" = 10, "pineapplejuice" = 10)
@@ -774,3 +817,96 @@
 	catalysts = list("enzyme" = 5) // Almost every homemade alcohol recipe has this
 	result_amount = 2
 
+//SoJ Based drinks
+
+/datum/chemical_reaction/drinks/southern_saki
+	result = "southern_saki"
+	required_reagents = list("rice" = 2, "berryjuice" = 1)
+	catalysts = list("enzyme" = 5)
+	result_amount = 3
+
+/datum/chemical_reaction/drinks/nothern_mead
+	result = "nothern_mead"
+	required_reagents = list("rice" = 2, "honey" = 1)
+	catalysts = list("enzyme" = 5)
+	result_amount = 3
+
+/datum/chemical_reaction/drinks/life_line
+	result = "life_line"
+	required_reagents = list("rum" = 2, "inaprovaline" = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/drinks/posicell
+	result = "posicell"
+	required_reagents = list("manhattan" = 1, "copper" = 2, "pineapplejuice" = 2, "lemonjuice" = 2) //annoying to make
+	catalysts = list("sugar" = 3, "ice" = 2) //annoying to make
+	byproducts = list("sugarrush" = 30)
+	result_amount = 5
+
+/datum/chemical_reaction/drinks/nickle_n_dime
+	result = "nickle_n_dime"
+	required_reagents = list("vodka" = 3, "lemon_lime" = 3, MATERIAL_GOLD = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/drinks/arcscrewdriver
+	result = "arcscrewdriver"
+	required_reagents = list("screwdrivercocktail" = 4, "carbon" = 1, "iron" = 1, MATERIAL_PLASMA = 1)
+	result_amount = 5 //carbon iron and plasma makes plasteel materal wise
+
+/datum/chemical_reaction/drinks/whiske_rocks
+	result = "whiske_rocks"
+	required_reagents = list("whiskey" = 2, "ice" = 1)
+	result_amount = 4 //Is is dence
+
+/datum/chemical_reaction/drinks/nior
+	result = "noir"
+	required_reagents = list("whiske_rocks" = 2, "rum" = 1)
+	result_amount = 3 //Is is dence
+
+/datum/chemical_reaction/drinks/duress
+	result = "duress"
+	required_reagents = list("bluecuracao" = 2, "orangejuice" = 1)
+	result_amount = 4
+
+/datum/chemical_reaction/drinks/ocular
+	result = "ocular"
+	required_reagents = list("vodka" = 2, "blendedmint" = 1, "protein" = 1)
+	result_amount = 4
+
+/datum/chemical_reaction/drinks/saint_pio
+	result = "saint_pio"
+	required_reagents = list("water" = 3, "blood" = 1, "ntcahors" = 1)
+	result_amount = 5
+
+/datum/chemical_reaction/drinks/rusty_special
+	result = "rusty_special"
+	required_reagents = list("tequilla" = 2, "berryjuice" = 1, "potassium" = 1)
+	result_amount = 4
+
+/datum/chemical_reaction/drinks/western_escargot
+	result = "western_escargot"
+	required_reagents = list("tequilla" = 1, "rum" = 1, "potassium" = 1, "vodka" = 1, "grapejuice" = 1)
+	result_amount = 5
+
+/datum/chemical_reaction/drinks/prospie
+	result = "prospie"
+	required_reagents = list("mead" = 3, "blood" = 1, "water" = 1, "sodiumchloride" = 1)
+	result_amount = 5
+
+/datum/chemical_reaction/drinks/friendlyfire
+	result = "friendlyfire"
+	required_reagents = list("rum" = 2, "iron" = 1, "vodka" = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/drinks/strawberry_explosive_blast
+	result = "strawberry_explosive_blast"
+	required_reagents = list("strawberryjuice" = 2, "cola" = 1)
+	result_amount = 3
+
+
+/* Other */
+
+/datum/chemical_reaction/protein_shake
+	result = "protein_shake"
+	required_reagents = list("milk" = 1, "protein" = 1)
+	result_amount = 2

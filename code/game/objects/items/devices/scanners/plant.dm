@@ -6,11 +6,13 @@
 	icon_state = "hydro"
 	item_state = "analyzer"
 	charge_per_use = 2
+	print_report_delay = 5 //we do mass plant scanning for sciences and garden
 
 	matter = list(MATERIAL_PLASTIC = 2, MATERIAL_GLASS = 1)
+	preloaded_reagents = list("mercury" = 15, "lithium" = 5, "plasticide" = 9)
 
 	var/global/list/valid_targets = list(
-		/obj/item/reagent_containers/food/snacks/grown,
+		/obj/item/reagent_containers/snacks/grown,
 		/obj/item/grown,
 		/obj/machinery/portable_atmospherics/hydroponics,
 		/obj/machinery/beehive,
@@ -54,9 +56,9 @@
 			dat += "The hive is smoked."
 		return jointext(dat, "<br>")
 
-	else if(istype(target,/obj/item/reagent_containers/food/snacks/grown))
+	else if(istype(target,/obj/item/reagent_containers/snacks/grown))
 
-		var/obj/item/reagent_containers/food/snacks/grown/G = target
+		var/obj/item/reagent_containers/snacks/grown/G = target
 		grown_seed = plant_controller.seeds[G.plantname]
 		loaded_seed = grown_seed
 		grown_reagents = G.reagents
@@ -89,6 +91,7 @@
 	if(!grown_seed)
 		return("No Data Available")
 
+	var/chem_exspection = 1
 	var/form_title = "[grown_seed.seed_name] (#[grown_seed.uid])"
 	dat += "<h3>Plant data for [form_title]</h3>"
 
@@ -113,6 +116,7 @@
 
 	if(grown_seed.get_trait(TRAIT_HARVEST_REPEAT))
 		dat += "This plant can be harvested repeatedly.<br>"
+		chem_exspection -= 0.25
 
 	if(grown_seed.get_trait(TRAIT_IMMUTABLE) == -1)
 		dat += "This plant is highly mutable.<br>"
@@ -184,8 +188,12 @@
 		if(2)
 			dat += "<br>It is carnivorous and poses a significant threat to living things around it."
 
+	if(grown_seed.get_trait(TRAIT_COMPANION_PLANT))
+		dat += "<br>It will yields, production, and growth of other plants close to itself."
+
 	if(grown_seed.get_trait(TRAIT_PARASITE))
 		dat += "<br>It is capable of parisitizing and gaining sustenance from tray weeds."
+
 	if(grown_seed.get_trait(TRAIT_ALTER_TEMP))
 		dat += "<br>It will periodically alter the local temperature by [grown_seed.get_trait(TRAIT_ALTER_TEMP)] degrees Kelvin."
 
@@ -200,8 +208,18 @@
 
 	if(grown_seed.get_trait(TRAIT_JUICY) == 1)
 		dat += "<br>The fruit is soft-skinned and juicy."
+		chem_exspection += 0.15
 	else if(grown_seed.get_trait(TRAIT_JUICY) == 2)
 		dat += "<br>The fruit is excessively juicy."
+		chem_exspection += 0.25
+
+	if(grown_seed.get_trait(TRAIT_CHEM_PRODUCTION))
+		dat += "<br>The fruit is has more and larger vacuole cells."
+		chem_exspection += 0.25
+
+	if(grown_seed.get_trait(TRAIT_CHEM_SPRAYER))
+		dat += "<br>Vines from this fruit contain pressurized stomas that open when they detect movement."
+		chem_exspection += 0.50
 
 	if(grown_seed.get_trait(TRAIT_EXPLOSIVE))
 		dat += "<br>The fruit is internally unstable."
@@ -214,6 +232,13 @@
 
 	if(grown_seed.consume_gasses && grown_seed.consume_gasses.len)
 		dat += "<br>It will remove gas from the environment."
+
+	dat += "<br>Expected reagent production: [chem_exspection]x (i.e mult)."
+
+
+	if(grown_seed.companions)
+		for(var/friends in grown_seed.companions)
+			dat += "<br>This plant has benefits when growing next to [friends]."
 
 
 	return JOINTEXT(dat)

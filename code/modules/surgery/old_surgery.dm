@@ -59,10 +59,10 @@
 
 // does stuff to begin the step, usually just printing messages. Moved germs transfering and bloodying here too
 /datum/old_surgery_step/proc/begin_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	if (can_infect && affected)
-		affected.spread_germs_from(user)
-	if (ishuman(user) && prob(60))
+	//var/obj/item/organ/external/affected = target.get_organ(target_zone)
+	//if (can_infect && affected)
+	//	affected.spread_germs_from(user)	if (ishuman(user) && prob(60))
+	if(ishuman(user) && prob(60))
 		var/mob/living/carbon/human/H = user
 		if (blood_level)
 			H.bloody_hands(target,0)
@@ -133,10 +133,11 @@ proc/do_old_surgery(mob/living/carbon/M, mob/living/user, obj/item/tool)
 			selectedStep.fail_step(user, M, zone, tool)		//malpractice~
 		else
 			to_chat(user, SPAN_WARNING("You must remain close to your patient to conduct surgery."))
-
+		/*
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
 			H.update_surgery()
+		*/
 		return 1 //don't want to do weapony things after surgery
 
 	return 0

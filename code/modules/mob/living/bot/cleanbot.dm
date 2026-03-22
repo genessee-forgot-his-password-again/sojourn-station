@@ -5,6 +5,8 @@
 	req_one_access = list(access_janitor, access_robotics)
 	botcard_access = list(access_janitor, access_maint_tunnels)
 
+	pass_flags = PASSTABLE
+
 	locked = 0 // Start unlocked so roboticist can set them to patrol.
 
 	var/obj/effect/decal/cleanable/target
@@ -28,7 +30,7 @@
 	get_targets()
 
 /mob/living/bot/cleanbot/proc/handle_target()
-	if(loc == target.loc)
+	if((get_dist(loc, target.loc) <= 1))
 		if(!cleaning)
 			UnarmedAttack(target)
 			return 1
@@ -107,8 +109,8 @@
 	if(!istype(D))
 		return
 
-	if(D.loc != loc)
-		return
+//	if(D.loc != loc)
+//		return
 
 	cleaning = 1
 	visible_message("[src] begins to clean up \the [D]")
@@ -168,7 +170,7 @@
 		dat += "Odd looking screw twiddled: <A href='?src=\ref[src];operation=screw'>[screwloose ? "Yes" : "No"]</A><BR>"
 		dat += "Weird button pressed: <A href='?src=\ref[src];operation=oddbutton'>[oddbutton ? "Yes" : "No"]</A>"
 
-	user << browse("<HEAD><TITLE>Cleaner v1.0 controls</TITLE></HEAD>[dat]", "window=autocleaner")
+	user << browse(HTML_SKELETON_TITLE("Cleaner v1.0 controls",dat), "window=autocleaner")
 	onclose(user, "autocleaner")
 	return
 
@@ -207,17 +209,32 @@
 /mob/living/bot/cleanbot/proc/get_targets()
 	target_types = list()
 
+	target_types += /obj/effect/decal/cleanable/ash
 	target_types += /obj/effect/decal/cleanable/blood/oil
-	target_types += /obj/effect/decal/cleanable/vomit
+	target_types += /obj/effect/decal/cleanable/cobweb
+	target_types += /obj/effect/decal/cleanable/cobweb2
 	target_types += /obj/effect/decal/cleanable/crayon
-	target_types += /obj/effect/decal/cleanable/liquid_fuel
-	target_types += /obj/effect/decal/cleanable/mucus
 	target_types += /obj/effect/decal/cleanable/dirt
-	target_types += /obj/effect/decal/cleanable/rubble
+	target_types += /obj/effect/decal/cleanable/egg_smudge
+	target_types += /obj/effect/decal/cleanable/filth
+	target_types += /obj/effect/decal/cleanable/flour
+	target_types += /obj/effect/decal/cleanable/fruit_smudge
+	target_types += /obj/effect/decal/cleanable/generic
+	target_types += /obj/effect/decal/cleanable/greenglow
+	target_types += /obj/effect/decal/cleanable/liquid_fuel
+	target_types += /obj/effect/decal/cleanable/molten_item
 	target_types += /obj/effect/decal/cleanable/mucus
+	target_types += /obj/effect/decal/cleanable/pie_smudge
+	target_types += /obj/effect/decal/cleanable/reagents
+	target_types += /obj/effect/decal/cleanable/roach_egg_remains
+	target_types += /obj/effect/decal/cleanable/rubble
+	target_types += /obj/effect/decal/cleanable/spiderling_remains
+	target_types += /obj/effect/decal/cleanable/tomato_smudge
+	target_types += /obj/effect/decal/cleanable/vomit
 
 	if(blood)
 		target_types += /obj/effect/decal/cleanable/blood
+		target_types += /obj/effect/decal/cleanable/slimecorpse
 
 /* Assembly */
 

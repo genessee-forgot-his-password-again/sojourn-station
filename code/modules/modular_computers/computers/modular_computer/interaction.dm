@@ -14,17 +14,16 @@
 
 	verbs |= /obj/item/modular_computer/verb/emergency_shutdown
 
-/obj/item/modular_computer/proc/can_interact(var/mob/user)
-	if(usr.incapacitated())
+/obj/item/modular_computer/proc/can_press_buttons(mob/user)
+	if(user.incapacitated())
 		to_chat(user, "<span class='warning'>You can't do that.</span>")
 		return FALSE
 
-	if(!Adjacent(usr))
+	if(!Adjacent(user))
 		to_chat(user, "<span class='warning'>You can't reach it.</span>")
 		return FALSE
 
 	return TRUE
-
 
 // Forcibly shut down the device. To be used when something bugs out and the UI is nonfunctional.
 /obj/item/modular_computer/verb/emergency_shutdown()
@@ -32,7 +31,7 @@
 	set category = "Object"
 	set src in view(1)
 
-	if(!can_interact(usr))
+	if(!can_press_buttons(usr))
 		return
 
 	if(enabled)
@@ -51,7 +50,7 @@
 	set category = "Object"
 	set src in view(1)
 
-	if(!can_interact(usr))
+	if(!can_press_buttons(usr))
 		return
 
 	playsound(loc, 'sound/machines/id_swipe.ogg', 100, 1)
@@ -63,7 +62,7 @@
 	set category = "Object"
 	set src in view(1)
 
-	if(!can_interact(usr))
+	if(!can_press_buttons(usr))
 		return
 
 	proc_eject_usb(usr)
@@ -73,7 +72,7 @@
 	set category = "Object"
 	set src in view(1)
 
-	if(!can_interact(usr))
+	if(!can_press_buttons(usr))
 		return
 
 	proc_eject_ai(usr)
@@ -83,7 +82,7 @@
 	set category = "Object"
 	set src in view(1)
 
-	if(!can_interact(usr))
+	if(!can_press_buttons(usr))
 		return
 
 	if(istype(stored_pen))
@@ -98,7 +97,7 @@
 	if(!user)
 		user = usr
 
-	if(!can_interact(usr))
+	if(!can_press_buttons(usr))
 		return
 
 	for(var/p in all_threads)
@@ -122,7 +121,7 @@
 		to_chat(user, "There is no portable device connected to \the [src].")
 		return
 
-	var/obj/item/computer_hardware/hard_drive/portable/PD = portable_drive
+	var/obj/item/pc_part/drive/disk/PD = portable_drive
 
 	uninstall_component(portable_drive, user)
 	user.put_in_hands(PD)
@@ -143,7 +142,7 @@
 
 /obj/item/modular_computer/attack_ghost(var/mob/observer/ghost/user)
 	if(enabled)
-		nano_ui_interact(user)
+		ui_interact(user)
 	else if(check_rights(R_ADMIN, 0, user))
 		var/response = alert(user, "This computer is turned off. Would you like to turn it on?", "Admin Override", "Yes", "No")
 		if(response == "Yes")
@@ -160,7 +159,7 @@
 // On-click handling. Turns on the computer if it's off and opens the GUI.
 /obj/item/modular_computer/attack_self(var/mob/user)
 	if(enabled && screen_on)
-		nano_ui_interact(user)
+		ui_interact(user)
 	else if(!enabled && screen_on)
 		turn_on(user)
 
@@ -211,7 +210,7 @@
 	if(!modifiable)
 		return ..()
 
-	if(istype(W, suitable_cell) || istype(W, /obj/item/computer_hardware))
+	if(istype(W, suitable_cell) || istype(W, /obj/item/pc_part))
 		try_install_component(W, user)
 
 
@@ -262,7 +261,7 @@
 				if(!Adjacent(usr))
 					return
 				if(tool.use_tool(user, src, WORKTIME_FAST, QUALITY_SCREW_DRIVING, FAILCHANCE_VERY_EASY, required_stat = STAT_COG))
-					var/obj/item/computer_hardware/H = find_hardware_by_name(choice)
+					var/obj/item/pc_part/H = find_hardware_by_name(choice)
 					if(!H)
 						return
 					uninstall_component(H, user)
@@ -280,7 +279,7 @@
 
 /obj/item/modular_computer/MouseDrop(atom/over_object)
 	var/mob/M = usr
-	if(!istype(over_object, /obj/screen) && can_interact(M))
+	if(!istype(over_object, /obj/screen) && can_press_buttons(M))
 		return attack_self(M)
 
 	if((src.loc == M) && istype(over_object, /obj/screen/inventory/hand) && eject_item(cell, M))

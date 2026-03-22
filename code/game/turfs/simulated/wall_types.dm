@@ -150,7 +150,7 @@
 	icon_state = "wall1"
 	opacity = 1
 	density = TRUE
-	blocks_air = 1
+	blocks_air = TRUE
 
 /turf/simulated/shuttle/wall/cargo
 	name = "Cargo Transport Shuttle (A5)"
@@ -163,12 +163,12 @@
 	icon_state = "escpodwall1"
 
 /turf/simulated/shuttle/wall/mining
-	name = "Mining Barge"
+	name = "The Rocinante"
 	icon = 'icons/turf/shuttlemining.dmi'
 	icon_state = "11,23"
 
-/turf/simulated/shuttle/wall/science
-	name = "Science Shuttle"
+/turf/simulated/shuttle/wall/science //I guess this got repurposed into the Marshal shuttle soooooo-
+	name = "The Vasiliy"
 	icon = 'icons/turf/shuttlescience.dmi'
 	icon_state = "6,18"
 
@@ -177,6 +177,8 @@
 	icon = 'icons/turf/shuttle.dmi'
 	anchored = 1
 	density = TRUE
+
+	atmos_canpass = CANPASS_DENSITY
 
 /obj/structure/shuttle_part/cargo
 	name = "Cargo Transport Shuttle (A5)"
@@ -189,7 +191,7 @@
 	icon_state = "escpodwall1"
 
 /obj/structure/shuttle_part/mining
-	name = "Mining Barge"
+	name = "The Rocinante"
 	icon = 'icons/turf/shuttlemining.dmi'
 	icon_state = "11,23"
 
@@ -228,17 +230,34 @@
 /turf/simulated/wall/wood/New(var/newloc)
 	..(newloc,MATERIAL_WOOD)
 
+/turf/simulated/wall/cloth/New(var/newloc)
+	..(newloc,MATERIAL_CLOTH)
+
+
+/turf/simulated/wall/marble/New(var/newloc)
+	..(newloc,MATERIAL_MARBLE)
+
+/turf/simulated/wall/marble/dark/New(var/newloc)
+	..(newloc,MATERIAL_MARBLE)
+	base_color = "#333333"
+
 /turf/simulated/wall/wood
 	icon_state = "wood"
 	icon_base_override = "wood"
+	base_color_override = "#FFFFFF"
+	reinf_color_override = "#FFFFFF"
 
 /turf/simulated/wall/wood_old
 	icon_state = "oldwood"
 	icon_base_override = "oldwood"
+	base_color_override = "#FFFFFF"
+	reinf_color_override = "#FFFFFF"
 
 /turf/simulated/wall/wood_barrel
 	icon_state = "woodenwall"
 	icon_base_override = "woodenwall"
+	base_color_override = "#FFFFFF"
+	reinf_color_override = "#FFFFFF"
 
 /turf/simulated/wall/wood_barrel/New(var/newloc)
 	..(newloc, MATERIAL_WOOD)

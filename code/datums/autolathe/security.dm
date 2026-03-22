@@ -6,6 +6,10 @@
 	name = "handcuffs"
 	build_path = /obj/item/handcuffs
 
+/datum/design/autolathe/sec/handcuffs_adv
+	name = "handgauntlet"
+	build_path = /obj/item/handcuffs/advanced
+
 /datum/design/autolathe/sec/zipties
 	name = "zip ties"
 	build_path = /obj/item/handcuffs/zipties
@@ -30,9 +34,14 @@
 	name = "silencer"
 	build_path = /obj/item/gun_upgrade/muzzle/silencer
 
+/datum/design/autolathe/sec/acog
+	name = "AGOG scope"
+	build_path = /obj/item/gun_upgrade/scope/acog
+	materials = list(MATERIAL_GLASS = 4, MATERIAL_STEEL = 2) // Double materials, prevents obtaining more than used.
+
 /datum/design/autolathe/sec/gun_case
 	name = "gun case"
-	build_path = /obj/item/storage/briefcase/rifle
+	build_path = /obj/item/storage/backpack/guncase
 	materials = list(MATERIAL_PLASTIC = 7, MATERIAL_STEEL = 2)
 
 /datum/design/autolathe/sec/hailer
@@ -43,12 +52,16 @@
 	name = "stun baton"
 	build_path = /obj/item/tool/baton
 
+/datum/design/autolathe/sec/stunbaton/maul
+	name = "shock maul"
+	build_path = /obj/item/tool/baton/maul
+
 /datum/design/autolathe/sec/stunbaton_small
 	name = "mini stun baton"
 	build_path = /obj/item/tool/baton/mini
 
 /datum/design/autolathe/sec/auto_eject_mod
-	name = "H&S \"Dropper\" Magwell Braker"
+	name = "H&S \"Dropper\" Magwell Breaker"
 	build_path = /obj/item/gun_upgrade/magwell/auto_eject
 
 //Shields
@@ -59,6 +72,10 @@
 /datum/design/autolathe/sec/buckler
 	name = "tactical shield"
 	build_path = /obj/item/shield/buckler
+
+/datum/design/autolathe/sec/excelsior_shield
+	name = "excelsior buckler"
+	build_path = /obj/item/shield/buckler/excelsior
 
 /datum/design/autolathe/sec/bastion
 	name = "bastion shield"

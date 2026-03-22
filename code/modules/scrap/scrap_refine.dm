@@ -34,23 +34,28 @@
 
 /obj/item/scrap_lump/Initialize()
 	. = ..()
-	create_reagents(10)
-	var/reag_num = rand(0, 3)
-	for(var/i in 1 to reag_num)
-		if(reagents.total_volume == reagents.maximum_volume)
-			break
-		reagents.add_reagent(pick(GLOB.chemical_reagents_list), rand(1, reagents.maximum_volume))
+	//So you can make boards or something along those lines - getto chemistry
+	if(prob(30))
+		create_reagents(10)
+		if(prob(50))
+			reagents.add_reagent("silicon", 5)
+		reagents.add_reagent("silicon", 5)
 	pixel_x = rand(0, 16) - 8
 	pixel_y = rand(0, 8) - 8
 
-/obj/item/stack/sheet/refined_scrap
+/obj/item/stack/material/refined_scrap
 	name = "refined scrap"
 	desc = "This is ghetto gold! It could be used as fuel or building material."
 	icon = 'icons/obj/structures/scrap/refine.dmi'
 	icon_state = "refined"
+	default_type = MATERIAL_RSCRAP
+	novariants = TRUE
+	price_tag = 30
 	max_amount = 120
-	amount = 1
 
-/obj/item/stack/sheet/refined_scrap/random
+/obj/item/stack/material/refined_scrap/random
 	rand_min = 5
 	rand_max = 20
+
+/obj/item/stack/material/refined_scrap/full
+	amount = 120

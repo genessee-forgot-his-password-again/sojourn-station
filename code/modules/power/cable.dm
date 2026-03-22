@@ -89,7 +89,7 @@ var/list/possible_cable_coil_colours = list(
 	d2 = text2num( copytext( icon_state, dash+1 ) )
 
 	var/turf/T = src.loc			// hide if turf is not intact
-	if(level==1) hide(!T.is_plating())
+	if(level==1) hide(!T?.is_plating())
 	GLOB.cable_list += src //add it to the global cable list
 
 
@@ -532,6 +532,11 @@ obj/structure/cable/proc/cableColor(var/colorC)
 	stacktype = /obj/item/stack/cable_coil
 	preloaded_reagents = list("copper" = 12, "plasticide" = 6) //Normal is 8 copper 2 plastic
 
+//Used for implants
+/obj/item/stack/cable_coil/non_consumable
+	consumable = FALSE
+	splittable = FALSE
+
 /obj/item/stack/cable_coil/cyborg
 	name = "cable coil synthesizer"
 	desc = "A device that makes cable."
@@ -569,11 +574,13 @@ obj/structure/cable/proc/cableColor(var/colorC)
 			var/robotics_expert = user.stats.getPerk(PERK_ROBOTICS_EXPERT)
 			if(S.burn_dam < ROBOLIMB_SELF_REPAIR_CAP || robotics_expert)
 				var/repair_amount = 15
+				H.UpdateDamageIcon()
 				if(robotics_expert)
 					repair_amount = user.stats.getStat(STAT_MEC)
 				S.heal_damage(0,repair_amount,TRUE)
 				user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 				user.visible_message(SPAN_DANGER("\The [user] [robotics_expert ? "expertly" : ""] patches some damaged wiring on \the [M]'s [S.name] with \the [src]."))
+				H.UpdateDamageIcon()
 			else if(S.open != 2)
 				to_chat(user, SPAN_DANGER("The damage is far too severe to patch over externally."))
 			return 1
@@ -614,18 +621,6 @@ obj/structure/cable/proc/cableColor(var/colorC)
 	else
 		w_class = ITEM_SIZE_SMALL
 
-/obj/item/stack/cable_coil/examine(mob/user)
-	if(get_dist(src, user) > 1)
-		return
-
-	if(get_amount() == 1)
-		to_chat(user, "A short piece of power cable.")
-	else if(get_amount() == 2)
-		to_chat(user, "A piece of power cable.")
-	else
-		to_chat(user, "A coil of power cable. There are [get_amount()] lengths of cable in the coil.")
-
-
 /obj/item/stack/cable_coil/verb/make_restraint()
 	set name = "Make Cable Restraints"
 	set category = "Object"
@@ -653,7 +648,7 @@ obj/structure/cable/proc/cableColor(var/colorC)
 // Items usable on a cable coil :
 //   - Wirecutters : cut them duh !
 //   - Cable coil : merge cables
-/obj/item/stack/cable_coil/proc/can_merge(var/obj/item/stack/cable_coil/C)
+/obj/item/stack/cable_coil/can_merge(var/obj/item/stack/cable_coil/C)
 	return color == C.color
 
 /obj/item/stack/cable_coil/cyborg/can_merge()

@@ -1,4 +1,4 @@
-/mob/living/carbon/superior_animal/robot
+/mob/living/carbon/superior/robot
 	name = "Robot"
 	desc = "Beep Boop!"
 	icon = 'icons/mob/battle_roomba.dmi'
@@ -15,7 +15,7 @@
 	mob_classification = CLASSIFICATION_SYNTHETIC
 	projectiletype = /obj/item/projectile/beam/drone
 
-	armor = list(melee = 30, bullet = 20, energy = 35, bomb = 30, bio = 100, rad = 100) //We want to be gunned down, not lasered
+	armor = list(melee = 7, bullet = 5, energy = 8, bomb = 30, bio = 100, rad = 100) //We want to be gunned down, not lasered
 
 	do_gibs = FALSE
 
@@ -32,8 +32,11 @@
 	viewRange = 8
 	reagent_immune = TRUE
 	toxin_immune = TRUE
+	cold_protection = 1
+	heat_protection = 1
 	var/cleaning = TRUE
 	var/emp_damage = TRUE // Does EMP & Ion weapons cause damage?
+	var/termiation = TRUE
 
 	can_burrow = FALSE
 	colony_friend = FALSE
@@ -41,24 +44,25 @@
 
 	known_languages = list(LANGUAGE_COMMON)
 
+	never_stimulate_air = TRUE
+
 	//Drops
 	var/drop1 = /obj/item/scrap_lump
 	var/drop2 = null
 	var/cell_drop = null
+	cant_gib = TRUE
 
-/mob/living/carbon/superior_animal/robot/handle_breath(datum/gas_mixture/breath) //we dont care about the air
+	//Screwdriving could be set for some mobs if required but sawing seems more universal
+	harvesting_tool = QUALITY_SAWING
+	harvesting_stat = STAT_MEC
+
+/mob/living/carbon/superior/robot/handle_breath(datum/gas_mixture/breath) //we dont care about the air
 	return
 
-/mob/living/carbon/superior_animal/robot/handle_environment(var/datum/gas_mixture/environment) //We are robots, no air or presser will harm us
+/mob/living/carbon/superior/robot/handle_environment(datum/gas_mixture/environment) //We are robots, no air or pressure will harm us
 	return
 
-/mob/living/carbon/superior_animal/robot/handle_cheap_breath(datum/gas_mixture/breath as anything)
-	return
-
-/mob/living/carbon/superior_animal/robot/handle_cheap_environment(datum/gas_mixture/environment as anything)
-	return
-
-/mob/living/carbon/superior_animal/robot/Move(NewLoc, Dir = 0, step_x = 0, step_y = 0, var/glide_size_override = 0) //WE CLEAN!
+/mob/living/carbon/superior/robot/Move(NewLoc, Dir = 0, step_x = 0, step_y = 0, glide_size_override = 0) //WE CLEAN!
 	. = ..()
 	if(cleaning)
 		var/turf/tile = loc
@@ -66,7 +70,7 @@
 			tile.clean_blood()
 			for(var/A in tile)
 				if(istype(A, /obj/effect))
-					if(istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay))
+					if(istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay) && !istype(A, /obj/effect/overlay/water))
 						qdel(A)
 				else if(istype(A, /obj/item))
 					var/obj/item/cleaned_item = A
@@ -89,25 +93,27 @@
 						cleaned_human.clean_blood(1)
 						to_chat(cleaned_human, SPAN_DANGER("[src] cleans your face!"))
 
-/mob/living/carbon/superior_animal/robot/death()
+/mob/living/carbon/superior/robot/death()
 	..()
-	new /obj/effect/decal/cleanable/blood/gibs/robot(src.loc)
+	new /obj/effect/decal/cleanable/blood/gibs/robot(loc)
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
 	s.set_up(3, 1, src)
 	s.start()
 	if(drop1)
-		new drop1 (src.loc)
+		new drop1 (loc)
 		drop1 = null
 	if(drop2)
-		new drop2 (src.loc)
+		new drop2 (loc)
 		drop2 = null
 	if(cell_drop)
-		new cell_drop (src.loc)
+		new cell_drop (loc)
 		cell_drop = null
-	qdel(src)
+	if(termiation)
+		drop_embedded()
+		qdel(src)
 	return
 
-/mob/living/carbon/superior_animal/robot/emp_act(severity)
+/mob/living/carbon/superior/robot/emp_act(severity)
 	..()
 	if(rapid)
 		rapid = FALSE
@@ -116,17 +122,9 @@
 	if(emp_damage)
 		adjustFireLoss(rand(50,80)*severity)
 
-/mob/living/carbon/superior_animal/robot/examine(mob/user)
+/mob/living/carbon/superior/robot/examine(mob/user)
 	..()
 	if(iscarbon(user) || issilicon(user))
 		var/robotics_expert = user.stats.getPerk(PERK_ROBOTICS_EXPERT)
 		if(robotics_expert) // Are we an expert in robots?
 			to_chat(user, SPAN_NOTICE("[name] is currently at [(health/maxHealth)*100]% integrity!")) // Give a more accurate reading.
-		else if (health < maxHealth * 0.25)
-			to_chat(user, SPAN_DANGER("It's grievously wounded!"))
-		else if (health < maxHealth * 0.50)
-			to_chat(user, SPAN_DANGER("It's badly wounded!"))
-		else if (health < maxHealth * 0.75)
-			to_chat(user, SPAN_WARNING("It's wounded."))
-		else if (health < maxHealth)
-			to_chat(user, SPAN_WARNING("It's a bit wounded."))

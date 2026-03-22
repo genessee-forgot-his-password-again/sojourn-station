@@ -3,6 +3,12 @@
 	suit = /obj/item/clothing/suit/storage/rank/ass_jacket
 	uniform = /obj/item/clothing/under/rank/assistant
 
+/decl/hierarchy/outfit/job/foreigner
+	name = OUTFIT_JOB_NAME("Visitor")
+	id_type = /obj/item/card/id/visitor
+	pda_type = null
+	uniform = /obj/item/clothing/under/genericw
+
 /decl/hierarchy/outfit/job/service
 	l_ear = /obj/item/device/radio/headset/headset_service
 	hierarchy_type = /decl/hierarchy/outfit/job/service
@@ -58,7 +64,7 @@
 	glasses = /obj/item/clothing/glasses/artist
 	mask = /obj/item/clothing/mask/gas/artist_hat
 	l_pocket = /obj/item/bikehorn
-	backpack_contents = list(/obj/item/bananapeel = 1, /obj/item/storage/fancy/crayons = 1, /obj/item/toy/weapon/waterflower = 1, /obj/item/stamp/clown = 1, /obj/item/handcuffs/fake = 1)
+	backpack_contents = list(/obj/item/storage/hcases/scrap/job_artist = 1)
 
 /decl/hierarchy/outfit/job/cargo/artist/clown/post_equip(var/mob/living/carbon/human/H)
 	..()

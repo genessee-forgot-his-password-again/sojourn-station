@@ -17,9 +17,8 @@
 		var/turf/T = get_turf(src)
 		playsound(T, 'sound/effects/phasein.ogg', 100, 1)
 		for(var/mob/living/carbon/human/M in viewers(T, null))
-			if(M.eyecheck() < FLASH_PROTECTION_MODERATE && will_flash == TRUE)
-				if (M.HUDtech.Find("flash"))
-					flick("e_flash", M.HUDtech["flash"])
+			if(M.eyecheck() < FLASH_PROTECTION_MINOR && will_flash == TRUE)
+				M.flash(0, FALSE , FALSE , FALSE , 0)
 
 		for(var/i=1, i<=deliveryamt, i++)
 			var/atom/movable/x = new spawner_type
@@ -36,7 +35,7 @@
 /obj/item/grenade/spawnergrenade/manhacks
 	name = "manhack delivery grenade"
 	desc = "Deploys a swarm of floating robots that will attack anything nearby."
-	spawner_type = /mob/living/simple_animal/hostile/viscerator
+	spawner_type = /mob/living/simple/hostile/viscerator
 	deliveryamt = 5
 	origin_tech = list(TECH_MATERIAL = 3, TECH_MAGNET = 4, TECH_ILLEGAL = 4)
 
@@ -44,7 +43,12 @@
 /obj/item/grenade/spawnergrenade/manhacks/opifex
 	name = "opifex manhack grenade"
 	desc = "Deploys a swarm of floating robots that will attack animals and non-colony humanoids nearby. "
-	spawner_type = /mob/living/simple_animal/hostile/viscerator/opifex
+	spawner_type = /mob/living/simple/hostile/viscerator/opifex
+
+/obj/item/grenade/spawnergrenade/manhacks/colony
+	name = "colony-locked manhack grenade"
+	desc = "Deploys a swarm of floating robots that will attack animals and non-colony humanoids nearby. "
+	spawner_type = /mob/living/simple/hostile/viscerator/colony
 
 //Troll grenade
 /obj/item/grenade/spawnergrenade/blob
@@ -59,7 +63,7 @@
 	desc = "A shitty rapid 'build-a-bot' grenade produced by prospector salvagers using designs 'borrowed' from the Soteria, handy for a build-a-bot guard or as a disposable decoy."
 	deliveryamt = 1
 	icon_state = "screamer"
-	spawner_type = /mob/living/carbon/superior_animal/robot/greyson/synthetic/allied/junkbot
+	spawner_type = /mob/living/carbon/superior/robot/gp/synth/allied/junkbot
 	matter = list(MATERIAL_STEEL = 5)
 	will_flash = FALSE
 
@@ -69,7 +73,7 @@
 	desc = "Deploys a roomba that will attack animals and non-colony humanoids nearby."
 	deliveryamt = 1
 	icon_state = "greyson_nade_small"
-	spawner_type = /mob/living/carbon/superior_animal/robot/greyson/roomba/allied
+	spawner_type = /mob/living/carbon/superior/robot/gp/roomba/allied
 	matter = list(MATERIAL_STEEL = 5, MATERIAL_SILVER = 2, MATERIAL_GOLD = 1)
 	will_flash = FALSE
 
@@ -78,7 +82,7 @@
 	desc = "Deploys an armored roomba that will attack animals and non-colony humanoids nearby."
 	deliveryamt = 1
 	icon_state = "greyson_nade_small"
-	spawner_type = /mob/living/carbon/superior_animal/robot/greyson/roomba/trip/armored/allied
+	spawner_type = /mob/living/carbon/superior/robot/gp/roomba/trip/armored/allied
 	matter = list(MATERIAL_STEEL = 10, MATERIAL_SILVER = 2, MATERIAL_GOLD = 1, MATERIAL_PLASTEEL = 6) //3 plasteel per baton
 
 /obj/item/grenade/spawnergrenade/manhacks/roomba/sword
@@ -86,7 +90,7 @@
 	desc = "Deploys a sword-bearing robot enhanced with incredible speed and augments that will attack animals and non-colony humanoids on sight."
 	deliveryamt = 1
 	icon_state = "greyson_nade_medium"
-	spawner_type = /mob/living/carbon/superior_animal/robot/greyson/synthetic/allied
+	spawner_type = /mob/living/carbon/superior/robot/gp/synth/allied
 	matter = list(MATERIAL_STEEL = 15, MATERIAL_SILVER = 6, MATERIAL_GOLD = 5, MATERIAL_PLASTEEL = 5)
 
 /obj/item/grenade/spawnergrenade/manhacks/roomba/mantis
@@ -94,5 +98,5 @@
 	desc = "Deploys a mantis blade-bearing robot enhanced with incredible speed and augments that will attack animals and non-colony humanoids on sight."
 	deliveryamt = 1
 	icon_state = "greyson_nade_large"
-	spawner_type = /mob/living/carbon/superior_animal/robot/greyson/synthetic/allied/advanced
+	spawner_type = /mob/living/carbon/superior/robot/gp/synth/allied/advanced
 	matter = list(MATERIAL_STEEL = 25, MATERIAL_SILVER = 8, MATERIAL_GOLD = 5, MATERIAL_PLASTEEL = 9)

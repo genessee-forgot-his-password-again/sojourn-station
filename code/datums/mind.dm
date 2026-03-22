@@ -24,7 +24,7 @@
 			new_mob.key = key
 
 		The Login proc will handle making a new mob for that mobtype (including setting up stuff like mind.name). Simple!
-		However if you want that mind to have any special properties like being a traitor etc you will have to do that
+		However if you want that mind to have any special properties like being a contractor etc you will have to do that
 		yourself.
 
 */
@@ -64,7 +64,7 @@
 
 	var/last_activity = 0
 
-	var/list/knownCraftRecipes = list()
+
 	/*
 		The world time when this mind was last in a mob, controlled by a client which did something.
 		Only updated once per minute, set by the inactivity subsystem
@@ -73,10 +73,10 @@
 
 	var/creation_time = 0 //World time when this datum was New'd. Useful to tell how long since a character spawned
 
-/datum/mind/New(var/key)
+/datum/mind/New(key)
 	src.key = key
 	creation_time = world.time
-	..()
+	active = TRUE
 
 /datum/mind/proc/transfer_to(mob/living/new_character)
 	if(!istype(new_character))
@@ -99,6 +99,11 @@
 		last_activity = world.time
 	if(new_character.client)
 		new_character.client.create_UI(new_character.type)
+		new_character.client.init_verbs()
+		if(new_character.client.get_preference_value(/datum/client_preference/stay_in_hotkey_mode) == GLOB.PREF_YES)
+			winset(new_character.client, null, "mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true")
+		if(istype(new_character, /mob/living/silicon/robot))
+			winset(new_character.client, null, "mainwindow.macro=borgmacro")
 
 /datum/mind/proc/store_memory(new_text)
 	memory += "[new_text]<BR>"
@@ -133,7 +138,7 @@
 			output += "<br><b>Your [A.role_text] objectives:</b>"
 		output += "[A.print_objectives(FALSE)]"
 	output += print_individualobjectives()
-	recipient << browse(output, "window=memory")
+	recipient << browse(HTML_SKELETON_TITLE("[current.real_name]'s Memory",output), "window=memory")
 
 /datum/mind/proc/edit_memory()
 	if(SSticker.current_state != GAME_STATE_PLAYING)
@@ -161,7 +166,7 @@
 	out += print_individualobjectives()
 
 	out += "<br><a href='?src=\ref[src];edit_memory=1'>"
-	usr << browse(out, "window=edit_memory[src]")
+	usr << browse(HTML_SKELETON(out), "window=edit_memory[src]")
 
 /datum/mind/Topic(href, href_list)
 	if(!check_rights(R_ADMIN))
@@ -214,7 +219,7 @@
 			if("unemag")
 				var/mob/living/silicon/robot/R = current
 				if (istype(R))
-					R.emagged = 0
+					R.RemoveTrait(CYBORG_TRAIT_EMAGGED)
 					if (R.activated(R.module.emag))
 						R.module_active = null
 					if(R.module_state_1 == R.module.emag)
@@ -232,7 +237,7 @@
 				if (isAI(current))
 					var/mob/living/silicon/ai/ai = current
 					for (var/mob/living/silicon/robot/R in ai.connected_robots)
-						R.emagged = 0
+						R.RemoveTrait(CYBORG_TRAIT_EMAGGED)
 						if (R.module)
 							if (R.activated(R.module.emag))
 								R.module_active = null
@@ -355,11 +360,11 @@
 	mind.assigned_role = "pAI"
 
 //Animals
-/mob/living/simple_animal/mind_initialize()
+/mob/living/simple/mind_initialize()
 	..()
 	mind.assigned_role = "Animal"
 
-/mob/living/simple_animal/corgi/mind_initialize()
+/mob/living/simple/corgi/mind_initialize()
 	..()
 	mind.assigned_role = "Corgi"
 
@@ -368,7 +373,7 @@
 /datum/mind/proc/manifest_status(var/datum/computer_file/report/crew_record/CR)
 	var/inactive_time = world.time - last_activity
 	if (inactive_time >= 60 MINUTES)
-		return null //The server hasn't seen us alive in an hour.
+		return "SSD" //The server hasn't seen us alive in an hour.
 		//We will not show on the manifest at all
 
 	//Ok we're definitely going to show on the manifest, lets see if any status is set for us in the records

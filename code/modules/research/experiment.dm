@@ -36,7 +36,6 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 	var/list/saved_odd_matter = list()
 	var/list/saved_really_old = list()
 	var/list/saved_rock_aged = list()
-	var/list/saved_symptoms = list()
 	var/list/saved_slimecores = list()
 	var/list/saved_fruituid = list()
 	var/list/saved_fruitnames = list()
@@ -133,6 +132,9 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 /datum/experiment_data/proc/read_science_tool(obj/item/device/science_tool/I)
 	var/points = 0
 
+	points += I.raw_data_points
+	I.raw_data_points = 0
+
 	for(var/weapon in I.scanned_autopsy_weapons)
 		if(!(weapon in saved_autopsy_weapons))
 			saved_autopsy_weapons += weapon
@@ -155,18 +157,6 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 		if(!already_scanned)
 			points += ARTIFACT_PAMT
 			saved_artifacts += list(artifact)
-
-			/////////////////////////////////////// VIRUS SCANNER
-
-	for(var/symptom in I.scanned_symptoms)
-		if(saved_symptoms[symptom])
-			continue
-
-		var/level = I.scanned_symptoms[symptom]
-		if(level_to_points[level])
-			points += level_to_points[level]
-
-		saved_symptoms[symptom] = level
 
 		/////////////////////////////////////////// SLIME CORES
 
@@ -252,67 +242,10 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 		if(!has_artifact)
 			saved_artifacts += list(artifact)
 
-	for(var/symptom in O.saved_symptoms)
-		saved_symptoms[symptom] = O.saved_symptoms[symptom]
-
 	for(var/core in O.saved_slimecores)
 		saved_slimecores |= core
 
 	saved_best_explosion = max(saved_best_explosion, O.saved_best_explosion)
-
-
-// Grants research points when explosion happens nearby
-/obj/item/device/radio/beacon/explosion_watcher
-	name = "Kinetic Energy Scanner"
-	desc = "Scans the level of kinetic energy from explosions. This beacon, is in fact bomb proof and to use it properly you must use the bomb within 10 tiles of this scanner."
-
-	channels = list("Science" = 1)
-	var/targetBoom
-	var/stored_points //This is how many points we hve stored, we use them up when successfull
-
-/obj/item/device/radio/beacon/explosion_watcher/examine()
-	..()
-	to_chat(usr, "EXPECTED EXPLOSION - [targetBoom]")
-	to_chat(usr, "Points Left - [stored_points]")
-	return
-
-/obj/item/device/radio/beacon/explosion_watcher/ex_act(severity)
-	return
-
-/obj/item/device/radio/beacon/explosion_watcher/Initialize()
-	. = ..()
-	GLOB.explosion_watcher_list += src
-	targetBoom = rand(10,35)
-	stored_points = 250000 //6.1 perfect bombs
-
-/obj/item/device/radio/beacon/explosion_watcher/Destroy()
-	GLOB.explosion_watcher_list -= src
-	return ..()
-
-/obj/item/device/radio/beacon/explosion_watcher/proc/react_explosion(turf/epicenter, power)
-	power = round(power)
-	var/calculated_research_points = -1
-	for(var/obj/machinery/computer/rdconsole/RD in GLOB.computer_list)
-		if(RD.id == 1) // only core gets the science
-			var missed
-
-			missed = abs(power-targetBoom) * 8000 // each step away from the target will result in 8,000 points less, this is a range of 11.
-			if(stored_points >= 40000)
-				calculated_research_points = max(0,40000 - missed)
-			else
-				calculated_research_points = max(0,stored_points - missed)
-
-
-			stored_points -= calculated_research_points
-			RD.files.adjust_research_points(calculated_research_points)
-
-	if(calculated_research_points > 0 && stored_points)
-		autosay("Detected explosion with power level [power]. Expected explosion was [targetBoom]. Received [calculated_research_points] Research Points", name ,"Science")
-	if(0 >= stored_points)
-		autosay("Detected explosion with power level [power]. Expected explosion was [targetBoom]. No Additional Data Points Able To Gather", name ,"Science")
-	else
-		autosay("Detected explosion with power level [power], Expected explosion was [targetBoom]. Test Results Outside Expected Range", name ,"Science")
-	targetBoom = rand(10,35)
 
 // Universal tool to get research points from autopsy reports, virus info reports, archeology reports, slime cores
 /obj/item/device/science_tool
@@ -337,8 +270,6 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 	var/list/scanned_odd_matter = list()
 	var/list/scanned_really_old = list()
 	var/list/scanned_rock_aged = list()
-	//Viro Data
-	var/list/scanned_symptoms = list()
 	//Slime cores data
 	var/list/scanned_slimecores = list()
 	//Hydro/Plant data
@@ -348,6 +279,8 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 	var/list/scanned_fruittraits = list()
 	//Datablock Data
 	var/datablocks = 0
+	//Flat out RnD points 1:1 to give
+	var/raw_data_points = 0
 
 /obj/item/device/science_tool/Initialize()
 	. = ..()
@@ -401,13 +334,6 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 				scanned_rock_aged += rock_report.rock_aged
 				scanneddata += 1
 
-	if(istype(O, /obj/item/paper/virus_report))
-		var/obj/item/paper/virus_report/report = O
-		for(var/symptom in report.symptoms)
-			if(!scanned_symptoms[symptom])
-				scanneddata += 1
-				scanned_symptoms[symptom] = report.symptoms[symptom]
-
 	if(istype(O, /obj/item/slime_extract))
 		if(!(O.type in scanned_slimecores))
 			scanned_slimecores += O.type
@@ -447,6 +373,12 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 			scanneddata += 1
 		if ((P.get_trait(TRAIT_JUICY)) && !("TRAIT_JUICY" in scanned_fruittraits))
 			scanned_fruittraits += "TRAIT_JUICY"
+			scanneddata += 1
+		if ((P.get_trait(TRAIT_CHEM_PRODUCTION)) && !("CHEM_PRODUCTION" in scanned_fruittraits))
+			scanned_fruittraits += "CHEM_PRODUCTION"
+			scanneddata += 1
+		if ((P.get_trait(TRAIT_COMPANION_PLANT)) && !("COMPANION_PLANT" in scanned_fruittraits))
+			scanned_fruittraits += "COMPANION_PLANT"
 			scanneddata += 1
 		if ((P.get_trait(TRAIT_EXPLOSIVE)) && !("TRAIT_EXPLOSIVE" in scanned_fruittraits))
 			scanned_fruittraits += "TRAIT_EXPLOSIVE"
@@ -502,14 +434,13 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 	scanned_odd_matter = list()
 	scanned_really_old = list()
 	scanned_rock_aged = list()
-	scanned_symptoms = list()
 	scanned_slimecores = list()
 	scanned_fruitnames = list()
 	scanned_fruitchems = list()
 	scanned_fruittraits = list()
 	datablocks = 0
 
-/obj/item/computer_hardware/hard_drive/portable/research_points/proc/get_title()
+/obj/item/pc_part/drive/disk/research_points/proc/get_title()
 	var/list/verb_ion = list("exploration", "development", "refinement", "investigation", "analysis", "improvement", "emulation", "simulation", "construction", "evaluation", "deployment", "synthesis", "visualization")
 	var/list/prefixes = list("","[pick(verb_ion)]: ")
 	var/list/suffixes = list("using [pick(verb_ion)]","with [pick(verb_ion)]")
@@ -538,21 +469,47 @@ GLOBAL_LIST_EMPTY(explosion_watcher_list)
 							"[buzzword_adj_multi] [pick(buzzword_nouns)] for [pick(subjects)]")
 	return capitalize(pick(titles))
 
-/obj/item/computer_hardware/hard_drive/portable/research_points
+/obj/item/pc_part/drive/disk/research_points
 	desc = "A removable disk used to store large amounts of research data."
 	icon_state = "onestar"
 	var/min_points = 2000
 	var/max_points = 10000
 
-/obj/item/computer_hardware/hard_drive/portable/research_points/Initialize()
+/obj/item/pc_part/drive/disk/research_points/Initialize()
 	disk_name = get_title()
 	. = ..()
 
-/obj/item/computer_hardware/hard_drive/portable/research_points/install_default_files()
+/obj/item/pc_part/drive/disk/research_points/install_default_files()
 	..()
 	var/datum/computer_file/binary/research_points/F = new(size = rand(min_points / 1000, max_points / 1000))
 	store_file(F)
 
-/obj/item/computer_hardware/hard_drive/portable/research_points/rare
+/obj/item/pc_part/drive/disk/research_points/rare
 	min_points = 10000
 	max_points = 20000
+
+/obj/proc/givepointscompont(raw_data_points)
+
+	var/datum/component/rnd_points/I = AddComponent(/datum/component/rnd_points)
+	I.data_points = raw_data_points
+	I.holding_obj = src
+
+/datum/component/rnd_points
+	dupe_mode = COMPONENT_DUPE_UNIQUE
+	can_transfer = TRUE
+	var/data_points = 0
+	var/obj/holding_obj //we ASSUME that are holder is an object, after all what else would be able to *PHYSICALY* hold points????
+
+/datum/component/rnd_points/RegisterWithParent()
+	RegisterSignal(parent, COMSIG_ATTACKBY, PROC_REF(attempt_transfer))
+
+/datum/component/rnd_points/proc/attempt_transfer(obj/I, var/mob/living/user, params)
+	if(!holding_obj)
+		return
+
+	if(istype(I, /obj/item/device/science_tool)) //HAVE to be at the wire stage, to you know, data jack into wires
+		var/obj/item/device/science_tool/ST = I
+		ST.raw_data_points += data_points
+		user.visible_message("[user] attaches [I]'s datajack to [holding_obj.name].", "You attach [I]'s datajack to [holding_obj.name] gathering [data_points] data points")
+		data_points = 0
+		return

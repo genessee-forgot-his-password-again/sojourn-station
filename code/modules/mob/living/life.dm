@@ -5,7 +5,7 @@
 	. = FALSE
 	..()
 	if(config.enable_mob_sleep)
-		if(stat != DEAD)
+		if(stat != DEAD && !mind)	// Check for mind so player-driven, nonhuman mobs don't sleep
 			if(life_cycles_before_scan > 0)
 				life_cycles_before_scan--
 			else
@@ -172,7 +172,8 @@
 
 //this handles hud updates. Calls update_vision() and handle_hud_icons()
 /mob/living/proc/handle_regular_hud_updates()
-	if(!client)	return FALSE
+	if(!client)
+		return FALSE
 
 	handle_hud_icons()
 	handle_vision()
@@ -217,6 +218,7 @@
 		else
 			sight &= ~(SEE_TURFS|SEE_MOBS|SEE_OBJS)
 			see_in_dark = initial(see_in_dark)
+			see_in_dark += additional_darksight //Done like this for sake of easier to read
 			see_invisible = initial(see_invisible)
 
 /mob/living/proc/update_dead_sight()
@@ -224,6 +226,8 @@
 	sight |= SEE_MOBS
 	sight |= SEE_OBJS
 	see_in_dark = 8
+	see_in_dark += additional_darksight //Done like this for sake of easier to read
+
 	see_invisible = SEE_INVISIBLE_LEVEL_TWO
 
 /mob/living/proc/handle_hud_icons()

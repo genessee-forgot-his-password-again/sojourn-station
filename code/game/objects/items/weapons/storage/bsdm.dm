@@ -21,7 +21,7 @@
 /obj/item/storage/bsdm/interact(mob/user)
 	nano_ui_interact(user)
 
-/obj/item/storage/bsdm/ui_data(mob/user)
+/obj/item/storage/bsdm/nano_ui_data(mob/user)
 	var/list/list/data = list()
 
 	data["can_launch"] = can_launch()
@@ -29,7 +29,7 @@
 	data["is_owner"] = owner && (owner == user.mind)
 	data["contracts"] = list()
 
-	for(var/datum/antag_contract/item/C in GLOB.excel_antag_contracts)
+	for(var/datum/antag_contract/item/C in GLOB.various_antag_contracts)
 		if(C.completed || !C.check(src))
 			continue
 		data["contracts"].Add(list(list(
@@ -41,7 +41,7 @@
 	return data
 
 /obj/item/storage/bsdm/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS)
-	var/list/data = ui_data(user)
+	var/list/data = nano_ui_data(user)
 
 	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if(!ui)
@@ -59,7 +59,7 @@
 
 		playsound(get_turf(src), 'sound/machines/defib_zap.ogg', 50, 1, -1)
 
-		for(var/datum/antag_contract/item/C in GLOB.excel_antag_contracts)
+		for(var/datum/antag_contract/item/C in GLOB.various_antag_contracts)
 			if(C.completed)
 				continue
 			C.on_container(src)

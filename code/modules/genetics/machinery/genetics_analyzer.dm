@@ -8,7 +8,7 @@
 #define MENU_ANALYZE_RESULT 8
 /*
 =========================================================================================================================================
-Belvoix Genetic Analyzer
+Soteria Genetic Analyzer
 
 This is the workhorse of the department. Every other machine in the department is built to eventually allow genetic sample plates to be
 loaded into this device for analysis. Without this machine, players are left in the dark about which mutations are being produced, and
@@ -17,7 +17,7 @@ cannot isolate or combine desired genes.
 
 */
 /obj/machinery/genetics/gene_analyzer
-	name = "Belvoix Genetic Analyzer"
+	name = "Soteria Genetic Analyzer"
 	desc = "An extremely complex device made to analyze the patterns in DNA and apply them to other creatures."
 	density = TRUE
 	anchored = TRUE
@@ -77,9 +77,8 @@ cannot isolate or combine desired genes.
 	max_plates = (bin_rating+1)
 
 /obj/machinery/genetics/gene_analyzer/attackby(obj/item/I, mob/user)
-	if(!user.stats?.getPerk(PERK_SI_SCI) && !usr.stat_check(STAT_COG, 80))
-		to_chat(usr, SPAN_WARNING("This is a bit beyond your cognitive understanding."))
-		src.visible_message(SPAN_WARNING("The console pityingly suggests: \"Sorry hun, maybe you should get help from a scientist~?\""))
+	if(!user.stats?.getPerk(PERK_SI_SCI) && !usr.stat_check(STAT_COG, 80) &&!user.stats?.getPerk(PERK_NERD) && !usr.stat_check(STAT_BIO, 60))
+		to_chat(usr, SPAN_WARNING("The console pityingly suggests: \"Sorry hun, maybe you should get help from a scientist~?\""))
 		return
 	if(default_deconstruction(I, user))
 		return
@@ -103,6 +102,9 @@ cannot isolate or combine desired genes.
 		. = ..()
 
 /obj/machinery/genetics/gene_analyzer/attack_hand(mob/user)
+	if(!user.stats?.getPerk(PERK_SI_SCI) && !usr.stat_check(STAT_COG, 80) &&!user.stats?.getPerk(PERK_NERD) && !usr.stat_check(STAT_BIO, 60))
+		to_chat(usr, SPAN_WARNING("The console pityingly suggests: \"Sorry hun, maybe you should get help from a scientist~?\""))
+		return
 	if(..())
 		return TRUE
 	nano_ui_interact(user)
@@ -156,12 +158,12 @@ cannot isolate or combine desired genes.
 
 	var/active_mutation_data
 	if(active_mutation)
-		active_mutation_data = active_mutation.ui_data(known_mutations)
+		active_mutation_data = active_mutation.nano_ui_data(known_mutations)
 	data["active_mutation"] = active_mutation_data
 
 	var/mutations_to_combine_data
 	if(mutations_to_combine)
-		mutations_to_combine_data = mutations_to_combine.ui_data(known_mutations)
+		mutations_to_combine_data = mutations_to_combine.nano_ui_data(known_mutations)
 	data["mutations_to_combine"] = mutations_to_combine_data
 
 	var/can_combine = FALSE
@@ -183,7 +185,7 @@ cannot isolate or combine desired genes.
 	if(new_discovered_mutations)
 		analyzed_mutation_data = list()
 		for(var/datum/genetics/mutation/target_mutation in new_discovered_mutations)
-			analyzed_mutation_data += list(target_mutation.ui_data(known_mutations))
+			analyzed_mutation_data += list(target_mutation.nano_ui_data(known_mutations))
 	data["analyzed_mutations"] = analyzed_mutation_data
 
 	debug_ui_data = data
@@ -227,11 +229,11 @@ cannot isolate or combine desired genes.
 						awarding_points += known_mutations[mut_key]
 
 				if(awarding_points > 0)
-					console.files.research_points += awarding_points // Give the points
+					console.files.adjust_research_points(awarding_points) // Give the points
 					var/obj/item/device/radio/radio
 					radio = new /obj/item/device/radio{channels=list("Science")}(src) // Create a new radio
 					radio.autosay("Genetics Research Uploaded, granting [awarding_points] research points~!", "Genetics Announcement System", "Science") // Make the radio say a message.
-					spawn(50) qdel(radio)
+					qdel(radio)
 
 				//Update known mutations from the master console JIC
 				for(var/mut_key in console.known_mutations)

@@ -58,7 +58,7 @@ GLOBAL_DATUM(storyteller, /datum/storyteller)
 	var/variance = 0.15 //15% How much point gains are allowed to vary up or down per tick. This helps to keep event triggering times unpredictable
 	var/repetition_multiplier = 0.85 //Weights of events are multiplied by this value after they happen, to reduce the chance of multiple instances in short time
 
-	var/event_schedule_delay = 15 MINUTES
+	var/event_schedule_delay = 45 MINUTES //Upped form 15 as are rounds are about 3x longer then eris
 	//Once selected, events are not fired immediately, but are scheduled for some random time in the near future
 	//This mostly helps to prevent them syncing up and announcements overlapping each other
 	//The maximum time between scheduling and firing an event
@@ -76,28 +76,17 @@ GLOBAL_DATUM(storyteller, /datum/storyteller)
 	if(debug_mode || SSticker.start_immediately)
 		return TRUE
 
-	var/engineer = FALSE
-	var/command = FALSE
+	var/single_person = FALSE
 	for(var/mob/new_player/player in GLOB.player_list)
 		if(player.ready && player.mind)
-			if(player.mind.assigned_role in list(JOBS_COMMAND))
-				command = TRUE
-			if(player.mind.assigned_role in list(JOBS_ENGINEERING))
-				engineer = TRUE
-			if(command && engineer)
-				return TRUE
+			single_person = TRUE
+			return TRUE
 
-	var/tcol = "red"
-	if(GLOB.player_list.len <= 10)
-		tcol = "black"
+	var/tcol = "#ffaa00"
 
-	if(announce)
-		if(!engineer && !command)
-			to_chat(world, "<b><font color='[tcol]'>A Council Member and Guild Member are required to start the round.</font></b>")
-		else if(!engineer)
-			to_chat(world, "<b><font color='[tcol]'>A Guild Member is required to start the round.</font></b>")
-		else if(!command)
-			to_chat(world, "<b><font color='[tcol]'>A Council Member is required to start the round.</font></b>")
+	if(!single_person)
+		to_chat(world, "<b><font color='[tcol]'>A single ready player is required to start the round.</font></b>")
+		return FALSE
 
 	if(GLOB.player_list.len <= 15) //15 players is low pop do to lurkers
 		to_chat(world, "<i>But there's less than 16 players, so this requirement will be ignored.</i>")
@@ -224,10 +213,18 @@ GLOBAL_DATUM(storyteller, /datum/storyteller)
 //When getting the storyteller system working for us, we don't want regenerating points to prevent late game spams. Essentially the round starts difficult and gets easier
 //over time to prevent "always PvE" and allow for some relaxation and RP. Commenting out prior code in case we need it for reference later. -Kaz
 /datum/storyteller/proc/handle_points()
-	points[EVENT_LEVEL_MUNDANE] += 0 //1 * (gain_mult_mundane) * (RAND_DECIMAL(1-variance, 1+variance))
-	points[EVENT_LEVEL_MODERATE] += 0 //1 * (gain_mult_moderate) * (RAND_DECIMAL(1-variance, 1+variance))
-	points[EVENT_LEVEL_MAJOR] += 0 //1 * (gain_mult_major) * (RAND_DECIMAL(1-variance, 1+variance))
-	points[EVENT_LEVEL_ROLESET] += 0 //1 * (gain_mult_roleset) * (RAND_DECIMAL(1-variance, 1+variance))
+	if(GLOB.chaos_level <= 0)
+		points[EVENT_LEVEL_MUNDANE] += 1 * (gain_mult_mundane) * (RAND_DECIMAL(1-variance, 1+variance))
+		points[EVENT_LEVEL_MODERATE] += 1 * (gain_mult_moderate) * (RAND_DECIMAL(1-variance, 1+variance))
+		points[EVENT_LEVEL_MAJOR] += 1 * (gain_mult_major) * (RAND_DECIMAL(1-variance, 1+variance))
+		points[EVENT_LEVEL_ROLESET] += 0 //1 * (gain_mult_roleset) * (RAND_DECIMAL(1-variance, 1+variance))
+	else
+		points[EVENT_LEVEL_MUNDANE] += GLOB.chaos_level * (gain_mult_mundane) * (RAND_DECIMAL(1-variance, 1+variance))
+		points[EVENT_LEVEL_MODERATE] += GLOB.chaos_level * (gain_mult_moderate) * (RAND_DECIMAL(1-variance, 1+variance))
+		points[EVENT_LEVEL_MAJOR] += GLOB.chaos_level * (gain_mult_major) * (RAND_DECIMAL(1-variance, 1+variance))
+		points[EVENT_LEVEL_ROLESET] += GLOB.chaos_level * 0 //(gain_mult_roleset) * (RAND_DECIMAL(1-variance, 1+variance))
+
+
 	check_thresholds()
 
 /datum/storyteller/proc/check_thresholds()
@@ -312,7 +309,7 @@ The actual fire event proc is located in storyteller_meta*/
 		delay = 1 //Basically no delay on these to reduce bugginess
 	else
 		delay = rand(1, event_schedule_delay)
-	var/handle = addtimer(CALLBACK(GLOBAL_PROC, .proc/fire_event, C, event_type), delay, TIMER_STOPPABLE)
+	var/handle = addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(fire_event), C, event_type), delay, TIMER_STOPPABLE)
 	scheduled_events.Add(list(C), type, handle)
 
 

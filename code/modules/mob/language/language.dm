@@ -20,6 +20,8 @@
 	var/list/space_chance = 55        			// Likelihood of getting a space in the random scramble string
 	var/machine_understands = 1 		  		// Whether machines can parse and understand this language
 	var/shorthand = "CO"						// Shorthand that shows up in chat for this language.
+	var/list/partial_understanding				// List of languages that can /somehwat/ understand it, format is: name = chance of understanding a word
+	var/has_written_form = FALSE				// Determines if a language can be written in
 
 	//Random name lists
 	var/name_lists = FALSE
@@ -67,8 +69,39 @@
 /datum/language
 	var/list/scramble_cache = list()
 
-/datum/language/proc/scramble(var/input)
+/datum/language/proc/scramble(var/input, var/list/known_languages)
 
+	var/understand_chance = 0
+	for(var/datum/language/L in known_languages)
+		if(LAZYACCESS(partial_understanding, L.name))
+			understand_chance += partial_understanding[L.name]
+
+	var/list/words = splittext(input, " ")
+	var/list/scrambled_text = list()
+	var/new_sentence = 0
+	for(var/w in words)
+		var/nword = "[w] "
+		var/input_ending = copytext(w, length(w))
+		var/ends_sentence = findtext(".?!",input_ending)
+		if(!prob(understand_chance))
+			nword = scramble_word(w)
+			if(new_sentence)
+				nword = capitalize(nword)
+				new_sentence = FALSE
+			if(ends_sentence)
+				nword = trim(nword)
+				nword = "[nword][input_ending] "
+
+		if(ends_sentence)
+			new_sentence = TRUE
+
+		scrambled_text += nword
+
+	. = jointext(scrambled_text, null)
+	. = capitalize(.)
+	. = trim(.)
+
+/datum/language/proc/scramble_word(var/input)
 	if(!syllables || !syllables.len)
 		return stars(input)
 
@@ -79,11 +112,11 @@
 		scramble_cache[input] = n
 		return n
 
-	var/input_size = length_char(input)
+	var/input_size = length(input)
 	var/scrambled_text = ""
-	var/capitalize = 1
+	var/capitalize = 0
 
-	while(length_char(scrambled_text) < input_size)
+	while(length(scrambled_text) < input_size)
 		var/next = pick(syllables)
 		if(capitalize)
 			next = capitalize(next)
@@ -95,14 +128,6 @@
 			capitalize = 1
 		else if(chance > 5 && chance <= space_chance)
 			scrambled_text += " "
-
-	scrambled_text = trim(scrambled_text)
-	var/ending = copytext_char(scrambled_text, length(scrambled_text))
-	if(ending == ".")
-		scrambled_text = copytext_char(scrambled_text, 1, -2)
-	var/input_ending = copytext_char(input, -1)
-	if(input_ending in list("!","?","."))
-		scrambled_text += input_ending
 
 	// Add it to cache, cutting old entries if the list is too long
 	scramble_cache[input] = scrambled_text
@@ -160,6 +185,9 @@
 			return "reports"
 	return pick(speech_verb)
 
+/datum/language/proc/can_speak_special(var/mob/speaker)
+	return 1
+
 // Language handling.
 /mob/proc/add_language(var/language)
 
@@ -187,7 +215,12 @@
 
 // Can we speak this language, as opposed to just understanding it?
 /mob/proc/can_speak(datum/language/speaking)
-	return (universal_speak || (speaking && speaking.flags & INNATE) || (speaking in src.languages))
+	var/mob/living/carbon/C = src
+	if (speaking.flags & NO_SPEAK) // Languages that can be understood and spoken only by specific species.
+		if (speaking.name == LANGUAGE_SABLEKYNE)
+			if (!(C.species.reagent_tag == IS_TAJ || C.species.reagent_tag == IS_SYNTHETIC))
+				return null
+	return (universal_speak || (speaking && speaking.flags & INNATE) || (speaking in C.languages))
 
 /mob/proc/get_language_prefix()
 	return get_prefix_key(/decl/prefix/language)
@@ -207,7 +240,7 @@
 		if(!(L.flags & NONGLOBAL))
 			dat += "<b>[L.name] ([get_language_prefix()][L.key])</b><br/>[L.desc]<br/><br/>"
 
-	src << browse(dat, "window=checklanguage")
+	src << browse(HTML_SKELETON(dat), "window=checklanguage")
 	return
 
 /mob/living/check_languages()
@@ -223,7 +256,7 @@
 			else
 				dat += "<b>[L.name] ([get_language_prefix()][L.key])</b> - <a href='byond://?src=\ref[src];default_lang=\ref[L]'>set default</a><br/>[L.desc]<br/><br/>"
 
-	src << browse(dat, "window=checklanguage")
+	src << browse(HTML_SKELETON(dat), "window=checklanguage")
 
 /mob/living/Topic(href, href_list)
 	if(href_list["default_lang"])

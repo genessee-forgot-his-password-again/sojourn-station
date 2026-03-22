@@ -4,28 +4,22 @@
 	icon_state = "ripley"
 	initial_icon = "ripley"
 	step_in = 2
+	normal_step_energy_drain = 6
+	step_energy_drain = 6
 	max_temperature = 20000
 	price_tag = 5000
 	health = 500
 	wreckage = /obj/effect/decal/mecha_wreckage/ripley
-	cargo_capacity = 10
+	cargo_capacity = 25
 	max_equip = 6
-
-/obj/mecha/working/ripley/Destroy()
-	for(var/atom/movable/A in src.cargo)
-		A.loc = loc
-		var/turf/T = loc
-		if(istype(T))
-			T.Entered(A)
-		step_rand(A)
-	cargo.Cut()
-	. = ..()
 
 /obj/mecha/working/ripley/firefighter
 	desc = "Standard APLU chassis that has been refitted with additional thermal protection."
 	name = "APLU \"Firefighter\""
 	icon_state = "firefighter"
 	initial_icon = "firefighter"
+	normal_step_energy_drain = 8
+	step_energy_drain = 8
 	max_temperature = 65000
 	price_tag = 6500
 	health = 550
@@ -40,32 +34,33 @@
 	icon_state = "deathripley"
 	initial_icon = "deathripley"
 	step_in = 1
+	normal_step_energy_drain = 1
 	step_energy_drain = 1
 	opacity = 0
 	lights_power = 60
+	health = 750
 	wreckage = /obj/effect/decal/mecha_wreckage/ripley/deathripley
 	price_tag = 7000
 
 /obj/mecha/working/ripley/deathripley/New()
-	..()
-	var/obj/item/mecha_parts/mecha_equipment/ME = new /obj/item/mecha_parts/mecha_equipment/tool/safety_clamp
+	. = ..()
+	var/obj/item/mecha_parts/mecha_equipment/ME = new /obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp/safety_clamp
 	ME.attach(src)
-	ME = new /obj/item/mecha_parts/mecha_equipment/ranged_weapon/ballistic/scattershot/flak/loaded
+	ME = new /obj/item/mecha_parts/mecha_equipment/ranged_weapon/ballistic/flak/loaded
 	ME.attach(src)
-	ME = new /obj/item/mecha_parts/mecha_equipment/ranged_weapon/ballistic/lmg/scrap/loaded
+	ME = new /obj/item/mecha_parts/mecha_equipment/ranged_weapon/ballistic/hmg/loaded
 	ME.attach(src)
 	ME = new /obj/item/mecha_parts/mecha_equipment/armor_booster/anticcw_armor_booster
 	ME.attach(src)
 	ME = new /obj/item/mecha_parts/mecha_equipment/armor_booster/antiproj_armor_booster
 	ME.attach(src)
-	return
 
 /obj/mecha/working/ripley/mining
 	desc = "An old, dusty mining ripley."
 	name = "APLU \"Miner\""
 
 /obj/mecha/working/ripley/mining/New()
-	..()
+	. = ..()
 	//Attach drill
 	if(prob(25)) //Possible diamond drill... Feeling lucky?
 		var/obj/item/mecha_parts/mecha_equipment/tool/drill/diamonddrill/D = new /obj/item/mecha_parts/mecha_equipment/tool/drill/diamonddrill
@@ -77,7 +72,7 @@
 	//Attach hydrolic clamp
 	var/obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp/HC = new /obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp
 	HC.attach(src)
-	for(var/obj/item/mecha_parts/mecha_tracking/B in src.contents)//Deletes the beacon so it can't be found easily
-		qdel (B)
+	for(var/obj/item/mecha_parts/mecha_tracking/B in contents)//Deletes the beacon so it can't be found easily
+		qdel(B)
 
 

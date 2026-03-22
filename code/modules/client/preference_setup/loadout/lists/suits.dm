@@ -4,12 +4,20 @@
 	path = /obj/item/clothing/suit/rank/botanist
 	slot = slot_wear_suit
 	sort_category = "Suits and Overwear"
-	cost = 1
+	cost = 0
+
+/datum/gear/suit/hell_apron
+	display_name = "lonestar black apron"
+	path = /obj/item/clothing/suit/storage/helltaker_apron
 
 /datum/gear/suit/bunnysuit
 	display_name = "bunny suit"
 	path = /obj/item/clothing/suit/costume/kinky/alyson
 	cost = 2 // Pay the horni tax.
+
+/datum/gear/suit/orsicoat
+	display_name = "Red Winter Cape"
+	path = /obj/item/clothing/suit/orsicoat
 
 /datum/gear/suit/cloakselect
 	display_name = "cloak selection"
@@ -18,7 +26,7 @@
 
 /datum/gear/suit/duster
 	display_name = "duster selection"
-	path = /obj/item/clothing/suit/storage/duster
+	path = /obj/item/clothing/accessory/duster
 	flags = GEAR_HAS_TYPE_SELECTION
 
 /datum/gear/suit/flannel
@@ -36,30 +44,23 @@
 	path = /obj/item/clothing/suit/greatcoat/general
 	flags = GEAR_HAS_TYPE_SELECTION
 
+/datum/gear/suit/overcoat
+	display_name = "overcoat selection"
+	path = /obj/item/clothing/suit/storage/greatcoat/overcoatblack
+	flags = GEAR_HAS_TYPE_SELECTION
+
 /datum/gear/suit/hazard_vest
 	display_name = "hazard vest"
 	path = /obj/item/clothing/suit/storage/hazardvest
-
-/datum/gear/suit/hazard_vest_black
-	display_name = "black hazard vest"
-	path = /obj/item/clothing/suit/storage/hazardvest_black
-
-/datum/gear/suit/ivory
-	display_name = "ivory tabard"
-	path = /obj/item/clothing/suit/ivory
-
-/datum/gear/suit/blacksilk
-	display_name = "blacksilk tabard"
-	path = /obj/item/clothing/suit/blacksilk
-
-/datum/gear/suit/numerical_grab
-	display_name = "numerical garb"
-	path = /obj/item/clothing/suit/storage/numericalgarb
 
 /datum/gear/suit/hoodies
 	display_name = "hoodie selection"
 	path = /obj/item/clothing/suit/storage/toggle/hoodie
 	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/suit/majima
+	display_name = "Tojo jacket"
+	path = /obj/item/clothing/suit/storage/tojo
 
 /datum/gear/suit/jacketbasic
 	display_name = "jacket basic selection"
@@ -75,6 +76,10 @@
 	display_name = "jacket military selection"
 	path = /obj/item/clothing/suit/storage/miljacket
 	flags = GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/suit/soyfedjacket
+	display_name = "old SolFed military jacket"
+	path = /obj/item/clothing/suit/storage/toggle/miljacket_soyfed
 
 /datum/gear/suit/punk_vest
 	display_name = "punk vest"
@@ -93,9 +98,27 @@
 	display_name = "kimono"
 	path = /obj/item/clothing/suit/fluff/kimono
 
+/datum/gear/suit/miko
+	display_name = "purple miko dress"
+	path = /obj/item/clothing/suit/fluff/miko
+
+/datum/gear/suit/gownrisque
+	display_name = "daring gown"
+	path = /obj/item/clothing/suit/gownrisque
+	flags = GEAR_HAS_COLOR_SELECTION | GEAR_HAS_TYPE_SELECTION
+
+/datum/gear/suit/religious_robe
+	display_name = "religious robe"
+	path = /obj/item/clothing/suit/storage/omni_robes
+	flags = GEAR_HAS_COLOR_SELECTION
+
 /datum/gear/suit/labcoat
 	display_name = "labcoat"
 	path = /obj/item/clothing/suit/storage/toggle/labcoat
+
+/datum/gear/suit/labcoat_purple
+	display_name = "purple labcoat"
+	path = /obj/item/clothing/suit/storage/toggle/labcoat/purple
 
 /datum/gear/suit/formal_labcoat
 	display_name = "formal labcoat"
@@ -115,6 +138,11 @@
 	path = /obj/item/clothing/suit/storage/puffer
 	flags = GEAR_HAS_TYPE_SELECTION
 
+/datum/gear/suit/dresscoat
+	display_name = "dresscoat selection"
+	path = /obj/item/clothing/suit/storage/vic_dresscoat
+	flags = GEAR_HAS_TYPE_SELECTION
+
 /datum/gear/suit/snowsuit
 	display_name = "snowsuit"
 	path = /obj/item/clothing/suit/storage/snowsuit
@@ -123,13 +151,12 @@
 	display_name = "winter coat"
 	path = /obj/item/clothing/suit/hooded/wintercoat
 
-/datum/gear/suit/waistcoat
-	display_name = "waistcoat selection"
-	path = /obj/item/clothing/suit/storage/wcoat
-	flags = GEAR_HAS_TYPE_SELECTION
+/datum/gear/suit/htwaistcoat
+	display_name = "charming waistcoat"
+	path = /obj/item/clothing/suit/storage/wcoat/helltaker
 
 /datum/gear/suit/modular
-	display_name = "modular jacket selection"
+	display_name = "suit jacket selection"
 	path = /obj/item/clothing/suit/storage/suitjacket
 	flags = GEAR_HAS_TYPE_SELECTION
 
@@ -142,11 +169,11 @@
 	display_name = "punk vest"
 	path = /obj/item/clothing/suit/punkvest
 
-/datum/gear/suit/punkvest
+/datum/gear/suit/windbreaker
 	display_name = "windbreaker"
 	path = /obj/item/clothing/suit/storage/toggle/windbreaker
 
-/datum/gear/suit/punkvest
+/datum/gear/suit/cyberpunkvest
 	display_name = "cyberpunk vest"
 	path = /obj/item/clothing/suit/punkvest/cyber
 
@@ -166,26 +193,10 @@
 	display_name = "red jacket"
 	path = /obj/item/clothing/suit/storage/akira
 
-/datum/gear/suit/absolute_hoodie
-	display_name = "absolute hoodie"
-	path = /obj/item/clothing/suit/storage/toggle/absolutehoodie
-
-/datum/gear/suit/absolute_great_coat
-	display_name = "absolute great coat"
-	path = /obj/item/clothing/suit/greatcoat/absolutecoat
-
-/datum/gear/suit/absolute_cloak
-	display_name = "absolutist cloak"
-	path = /obj/item/clothing/suit/hooded/absolutecloak
-
-/datum/gear/suit/radhat
-	display_name = "radiation hood"
-	path = /obj/item/clothing/head/radiation
-
-/datum/gear/suit/radsuit
-	display_name = "radiation suit"
-	path = /obj/item/clothing/suit/radiation
-
+/datum/gear/suit/solo
+	display_name ="punk jacket"
+	path = /obj/item/clothing/suit/storage/solo
+/*
 /datum/gear/suit/radhat
 	display_name = "radiation hood"
 	path = /obj/item/clothing/head/radiation
@@ -203,3 +214,7 @@
 	display_name = "expedition suit"
 	path = /obj/item/clothing/suit/space/anomaly
 	cost = 2 //Some good armor but slowdown
+*/
+/datum/gear/suit/boxer_jacket
+	display_name = "boxer jacket"
+	path = /obj/item/clothing/suit/storage/boxer_jacket

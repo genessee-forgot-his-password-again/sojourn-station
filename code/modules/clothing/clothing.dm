@@ -12,32 +12,47 @@
 	var/list/valid_accessory_slots
 	var/list/restricted_accessory_slots
 	var/equip_delay = 0 //If set to a nonzero value, the item will require that much time to wear and remove
-
 	stiffness = 0 // Recoil caused by moving, defined in obj/item
 	obscuration = 0 // Similar to tint, but decreases firearm accuracy instead via giving minimum extra offset, defined in obj/item
 
 	//Used for hardsuits. If false, this piece cannot be retracted while the core module is engaged
 	var/retract_while_active = TRUE
+	blacklist_upgrades = list(
+							/obj/item/tool_upgrade/augment = TRUE,
+							/obj/item/tool_upgrade/refinement = TRUE,
+							/obj/item/gun_upgrade = TRUE, // Goodbye tacticool clothing
+							/obj/item/tool_upgrade/artwork_tool_mod = TRUE)
+	var/tally_locking = -100
+
 
 /obj/item/clothing/Initialize(mapload, ...)
 	. = ..()
 
+	var/list/init_accessories = accessories
+	accessories = list()
+	for (var/path in init_accessories)
+		attach_accessory(null, new path (src))
+
 	var/obj/screen/item_action/action = new /obj/screen/item_action/top_bar/clothing_info
 	action.owner = src
-	if(!islist(hud_actions)) hud_actions = list()
+	if(!hud_actions)
+		hud_actions = list()
 	hud_actions += action
 
 	if(matter)
 		return
 
-	else if(!matter)
-		matter = list()
-
-	matter.Add(list(MATERIAL_BIOMATTER = 5 * w_class))    // based of item size
+	else if(chameleon_type)
+		matter = list(MATERIAL_PLASTIC = 2 * w_class)
+		origin_tech = list(TECH_ILLEGAL = 3)
+	else
+		matter = list(MATERIAL_BIOMATTER = 5 * w_class)
 
 /obj/item/clothing/Destroy()
 	for(var/obj/item/clothing/accessory/A in accessories)
-		qdel(A)
+		A.on_removed()
+		accessories -= A
+		update_wear_icon()
 	accessories = null
 	return ..()
 
@@ -46,6 +61,20 @@
 	. = ..()
 	gunshot_residue = null
 
+/obj/item/clothing/proc/return_inv()
+	var/list/L = list()
+
+	L += src.contents
+
+	for(var/obj/item/storage/S in src)
+		L += S.return_inv()
+	for(var/obj/item/gift/G in src)
+		L += G.gift
+		if (istype(G.gift, /obj/item/storage))
+			L += G.gift:return_inv()
+	for(var/obj/item/rig_module/RM in src)
+		L += RM.return_inv()
+	return L
 
 //Delayed equipping
 /obj/item/clothing/pre_equip(var/mob/user, var/slot)
@@ -106,55 +135,73 @@
 
 	return english_list(body_partsL)
 
-/obj/item/clothing/ui_data()
-	var/list/data = list()
-	var/list/armorlist = armor.getList()
-	if(armorlist.len)
-		var/list/armor_vals = list()
-		for(var/i in armorlist)
-			if(armorlist[i])
-				armor_vals += list(list(
-					"name" = i,
-					"value" = armorlist[i]
-					))
-		data["armor_info"] = armor_vals
-	if(body_parts_covered)
-		var/body_part_string = body_part_coverage_to_string(body_parts_covered)
-		data["body_coverage"] = body_part_string
-	data["slowdown"] = slowdown
-	data["stiffness"] = stiffness
-	data["obscuration"] = obscuration
-	if(heat_protection)
-		data["heat_protection"] = body_part_coverage_to_string(heat_protection)
-		data["heat_protection_temperature"] = max_heat_protection_temperature
-	if(cold_protection)
-		data["cold_protection"] = body_part_coverage_to_string(cold_protection)
-		data["cold_protection_temperature"] = min_cold_protection_temperature
-	data["equip_delay"] = equip_delay
-	return data
-
-/obj/item/clothing/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = 1, state = GLOB.default_state)
-	var/list/data = ui_data(user)
-
-	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if(!ui)
-		ui = new(user, src, ui_key, "clothing_stats.tmpl", name, 650, 550, state = state)
-		ui.auto_update_layout = 1
-		ui.set_initial_data(data)
-		ui.open()
-
 /obj/item/clothing/ui_action_click(mob/living/user, action_name)
 	if(action_name == "Clothing information")
-		nano_ui_interact(user)
+		ui_interact(user)
 		return TRUE
 	return ..()
 
+/obj/item/clothing/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "ItemStats", name)
+		ui.open()
+
+/obj/item/clothing/ui_data(mob/user)
+	var/list/data = list()
+
+	var/list/stats = list()
+
+	var/list/armor_stats = list()
+
+	var/list/armorlist = armor.getList()
+	if(armorlist.len)
+		for(var/i in armorlist)
+			if(armorlist[i])
+				armor_stats += list(list(
+					"type" = "ProgressBar",
+					"name" = capitalize(i) + " armor",
+					"value" = armorlist[i],
+					"max" = 25,
+					"color" = armorlist[i] > 25 ? (armorlist[i] > 50 ? "good" : "average") : "bad",
+					"unit" = ""
+				))
+
+	stats["Armor Stats"] = armor_stats
+
+	var/list/equipment_stats = list()
+
+	equipment_stats += list(list("name" = "Slowdown", "type" = "ProgressBar", "unit" = " delay units", "value" = slowdown, "min" = -5, "max" = 20, "color" = slowdown < 1 ? "good" : (slowdown > 1 ? "bad" : "average")))
+	equipment_stats += list(list("name" = "Stiffness", "type" = "ProgressBar", "unit" = " delay units", "value" = stiffness, "min" = -5, "max" = 20, "color" = stiffness < 1 ? "good" : (stiffness > 1 ? "bad" : "average")))
+	equipment_stats += list(list("name" = "Obscuration", "type" = "ProgressBar", "unit" = " delay units", "value" = obscuration, "min" = -5, "max" = 20, "color" = obscuration < 1 ? "good" : (obscuration > 1 ? "bad" : "average")))
+	equipment_stats += list(list("name" = "Coverage", "type" = "String", "value" = body_part_coverage_to_string(body_parts_covered)))
+	equipment_stats += list(list("name" = "Time To Equip", "type" = "ProgressBar", "unit" = equip_delay == 1 ? " second" : " seconds", "value" = equip_delay / 10, "min" = 0, "max" = 10, "color" = equip_delay < 10 ? "good" : (equip_delay > 50 ? "bad" : "average")))
+
+	stats["Equipment Stats"] = equipment_stats
+
+	var/list/temperature_stats = list()
+
+	if(heat_protection && max_heat_protection_temperature)
+		temperature_stats += list(list("name" = "Heat Protection Coverage", "type" = "String", "value" = body_part_coverage_to_string(heat_protection)))
+		temperature_stats += list(list("name" = "Max Temperature", "type" = "AnimatedNumber", "value" = max_heat_protection_temperature, "unit" = " deg K"))
+
+	if(cold_protection && min_cold_protection_temperature)
+		temperature_stats += list(list("name" = "Cold Protection Coverage", "type" = "String", "value" = body_part_coverage_to_string(cold_protection)))
+		temperature_stats += list(list("name" = "Minimum Temperature", "type" = "AnimatedNumber", "value" = min_cold_protection_temperature, "unit" = " deg K"))
+
+	stats["Temperature Stats"] = temperature_stats
+
+	data["stats"] = stats
+
+	return data
+
 /obj/screen/item_action/top_bar/clothing_info
 	icon = 'icons/mob/screen/gun_actions.dmi'
-	screen_loc = "8,1:13"
+	screen_loc = "7.95,1.4"
 	minloc = "7,2:13"
 	name = "Clothing information"
 	icon_state = "info"
+	ErisOptimized_minloc = "16,10.3"
 
 /obj/item/clothing/refresh_upgrades()
 	var/obj/item/clothing/referencecarmor = new type()
@@ -330,7 +377,7 @@ BLIND     // can't see anything
 	var/wired = 0
 	var/clipped = 0
 	body_parts_covered = ARMS
-	armor = list(melee = 10, bullet = 0, energy = 15, bomb = 0, bio = 0, rad = 0)
+	armor_list = list(melee = 2, bullet = 0, energy = 3, bomb = 0, bio = 0, rad = 0)
 	slot_flags = SLOT_GLOVES
 	attack_verb = list("challenged")
 
@@ -402,7 +449,7 @@ BLIND     // can't see anything
 	if(!mob_wear_hat(user))
 		return ..()
 
-/obj/item/clothing/head/attack_generic(var/mob/user)
+/obj/item/clothing/head/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(!istype(user) || !mob_wear_hat(user))
 		return ..()
 
@@ -457,7 +504,8 @@ BLIND     // can't see anything
 	slot_flags = SLOT_MASK
 	body_parts_covered = FACE|EYES
 
-	var/voicechange = 0
+	var/muffle_voice = FALSE
+	var/voicechange = FALSE
 	var/list/say_messages
 	var/list/say_verbs
 
@@ -480,11 +528,17 @@ BLIND     // can't see anything
 	var/noslip = 0
 	var/module_inside = 0
 
-	armor = list(melee = 10, bullet = 0, energy = 10, bomb = 0, bio = 0, rad = 0)
+	armor_list = list(melee = 2, bullet = 0, energy = 2, bomb = 0, bio = 0, rad = 0)
 	permeability_coefficient = 0.50
 	slowdown = SHOES_SLOWDOWN
 	force = 2
 	var/overshoes = 0
+
+/obj/item/clothing/shoes/Destroy()
+	if(holding)
+		holding.forceMove(loc)
+		holding = null
+	return ..()
 
 /obj/item/clothing/shoes/proc/draw_knife()
 	set name = "Draw Boot Knife"
@@ -511,7 +565,6 @@ BLIND     // can't see anything
 	if(!holding)
 		verbs -= /obj/item/clothing/shoes/proc/draw_knife
 
-	update_icon()
 	return
 
 /obj/item/clothing/shoes/AltClick()
@@ -528,11 +581,12 @@ BLIND     // can't see anything
 
 /obj/item/clothing/shoes/attackby(var/obj/item/I, var/mob/user)
 	var/global/knifes
+	var/global/not_a_knife
 	if(istype(I,/obj/item/noslipmodule))
 		if (item_flags != 0)
 			noslip = item_flags
 		module_inside = 1
-		to_chat(user, "You attached no slip sole")
+		to_chat(user, "You attached a no-slip sole to \the [src].")
 		permeability_coefficient = 0.05
 		item_flags = NOSLIP | SILENT
 		origin_tech = list(TECH_ILLEGAL = 3)
@@ -548,17 +602,22 @@ BLIND     // can't see anything
 			/obj/item/material/butterfly,
 			/obj/item/material/kitchen/utensil,
 			/obj/item/tool/knife/tacknife,
-			/obj/item/tool/knife/shiv
+			/obj/item/tool/knife/shiv,
+			/obj/item/oddity/common/old_knife
 		)
+	if(!not_a_knife)
+		not_a_knife = list(/obj/item/tool/knife/psionic_blade)
 	if(can_hold_knife && is_type_in_list(I, knifes))
 		if(holding)
 			to_chat(user, SPAN_WARNING("\The [src] is already holding \a [holding]."))
+			return
+		if(is_type_in_list(I, not_a_knife))
+			to_chat(user, SPAN_WARNING("\The [src] is not a real knife."))
 			return
 		if(user.unEquip(I, src))
 			holding = I
 			user.visible_message(SPAN_NOTICE("\The [user] shoves \the [I] into \the [src]."))
 			verbs |= /obj/item/clothing/shoes/proc/draw_knife
-			update_icon()
 	else
 		return ..()
 
@@ -572,7 +631,7 @@ BLIND     // can't see anything
 			item_flags = noslip
 		var/obj/item/noslipmodule/NSM = new()
 		usr.put_in_hands(NSM)
-	else to_chat(usr, "You haven't got any accessories in your shoes")
+	else to_chat(usr, "You haven't got any accessories in your shoes.")
 
 /obj/item/clothing/shoes/update_icon()
 	cut_overlays()
@@ -593,7 +652,11 @@ BLIND     // can't see anything
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
 	allowed = list(
 		/obj/item/clipboard,
-		/obj/item/storage/pouch/,
+		/obj/item/pen,
+		/obj/item/paper,
+		/obj/item/device/flash,
+		/obj/item/storage/pouch,
+		/obj/item/storage/sheath,
 		/obj/item/gun,
 		/obj/item/melee,
 		/obj/item/material,
@@ -609,21 +672,37 @@ BLIND     // can't see anything
 		/obj/item/device/lighting,
 		/obj/item/device/scanner,
 		/obj/item/reagent_containers/spray,
+		/obj/item/device/lighting/toggleable/flashlight,
+		/obj/item/storage/box/matches,
+		/obj/item/reagent_containers/drinks/flask,
 		/obj/item/device/radio,
 		/obj/item/clothing/mask,
+		/obj/item/storage/backpack/guncase,
 		/obj/item/implant/carrion_spider/holographic)
 	slot_flags = SLOT_OCLOTHING
 	var/blood_overlay_type = "suit"
 	siemens_coefficient = 0.9
 	w_class = ITEM_SIZE_NORMAL
 	var/list/extra_allowed = list()
+	blacklisted_allowed = list(
+		/obj/item/tool/knife/psionic_blade,
+		/obj/item/tool/hammer/telekinetic_fist,
+		/obj/item/flame/pyrokinetic_spark,
+		/obj/item/tool/psionic_omnitool,
+		/obj/item/shield/riot/crusader/psionic,
+		/obj/item/gun/kinetic_blaster,
+		/obj/item/tool/cannibal_scythe
+		)
 	equip_delay = 1 SECONDS
 
 	valid_accessory_slots = list("armband","decor")
 	restricted_accessory_slots = list("utility", "armband")
 
 /obj/item/clothing/suit/New()
-	allowed |= extra_allowed
+	LAZYOR(allowed, extra_allowed)
+	.=..()
+
+/obj/item/clothing/suit/Destroy()
 	.=..()
 
 /obj/item/clothing/suit/refresh_upgrades()
@@ -653,6 +732,7 @@ BLIND     // can't see anything
 		3 = Report location
 		*/
 	var/displays_id = 1
+	var/rolldown = FALSE
 	equip_delay = 2 SECONDS
 
 	//convenience var for defining the icon state for the overlay used when the clothing is worn.
@@ -670,7 +750,9 @@ BLIND     // can't see anything
 
 /obj/item/clothing/under/New()
 	..()
-	item_state_slots[slot_w_uniform_str] = icon_state //TODO: drop or gonna use it?
+	LAZYSET(item_state_slots, slot_w_uniform_str, icon_state) //TODO: drop or gonna use it?
+	if(isOnStationLevel(src))
+		sensor_mode = 3 // Clothing spawning on colony levels is on tracking by default.
 
 /obj/item/clothing/under/examine(mob/user)
 	..(user)
@@ -722,13 +804,18 @@ BLIND     // can't see anything
 				for(var/mob/V in viewers(usr, 1))
 					V.show_message("[usr] sets [src.loc]'s sensors to maximum.", 1)
 
-
-/obj/item/clothing/under/rank/New()
-	sensor_mode = 3
-	..()
-
 /obj/item/clothing/under/attackby(var/obj/item/I, var/mob/U)
-	if(I.get_tool_type(usr, list(QUALITY_SCREW_DRIVING), src) && ishuman(U) && !is_sharp(I)) // No setting sensors with knives!
+	if(I.get_tool_type(usr, list(QUALITY_SCREW_DRIVING), src) && ishuman(U))
 		set_sensors(U)
 	else
 		return ..()
+
+/obj/item/clothing/under/verb/roll_down()
+	set name = "Toggle Jumpsuit"
+	set desc = "Toggle the appearance of your jumpsuit."
+	set category = "Object"
+
+	usr.visible_message("[usr] adjusts their jumpsuit.", \
+	"You adjust your jumpsuit.")
+	rolldown = !rolldown
+	usr.update_inv_w_uniform()

@@ -7,6 +7,7 @@
 	force = WEAPON_FORCE_PAINFUL
 	worksound = WORKSOUND_HAMMER
 	w_class = ITEM_SIZE_SMALL
+	push_attack = TRUE
 	origin_tech = list(TECH_ENGINEERING = 1)
 	matter = list(MATERIAL_STEEL = 4, MATERIAL_WOOD = 2)
 	price_tag = 30
@@ -15,6 +16,15 @@
 	effective_faction = list("spider") // Spiders are weak to crushing.
 	damage_mult = 2
 	hitsound = 'sound/weapons/smash.ogg'
+	blacklist_upgrades = list(/obj/item/tool_upgrade/productivity/whetstone = TRUE, /obj/item/tool_upgrade/productivity/diamond_blade = TRUE) //it's hammers.
+
+	has_alt_mode = TRUE
+	alt_mode_damagetype = HALLOSS
+	alt_mode_sharp = FALSE
+	alt_mode_verbs = list("bashes", "stunts", "wacks", "blunts")
+	alt_mode_toggle = "loosens their grip on the handle of their weapon"
+	alt_mode_lossrate = 0.4
+
 
 /obj/item/tool/hammer/deadblow
 	name = "deadblow hammer"
@@ -33,16 +43,16 @@
 	icon_state = "powered_hammer"
 	item_state = "powered_hammer"
 	wielded_icon = "powered_hammer_on"
-	switched_on_force = WEAPON_FORCE_BRUTAL
+	switched_on_forcemult = 2.2 //33 total
 	structure_damage_factor = STRUCTURE_DAMAGE_BREACHING
-	w_class = ITEM_SIZE_BULKY
+	w_class = ITEM_SIZE_HUGE
 	slot_flags = SLOT_BELT|SLOT_BACK
 	matter = list(MATERIAL_STEEL = 4, MATERIAL_PLASTEEL = 6, MATERIAL_PLASTIC = 1)
 	price_tag = 340
 	switched_on_qualities = list(QUALITY_HAMMERING = 45)
 	switched_off_qualities = list(QUALITY_HAMMERING = 30)
 	toggleable = TRUE
-	armor_penetration = ARMOR_PEN_EXTREME
+	armor_divisor = ARMOR_PEN_EXTREME // Retains AP when turned off - it's a hammer.
 	degradation = 0.7
 	use_power_cost = 2
 	suitable_cell = /obj/item/cell/medium
@@ -55,14 +65,14 @@
 
 /obj/item/tool/hammer/powered_hammer/turn_on(mob/user)
 
-	if (cell && cell.charge > 0)
+	if (cell && cell.charge >= 1)
 		item_state = "[initial(item_state)]_on"
 		to_chat(user, SPAN_NOTICE("You switch [src] on."))
 		playsound(loc, 'sound/effects/sparks4.ogg', 50, 1)
 		..()
 	else
 		item_state = initial(item_state)
-		to_chat(user, SPAN_WARNING("[src] has no power!"))
+		to_chat(user, SPAN_WARNING("[src]'s battery is dead or missing."))
 
 /obj/item/tool/hammer/powered_hammer/turn_off(mob/user)
 	item_state = initial(item_state)
@@ -76,17 +86,19 @@
 	icon_state = "onehammer"
 	item_state = "onehammer"
 	wielded_icon = "onehammer_on"
-	switched_on_force = WEAPON_FORCE_LETHAL
+	switched_on_forcemult = 2.6 // 39 total
+	armor_divisor = ARMOR_PEN_EXTREME // Retains AP when turned off - it's a hammer.
 	structure_damage_factor = STRUCTURE_DAMAGE_DESTRUCTIVE
 	matter = list(MATERIAL_STEEL = 4, MATERIAL_PLATINUM = 3, MATERIAL_DIAMOND = 3)
 	price_tag = 860
 	switched_on_qualities = list(QUALITY_HAMMERING = 60)
 	switched_off_qualities = list(QUALITY_HAMMERING = 35)
 	toggleable = TRUE
-	degradation = 0.6
+	degradation = 2
 	use_power_cost = 1.5
 	workspeed = 1.5
 	max_upgrades = 2
+	allow_greyson_mods = TRUE
 
 /obj/item/tool/hammer/foremansledge
 	name = "foreman's sledgehammer"
@@ -97,7 +109,7 @@
 	wielded_icon = "sledgehammer1"
 	force = WEAPON_FORCE_LETHAL
 	slot_flags = SLOT_BELT|SLOT_BACK
-	armor_penetration = ARMOR_PEN_EXTREME
+	armor_divisor = ARMOR_PEN_EXTREME
 	throwforce = WEAPON_FORCE_LETHAL
 	matter = list(MATERIAL_PLASTEEL = 30, MATERIAL_PLASTIC = 5)
 	throw_speed = 1
@@ -116,7 +128,7 @@
 	icon_state = "homewrecker"
 	item_state = "homewrecker0"
 	wielded_icon = "homewrecker1"
-	armor_penetration = ARMOR_PEN_EXTREME
+	armor_divisor = ARMOR_PEN_EXTREME
 	w_class = ITEM_SIZE_BULKY
 	slot_flags = SLOT_BELT|SLOT_BACK
 	force = WEAPON_FORCE_ROBUST
@@ -125,6 +137,12 @@
 	structure_damage_factor = STRUCTURE_DAMAGE_HEAVY
 	max_upgrades = 5
 	price_tag = 15
+	item_icons = list(
+		slot_back_str = 'icons/inventory/back/mob.dmi')
+	item_state_slots = list(
+		slot_back_str = "homewrecker0"
+		)
+
 
 /obj/item/tool/hammer/ironhammer
 	name = "Seinemetall Defense \"Ironhammer\" Breaching Hammer"
@@ -134,16 +152,30 @@
 	item_state = "iron_hammer"
 	wielded_icon = "iron_hammer_wielded"
 	w_class = ITEM_SIZE_HUGE
-	armor_penetration = ARMOR_PEN_DEEP
+	armor_divisor = ARMOR_PEN_DEEP
 	slot_flags = SLOT_BELT|SLOT_BACK
 	force = WEAPON_FORCE_LETHAL
 	structure_damage_factor = STRUCTURE_DAMAGE_BORING
 	tool_qualities = list(QUALITY_HAMMERING = 40, QUALITY_PRYING = 1)
 	matter = list(MATERIAL_STEEL = 30, MATERIAL_PLASTIC = 10, MATERIAL_PLASTEEL = 15)
+	clickdelay_offset = DEFAULT_LONG_COOLDOWN
 
-/obj/item/tool/hammer/ironhammer/attack()
-	..()
-	usr.setClickCooldown(DEFAULT_ATTACK_COOLDOWN*2)
+//Exl verson of the above hammer, slightly faster but deals less damaeg mostly used for breaking walls/windows/ect
+/obj/item/tool/hammer/excelsior_hammer
+	name = "Excelsior \"Chain-Braker\" siege hammer"
+	desc = "A massive hammer to break the chains of oppression with."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "excelsior_hammer"
+	item_state = "excelsior_hammer"
+	wielded_icon = "excelsior_hammer_wielded"
+	w_class = ITEM_SIZE_HUGE
+	armor_divisor = ARMOR_PEN_DEEP
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_BRUTAL
+	structure_damage_factor = STRUCTURE_DAMAGE_BORING + 2
+	tool_qualities = list(QUALITY_HAMMERING = 60, QUALITY_PRYING = 10)
+	matter = list(MATERIAL_STEEL = 10, MATERIAL_PLASTIC = 10, MATERIAL_PLASTEEL = 10)
+	clickdelay_offset = DEFAULT_ATTACK_COOLDOWN
 
 /obj/item/tool/hammer/mace
 	name = "mace"
@@ -154,7 +186,7 @@
 	matter = list(MATERIAL_STEEL = 10)
 	price_tag = 30
 
-	armor_penetration = ARMOR_PEN_DEEP
+	armor_divisor = ARMOR_PEN_DEEP
 	force = WEAPON_FORCE_DANGEROUS
 
 	tool_qualities = list(QUALITY_HAMMERING = 20)
@@ -172,6 +204,28 @@
 	degradation = 5 //This one breaks REALLY fast
 	max_upgrades = 5 //all makeshift tools get more mods to make them actually viable for mid-late game
 
+/obj/item/tool/hammer/makeshift_staff
+	name = "makeshift staff"
+	desc = "Three rods, some duct tape and a lot of bloodlust give you this."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "makeshift_staff"
+	item_state = "makeshift_staff"
+	wielded_icon = "makeshift_staff_wielded"
+	tool_qualities = list(QUALITY_HAMMERING = 5)
+	matter = list(MATERIAL_STEEL = 3)
+	max_upgrades = 3
+	armor_divisor = ARMOR_PEN_GRAZING
+	force = WEAPON_FORCE_PAINFUL
+	w_class = ITEM_SIZE_HUGE
+
+/obj/item/tool/hammer/dumbbell
+	name = "dumbbell"
+	desc = "To get stronger with this thing, you need to regularly train for many a month. But to hammer a nail, or crack a skull..."
+	icon_state = "dumbbell"
+	item_state = "dumbbell"
+	tool_qualities = list(QUALITY_HAMMERING = 15)
+	matter = list(MATERIAL_STEEL = 5)
+
 /obj/item/tool/hammer/charge
 	name = "rocket hammer"
 	desc = "After many issues with scientists trying to hammer a nail, one bright individual wondered what could be achieved by attaching a stellar-grade ship engine to the back."
@@ -180,7 +234,8 @@
 	wielded_icon = "chargehammer1"
 	item_state = "chargehammer0"
 	w_class = ITEM_SIZE_HUGE
-	switched_on_force = WEAPON_FORCE_BRUTAL
+	switched_on_forcemult = 2.2
+	armor_divisor = ARMOR_PEN_EXTREME // Retains AP when turned off - it's a hammer.
 	structure_damage_factor = STRUCTURE_DAMAGE_BREACHING
 	switched_on_qualities = list(QUALITY_HAMMERING = 60)
 	switched_off_qualities = list(QUALITY_HAMMERING = 35)
@@ -194,7 +249,7 @@
 
 /obj/item/tool/hammer/charge/turn_on(mob/user)
 
-	if (cell && cell.charge > 0)
+	if (cell && cell.charge >= 1)
 		item_state = "[initial(item_state)]-on"
 		icon_state = "[initial(icon_state)]_on"
 		if(wielded)
@@ -204,7 +259,7 @@
 		..()
 	else
 		item_state = initial(item_state)
-		to_chat(user, SPAN_WARNING("[src] has no power!"))
+		to_chat(user, SPAN_WARNING("[src]'s battery is dead or missing."))
 
 /obj/item/tool/hammer/charge/turn_off(mob/user)
 	item_state = initial(item_state)

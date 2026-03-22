@@ -24,7 +24,7 @@
 	icon_modifier = "grey_"
 	icon_state = "grey_railing0"
 
-/obj/structure/railing/attack_generic(var/mob/user, var/damage, var/attack_verb)
+/obj/structure/railing/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(istype(user))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.do_attack_animation(src)
@@ -55,13 +55,15 @@
 		R.update_icon()
 	. = ..()
 
-/obj/structure/railing/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+/obj/structure/railing/CanPass(atom/movable/mover, turf/target, height=0, air_group=0, direction)
 	if(!mover)
 		return 1
 
 	if(!reinforced && istype(mover) && mover.checkpass(PASSTABLE))
 		return 1
-	if(get_dir(loc, target) == dir)
+	if (isnull(direction))
+		direction = get_dir(loc, target)
+	if(direction == dir)
 		return !density
 	else
 		return 1
@@ -356,21 +358,21 @@
 
 	usr.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"))
 	add_fingerprint(user)
-	climbers |= user
+	LAZYOR(climbers, user)
 
-	var/delay = (issmall(user) ? 20 : 34) * user.mod_climb_delay //basiclly this will let you clime things insainly fast when you have leap perk normal if you dont
+	var/delay = (issmall(user) ? 20 : 34) * user.mod_climb_delay //basiclly this will let you clime things insanely fast when you have leap perk normal if you dont
 	var/duration = max(delay * user.stats.getMult(STAT_VIG, STAT_LEVEL_EXPERT), delay * 0.66)
 	if(!do_after(user, duration))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	if(!can_climb(user, post_climb_check=1))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	if(!neighbor_turf_passable())
 		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	if(get_turf(user) == get_turf(src))
@@ -380,7 +382,7 @@
 
 	usr.visible_message(SPAN_WARNING("[user] climbed over \the [src]!"))
 	if(!anchored)	take_damage(maxhealth) // Fatboy
-	climbers -= user
+	LAZYREMOVE(climbers, user)
 
 /obj/structure/railing/get_fall_damage(var/turf/from, var/turf/dest)
 	var/damage = health * 0.4
@@ -392,4 +394,5 @@
 
 /obj/structure/railing/bullet_act(obj/item/projectile/P, def_zone)
 	. = ..()
-	take_damage(P.get_structure_damage())
+	if (!(P.testing))
+		take_damage(P.get_structure_damage())

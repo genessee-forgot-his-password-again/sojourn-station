@@ -52,20 +52,24 @@ var/list/ai_verbs_default = list(
 	status_flags = CANSTUN|CANPARALYSE|CANPUSH
 //	shouldnt_see = list()
 	universal_understand = TRUE
-	var/list/network = list(NETWORK_FIRST_SECTION,
-							NETWORK_SECOND_SECTION,
-							NETWORK_THIRD_SECTION,
-							NETWORK_FOURTH_SECTION,
+	var/list/network = list(NETWORK_COLONY_SURFACE,
+							NETWORK_COLONY_UNDERGROUND,
+							NETWORK_COLONY_TRANSITION,
+							NETWORK_CHURCH,
+							NETWORK_PROP,
+							NETWORK_CARGO,
 							NETWORK_COMMAND,
 							NETWORK_ENGINE,
 							NETWORK_ENGINEERING,
 							NETWORK_CEV_ERIS,
 							NETWORK_MINE,
 							NETWORK_PRISON,
+							NETWORK_GATE,
 							NETWORK_MEDICAL,
 							NETWORK_RESEARCH,
 							NETWORK_RESEARCH_OUTPOST,
 							NETWORK_SECURITY,
+							NETWORK_PLASMA_TAG,
 							NETWORK_TELECOM
 							)
 	var/obj/machinery/camera/camera = null
@@ -73,7 +77,6 @@ var/list/ai_verbs_default = list(
 	var/aiRestorePowerRoutine = 0
 	var/viewalerts = 0
 	var/icon/holo_icon//Default is assigned when AI is created.
-	var/obj/mecha/controlled_mech //For controlled_mech a mech, to determine whether to relaymove or use the AI eye.
 	var/obj/item/tool/multitool/aiMulti = null
 	var/obj/item/device/radio/headset/heads/ai_integrated/aiRadio = null
 	var/camera_light_on = 0	//Defines if the AI toggled the light on the camera it's looking through.
@@ -107,49 +110,22 @@ var/list/ai_verbs_default = list(
 
 	var/multitool_mode = 0
 
+	var/amount_of_borgs_printed = 0				// How many borgs we have printed per AI
+
 	defaultHUD = "Eris"
 
 /mob/living/silicon/ai/proc/add_ai_verbs()
-	src.verbs |= ai_verbs_default
+	add_verb(src, ai_verbs_default)
 
 /mob/living/silicon/ai/proc/remove_ai_verbs()
-	src.verbs -= ai_verbs_default
-
-
-/mob/living/silicon/ai/proc/add_mecha_verbs()
-	verbs += /mob/living/silicon/ai/proc/view_mecha_stats
-	verbs += /mob/living/silicon/ai/proc/AIeject
-
-
-/mob/living/silicon/ai/proc/remove_mecha_verbs()
-	verbs -= /mob/living/silicon/ai/proc/view_mecha_stats
-	verbs -= /mob/living/silicon/ai/proc/AIeject
-
-/mob/living/silicon/ai/proc/view_mecha_stats()
-	set name = "View Stats"
-	set category = "Exosuit Interface"
-	set popup_menu = 0
-	if(controlled_mech)
-		controlled_mech.view_stats()
-
-
-/mob/living/silicon/ai/proc/AIeject()
-	set name = "AI Eject"
-	set category = "Exosuit Interface"
-	set popup_menu = 0
-	if(controlled_mech)
-		controlled_mech.AIeject()
-
+	remove_verb(src, ai_verbs_default)
 
 /mob/living/silicon/ai/MiddleClickOn(var/atom/A)
     if(!control_disabled && A.AIMiddleClick(src))
         return
-    if(controlled_mech) //Are we piloting a mech? Placed here so the modifiers are not overridden.
-        controlled_mech.click_action(A, src) //Override AI normal click behavior.  , params
-        return
     ..()
 
-/mob/living/silicon/ai/New(loc, var/datum/ai_laws/L, var/obj/item/device/mmi/B, var/safety = 0)
+/mob/living/silicon/ai/New(loc, var/datum/ai_laws/L, var/obj/item/device/mmi/digital/posibrain/B, var/safety = 0)
 	announcement = new()
 	announcement.title = "A.I. Announcement"
 	announcement.announcement_type = "A.I. Announcement"
@@ -193,9 +169,9 @@ var/list/ai_verbs_default = list(
 	//Languages
 	add_language(LANGUAGE_ROBOT, 1)
 	add_language(LANGUAGE_COMMON, 1)
-	add_language(LANGUAGE_SERBIAN, 1)
-	add_language(LANGUAGE_JIVE, 1) //can understand but obviously can't speak it.
-	add_language(LANGUAGE_GERMAN, 1)
+	add_language(LANGUAGE_ILLYRIAN, 1)
+	add_language(LANGUAGE_JIVE, 0) //can understand but obviously can't speak it.
+	add_language(LANGUAGE_EURO, 1)
 	add_language(LANGUAGE_JANA, 1)
 	add_language(LANGUAGE_CYRILLIC, 1)
 	add_language(LANGUAGE_LATIN, 1)
@@ -228,12 +204,12 @@ var/list/ai_verbs_default = list(
 	..()
 
 	//Stats
-	//The AI gets 100 in all three knowledge stats.
+	//The AI gets 100 in all stats except cognition for use in some RnD machinery
 	//These are only ever used to operate machinery and software
 	//It doesnt get any physical stats, like robustness, since its a disembodied mind
 	stats.changeStat(STAT_BIO, 100)
 	stats.changeStat(STAT_MEC, 100)
-	stats.changeStat(STAT_COG, 100)
+	stats.changeStat(STAT_COG, 150)
 
 /mob/living/silicon/ai/proc/on_mob_init()
 	to_chat(src, "<B>You are playing the station's AI. The AI cannot move, but can interact with many objects while viewing them (through cameras).</B>")
@@ -255,7 +231,7 @@ var/list/ai_verbs_default = list(
 
 	if (!check_special_role(ROLE_MALFUNCTION))
 		show_laws()
-		to_chat(src, "<b>These laws may be changed by other players, or by you being the traitor.</b>")
+		to_chat(src, "<b>These laws may be changed by other players, or by you being the contractor.</b>")
 
 	job = "AI"
 	setup_icon()
@@ -463,8 +439,6 @@ var/list/ai_verbs_default = list(
 	return
 
 /mob/living/silicon/ai/reset_view(atom/A)
-	if(controlled_mech)
-		return ..(controlled_mech)
 	if(camera)
 		camera.set_light(0)
 	if(istype(A,/obj/machinery/camera))

@@ -13,7 +13,7 @@
 	desc = "The poster comes with its own automatic adhesive mechanism, for easy pinning to any vertical surface."
 	icon_state = "rolled_poster"
 	var/serial_number = 0
-	var/ruined = 0
+	var/ruined = FALSE
 	var/datum/poster/design = null
 
 /obj/item/contraband/poster/New(turf/loc, var/datum/poster/new_design = null)
@@ -25,7 +25,7 @@
 
 /obj/item/contraband/poster/placed
 	icon_state = "random"
-	anchored = 1
+	anchored = TRUE
 	New(turf/loc)
 		if(icon_state != "random")
 			for(var/datum/poster/new_design in GLOB.poster_designs)
@@ -54,7 +54,7 @@
 				return
 			visible_message(SPAN_WARNING("[user] rips [src] in a single, decisive motion!") )
 			playsound(src.loc, 'sound/items/poster_ripped.ogg', 100, 1)
-			ruined = 1
+			ruined = TRUE
 			icon = initial(icon)
 			icon_state = "poster_ripped"
 			name = "ripped poster"
@@ -75,7 +75,7 @@
 		return
 
 /obj/item/contraband/poster/proc/roll_and_drop()
-	anchored = 0
+	anchored = FALSE
 	pixel_x = 0
 	pixel_y = 0
 	icon = initial(icon)
@@ -84,7 +84,7 @@
 
 
 //Places the poster on a wall
-/obj/item/contraband/poster/afterattack(var/turf/simulated/wall/W, var/mob/user, var/adjacent, var/clickparams)
+/obj/item/contraband/poster/afterattack(turf/simulated/wall/W, mob/user, adjacent, clickparams)
 	if (!adjacent)
 		return
 
@@ -101,7 +101,7 @@
 	else
 		placement_dir = reverse_dir[placement_dir]
 		for(var/t_dir in cardinal)
-			if(!t_dir & placement_dir) continue
+			if(!(t_dir & placement_dir)) continue
 			if(iswall(get_step(W, t_dir)))
 				if(iswall(get_step(W, placement_dir-t_dir)))
 					break
@@ -131,7 +131,7 @@
 			pixel_x = 32
 		else if(placement_dir&EAST)
 			pixel_x = -32
-		anchored = 1
+		anchored = TRUE
 		flick("poster_being_set", src)
 		playsound(W, 'sound/items/poster_being_created.ogg', 100, 1)
 		design.set_design(src)
@@ -144,12 +144,12 @@
 	var/icon_state=""
 	var/icon = 'icons/obj/contraband.dmi'
 
-/datum/poster/proc/set_design(var/obj/item/contraband/poster/P)
+/datum/poster/proc/set_design(obj/item/contraband/poster/P)
 	P.name = "poster - [name]"
 	P.desc = desc
 	P.icon_state = icon_state
 	P.icon = icon
-	return 1
+	return TRUE
 
 /*Generic*/
 
@@ -700,6 +700,11 @@
 	name = "Winter Is Coming"
 	desc = "On the poster is a frighteningly large wolf, he warns: \"Only YOU can keep the station from freezing during planetary occultation!\""
 
+/obj/item/contraband/poster/placed/popculture/gilld_chese
+	icon_state = "gilld_chese"
+	name = "gilld chese"
+	desc = "This is a poster of a small cat being fed a Deluxe Toasted Sandwich, one of the Artificers Guild's best culinary innovations on the use of Petrol Pumps."
+
 /*Pinups*/
 /obj/item/contraband/poster/placed/pinup/cindy
 	icon_state="bsposter8"
@@ -787,3 +792,9 @@
 	icon_state="bsposter22"
 	name = "xenobiology recruitment poster"
 	desc = "A poster calling for new science personnel to study alien beings."
+
+/obj/item/contraband/poster/placed/recruitment/blackshield
+	icon = 'icons/obj/contraband_large.dmi'
+	icon_state = "mrshield"
+	name = "Mr Shield Blackshield poster"
+	desc = "A poster reflecting Blackshield's recent viral mascot, Mr. Shield. Known broadcaster and philanthropist."

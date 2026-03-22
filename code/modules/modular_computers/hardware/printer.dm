@@ -1,4 +1,4 @@
-/obj/item/computer_hardware/printer
+/obj/item/pc_part/printer
 	name = "printer unit"
 	desc = "Small integrated printer that supports paper recycling."
 	power_usage = 50
@@ -7,12 +7,14 @@
 	hardware_size = 1
 	var/stored_paper = 10
 	var/max_paper = 10
+	var/last_print
+	var/print_language = LANGUAGE_COMMON
 
-/obj/item/computer_hardware/printer/diagnostics(var/mob/user)
+/obj/item/pc_part/printer/diagnostics(var/mob/user)
 	..()
 	to_chat(user, "Paper buffer level: [stored_paper]/[max_paper]")
 
-/obj/item/computer_hardware/printer/proc/print_text(var/text_to_print, var/paper_title = null)
+/obj/item/pc_part/printer/proc/print_text(var/text_to_print, var/paper_title = null)
 	if(!stored_paper)
 		return 0
 	if(!enabled)
@@ -23,12 +25,12 @@
 	// Damaged printer causes the resulting paper to be somewhat harder to read.
 	if(damage > damage_malfunction)
 		text_to_print = stars(text_to_print, 100-malfunction_probability)
-	new/obj/item/paper(drop_location(), text_to_print, paper_title)
+	new/obj/item/paper(drop_location(), text_to_print, paper_title, print_language)
 
 	stored_paper--
 	return 1
 
-/obj/item/computer_hardware/printer/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/pc_part/printer/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/paper))
 		if(stored_paper >= max_paper)
 			to_chat(user, "You try to add \the [W] into \the [src], but its paper bin is full.")

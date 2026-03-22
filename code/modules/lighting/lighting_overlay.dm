@@ -2,8 +2,8 @@
 /atom/movable/lighting_overlay
 	name = ""
 	mouse_opacity = 0
-	simulated = 0
-	anchored = 1
+	simulated = FALSE
+	anchored = TRUE
 	icon = LIGHTING_ICON
 	plane = LIGHTING_PLANE
 	invisibility = INVISIBILITY_LIGHTING
@@ -23,17 +23,20 @@
 	flags |= INITIALIZED
 	return INITIALIZE_HINT_NORMAL
 
-/atom/movable/lighting_overlay/New(var/atom/loc, var/no_update = FALSE)
-	. = ..()
-	verbs.Cut()
-	total_lighting_overlays++
-
+/atom/movable/lighting_overlay/New(atom/loc, no_update = FALSE)
 	var/turf/T = loc //If this runtimes atleast we'll know what's creating over-lays outside of turfs.
-	T.lighting_overlay = src
-	T.luminosity = 0
-	if(no_update)
-		return
-	update_overlay()
+	if(T.dynamic_lighting)
+		. = ..()
+		verbs.Cut()
+		total_lighting_overlays++
+
+		T.lighting_overlay = src
+		T.luminosity = 0
+		if(no_update)
+			return
+		update_overlay()
+	else
+		qdel(src)
 
 /atom/movable/lighting_overlay/proc/update_overlay()
 	set waitfor = FALSE
@@ -45,6 +48,10 @@
 		else
 			log_debug("A lighting overlay realised it was in nullspace in update_overlay() and got pooled!")
 		qdel(src, force=TRUE)
+		return
+	if(!T.dynamic_lighting)
+		log_debug("A lighting overlay found it's way onto a statically lit turf! loc: [loc] , [loc.type]")
+		qdel(src)
 		return
 
 	// To the future coder who sees this and thinks
@@ -119,15 +126,15 @@
 	return
 
 /atom/movable/lighting_overlay/forceMove()
-	return 0 //should never move
+	return FALSE //should never move
 
 /atom/movable/lighting_overlay/Move()
-	return 0
+	return FALSE
 
 /atom/movable/lighting_overlay/throw_at()
-	return 0
+	return FALSE
 
-/atom/movable/lighting_overlay/Destroy(var/force)
+/atom/movable/lighting_overlay/Destroy(force)
 	if (force)
 		total_lighting_overlays--
 		global.lighting_update_overlays     -= src
@@ -136,7 +143,7 @@
 		var/turf/T = loc
 		if(istype(T))
 			T.lighting_overlay = null
-			T.luminosity = 1
+			T.luminosity = TRUE
 
 		return ..()
 	else

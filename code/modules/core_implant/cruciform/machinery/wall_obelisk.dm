@@ -1,5 +1,5 @@
 /obj/machinery/power/wall_obelisk
-	name = "Absolutism Protection"
+	name = "Absolutist Wall Obelisk"
 	desc = "The wall mounted version of the obelisk, unlike the larger version, it can remain active even without an active cruciform nearby. \
 	Despite its extended function, it requires biomatter loaded into it periodically. \
 	One of the few designs created for the church by the Greyson AI under control by the Soteria, much to Soteria's annoyance."
@@ -14,10 +14,10 @@
 	idle_power_usage = 30
 	active_power_usage = 300
 
-	var/active = TRUE //Were always active
+	var/active = TRUE //We're always active
 
 	var/area_radius = 7
-	var/damage = 20
+	var/damage = 120 //This one is intended only to protect RP areas, so it can have absurd damage
 	var/max_targets = 3
 
 	var/biomatter_ammo = 10 //We attack 10 times before running out on map spawn
@@ -58,7 +58,7 @@
 	..()
 	if(stat)
 		return
-	var/list/affected = range(area_radius, src)
+	var/list/affected = hearers(area_radius, src)
 	if(!active)
 		use_power = IDLE_POWER_USE
 		return
@@ -66,28 +66,27 @@
 		use_power = 2
 
 		var/to_fire = max_targets
-		for(var/A in affected)
-			if(istype(A, /obj/structure/burrow))
-				var/obj/structure/burrow/burrow = A
-				if(!burrow.obelisk_around)
-					burrow.obelisk_around = any2ref(src)
-			else if(istype(A, /mob/living/carbon/superior_animal))
-				var/mob/living/carbon/superior_animal/animal = A
-				if(animal.stat != DEAD &! animal.colony_friend && biomatter_ammo >= biomatter_use_per_shot) //got roach, spider, xenos, but not colony pets
-					animal.take_overall_damage(damage)
-					biomatter_ammo -= biomatter_use_per_shot
-					if(!--to_fire)
-						return
-			else if(istype(A, /mob/living/simple_animal/hostile))
-				var/mob/living/simple_animal/hostile/animal = A
-				if(animal.stat != DEAD &! animal.colony_friend && biomatter_ammo >= biomatter_use_per_shot) //got misc things like tango, voild wolfs but not colony pets
-					animal.take_overall_damage(damage)
-					biomatter_ammo -= biomatter_use_per_shot
-					if(!--to_fire)
-						return
-			else if(istype(A, /obj/effect/plant))
-				var/obj/effect/plant/shroom = A
-				if(shroom.seed.type == /datum/seed/mushroom/maintshroom)
-					qdel(shroom)
-					if(!--to_fire)
-						return
+		for(var/mob/living/carbon/superior/superior_mob in affected)
+			var/mob/living/carbon/superior/animal = superior_mob
+			if(animal.stat != DEAD &! animal.colony_friend && biomatter_ammo >= biomatter_use_per_shot) //got roach, spider, xenos, but not colony pets
+				animal.take_overall_damage(damage)
+				biomatter_ammo -= biomatter_use_per_shot
+				if(!--to_fire)
+					return
+		for(var/mob/living/simple/hostile/simple_h in affected)
+			var/mob/living/simple/hostile/animal = simple_h
+			if(animal.stat != DEAD &! animal.colony_friend && biomatter_ammo >= biomatter_use_per_shot) //got misc things like tango, voild wolfs but not colony pets
+				animal.take_overall_damage(damage)
+				biomatter_ammo -= biomatter_use_per_shot
+				if(!--to_fire)
+					return
+
+/obj/machinery/power/wall_obelisk/silver
+	name = "Silver Absolutist Wall Obelisk"
+	desc = "The wall mounted version of the obelisk, unlike the larger version, it can remain active even without an active cruciform nearby. \
+	Despite its extended function, it requires biomatter loaded into it periodically. \
+	One of the few designs created for the church by the Greyson AI under control by the Soteria, much to Soteria's annoyance. This one is silver, with lower damage output."
+	icon_state = "nt_wall_obelisk_silver"
+
+	damage = 30
+	biomatter_ammo = 20 //600 starting damage capacity. Half as much and slower compared to the gold ones.

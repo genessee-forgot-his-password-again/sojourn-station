@@ -20,7 +20,7 @@
 	build_path = /obj/item/gun/energy/stunrevolver/sci
 
 /datum/design/research/item/weapon/nuclear_gun
-	name = "Prototype: Advanced Energy Gun"
+	name = "\"EBR-IV\" Nuclear Particle Rifle"
 	build_path = /obj/item/gun/energy/gun/nuclear
 
 /datum/design/research/item/weapon/lasercannon
@@ -30,7 +30,7 @@
 
 /datum/design/research/item/weapon/c20r
 	name = "Lightweight C20R"
-	desc = "The C-20r is a lightweight and rapid-firing SMG. Uses .35 Auto rounds."
+	desc = "The C-20r is a lightweight and rapid-firing SMG. Uses 9mm rounds."
 	build_path = /obj/item/gun/projectile/automatic/c20r/sci
 
 /datum/design/research/item/weapon/centurio
@@ -46,15 +46,15 @@
 	build_path = /obj/item/gun/energy/centauri
 
 /datum/design/research/item/weapon/clarissa
-	build_path = /obj/item/gun/projectile/clarissa/moebius
-
-/datum/design/research/item/weapon/decloner
-	name = "Prototype: Biological Demolecularizer"
-	build_path = /obj/item/gun/energy/decloner
+	build_path = /obj/item/gun/projectile/makarov/moebius
 
 /datum/design/research/item/weapon/slimegun
 	name = "Prototype: \"Ranch\" core stopper gun"
 	build_path = /obj/item/gun/energy/slimegun
+
+/datum/design/research/item/weapon/sonic_gun
+	name = "Prototype: handheld sonic emitter"
+	build_path = /obj/item/gun/energy/sonic_emitter
 
 /datum/design/research/item/weapon/chemsprayer
 	name = "Chemical Sprayer"
@@ -94,11 +94,11 @@
 	desc = "You feel like this helmet is cheap, for some reason."
 	build_path = /obj/item/clothing/head/helmet/soteriasuit
 
-/datum/design/research/item/paramedic_armor
+/datum/design/research/item/clothing/paramedic_armor
 	name = "Paramedic armor"
 	build_path = /obj/item/clothing/suit/armor/paramedic
 
-/datum/design/research/item/paramedic_helmet
+/datum/design/research/item/clothing/paramedic_helmet
 	name = "Advanced paramedic helmet"
 	build_path = /obj/item/clothing/head/helmet/faceshield/paramedic
 
@@ -106,6 +106,12 @@
 	name = "Reflector armor vest"
 	desc = "Laser reflective armor."
 	build_path = /obj/item/clothing/suit/armor/laserproof/rnd
+
+/datum/design/research/item/clothing/armor_soterialabcoat
+	name = "SI Field Labcoat"
+	desc = "Specially made for protecting men and women of science in the dangerous wilds of Amethyn, this labcoat features lightweight armor inlays over strategic locations to protect vital organs. \
+	Features an assortment of pouches and straps to secure your samples for extraction."
+	build_path = /obj/item/clothing/suit/storage/toggle/labcoat/field
 
 /datum/design/research/item/weapon/katana
 	name = "Soteria \"Muramasa\" Katana"
@@ -131,6 +137,12 @@
 			this device suffers from a wide number of reliability issues stemming from it being lathe printed."
 	build_path = /obj/item/hatton/moebius
 
+//OP dart gun
+/datum/design/research/item/weapon/carbine_dartgun
+	name = "\"Artemis\" dart carbine"
+	build_path = /obj/item/gun/projectile/dartgun
+
+
 //Starstriker - The gun thats able to strike the stars!
 /datum/design/research/item/weapon/starstriker
 	name = "\"Star Striker\" laser boltgun"
@@ -155,9 +167,13 @@
 	name = "Hydrogen \"Sollex\" Cannon"
 	build_path = /obj/item/gun/hydrogen/cannon
 
+/datum/design/research/item/weapon/hydrogen_sword
+	name = "Hydrogen Sword"
+	build_path = /obj/item/tool/hydrogen_sword/no_starting_fuel
+
 /datum/design/research/item/weapon/hydrogen_welder
 	name = "Hydrogen Torch"
-	build_path = /obj/item/tool/plasma_torch
+	build_path = /obj/item/tool/plasma_torch/no_starting_fuel
 
 /datum/design/research/item/weapon/hydrogrenade
 	name = "Hydrogen Grenade"
@@ -169,59 +185,136 @@
 	name_category = "ammunition"
 	category = "Ammo"
 
+/datum/design/research/item/ammo/pistol/empty
+	name = "Pistol Magazine 9mm (Empty)"
+	desc = "An empty magazine for pistols, chambered for 9mm"
+	build_path = /obj/item/ammo_magazine/pistol_35/empty
+	materials = list(MATERIAL_STEEL = 3)
+
+/datum/design/research/item/ammo/pistol
+	name = "Pistol Magazine 9mm"
+	desc = "A magazine for pistols, chambered for 9mm"
+	build_path = /obj/item/ammo_magazine/pistol_35
+	materials = list(MATERIAL_STEEL = 8)
+
+/datum/design/research/item/ammo/pistol/rubber
+	name = "Pistol Magazine 9mm (Rubber)"
+	desc = "A magazine for pistols, chambered for 9mm rubber"
+	build_path = /obj/item/ammo_magazine/pistol_35/rubber
+	materials = list(MATERIAL_STEEL = 6, MATERIAL_PLASTIC = 3)
+
 /datum/design/research/item/ammo/smg_mag
-	name = "SMG Magazine .35 Auto (Empty) "
-	desc = "A magazine for .35 Auto, used in smgs."
+	name = "SMG Magazine 9mm (Empty) "
+	desc = "A magazine for 9mm, used in smgs."
 	build_path = /obj/item/ammo_magazine/smg_35/empty
 	materials = list(MATERIAL_STEEL = 15)
 
 /datum/design/research/item/ammo/smg_mag/lethal
-	name = "SMG Magazine .35 Auto"
-	desc = "A magazine for .35 auto, used in smgs."
+	name = "SMG Magazine 9mm"
+	desc = "A magazine for 9mm, used in smgs."
 	build_path = /obj/item/ammo_magazine/smg_35
 	materials = list(MATERIAL_STEEL = 30)
 
 /datum/design/research/item/ammo/smg_mag/rubber
-	name = "SMG Magazine .35 Auto (Rubber)"
-	desc = "A magazine for .35 Auto (Rubber), used in smgs."
+	name = "SMG Magazine 9mm (Rubber)"
+	desc = "A magazine for 9mm (Rubber), used in smgs."
 	build_path = /obj/item/ammo_magazine/smg_35/rubber
 	materials = list(MATERIAL_STEEL = 15, MATERIAL_PLASTIC = 5)
 
 /datum/design/research/item/ammo/pistol_laser
-	name = "Auto .35, laser"
-	desc = "Auto .35 cases fitted with a one time use laser payload."
+	name = "Specialized Magaine 9mm, laser"
+	desc = "Auto 9mm cases fitted with a one time use laser payload."
 	build_path = /obj/item/ammo_magazine/ammobox/pistol_35/laser
-	materials = list(MATERIAL_STEEL = 5, MATERIAL_SILVER = 15, MATERIAL_GOLD = 15)
+	materials = list(MATERIAL_STEEL = 9, MATERIAL_GLASS = 9, MATERIAL_GOLD = 4.5)
 
 /datum/design/research/item/ammo/magum_laser
-	name = "Magnum .40, laser case"
-	desc = "Magnum .40 cases fitted with a one time use laser payload."
+	name = "Magnum 10mm, laser case"
+	desc = "Magnum 10mm cases fitted with a one time use laser payload."
 	build_path = /obj/item/ammo_magazine/ammobox/magnum_40/laser
-	materials = list(MATERIAL_STEEL = 5, MATERIAL_SILVER = 15, MATERIAL_GOLD = 15)
+	materials = list(MATERIAL_STEEL = 7, MATERIAL_GLASS = 7, MATERIAL_GOLD = 3.5)
 
 /datum/design/research/item/ammo/light_rifle_257
-	name = "Light rifle .257 laser casing."
-	desc = ".257 casings fitted with a one time use laser payload."
+	name = "Light rifle 6.5mm laser casing."
+	desc = "6.5mm casings fitted with a one time use laser payload."
 	build_path = /obj/item/ammo_magazine/ammobox/light_rifle_257_small/laser
-	materials = list(MATERIAL_STEEL = 10, MATERIAL_SILVER = 30, MATERIAL_GOLD = 30)
+	materials = list(MATERIAL_STEEL = 12, MATERIAL_GLASS = 12, MATERIAL_GOLD = 6)
 
 /datum/design/research/item/ammo/rifle_75
-	name = "Rifle 7.5 laser casing."
-	desc = "7.5 casings fitted with a one time use laser payload."
+	name = "Rifle 7.62mm laser casing."
+	desc = "7.62mm casings fitted with a one time use laser payload."
 	build_path = /obj/item/ammo_magazine/ammobox/rifle_75_small/laser
-	materials = list(MATERIAL_STEEL = 10, MATERIAL_SILVER = 30, MATERIAL_GOLD = 30)
+	materials = list(MATERIAL_STEEL = 9, MATERIAL_GLASS = 9, MATERIAL_GOLD = 4.5)
 
 /datum/design/research/item/ammo/heavy_rifle_408
-	name = "Omni .408 laser casing."
-	desc = ".408 Omni casing fitted with a one time use laser payload."
+	name = "Heavy Rifle 8.6mm laser casing."
+	desc = "Heavy Rifle 8.6x70mm casing fitted with a one time use laser payload."
 	build_path = /obj/item/ammo_magazine/ammobox/heavy_rifle_408_small/laser
-	materials = list(MATERIAL_STEEL = 15, MATERIAL_SILVER = 30, MATERIAL_GOLD = 30)
+	materials = list(MATERIAL_STEEL = 6, MATERIAL_GLASS = 6, MATERIAL_GOLD = 3)
 
 /datum/design/research/item/ammo/kurtz_laser
-	name = "Kurtz .50 , laser cases"
-	desc = ".50 Kurtz cases fitted with a one time use laser payload."
+	name = "Specialized 12mm, laser cases"
+	desc = "12mm cases fitted with a one time use laser payload."
 	build_path = /obj/item/ammo_magazine/ammobox/kurtz_50/laser
-	materials = list(MATERIAL_STEEL = 15, MATERIAL_SILVER = 15, MATERIAL_GOLD = 15)
+	materials = list(MATERIAL_STEEL = 5, MATERIAL_GLASS = 2.5, MATERIAL_GOLD = 2.5)
+
+/datum/design/research/item/ammo/laser_mag
+	name = "Laser 5.56mm casing mag (empty)"
+	desc = "A 20 round magazine marked for 5.56mm Carbine laser ammunition."
+	build_path = /obj/item/ammo_magazine/rifle_223/empty
+	materials = list(MATERIAL_STEEL = 5)
+
+/datum/design/research/item/ammo/laser/box
+	name = "\"Piezoelectric\" standard laser box"
+	desc = "A 200 round box of casings of pulse loaded laser cavities. Its cal is 5.56mm."
+	build_path = /obj/item/ammo_magazine/ammobox/laser_223/box
+	materials = list(MATERIAL_STEEL = 20, MATERIAL_GLASS = 20, MATERIAL_SILVER = 10)
+
+/datum/design/research/item/ammo/bluespace_257
+	name = "Bluespace Ammunition 6.5mm (30x)"
+	desc = "Three bundles of 30 6.5mm Bluespace Ammunition."
+	build_path = /obj/item/ammo_casing/light_rifle_257/bluespace/prespawned/SI
+	materials = list(MATERIAL_OSMIUM = 5, MATERIAL_GLASS = 5, MATERIAL_SILVER = 1, MATERIAL_GOLD = 4.5, MATERIAL_DIAMOND = 4.5, MATERIAL_PLASMA = 4.5,  MATERIAL_MHYDROGEN = 2)
+	chemicals = list("silicon" = 5, "luminol" = 5)
+
+/datum/design/research/item/ammo/bluespace_75
+	name = "Bluespace Ammunition 7.62mm (20x)"
+	desc = "Two bundles of 20 7.62mm Bluespace Ammunition."
+	build_path = /obj/item/ammo_casing/rifle_75/bluespace/prespawned/SI
+	materials = list(MATERIAL_OSMIUM = 5, MATERIAL_GLASS = 5, MATERIAL_SILVER = 1, MATERIAL_GOLD = 4.5, MATERIAL_DIAMOND = 4.5, MATERIAL_PLASMA = 4.5,  MATERIAL_MHYDROGEN = 2)
+	chemicals = list("silicon" = 5, "luminol" = 5)
+
+/datum/design/research/item/ammo/bluespace_408
+	name = "Bluespace Ammunition 8.6mm (10x)"
+	desc = "A bundle of 10 8.6mm Bluespace Ammunition."
+	build_path = /obj/item/ammo_casing/heavy_rifle_408/bluespace/prespawned
+	materials = list(MATERIAL_OSMIUM = 5, MATERIAL_GLASS = 5, MATERIAL_SILVER = 1, MATERIAL_GOLD = 4.5, MATERIAL_DIAMOND = 4.5, MATERIAL_PLASMA = 4.5,  MATERIAL_MHYDROGEN = 2)
+	chemicals = list("silicon" = 5, "luminol" = 5)
+
+
+/*
+/datum/design/research/item/ammo/laser/box/ap
+	name = "\"Piezoelectric\" piercing laser box."
+	desc = "A 200 round box of casings of pulse loaded laser cavities. This type possess an integrated sensor array that adjusts the focal point to the targets location, allowing for better penetration for the cost of firepower due to the occupied space. Its cal is 5.56mm."
+	build_path = /obj/item/ammo_magazine/ammobox/laser_223/box/ap
+	materials = list(MATERIAL_STEEL = 20, MATERIAL_GLASS = 20, MATERIAL_GOLD = 10)
+
+/datum/design/research/item/ammo/laser/box/lethal
+	name = "\"Piezoelectric\" dense laser box."
+	desc = "A 200 round box of casings of pulse loaded laser cavities. This type uses a wide witdh lense to cause less overpenetration and cause more damage in exchange of being more susceptible to armor. Its cal is 5.56mm."
+	materials = list(MATERIAL_STEEL = 20, MATERIAL_GLASS = 20, MATERIAL_PLASMA = 10)
+	build_path = /obj/item/ammo_magazine/ammobox/laser_223/box/lethal
+*/
+/datum/design/research/item/ammo/fancy_dart
+	name = "carbine chem dart"
+	desc = "A hollow dart that loads into a cartridge."
+	build_path = /obj/item/ammo_casing/chemdart
+	materials = list(MATERIAL_STEEL = 3)
+
+/datum/design/research/item/ammo/dart_mag
+	name = "dart cartridge"
+	desc = "A rack of hollow darts."
+	build_path = /obj/item/ammo_magazine/chemdart
+	materials = list(MATERIAL_STEEL = 3)
 
 // Shotgun Ammo
 
@@ -254,29 +347,6 @@
 	name = "Syringe Gun Cartridge"
 	build_path = /obj/item/syringe_cartridge
 
-/datum/design/research/item/ammo/laser_mag
-	name = "Laser .223 casing mag (empty)"
-	desc = "A 20 round magazine marked for .223 Carbine laser ammunition."
-	build_path = /obj/item/ammo_magazine/rifle_223/empty
-
-/datum/design/research/item/ammo/laser
-	name = "\"Star Striker\" casing"
-	desc = "A packet of casings for the Star Striker laser rifle, its cal is .233."
-	build_path = /obj/item/ammo_magazine/ammobox/laser_223
-	materials = list(MATERIAL_STEEL = 30, MATERIAL_GLASS = 30, MATERIAL_SILVER = 15) //Takes silver
-
-/datum/design/research/item/ammo/laser/ap
-	name = "\"Star Striker\" piercing laser casing."
-	desc = "A packet of casings for the Star Striker laser rifle. Meant for penetration of armor, its cal is .233."
-	build_path = /obj/item/ammo_magazine/ammobox/laser_223/ap
-	materials = list(MATERIAL_STEEL = 30, MATERIAL_GLASS = 30, MATERIAL_GOLD = 15) //Takes gold
-
-/datum/design/research/item/ammo/laser/lethal
-	name = "\"Star Striker\" dense laser casing."
-	desc = "A packet of casings for the Star Striker laser rifle. Compact laser that deals more damage but is easily blocked by armor, its cal is .233."
-	materials = list(MATERIAL_STEEL = 30, MATERIAL_GLASS = 30, MATERIAL_PLASMA = 15) //Takes plasma
-	build_path = /obj/item/ammo_magazine/ammobox/laser_223/lethal
-
 /datum/design/research/item/ammo/hydroflaskette
 	name = "Compressed metallic hydrogen flask"
 	desc = "A small flask for metallic hydrogen. Used in hydroplasma weapons and tools."
@@ -286,7 +356,7 @@
 /datum/design/research/item/disk/blackshield
 	name = "Blackshield Sovereignty Disk"
 	desc = "A unique disk for printing and creating Blackshield arms and ammunition."
-	build_path = /obj/item/computer_hardware/hard_drive/portable/design/blackshield
+	build_path = /obj/item/pc_part/drive/disk/design/blackshield
 
 /datum/design/research/item/weapon/bastion
 	name = "bastion shield"
@@ -317,6 +387,15 @@
 /datum/design/research/item/weapon/weapon_upgrade/toxin_coater
 	name = "Soteria \"Black Viper\" toxin coater"
 	build_path = /obj/item/gun_upgrade/barrel/toxin_coater
+
+/datum/design/research/item/weapon/weapon_upgrade/dnalock_mod
+	name = "Soteria \"DNA lock\" Finger Imprinter Trigger"
+	build_path = /obj/item/gun_upgrade/trigger/dnalock
+
+/datum/design/research/item/weapon/weapon_upgrade/auto_eject_no_removal
+	name = "Soteria \"Faller\" Magwell Clearer"
+	build_path = /obj/item/gun_upgrade/magwell/auto_eject/no_removal
+
 /*
 /datum/design/research/item/weapon/weapon_upgrade/isotope_diffuser
 	name = "Soteria \"Atomik\" isotope diffuser"
@@ -427,7 +506,7 @@
 	sort_string = "TAAAS"
 
 /datum/design/research/item/weapon/toolmod/portedbarrel
-	name = "Ported Barrel"
+	name = "Composite Barrel"
 	build_path = /obj/item/tool_upgrade/refinement/ported_barrel
 	sort_string = "TAAAT"
 

@@ -2,6 +2,7 @@ GLOBAL_VAR_INIT(bluespace_hazard_threshold, 100)
 GLOBAL_VAR_INIT(bluespace_entropy, 0)
 GLOBAL_VAR_INIT(bluespace_gift, 0)
 GLOBAL_VAR_INIT(bluespace_distotion_cooldown, 10 MINUTES)
+GLOBAL_VAR_INIT(bluespace_cleanup_crew, 0)
 
 /area
 	var/bluespace_entropy = 0
@@ -12,22 +13,35 @@ GLOBAL_VAR_INIT(bluespace_distotion_cooldown, 10 MINUTES)
 	do_teleport(ateleatom, adestination, aprecision, afteleport, aeffectin, aeffectout, asoundin, asoundout)
 
 /proc/bluespace_entropy(max_value=1, turf/T, minor_distortion=FALSE)
-	var/entropy_value = rand(0, max_value)
+	if(!T)
+		return
+	var/entropy_value = rand(0, max_value) * GLOB.chaos_level
 	var/area/A = get_area(T)
 	if(minor_distortion && A)
 		A.bluespace_entropy += entropy_value
 		var/area_entropy_cap = rand(A.bluespace_hazard_threshold, A.bluespace_hazard_threshold*2)
 		if(A.bluespace_entropy > area_entropy_cap && world.time > GLOB.bluespace_distotion_cooldown)
-			GLOB.bluespace_distotion_cooldown = world.time + 5 MINUTES
+			if(GLOB.chaos_level <= 0)
+				GLOB.bluespace_distotion_cooldown = world.time + 5 MINUTES
+			else
+				GLOB.bluespace_distotion_cooldown = world.time + (5 MINUTES / GLOB.chaos_level)
 			A.bluespace_entropy -= rand(45, 60)
 			bluespace_distorsion(T, minor_distortion)
 	else
 		GLOB.bluespace_entropy += entropy_value
 		var/entropy_cap = rand(GLOB.bluespace_hazard_threshold, GLOB.bluespace_hazard_threshold*2)
 		if(GLOB.bluespace_entropy >= entropy_cap && world.time > GLOB.bluespace_distotion_cooldown)
-			GLOB.bluespace_distotion_cooldown = world.time + 10 MINUTES
+			if(GLOB.chaos_level <= 0)
+				GLOB.bluespace_distotion_cooldown = world.time + 10 MINUTES
+			else
+				GLOB.bluespace_distotion_cooldown = world.time + (10 MINUTES / GLOB.chaos_level)
 			bluespace_distorsion(T, minor_distortion)
 			A.bluespace_entropy -= rand(A.bluespace_hazard_threshold, A.bluespace_hazard_threshold*1.5)
+
+	//Soj edit
+	if(A.bluespace_entropy > 15000 && !GLOB.bluespace_cleanup_crew)
+		bluespace_cleanup_detail(T, minor_distortion)
+		GLOB.bluespace_cleanup_crew++
 
 /proc/bluespace_distorsion(turf/T, minor_distortion=FALSE)
 	var/bluespace_event = rand(1, 100)
@@ -38,10 +52,12 @@ GLOBAL_VAR_INIT(bluespace_distotion_cooldown, 10 MINUTES)
 			bluespace_roaches(T, minor_distortion)
 		if(55 to 75)
 			bluespace_stranger(T, minor_distortion)
-		if(75 to 90)
+		if(75 to 80)
 			bluespace_cristals_event(T, minor_distortion)
-		if(90 to 100)
+		if(80 to 90)
 			bluespace_gift(T, minor_distortion)
+		if(90 to 100)
+			bluespace_leak(T, minor_distortion)
 
 /proc/get_random_secure_turf_in_range(atom/origin, outer_range, inner_range)
 	origin = get_turf(origin)
@@ -134,7 +150,7 @@ GLOBAL_VAR_INIT(bluespace_distotion_cooldown, 10 MINUTES)
 		if(newT)
 			T = newT
 	T = get_random_secure_turf_in_range(T, 4)
-	var/mob/living/simple_animal/hostile/stranger/S = new (T)
+	var/mob/living/carbon/superior/human/stranger/S = new (T)
 	if(minor_distortion && prob(95))
 		S.maxHealth = S.maxHealth/1.5
 		S.health = S.maxHealth
@@ -160,7 +176,7 @@ GLOBAL_VAR_INIT(bluespace_distotion_cooldown, 10 MINUTES)
 				Ttarget = get_random_secure_turf_in_range(Ttarget2, 4)
 		for(var/i=1, i<=amount, i++)
 			if(Ttarget)
-				new /mob/living/carbon/superior_animal/roach/bluespace(Ttarget)
+				new /mob/living/carbon/superior/roach/bluespace(Ttarget)
 
 /proc/trash_buble(turf/T, minor_distortion)
 	var/list/areas = list()
@@ -184,3 +200,64 @@ GLOBAL_VAR_INIT(bluespace_distotion_cooldown, 10 MINUTES)
 			if(Ttarget)
 				new /obj/random/lowkeyrandom(Ttarget)
 				do_sparks(3, 0, Ttarget)
+
+
+/proc/bluespace_leak(turf/T, minor_distortion)
+	var/list/areas = list()
+	var/area/A = get_area(T)
+	var/distortion_amount = 1
+	var/amount = rand(5, 10)
+	if(A && !minor_distortion)
+		areas = list(A)
+		if(A in ship_areas)
+			areas = ship_areas.Copy()
+			distortion_amount = rand(2, 8)
+	for(var/j=1, j<=distortion_amount, j++)
+		var/turf/Ttarget = T
+		if(areas.len)
+			A = pick(areas)
+			var/turf/Ttarget2 = A.random_space()
+			if(Ttarget2)
+				Ttarget = Ttarget2
+		for(var/i=1, i<=amount, i++)
+			Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+			if(Ttarget)
+				new /obj/item/bluespace_leak(Ttarget)
+				do_sparks(3, 0, Ttarget)
+
+//soj edit
+/proc/bluespace_cleanup_detail(turf/T, minor_distortion)
+	var/area/A = get_area(T)
+	var/turf/Ttarget = T
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/wrath(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/gloom(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/glutteny(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/lust(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/envy(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/pride(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/sloth(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/angst(Ttarget)
+	Ttarget = get_random_secure_turf_in_range(Ttarget, 5)
+	new /mob/living/carbon/superior/human/stillpoint/madness(Ttarget)
+	level_sixteen_announcement(A)
+
+//This is important information
+/proc/level_sixteen_announcement(area/A)
+	command_announcement.Announce("Confirmed detection of level 16 entropy-hazard-team within the [station_name()], area isolated to [A.name]. Combat Personal may wish to clear this area of hostile terrorist group \"Stillpoint Celestial Keepers\".", "Entropy Hazard Team Alert")
+	var/decl/security_state/security_state = decls_repository.get_decl(GLOB.maps_data.security_state)
+	security_state.set_security_level(security_state.all_security_levels[3], TRUE)
+
+
+
+
+
+
+

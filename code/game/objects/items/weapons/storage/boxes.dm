@@ -52,13 +52,13 @@
 		spill()
 		qdel(src)
 
-/obj/item/storage/box/attack_generic(var/mob/user)
+/obj/item/storage/box/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN*2)
 	if (istype(user, /mob/living))
 		var/mob/living/L = user
-		var/damage = L.mob_size ? L.mob_size : MOB_MINISCULE
+		var/size_damage = L.mob_size ? L.mob_size : MOB_MINISCULE
 
-		if (!damage || damage <= 0)
+		if (!size_damage || size_damage <= 0)
 			return
 
 		user.do_attack_animation(src)
@@ -92,23 +92,26 @@
 	qdel(src)
 
 /obj/item/storage/box/survival/populate_contents()
-	new /obj/item/clothing/mask/breath(src)
-	new /obj/item/tank/emergency_oxygen(src)
+	new /obj/item/stack/medical/bruise_pack(src)
 	new /obj/item/reagent_containers/hypospray/autoinjector(src)
+	new /obj/item/device/lighting/toggleable/flashlight(src)
+	new /obj/item/cell/small(src)
 	if(prob(50))
-		new /obj/item/reagent_containers/food/snacks/openable/mre(src)
+		new /obj/item/reagent_containers/snacks/openable/mre(src)
 	else
-		new /obj/item/reagent_containers/food/snacks/openable/mre/alt(src)
+		new /obj/item/reagent_containers/snacks/openable/mre/alt(src)
 
 /obj/item/storage/box/survival/extended/populate_contents()
 	new /obj/item/clothing/mask/breath(src)
 	new /obj/item/tank/emergency_oxygen/engi(src)
 	new /obj/item/reagent_containers/hypospray/autoinjector(src)
 	if(prob(50))
-		new /obj/item/reagent_containers/food/snacks/openable/mre(src)
+		new /obj/item/reagent_containers/snacks/openable/mre(src)
 	else
-		new /obj/item/reagent_containers/food/snacks/openable/mre/alt(src)
-	new /obj/item/device/lighting/glowstick/yellow(src)
+		new /obj/item/reagent_containers/snacks/openable/mre/alt(src)
+	new /obj/item/stack/medical/bruise_pack(src)
+	new /obj/item/device/lighting/toggleable/flashlight(src)
+	new /obj/item/cell/small(src)
 
 /obj/item/storage/box/gloves
 	name = "box of latex gloves"
@@ -199,7 +202,7 @@
 
 /obj/item/storage/box/advancedtraumakit/populate_contents()
 	for(var/i in 1 to 5)
-		new /obj/item/stack/medical/advanced/bruise_pack (src)
+		new /obj/item/stack/medical/bruise_pack/advanced (src)
 
 /obj/item/storage/box/advancedburnkit
 	name = "box of ABKs"
@@ -209,7 +212,27 @@
 
 /obj/item/storage/box/advancedburnkit/populate_contents()
 	for(var/i in 1 to 5)
-		new /obj/item/stack/medical/advanced/ointment (src)
+		new /obj/item/stack/medical/ointment/advanced (src)
+
+/obj/item/storage/box/gauzebulk
+	name = "box of gauze"
+	desc = "A box containing five rolls of gauze."
+	w_class = ITEM_SIZE_NORMAL
+	cant_hold = list(/obj/item)
+
+/obj/item/storage/box/gauzebulk/populate_contents()
+	for(var/i in 1 to 5)
+		new /obj/item/stack/medical/bruise_pack (src)
+
+/obj/item/storage/box/ointmentbulk
+	name = "box of ointment"
+	desc = "A box containing five bottles of ointment."
+	w_class = ITEM_SIZE_NORMAL
+	cant_hold = list(/obj/item)
+
+/obj/item/storage/box/ointmentbulk/populate_contents()
+	for(var/i in 1 to 5)
+		new /obj/item/stack/medical/ointment (src)
 
 /obj/item/storage/box/leatherbulk
 	name = "Box of leather"
@@ -237,7 +260,7 @@
 	w_class = ITEM_SIZE_NORMAL
 	cant_hold = list(/obj/item)
 
-/obj/item/storage/box/bcarpetbulk/populate_contents()
+/obj/item/storage/box/carpetbulk/populate_contents()
 	for(var/i in 1 to 15)
 		new /obj/item/stack/tile/carpet(src)
 
@@ -247,9 +270,9 @@
 	w_class = ITEM_SIZE_NORMAL
 	cant_hold = list(/obj/item)
 
-/obj/item/storage/box/bluecarpetbulk/populate_contents()
+/obj/item/storage/box/bcarpetbulk/populate_contents()
 	for(var/i in 1 to 15)
-		new /obj/item/stack/tile/carpet/bcarpet (src)
+		new /obj/item/stack/tile/carpet/bcarpet(src)
 
 /obj/item/storage/box/bluecarpetbulk
 	name = "Box of blue carpet"
@@ -259,7 +282,7 @@
 
 /obj/item/storage/box/bluecarpetbulk/populate_contents()
 	for(var/i in 1 to 15)
-		new /obj/item/stack/tile/carpet/blucarpet (src)
+		new /obj/item/stack/tile/carpet/blucarpet(src)
 
 /obj/item/storage/box/turcarpetbulk
 	name = "Box of turqoise carpet"
@@ -269,7 +292,7 @@
 
 /obj/item/storage/box/turcarpetbulk/populate_contents()
 	for(var/i in 1 to 15)
-		new /obj/item/stack/tile/carpet/turcarpet (src)
+		new /obj/item/stack/tile/carpet/turcarpet(src)
 
 /obj/item/storage/box/sbluecarpetbulk
 	name = "Box of silver carpet"
@@ -279,7 +302,7 @@
 
 /obj/item/storage/box/sbluecarpetbulk/populate_contents()
 	for(var/i in 1 to 15)
-		new /obj/item/stack/tile/carpet/sblucarpet (src)
+		new /obj/item/stack/tile/carpet/sblucarpet(src)
 
 /obj/item/storage/box/purcarpetbulk
 	name = "Box of purple carpet"
@@ -289,7 +312,7 @@
 
 /obj/item/storage/box/purcarpetbulk/populate_contents()
 	for(var/i in 1 to 15)
-		new /obj/item/stack/tile/carpet/purcarpet (src)
+		new /obj/item/stack/tile/carpet/purcarpet(src)
 
 /obj/item/storage/box/oracarpetbulk
 	name = "Box of orange carpet"
@@ -299,7 +322,7 @@
 
 /obj/item/storage/box/oracarpetbulk/populate_contents()
 	for(var/i in 1 to 15)
-		new /obj/item/stack/tile/carpet/oracarpet (src)
+		new /obj/item/stack/tile/carpet/oracarpet(src)
 
 /obj/item/storage/box/cardboardbulk
 	name = "Box of cardboard"
@@ -309,7 +332,7 @@
 
 /obj/item/storage/box/cardboardbulk/populate_contents()
 	for(var/i in 1 to 5)
-		new /obj/item/stack/material/cardboard (src)
+		new /obj/item/stack/material/cardboard(src)
 
 //End of hydro boxes
 
@@ -382,6 +405,16 @@
 /obj/item/storage/box/smokes/populate_contents()
 	for(var/i in 1 to 5)
 		new /obj/item/grenade/smokebomb(src)
+
+/obj/item/storage/box/phosphorous
+	name = "box of white phosphorous grenades"
+	desc = "A box containing 7 antipersonnel incendiary  grenades.<br> WARNING: These devices are extremely dangerous and can cause severe burns and fires."
+	icon_state = "box_security"
+	illustration = "flashbang"
+
+/obj/item/storage/box/phosphorous/populate_contents()
+	for(var/i in 1 to 5)
+		new /obj/item/grenade/frag/white_phosphorous(src)
 
 /obj/item/storage/box/anti_photons
 	name = "box of anti-photon grenades"
@@ -482,7 +515,7 @@
 
 /obj/item/storage/box/drinkingglasses/populate_contents()
 	for(var/i in 1 to 6)
-		new /obj/item/reagent_containers/food/drinks/drinkingglass(src)
+		new /obj/item/reagent_containers/drinks/drinkingglass(src)
 
 /obj/item/storage/box/cdeathalarm_kit
 	name = "death alarm kit"
@@ -524,7 +557,7 @@
 
 /obj/item/storage/box/condimentbottles/populate_contents()
 	for(var/i in 1 to 7)
-		new /obj/item/reagent_containers/food/condiment(src)
+		new /obj/item/reagent_containers/condiment(src)
 
 /obj/item/storage/box/cups
 	name = "box of paper cups"
@@ -532,7 +565,7 @@
 
 /obj/item/storage/box/cups/populate_contents()
 	for(var/i in 1 to 7)
-		new /obj/item/reagent_containers/food/drinks/sillycup(src)
+		new /obj/item/reagent_containers/drinks/sillycup(src)
 
 /obj/item/storage/box/donkpockets
 	name = "box of donk-pockets"
@@ -542,7 +575,7 @@
 
 /obj/item/storage/box/donkpockets/populate_contents()
 	for(var/i in 1 to 6)
-		new /obj/item/reagent_containers/food/snacks/donkpocket(src)
+		new /obj/item/reagent_containers/snacks/donkpocket(src)
 
 /obj/item/storage/box/sinpockets
 	name = "box of sin-pockets"
@@ -552,7 +585,7 @@
 
 /obj/item/storage/box/sinpockets/populate_contents()
 	for(var/i in 1 to 6)
-		new /obj/item/reagent_containers/food/snacks/donkpocket/sinpocket(src)
+		new /obj/item/reagent_containers/snacks/donkpocket/sinpocket(src)
 
 /obj/item/storage/box/monkeycubes
 	name = "monkey cube box"
@@ -560,11 +593,11 @@
 	icon = 'icons/obj/food.dmi'
 	icon_state = "monkeycubebox"
 	illustration = null
-	can_hold = list(/obj/item/reagent_containers/food/snacks/monkeycube)
+	can_hold = list(/obj/item/reagent_containers/snacks/monkeycube)
 
 /obj/item/storage/box/monkeycubes/populate_contents()
 	for(var/i in 1 to 5)
-		new /obj/item/reagent_containers/food/snacks/monkeycube/wrapped(src)
+		new /obj/item/reagent_containers/snacks/monkeycube/wrapped(src)
 
 /obj/item/storage/box/ids
 	name = "box of spare IDs"
@@ -636,7 +669,7 @@
 	if(istype(W) && !W.lit && !W.burnt)
 		playsound(src, 'sound/items/matchstrike.ogg', 20, 1, 1)
 		W.lit = 1
-		W.damtype = "burn"
+		W.damtype = BURN
 		W.icon_state = "match_lit"
 		W.tool_qualities = list(QUALITY_CAUTERIZING = 10)
 		START_PROCESSING(SSobj, W)
@@ -693,7 +726,7 @@
 
 /obj/item/storage/box/data_disk/populate_contents()
 	for(var/i in 1 to 7)
-		new /obj/item/computer_hardware/hard_drive/portable(src)
+		new /obj/item/pc_part/drive/disk(src)
 
 /obj/item/storage/box/data_disk/basic
 	name = "basic data disk box"
@@ -701,7 +734,15 @@
 
 /obj/item/storage/box/data_disk/basic/populate_contents()
 	for(var/i in 1 to 7)
-		new /obj/item/computer_hardware/hard_drive/portable/basic(src)
+		new /obj/item/pc_part/drive/disk/basic(src)
+
+/obj/item/storage/box/data_disk/basic/empty/populate_contents()
+	return
+
+/*
+Boxes with clothing on them, unable to put them back if taken out because...
+...well, boxes can't normally fit clothes on them!
+*/
 
 /obj/item/storage/box/trooperuniform
 	name = "Trooper/Corpsman Service and Dress Kit"
@@ -716,6 +757,8 @@
 		new /obj/item/clothing/head/rank/trooperdress(src)
 		new /obj/item/clothing/accessory/tie/navy(src)
 		new /obj/item/clothing/shoes/laceup(src)
+		new /obj/item/clothing/accessory/armband/militia(src)
+		new /obj/item/clothing/accessory/armband/corpsman(src)
 
 /obj/item/storage/box/sergeantuniform
 	name = "Sergeant Service and Dress Kit"
@@ -738,9 +781,8 @@
 
 	New()
 		..()
-		new /obj/item/clothing/under/rank/commander/service(src)
-		new /obj/item/clothing/suit/rank/commander/service(src)
-		new /obj/item/clothing/suit/rank/commander/dress(src)
+		new /obj/item/clothing/under/rank/commander_service(src)
+		new /obj/item/clothing/suit/rank/commander_service(src)
 		new /obj/item/clothing/head/rank/commanderdress(src)
 		new /obj/item/clothing/accessory/tie/navy(src)
 		new /obj/item/clothing/shoes/laceup(src)
@@ -760,10 +802,23 @@
 		new /obj/item/clothing/accessory/ranks/blank(src)
 		new /obj/item/clothing/accessory/ranks/blank(src)
 
+/obj/item/storage/box/team_support
+	name = "Box of Team Support"
+	desc = "A box filled with everything needed to support the team, flag not included."
+	icon_state = "box"
+
+	New()
+		..()
+		new /obj/item/reagent_containers/snacks/popcorn(src)
+		new /obj/item/toy/junk/bosunwhistle(src)
+		new /obj/random/toy/plushie_onlysquid(src)
+		new /obj/item/device/binoculars(src)
+
+
 // Guild boxes, exclusively used to mass craft guild parts.
 /obj/item/storage/box/guild_manip
 	name = "box of forged manipulators"
-	desc = "A box containing five forged manipulators, the best that Nadezhda can produce."
+	desc = "A box containing four forged manipulators, the best that Nadezhda can produce."
 	icon_state = "box_of_doom"
 	illustration = "guild"
 
@@ -773,7 +828,7 @@
 
 /obj/item/storage/box/guild_bin
 	name = "box of cast matter bins"
-	desc = "A box containing five cast matter bins, the best that Nadezhda can produce."
+	desc = "A box containing four cast matter bins, the best that Nadezhda can produce."
 	icon_state = "box_of_doom"
 	illustration = "guild"
 
@@ -783,7 +838,7 @@
 
 /obj/item/storage/box/guild_laser
 	name = "box of perfected micro-lasers"
-	desc = "A box containing five perfected micro-lasers, the best that Nadezhda can produce."
+	desc = "A box containing four perfected micro-lasers, the best that Nadezhda can produce."
 	icon_state = "box_of_doom"
 	illustration = "guild"
 
@@ -793,7 +848,7 @@
 
 /obj/item/storage/box/guild_scanner
 	name = "box of perfected scanning modules"
-	desc = "A box containing five perfected scanning modules, the best that Nadezhda can produce."
+	desc = "A box containing four perfected scanning modules, the best that Nadezhda can produce."
 	icon_state = "box_of_doom"
 	illustration = "guild"
 
@@ -803,10 +858,101 @@
 
 /obj/item/storage/box/guild_capacitor
 	name = "box of ultra capacitors"
-	desc = "A box containing five ultra capacitors, the best that Nadezhda can produce."
+	desc = "A box containing four ultra capacitors, the best that Nadezhda can produce."
 	icon_state = "box_of_doom"
 	illustration = "guild"
 
 /obj/item/storage/box/guild_capacitor/populate_contents()
 	for(var/i in 1 to 4)
 		new /obj/item/stock_parts/capacitor/handmade(src)
+
+
+/obj/item/storage/box/njoy
+	name = "mix Njoy packet"
+	desc = "Packet full of red njoy pills."
+	illustration = null
+	icon_state = "packet_njoy_mix"
+	item_state = "packet_njoy_mix"
+
+/obj/item/storage/box/njoy/red/New()
+	. = ..()
+
+/obj/item/storage/box/njoy/red/populate_contents()
+	new /obj/item/storage/pill_bottle/njoy/red(src)
+	new /obj/item/storage/pill_bottle/njoy/blue(src)
+	new /obj/item/storage/pill_bottle/njoy/green(src)
+
+
+/obj/item/storage/box/njoy/red
+	name = "red Njoy packet"
+	desc = "Packet full of red njoy pills."
+	illustration = null
+	icon_state = "packet_njoy_red"
+	item_state = "packet_njoy_red"
+
+/obj/item/storage/box/njoy/red/New()
+	. = ..()
+
+/obj/item/storage/box/njoy/red/populate_contents()
+	for(var/i in 1 to 3)
+		new /obj/item/storage/pill_bottle/njoy/red(src)
+
+
+/obj/item/storage/box/njoy/blue
+	name = "blue Njoy packet"
+	desc = "Packet full of blue njoy pills."
+	illustration = null
+	icon_state = "packet_njoy_blue"
+	item_state = "packet_njoy_blue"
+
+/obj/item/storage/box/njoy/blue/New()
+	. = ..()
+
+/obj/item/storage/box/njoy/blue/populate_contents()
+	for(var/i in 1 to 3)
+		new /obj/item/storage/pill_bottle/njoy/blue(src)
+
+
+/obj/item/storage/box/njoy/green
+	name = "green Njoy packet"
+	desc = "Packet full of green njoy pills."
+	illustration = null
+	icon_state = "packet_njoy_green"
+	item_state = "packet_njoy_green"
+
+/obj/item/storage/box/njoy/green/New()
+	. = ..()
+
+/obj/item/storage/box/njoy/green/populate_contents()
+	for(var/i in 1 to 3)
+		new /obj/item/storage/pill_bottle/njoy/green(src)
+
+/obj/item/storage/box/headsets
+	name = "spare headsets box"
+	desc = "A box full of unkeyed headsets for new colonists."
+	illustration = "headset"
+
+/obj/item/storage/box/headsets/populate_contents()
+	new /obj/item/device/radio/headset(src)
+	new /obj/item/device/radio/headset(src)
+	new /obj/item/device/radio/headset(src)
+	new /obj/item/device/radio/headset(src)
+	new /obj/item/device/radio/headset(src)
+	new /obj/item/device/radio/headset(src)
+	new /obj/item/device/radio/headset(src)
+	new /obj/item/device/radio/headset(src)
+
+/obj/item/storage/box/ccstamps
+	name = "official stamps box"
+	desc = "A box full of assorted stamps from various high ranking officials in the lower colony. What're these all doing together?"
+	illustration = "stamps"
+
+/obj/item/storage/box/ccstamps/populate_contents()
+	new /obj/item/stamp/cc(src)
+	new /obj/item/stamp/cc/nm(src)
+	new /obj/item/stamp/cc/bs(src)
+	new /obj/item/stamp/cc/chunch(src)
+	new /obj/item/stamp/cc/prosp(src)
+	new /obj/item/stamp/cc/si(src)
+	new /obj/item/stamp/cc/ls(src)
+	new /obj/item/stamp/cc/guilg(src)

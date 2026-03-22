@@ -3,12 +3,11 @@
 	var/category = "Misc"
 	var/icon_state = "device"
 	var/result
-
 	var/list/steps
 	var/flags
 	var/time = 30 //Used when no specific time is set
 	var/related_stats = list(STAT_COG)	// used to decrease crafting time for non tool steps
-	var/avaliableToEveryone = TRUE
+	var/datum/perk/requiredPerk = null	// set at the category level to determine whether
 	var/dir_type = CRAFT_WITH_USER_DIR  // spawn the result in the user's direction by default
 	// set it to CRAFT_TOWARD_USER to spawn the result towards the user
 	// set it to CRAFT_DEFAULT_DIR to spawn the result in its default direction (stored in dir_default)
@@ -37,6 +36,30 @@
 	qdel(C)
 	if(! (flags & CRAFT_ON_FLOOR) && (slot in list(slot_r_hand, slot_l_hand)))
 		user.put_in_hands(M)
+
+/datum/craft_recipe/ui_data(mob/user)
+	var/list/data = list()
+
+	data["name"] = name
+	data["ref"] = "[REF(src)]"
+	
+	// because of course we have recipes that don't produce anything
+	data["icon"] = null
+	if(result)
+		var/datum/asset/spritesheet/crafting/sprite = get_asset_datum(/datum/asset/spritesheet/crafting)
+		data["icon"] = sprite.icon_class_name(sanitize_css_class_name("[result]"))
+		
+	data["batch"] = flags & CRAFT_BATCH
+
+	var/atom/A = result
+	data["desc"] = "[initial(A.desc)]"
+
+	var/list/step_data = list()
+	for(var/datum/craft_step/CS in steps)
+		step_data += list(CS.ui_data(user))
+	data["steps"] = step_data
+
+	return data
 
 /datum/craft_recipe/proc/get_description(pass_steps, obj/item/craft/C)
 	. = list()

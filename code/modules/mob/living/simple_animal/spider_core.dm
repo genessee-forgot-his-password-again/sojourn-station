@@ -1,4 +1,4 @@
-/mob/living/simple_animal/spider_core
+/mob/living/simple/spider_core
 	name = "carrion"
 	desc = "A horrifying face on spider-like legs."
 	speak_emote = list("creaks")
@@ -10,6 +10,7 @@
 
 	health = 40
 	maxHealth = 40 //Really low as they have a body normally
+	var/time_to_generate_body = 66 SECONDS		// Should be longer than the time it takes for the core to die in a vacuum. Adjust accordingly when maxHealth changes (as of March 27 2022, it's 1 damage per second).
 
 	speed = -1
 	see_in_dark = 8
@@ -27,26 +28,26 @@
 	density = 0 //This makes them a nightmare to kill, fun fun.
 	faction = "spiders"
 
-/mob/living/simple_animal/spider_core/New()
+/mob/living/simple/spider_core/New()
 	. = ..()
-	verbs |= /mob/living/proc/ventcrawl
-	verbs |= /mob/living/proc/hide
-	verbs |= /mob/living/simple_animal/spider_core/proc/generate_body
+	add_verb(src, /mob/living/proc/ventcrawl)
+	add_verb(src, /mob/living/proc/hide)
+	add_verb(src, /mob/living/simple/spider_core/proc/generate_body)
 
-/mob/living/simple_animal/spider_core/death()
+/mob/living/simple/spider_core/death()
 	gibs(loc, null, /obj/effect/gibspawner/generic, "#666600", "#666600")
 	qdel(src)
 
 
-/mob/living/simple_animal/spider_core/proc/generate_body()
+/mob/living/simple/spider_core/proc/generate_body()
 	set name = "Build a Body"
 	set desc = "Build a new body for you to inhabit."
 	set category = "Abilities"
 
 	to_chat(src, SPAN_NOTICE("You start building a body"))
 
-	if(!do_after(src, 1 MINUTES, src))
-		to_chat(src, SPAN_NOTICE("The new body is not ready yet, it takes a minute to make one. You have to stand still."))
+	if(!do_after(src, time_to_generate_body, src))
+		to_chat(src, SPAN_NOTICE("The new body is not ready yet, it takes a little over a minute to make one. You have to stand still."))
 		return
 
 	var/mob/living/carbon/human/H = new /mob/living/carbon/human(loc)

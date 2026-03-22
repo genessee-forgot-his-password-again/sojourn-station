@@ -5,7 +5,7 @@
 	ui_header = "crew_green.gif"
 	program_icon_state = "crew"
 	program_key_state = "med_key"
-	program_menu_icon = "heart"
+	program_menu_icon = "heartbeat"
 	extended_desc = "This program connects to life signs monitoring system to provide basic information on crew health."
 	required_access = access_medical_suits
 	requires_ntnet = 1
@@ -89,7 +89,7 @@
 				crew_repository.health_data(z_level, TRUE)
 		return TOPIC_HANDLED
 
-/datum/nano_module/crew_monitor/ui_data(mob/user)
+/datum/nano_module/crew_monitor/nano_ui_data(mob/user)
 	var/list/data = host.initial_data()
 	var/datum/computer_file/program/host_program = host
 	var/tracking_tablet_used = (istype(host_program) && istype(host_program.computer, /obj/item/modular_computer/tablet/moebius))
@@ -98,7 +98,7 @@
 	var/list/crewmembers = list()
 	for(var/z_level in GLOB.maps_data.station_levels)
 		crewmembers += crew_repository.health_data(z_level)
-	crewmembers = sortNames(crewmembers)
+	crewmembers = sortTim(crewmembers, GLOBAL_PROC_REF(cmp_name_in_list_asc))
 	//now lets get problematic crewmembers in separate list so they could be shown first
 	var/list/crewmembers_problematic = list()
 	var/list/crewmembers_goodbois = list()
@@ -120,8 +120,8 @@
 	data["search"] = search ? search : "Search"
 	return data
 
-/datum/nano_module/crew_monitor/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state = GLOB.default_state)
-	var/list/data = ui_data(user)
+/datum/nano_module/crew_monitor/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state = GLOB.default_state)
+	var/list/data = nano_ui_data(user)
 
 	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if(!ui)

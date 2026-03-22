@@ -15,7 +15,7 @@
 	attack_verb = list("struck", "hit", "bashed")
 	price_tag = 500
 	var/obj/item/hatton_magazine/magazine
-	var/fire_sound = 'sound/weapons/pulse.ogg'
+	var/fire_sound = 'sound/weapons/energy/pulse.ogg'
 	var/fire_cooldown = 0
 	var/last_fired = 0
 	origin_tech = list(TECH_COMBAT = 2)
@@ -112,7 +112,7 @@
 			to_chat(user, SPAN_DANGER("[src] blows up in your face."))
 			M.drop_item()
 			Fire(get_turf(M))
-			del(src)
+			qdel(src)
 			return
 
 	if (use_charge())
@@ -292,6 +292,3 @@
 
 /obj/structure/cable/hatton_act()
 	return
-
-
-

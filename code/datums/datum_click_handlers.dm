@@ -71,7 +71,7 @@
 *****************************/
 /datum/click_handler/fullauto
 	var/atom/target = null
-	var/obj/item/gun/reciever // The thing we send firing signals to
+	var/obj/item/gun/receiver // The thing we send firing signals to
 	var/time_since_last_init // Time since last start of full auto fire , used to prevent ANGRY smashing of M1 to fire faster.
 	//Todo: Make this work with callbacks
 
@@ -81,31 +81,45 @@
 //Next loop will notice these vars and stop shooting
 /datum/click_handler/fullauto/proc/stop_firing()
 	target = null
-	if(reciever)
-		if(isliving(reciever.loc))
-			reciever.check_safety_cursor(reciever.loc)
+	if(receiver)
+		if(isliving(receiver.loc))
+			receiver.check_safety_cursor(receiver.loc)
 
 /datum/click_handler/fullauto/proc/do_fire()
-	reciever.afterattack(target, owner.mob, FALSE)
+	receiver.afterattack(target, owner.mob, FALSE)
 
 /datum/click_handler/fullauto/MouseDown(object, location, control, params)
+	if(QDELETED(receiver))
+		Destroy()
+		return FALSE
 	if(!isturf(owner.mob.loc)) // This stops from firing full auto weapons inside closets or in /obj/effect/dummy/chameleon chameleon projector
 		return FALSE
 	if(time_since_last_init > world.time)
 		return FALSE
 
+	if(owner.mob.in_throw_mode || (owner.mob.Adjacent(location) && owner.mob.a_intent != "harm"))
+		return TRUE
+	var/list/click_params = params2list(params)
+	if(!click_params || !click_params["left"]) // Only left click
+		return TRUE
+
 	object = resolve_world_target(object)
 	if(object)
 		target = object
 		shooting_loop()
-		time_since_last_init = world.time + reciever.burst_delay
+		time_since_last_init = world.time + receiver.burst_delay
 	return TRUE
 
 /datum/click_handler/fullauto/proc/shooting_loop()
+
+	// Client's CH is set to nul when the handler is about to be destroyed, this safety check stop it from firing.
+	if(!owner || !owner.mob || owner.mob.resting || !receiver || !owner.CH)
+		return FALSE
+
 	if(target)
 		owner.mob.face_atom(target)
 		do_fire()
-		spawn(reciever.burst_delay) shooting_loop()
+		spawn(receiver.burst_delay) shooting_loop()
 
 /datum/click_handler/fullauto/MouseDrag(over_object, src_location, over_location, src_control, over_control, params)
 	src_location = resolve_world_target(src_location)

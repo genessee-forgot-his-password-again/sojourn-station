@@ -299,7 +299,7 @@
 	// Step 22, Swipe the ID to activate it.
 	else if((istype(W, /obj/item/card/id)) && (build_step == 21))
 		var/obj/item/card/id/C = W // New var to use ID-only vars.
-		if(!access_robotics in C.access) // Are you authorized to start the roomba ?
+		if(!(access_robotics in C.access)) // Are you authorized to start the roomba ?
 			to_chat(user, "You do not have the authorization to start the drone.")
 			return
 		build_step++
@@ -307,7 +307,7 @@
 			SPAN_NOTICE("[user] activates [created_name]! Beep boop."),
 			SPAN_NOTICE("You activate [created_name]! Beep boop.")
 		)
-		var/mob/living/carbon/superior_animal/handmade/mantis/R = new /mob/living/carbon/superior_animal/handmade/mantis(get_turf(src)) // Spawn the mantis drone.
+		var/mob/living/carbon/superior/handmade/mantis/R = new /mob/living/carbon/superior/handmade/mantis(get_turf(src)) // Spawn the mantis drone.
 		R.cell = power_cell // Give the roomba the cell used.
 		power_cell.forceMove(R) // Give the cell
 		R.name = created_name // Pass it the custom name

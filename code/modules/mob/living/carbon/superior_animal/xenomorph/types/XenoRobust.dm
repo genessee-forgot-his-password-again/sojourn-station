@@ -1,4 +1,4 @@
-/mob/living/carbon/superior_animal/xenomorph/warrior
+/mob/living/carbon/superior/xenomorph/warrior
 	name = "warrior"
 	desc = "A xenomorph warrior, the sturdier and more lethal step up from the sentinal."
 	icon = 'icons/mob/Xenos_2x2.dmi'
@@ -7,13 +7,13 @@
 	icon_dead = "warrior_dead"
 	icon_rest = "warrior_stunned"
 
-	maxHealth = 80
-	health = 80
+	maxHealth = 60
+	health = 60
 	flash_resistances = 8 //Weak xeno dies to like 3 hits of most things, lets not make it to easy
 	melee_damage_lower = 20
 	melee_damage_upper = 25
 
-/mob/living/carbon/superior_animal/xenomorph/defender
+/mob/living/carbon/superior/xenomorph/defender
 	name = "defender"
 	desc = "A xenomorph defender, while not as lethal as a warrior it makes up for it in being hellishly sturdy."
 	icon = 'icons/mob/Xenos_2x2.dmi'
@@ -22,10 +22,10 @@
 	icon_dead = "defender_dead"
 	icon_rest = "defender_stunned"
 	flash_resistances = 3 //Meant to be a weaker tank let them weakly tank
-	maxHealth = 200
-	health = 200
+	maxHealth = 140
+	health = 140
 
-/mob/living/carbon/superior_animal/xenomorph/warrior/shrike
+/mob/living/carbon/superior/xenomorph/warrior/shrike
 	name = "shrike"
 	desc = "A xenomorph shrike, what it loses in defense and power it makes up for in its power shriek."
 	icon_state = "shrike"
@@ -41,13 +41,15 @@
 	var/cooldown_time = 30 SECONDS
 	var/cooldown = 0
 
+	inherent_mutations = list(MUTATION_CAT_EYES, MUTATION_HARDEN_EARS)
+
 var/datum/xenomorph/xeno_morph_ai
 
 /datum/xenomorph
 	var/list/global_abilities_cooldown = list()
 
-/mob/living/carbon/superior_animal/xenomorph/warrior/shrike/Life()
-	if((src.stat != CONSCIOUS)||!canmove||resting||lying||stasis||AI_inactive)
+/mob/living/carbon/superior/xenomorph/warrior/shrike/Life()
+	if((stat != CONSCIOUS)||!canmove||resting||lying||stasis||AI_inactive)
 		return // Shrikes don't get to scream when passed out or dead
 	.=..()
 	if (world.time - cooldown_time < cooldown)
@@ -58,18 +60,16 @@ var/datum/xenomorph/xeno_morph_ai
 		if(target.stat == CONSCIOUS && target.faction != "xenomorph")
 			if(isdeaf(target))
 				continue
-			if(ishuman(target))
-				var/mob/living/carbon/human/H = target
-				if(istype(H.l_ear, /obj/item/clothing/ears/earmuffs) && istype(H.r_ear, /obj/item/clothing/ears/earmuffs))
-					continue
-				use_ability(target)
-				can_scream = TRUE
+			if(target.earcheck() >= 2) //ear muffs or headset + helm
+				continue
+			use_ability(target)
+			can_scream = TRUE
 	if(can_scream)
 		flick("[icon_state]_shriek", src)
 		playsound(src, 'sound/xenomorph/4_xeno_roars.ogg', 200, 1)
 		cooldown = world.time
 
-/mob/living/carbon/superior_animal/xenomorph/warrior/shrike/proc/use_ability(mob/living/target)
+/mob/living/carbon/superior/xenomorph/warrior/shrike/proc/use_ability(mob/living/target)
 
 	var/mob/living/carbon/human/H = target
 	if(istype(H))
@@ -82,7 +82,7 @@ var/datum/xenomorph/xeno_morph_ai
 		target.Weaken(4)
 		to_chat(target, SPAN_WARNING("A horrifying roar of primal soul-less terror sears through your mind!"))
 
-/mob/living/carbon/superior_animal/xenomorph/warrior/shrike/proc/targets_in_range(var/range = world.view, var/in_hear_range = FALSE)
+/mob/living/carbon/superior/xenomorph/warrior/shrike/proc/targets_in_range(var/range = world.view, var/in_hear_range = FALSE)
 	var/list/range_list = list()
 	var/list/target_list = list()
 	if(in_hear_range)
@@ -95,7 +95,7 @@ var/datum/xenomorph/xeno_morph_ai
 			target_list += target
 	return target_list
 
-/mob/living/carbon/superior_animal/xenomorph/warrior/bull
+/mob/living/carbon/superior/xenomorph/warrior/bull
 	name = "bull"
 	desc = "A xenomorph bull, while it has horns the real threat is the weight behind the strike, likely to knock someone down."
 	icon_state = "bull"
@@ -103,13 +103,14 @@ var/datum/xenomorph/xeno_morph_ai
 	icon_dead = "bull_dead"
 	icon_rest = "bull_stunned"
 
-	maxHealth = 120
-	health = 120
+	maxHealth = 100
+	health = 100
 	attack_sound = list('sound/xenomorph/alien_bite1.ogg', 'sound/xenomorph/alien_bite2.ogg')
 	melee_damage_lower = 20
 	melee_damage_upper = 25
+	inherent_mutations = list(MUTATION_CAT_EYES, MUTATION_COW_SKIN)
 
-/mob/living/carbon/superior_animal/xenomorph/spitter/boiler
+/mob/living/carbon/superior/xenomorph/spitter/boiler
 	name = "boiler"
 	desc = "A xenomorph boiler, the more evolved spitter, with far more toxic chemicals leaking from its maw and with an annoying habit of exploding on death."
 	icon = 'icons/mob/Xenos_2x2.dmi'
@@ -119,11 +120,12 @@ var/datum/xenomorph/xeno_morph_ai
 	icon_rest = "boiler_stunned"
 	deathmessage = "explodes violently as it dies!"
 
-	maxHealth = 60
-	health = 60
+	maxHealth = 50
+	health = 50
 	melee_damage_lower = 15
 	melee_damage_upper = 20
 	flash_resistances = 0
+	inherent_mutations = list(MUTATION_CAT_EYES, MUTATION_BOMB_RESIST)
 
 	move_to_delay = 6
 	turns_per_move = 18

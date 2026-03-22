@@ -13,9 +13,7 @@
 	if(status[1] == HUMAN_EATING_NO_ISSUE)
 		return 1
 	if(feedback)
-		if(status[1] == HUMAN_EATING_NO_MOUTH)
-			to_chat(src, "Where do you intend to put \the [food]? You don't have a mouth!")
-		else if(status[1] == HUMAN_EATING_BLOCKED_MOUTH)
+		if(status[1] == HUMAN_EATING_BLOCKED_MOUTH)
 			to_chat(src, SPAN_WARNING("\The [status[2]] is in the way!"))
 	return 0
 
@@ -48,9 +46,7 @@
 	if(status[1] == HUMAN_EATING_NO_ISSUE)
 		return 1
 	if(feedback)
-		if(status[1] == HUMAN_EATING_NO_MOUTH)
-			to_chat(feeder, "Where do you intend to put \the [food]? \The [src] doesn't have a mouth!")
-		else if(status[1] == HUMAN_EATING_BLOCKED_MOUTH)
+		if(status[1] == HUMAN_EATING_BLOCKED_MOUTH)
 			to_chat(feeder, SPAN_WARNING("\The [status[2]] is in the way!"))
 	return 0
 
@@ -62,11 +58,7 @@
 		return list(HUMAN_EATING_BLOCKED_MOUTH, blocked)
 	return list(HUMAN_EATING_NO_ISSUE)
 
-#undef HUMAN_EATING_NO_ISSUE
-#undef HUMAN_EATING_NO_MOUTH
-#undef HUMAN_EATING_BLOCKED_MOUTH
-
-/mob/living/carbon/human/proc/update_equipment_vision()
+/mob/living/carbon/human/update_equipment_vision()
 	flash_protection = 0
 	psi_blocking = 0
 	equipment_tint_total = 0
@@ -86,6 +78,8 @@
 		process_rig(wearing_rig)
 	if(istype(using_scope,/obj/item/gun))
 		process_scope(using_scope)
+
+	psi_blocking += psi_blocking_additive //So we dont null are perks or other sources of psi blocking
 
 /mob/living/carbon/human/proc/process_glasses(var/obj/item/clothing/glasses/G, var/forceActive)
 	if(G && (G.active || forceActive))

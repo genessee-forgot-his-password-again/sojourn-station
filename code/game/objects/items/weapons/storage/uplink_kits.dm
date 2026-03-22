@@ -1,8 +1,8 @@
 /obj/item/storage/box/syndicate/populate_contents()
 	switch (pickweight(list("bloodyspai" = 1, "stealth" = 1, "screwed" = 1, "guns" = 1, "murder" = 1, "freedom" = 1, "hacker" = 1, /*"lordsingulo" = 1,*/ "smoothoperator" = 1)))
 		if("bloodyspai")
-			new /obj/item/clothing/under/admin/chameleon(src)
-			new /obj/item/clothing/mask/gas/voice(src)
+			new /obj/item/clothing/under/chameleon(src)
+			new /obj/item/clothing/mask/chameleon/voice(src)
 			new /obj/item/card/id/syndicate(src)
 			new /obj/item/clothing/shoes/syndigaloshes(src)
 			return
@@ -62,13 +62,13 @@
 			return
 */
 
-			if("smoothoperator")
-				new /obj/item/storage/box/syndie_kit/pistol(src)
-				new /obj/item/storage/bag/trash(src)
-				new /obj/item/soap/syndie(src)
-				new /obj/item/bodybag(src)
-				new /obj/item/clothing/shoes/reinforced(src)
-				return
+		if("smoothoperator")
+			new /obj/item/storage/box/syndie_kit/pistol(src)
+			new /obj/item/storage/bag/trash(src)
+			new /obj/item/soap/syndie(src)
+			new /obj/item/bodybag(src)
+			new /obj/item/clothing/shoes/reinforced(src)
+			return
 
 /obj/item/storage/box/syndie_kit
 	name = "box"
@@ -125,19 +125,20 @@
 
 /obj/item/storage/box/syndie_kit/chameleon
 	name = "chameleon kit"
-	desc = "Comes with all the clothes you need to impersonate most people. Acting lessons sold separately. The box itself is made of plasteel."
-	matter = list(MATERIAL_PLASTEEL = 1)
+	desc = "Comes with all the clothes you need to impersonate most people. Acting lessons sold seperately. Wearing the uniform will allow fot quick switching between appearances."
 
 /obj/item/storage/box/syndie_kit/chameleon/populate_contents()
-	new /obj/item/clothing/under/admin/chameleon(src)
-	new /obj/item/clothing/head/admin/chameleon(src)
-	new /obj/item/clothing/suit/admin/chameleon(src)
-	new /obj/item/clothing/shoes/admin/chameleon(src)
+	new /obj/item/clothing/under/chameleon(src)
+	new /obj/item/clothing/head/chameleon(src)
+	new /obj/item/clothing/suit/chameleon(src)
+	new /obj/item/clothing/shoes/chameleon(src)
 	new /obj/item/storage/backpack/chameleon(src)
-	new /obj/item/clothing/gloves/admin/chameleon(src)
-	new /obj/item/clothing/mask/admin/chameleon(src)
-	new /obj/item/clothing/glasses/admin/chameleon(src)
+	new /obj/item/clothing/gloves/chameleon(src)
+	new /obj/item/clothing/mask/chameleon(src)
+	new /obj/item/clothing/glasses/chameleon(src)
+	new /obj/item/device/radio/headset/chameleon(src)
 	new /obj/item/gun/energy/chameleon(src)
+	new /obj/item/clothing/accessory/chameleon(src)
 
 /obj/item/storage/box/syndie_kit/clerical
 	name = "clerical kit"
@@ -173,7 +174,7 @@
 
 /obj/item/storage/box/syndie_kit/pistol
 	name = "\improper smooth operator kit"
-	desc = ".40 suppressed handgun and its kit."
+	desc = "10mm suppressed handgun and its kit."
 
 /obj/item/storage/box/syndie_kit/pistol/populate_contents()
 	new /obj/item/gun/projectile/silenced(src)
@@ -185,12 +186,24 @@
 
 /obj/item/storage/box/syndie_kit/hpistol
 	name = "\improper gunfighter kit"
-	desc = ".50 suppressed handgun and its kit."
+	desc = "12mm suppressed handgun and its kit."
 
 /obj/item/storage/box/syndie_kit/hpistol/populate_contents()
-	new /obj/item/gun/projectile/lamia/akurra(src)
+	new /obj/item/gun/projectile/lamia/socom(src)
 	new /obj/item/ammo_magazine/kurtz_50/hv(src)
 	new /obj/item/ammo_magazine/kurtz_50/hv(src)
+	new /obj/item/clothing/glasses/sunglasses(src)
+	new /obj/item/clothing/mask/balaclava(src)
+
+/obj/item/storage/box/syndie_kit/painrevolver
+	name = "\improper vigilante revolver kit"
+	desc = "12mm revolver and its kit."
+
+/obj/item/storage/box/syndie_kit/painrevolver/populate_contents()
+	new /obj/item/gun/projectile/revolver/hornet(src)
+	new /obj/item/ammo_magazine/speed_loader_kurtz_50/rubber(src)
+	new /obj/item/ammo_magazine/speed_loader_kurtz_50/lethal(src)
+	new /obj/item/ammo_magazine/speed_loader_kurtz_50/highvelocity(src)
 	new /obj/item/clothing/glasses/sunglasses(src)
 	new /obj/item/clothing/mask/balaclava(src)
 
@@ -217,9 +230,9 @@
 	w_class = ITEM_SIZE_HUGE
 
 /obj/item/storage/box/syndie_kit/sts/populate_contents()
-	new /obj/item/gun/projectile/automatic/sts/lrifle(src)
-	new /obj/item/ammo_magazine/light_rifle_257(src)
-	new /obj/item/ammo_magazine/light_rifle_257_short(src)
+	new /obj/item/gun/projectile/automatic/sts/rifle(src)
+	new /obj/item/ammo_magazine/rifle_75(src)
+	new /obj/item/ammo_magazine/rifle_75_short(src)
 	new /obj/item/clothing/suit/storage/toggle/leather/blackjacket(src)
 
 /obj/item/storage/box/syndie_kit/pug
@@ -232,17 +245,17 @@
 	new /obj/item/gun/projectile/shotgun/pug(src)
 	new /obj/item/ammo_magazine/m12/pellet(src)
 
-/obj/item/storage/box/syndie_kit/antimaterial_rifle
+/obj/item/storage/box/syndie_kit/antimateriel_rifle
 	name = "sniper rifle box"
 	desc = "Sniper rifle kit. One shot for real men."
 	icon_state = "box_of_doom_big"
 	w_class = ITEM_SIZE_HUGE
 
-/obj/item/storage/box/syndie_kit/antimaterial_rifle/populate_contents()
-	new /obj/item/ammo_casing/antim(src)
-	new /obj/item/weaponparts/heavysniper/stock(src)
-	new /obj/item/weaponparts/heavysniper/reciever(src)
-	new /obj/item/weaponparts/heavysniper/barrel(src)
+/obj/item/storage/box/syndie_kit/antimateriel_rifle/populate_contents()
+	new /obj/item/part/gun/frame/heavysniper(src)
+	new /obj/item/part/gun/grip/serb(src)
+	new /obj/item/part/gun/mechanism/boltgun(src)
+	new /obj/item/part/gun/barrel/antim(src)
 
 /obj/item/storage/box/syndie_kit/toxin
 	name = "toxin kit"
@@ -315,6 +328,15 @@
 	new /obj/item/device/spy_sensor(src)
 	new /obj/item/device/spy_sensor(src)
 
+
+/obj/item/storage/box/syndie_kit/exl_revolver
+	name = "\"Wayfarer\" caseless revolver kit"
+	desc = "A well made 10x24 claseless revolver and some ammo."
+
+/obj/item/storage/box/syndie_kit/exl_revolver/populate_contents()
+	new /obj/item/gun/projectile/revolver/wayfarer(src)
+	new /obj/item/ammo_magazine/ammobox/c10x24_small(src)
+	new /obj/item/ammo_magazine/ammobox/c10x24_small(src)
 
 /obj/item/storage/secure/briefcase/money
 	name = "suspicious briefcase"

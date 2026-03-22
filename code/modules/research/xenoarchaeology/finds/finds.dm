@@ -6,7 +6,7 @@
 /datum/find
 	var/find_type = 0				//random according to the digsite type
 	var/excavation_required = 0		//random 5-95%
-	var/view_range = 20				//how close excavation has to come to show an overlay on the turf
+	var/view_range = 50				//how close excavation has to come to show an overlay on the turf
 	var/clearance_range = 3			//how close excavation has to come to extract the item
 									//if excavation hits var/excavation_required exactly, it's contained find is extracted cleanly without the ore
 	var/prob_delicate = 90			//probability it requires an active suspension field to not insta-crumble
@@ -23,46 +23,72 @@
 // Strange rocks
 
 //have all strange rocks be cleared away using welders for now
-/obj/item/ore/strangerock
+/obj/item/stack/ore/strangerock
 	name = "Strange rock"
 	desc = "Seems to have some unusal strata evident throughout it."
 	icon = 'icons/obj/xenoarchaeology.dmi'
 	icon_state = "strange"
+	max_amount = 1
+	var/datum/geosample/geologic_data
 	var/obj/item/inside
 	var/method = 0// 0 = fire, 1 = brush, 2 = pick
 	origin_tech = list(TECH_MATERIAL = 5)
 
-/obj/item/ore/strangerock/New(loc, var/inside_item_type = 0)
+/obj/item/stack/ore/strangerock/New(loc, var/inside_item_type = 0)
 	..(loc)
 
-	//method = rand(0,2)
+	method = rand(0,2)
 	if(inside_item_type)
 		inside = new/obj/item/archaeological_find(src, new_item_type = inside_item_type)
-		if(!inside)
-			inside = locate() in contents
 
-/*/obj/item/ore/strangerock/ex_act(var/severity)
+/*/obj/item/stack/ore/strangerock/ex_act(var/severity)
 	if(severity && prob(30))
 		src.visible_message("The [src] crumbles away, leaving some dust and gravel behind.")*/
 
-/obj/item/ore/strangerock/attackby(obj/item/I, mob/user)
-	if(QUALITY_WELDING in I.tool_qualities)
-		if(I.use_tool(user, src, WORKTIME_FAST, QUALITY_WELDING, FAILCHANCE_EASY, required_stat = STAT_COG))
-			if(!src.method)
-				if(inside)
-					inside.loc = get_turf(src)
+/obj/item/stack/ore/strangerock/attackby(obj/item/I, mob/user)
+	var/tool_type = I.get_tool_type(user, list(QUALITY_WELDING, QUALITY_DIGGING, QUALITY_EXCAVATION), src)
+	var/turf/T = get_turf(src)
+	switch(tool_type)
+		if(QUALITY_WELDING)
+			if(I.use_tool(user, src, WORKTIME_FAST, QUALITY_WELDING, FAILCHANCE_EASY, required_stat = STAT_COG))
+				if(method == 0)
+					for(var/obj/A in contents)
+						A.forceMove(T)
 					for(var/mob/M in viewers(world.view, user))
-						M.show_message("<span class='info'>[src] burns away revealing [inside].</span>",1)
+						M.show_message("<span class='info'>[src] burns away revealing [inside.name].</span>",1)
 				else
 					for(var/mob/M in viewers(world.view, user))
-						M.show_message("<span class='info'>[src] burns away into nothing.</span>",1)
+						M.show_message("<span class='info'>A few sparks fly off [src], but nothing else happens.</span>",1)
 				qdel(src)
-			else
-				for(var/mob/M in viewers(world.view, user))
-					M.show_message("<span class='info'>A few sparks fly off [src], but nothing else happens.</span>",1)
+				return
+		if(QUALITY_DIGGING)
+			if(I.use_tool(user, src, WORKTIME_FAST, QUALITY_DIGGING, FAILCHANCE_EASY, required_stat = STAT_COG))
+				if(method == 1)
+					for(var/obj/A in contents)
+						A.forceMove(T)
+					for(var/mob/M in viewers(world.view, user))
+						M.show_message("<span class='info'>[src] chips away revealing [inside.name].</span>",1)
+				else
+					for(var/mob/M in viewers(world.view, user))
+						M.show_message("<span class='info'>A plume of dust and dirt scatter around [src], but nothing else happens.</span>",1)
+				qdel(src)
+				return
+		if(QUALITY_EXCAVATION)
+			if(I.use_tool(user, src, WORKTIME_FAST, QUALITY_EXCAVATION, FAILCHANCE_EASY, required_stat = STAT_COG))
+				if(method == 2)
+					for(var/obj/A in contents)
+						A.forceMove(T)
+					for(var/mob/M in viewers(world.view, user))
+						M.show_message("<span class='info'>[src] carefully extracts chunks away revealing [inside.name].</span>",1)
+				else
+					for(var/mob/M in viewers(world.view, user))
+						M.show_message("<span class='info'>A plume of dust and dirt scatter around [src], but nothing else happens.</span>",1)
+				qdel(src)
+				return
+		if(ABORT_CHECK)
 			return
 
-	else if(istype(I,/obj/item/device/core_sampler/))
+	if(istype(I,/obj/item/device/core_sampler/))
 		var/obj/item/device/core_sampler/S = I
 		S.sample_item(src, user)
 		return
@@ -272,18 +298,20 @@
 			new_item.price_tag = rand(350,1200) //Has some uses
 		if(16)
 			apply_prefix = 0
+			new_item = new /obj/structure/flora/pottedplant/clockcult(src.loc) //We use this for the glow + sanity regen
+			new_item.icon = 'icons/obj/xenoarchaeology.dmi'
 			if(prob(25))
-				icon = 'icons/obj/xenoarchaeology.dmi'
 				item_type = "smooth green crystal"
-				icon_state = "green_lump"
+				new_item.icon_state = "green_lump"
+				new_item.light_color = "#32CD32"
 			else if(prob(33))
-				icon = 'icons/obj/xenoarchaeology.dmi'
 				item_type = "irregular purple crystal"
-				icon_state = "phazon"
+				new_item.icon_state = "phazon"
+				new_item.light_color = "#4B365F"
 			else
-				icon = 'icons/obj/xenoarchaeology.dmi'
 				item_type = "rough red crystal"
-				icon_state = "changerock"
+				new_item.icon_state = "changerock"
+				new_item.light_color = "#47191B"
 			additional_desc = pick("It shines faintly as it catches the light.","It appears to have a faint inner glow.","It seems to draw you inward as you look it at.","Something twinkles faintly as you look at it.","It's mesmerizing to behold.")
 			new_item.price_tag = rand(750,2500) //It shines!
 			apply_material_decorations = 0
@@ -333,70 +361,42 @@
 		if(26)
 			//energy gun
 			var/spawn_type = pick(\
-			/obj/item/gun/energy/laser/practice/xenoarch,\
-			/obj/item/gun/energy/laser/xenoarch,\
+			/obj/item/gun/energy/cog/xenoarch,\
 			/obj/item/gun/energy/xray/xenoarch,\
 			/obj/item/gun/energy/captain/xenoarch)
 			if(spawn_type)
 				var/obj/item/gun/energy/new_gun = new spawn_type(src.loc)
 				new_item = new_gun
-				new_item.icon_state = "egun[rand(1,6)]"
-				new_gun.desc = "This is an antique energy weapon, you're not sure if it will fire or not."
-
-				//5% chance to explode when first fired
-				//10% chance to have an unchargeable cell
-				//15% chance to gain a random amount of starting energy, otherwise start with an empty cell
-				if(prob(5))
-					new_gun.cell.rigged = TRUE
-				if(prob(10))
-					new_gun.cell.maxcharge = 0
-				if(prob(15))
-					new_gun.cell.charge = rand(0, new_gun.cell.maxcharge)
-				else
-					new_gun.cell.charge = 0
-			new_item.price_tag = rand(950,2500)
-
+				new_gun.icon_state = "egun[rand(1,6)]"
+				new_gun.desc = "This is an antique energy weapon, Wonder how it shoots."
+				new_gun.serial_type = "INDEX"
+				new_gun.serial_shown = FALSE
+				new_gun.cell.charge = new_gun.cell.maxcharge
+				new_item.price_tag = rand(950,2500)
 			item_type = "gun"
+
 		if(27)
-			//revolver
-			var/obj/item/gun/projectile/new_gun = new /obj/item/gun/projectile/revolver(src.loc)
-			new_item = new_gun
-			new_item.icon_state = "gun[rand(1,4)]"
-			new_item.icon = 'icons/obj/xenoarchaeology.dmi'
-			new_item.price_tag = rand(950,2500)
-			//33% chance to be able to reload the gun with human ammunition
-			if(prob(66))
-				new_gun.caliber = "999"
-
-			//33% chance to fill it with a random amount of bullets
-			new_gun.max_shells = rand(1,12)
-			if(prob(33))
-				var/num_bullets = rand(1,new_gun.max_shells)
-				if(num_bullets < new_gun.loaded.len)
-					new_gun.loaded.Cut()
-					for(var/i = 1, i <= num_bullets, i++)
-						var/A = new_gun.ammo_type
-						new_gun.loaded += new A(new_gun)
-				else
-					for(var/obj/item/I in new_gun)
-						if(new_gun.loaded.len > num_bullets)
-							if(I in new_gun.loaded)
-								new_gun.loaded.Remove(I)
-								I.loc = null
-						else
-							break
-			else
-				for(var/obj/item/I in new_gun)
-					if(I in new_gun.loaded)
-						new_gun.loaded.Remove(I)
-						I.loc = null
-
+			//projectile guns
+			var/spawn_type = pick(\
+			/obj/item/gun/projectile/revolver/xenoarch,\
+			/obj/item/gun/projectile/revolver/sixshot/xenoarch,\
+			/obj/item/gun/projectile/boltgun/heavysniper/xenoarch)
+			if(spawn_type)
+				var/obj/item/gun/projectile/new_gun = new spawn_type(src.loc)
+				new_item = new_gun
+				new_gun.icon_state = "gun[rand(1,4)]"
+				new_gun.desc = "This is a antique firearm. Cleaned and ready to use."
+				new_gun.serial_type = "INDEX"
+				new_gun.serial_shown = FALSE
+				new_gun.price_tag = rand(950,2500)
 			item_type = "gun"
+
 		if(28)
-			//completely unknown alien device
+			//completely unknown alien device -- no idea what this is meant to be, swapped to a a cystal
+			new_item = new /obj/structure/crystal(src.loc)
 			if(prob(50))
 				apply_image_decorations = 0
-			new_item.price_tag = rand(450,800)
+			new_item.price_tag = rand(1450,1800)
 		if(29)
 			//fossil bone/skull
 			//new_item = new /obj/item/fossil/base(src.loc)
@@ -433,6 +433,7 @@
 			new_item.price_tag = rand(1000,1750)
 		if(32)
 			//humanoid remains
+			new_item = new /obj/item/remains/human(src.loc)
 			apply_prefix = 0
 			item_type = "humanoid [pick("remains","skeleton")]"
 			icon = 'icons/effects/blood.dmi'
@@ -449,6 +450,7 @@
 			new_item.price_tag = rand(950,1750)
 		if(33)
 			//robot remains
+			new_item = new /obj/item/remains/robot(src.loc)
 			apply_prefix = 0
 			item_type = "[pick("mechanical","robotic","cyborg")] [pick("remains","chassis","debris")]"
 			icon = 'icons/mob/robots.dmi'
@@ -465,6 +467,7 @@
 			new_item.price_tag = rand(1000,2000)
 		if(34)
 			//xenos remains
+			new_item = new /obj/item/remains/xeno(src.loc)
 			apply_prefix = 0
 			item_type = "alien [pick("remains","skeleton")]"
 			icon = 'icons/effects/blood.dmi'

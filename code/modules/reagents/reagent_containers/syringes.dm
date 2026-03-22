@@ -25,6 +25,7 @@
 	var/image/filling //holds a reference to the current filling overlay
 	var/visible_name = "a syringe"
 	var/time = 30
+	price_tag = 3 //1 glass and 1 steel for something clean is reasonable
 
 /obj/item/reagent_containers/syringe/on_reagent_change()
 	if(mode == SYRINGE_INJECT && !reagents.total_volume)
@@ -42,6 +43,10 @@
 	update_icon()
 
 /obj/item/reagent_containers/syringe/attack_self(mob/user as mob)
+	if(!user.stat_check(STAT_BIO, 10) && !user.stat_check(STAT_COG, 20) && !user.stats.getPerk(PERK_ADDICT))
+		to_chat(user, SPAN_WARNING("You have no idea how to properly use this syringe!"))
+		return
+
 	switch(mode)
 		if(SYRINGE_DRAW)
 			mode = SYRINGE_INJECT
@@ -50,6 +55,7 @@
 		if(SYRINGE_BROKEN)
 			return
 	update_icon()
+	price_tag = 0
 
 /obj/item/reagent_containers/syringe/attack_hand()
 	..()
@@ -64,6 +70,10 @@
 
 	if(mode == SYRINGE_BROKEN)
 		to_chat(user, SPAN_WARNING("This syringe is broken!"))
+		return
+
+	if(user.stats.getStat(STAT_BIO) < 15 && !usr.stat_check(STAT_COG, 30) && !usr.stats.getPerk(PERK_ADDICT))
+		to_chat(user, SPAN_WARNING("You have no idea how to properly use this syringe!"))
 		return
 
 	if(user.a_intent == I_HURT && ismob(target))
@@ -112,6 +122,7 @@
 						on_reagent_change()
 						reagents.handle_reactions()
 					to_chat(user, SPAN_NOTICE("You take a blood sample from [target]."))
+					price_tag = 0
 					for(var/mob/O in viewers(4, user))
 						O.show_message(SPAN_NOTICE("[user] takes a blood sample from [target]."), 1)
 
@@ -126,6 +137,7 @@
 
 				var/trans = target.reagents.trans_to_obj(src, amount_per_transfer_from_this)
 				to_chat(user, SPAN_NOTICE("You fill the syringe with [trans] units of the solution."))
+				price_tag = 0
 
 
 		if(SYRINGE_INJECT)
@@ -177,6 +189,7 @@
 				else if(!L.can_inject(user, TRUE))
 					return
 
+				price_tag = 0
 				if(target != user)
 					user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 					user.do_attack_animation(target)
@@ -194,6 +207,7 @@
 					user.visible_message(SPAN_WARNING("[user] injects \himself with [src]!"), SPAN_WARNING("You inject yourself with [src]."), range = 3)
 			var/trans
 			if(ismob(target))
+				price_tag = 0
 				trans = reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_BLOOD)
 				admin_inject_log(user, target, src, reagents.log_list(), trans)
 				// user's stat check that causing pain if they are amateur
@@ -225,27 +239,26 @@
 		return
 
 	var/rounded_vol
-	if(/obj/item/reagent_containers/syringe)
-		if(reagents && reagents.total_volume)
-			rounded_vol = CLAMP(round((reagents.total_volume / volume * 15),5), 1, 15)
-			var/image/filling_overlay = mutable_appearance('icons/obj/reagentfillings.dmi', "syringe[rounded_vol]")
-			filling_overlay.color = reagents.get_color()
-			add_overlay(filling_overlay)
-		else
-			rounded_vol = 0
+	if(reagents && reagents.total_volume)
+		rounded_vol = CLAMP(round((reagents.total_volume / volume * 15),5), 1, 15)
+		var/image/filling_overlay = mutable_appearance('icons/obj/reagentfillings.dmi', "syringe[rounded_vol]")
+		filling_overlay.color = reagents.get_color()
+		add_overlay(filling_overlay)
+	else
+		rounded_vol = 0
 
-		icon_state = "[rounded_vol]"
-		item_state = "syringe_[rounded_vol]"
+	icon_state = "[rounded_vol]"
+	item_state = "syringe_[rounded_vol]"
 
-		if(ismob(loc))
-			var/injoverlay
-			switch(mode)
-				if (SYRINGE_DRAW)
-					injoverlay = "draw"
-				if (SYRINGE_INJECT)
-					injoverlay = "inject"
-			add_overlay(injoverlay)
-			update_wear_icon()
+	if(ismob(loc))
+		var/injoverlay
+		switch(mode)
+			if (SYRINGE_DRAW)
+				injoverlay = "draw"
+			if (SYRINGE_INJECT)
+				injoverlay = "inject"
+		add_overlay(injoverlay)
+		update_wear_icon()
 
 /obj/item/reagent_containers/syringe/large/update_icon()
 	cut_overlays()
@@ -255,27 +268,26 @@
 		return
 
 	var/rounded_vol
-	if(/obj/item/reagent_containers/syringe/large)
-		if(reagents && reagents.total_volume)
-			rounded_vol = CLAMP(round((reagents.total_volume / volume * 15),5), 1, 30)
-			var/image/filling_overlay = mutable_appearance('icons/obj/reagentfillings.dmi', "syringe-[rounded_vol]")
-			filling_overlay.color = reagents.get_color()
-			add_overlay(filling_overlay)
-		else
-			rounded_vol = 0
+	if(reagents && reagents.total_volume)
+		rounded_vol = CLAMP(round((reagents.total_volume / volume * 15),5), 1, 30)
+		var/image/filling_overlay = mutable_appearance('icons/obj/reagentfillings.dmi', "syringe-[rounded_vol]")
+		filling_overlay.color = reagents.get_color()
+		add_overlay(filling_overlay)
+	else
+		rounded_vol = 0
 
-		icon_state = "-[rounded_vol]"
-		item_state = "syringe_-[rounded_vol]"
+	icon_state = "-[rounded_vol]"
+	item_state = "syringe_-[rounded_vol]"
 
-		if(ismob(loc))
-			var/injoverlay
-			switch(mode)
-				if (SYRINGE_DRAW)
-					injoverlay = "draw"
-				if (SYRINGE_INJECT)
-					injoverlay = "inject"
-			add_overlay(injoverlay)
-			update_wear_icon()
+	if(ismob(loc))
+		var/injoverlay
+		switch(mode)
+			if (SYRINGE_DRAW)
+				injoverlay = "draw"
+			if (SYRINGE_INJECT)
+				injoverlay = "inject"
+		add_overlay(injoverlay)
+		update_wear_icon()
 
 /obj/item/reagent_containers/syringe/blitzshell
 	name = "blitzshell syringe"
@@ -375,10 +387,10 @@
 /obj/item/reagent_containers/syringe/stim
 	name = "syringe (stim)"
 
-/obj/item/reagent_containers/syringe/stim/mbr
-	name = "syringe (Machine binding ritual)"
-	desc = "A syringe containing an ethanol based stimulator. Often used as a ritual drink by machine cults or engineering groups to enhance initiates who lack experience."
-	preloaded_reagents = list("machine binding ritual" = 15)
+/obj/item/reagent_containers/syringe/stim/greaser
+	name = "syringe (Greaser)"
+	desc = "A syringe containing an ethanol based stimulator. Often used by engineering groups to enhance initiates who lack experience."
+	preloaded_reagents = list("greaser" = 15)
 
 /obj/item/reagent_containers/syringe/stim/cherrydrops
 	name = "syringe (Cherry Drops)"
@@ -405,10 +417,10 @@
 	desc = "A syringe containing a dose of steady, a stimulant favored by mercenaries for enhancing reaction time."
 	preloaded_reagents = list("steady" = 15)
 
-/obj/item/reagent_containers/syringe/stim/machine_spirit
-	name = "syringe (Machine Spirit)"
-	desc = "A syringe containing the ethanol based stimulant machine spirit. A favored chemical used by the Artificer's Guild to make even the lowliest adept a machine master."
-	preloaded_reagents = list("machine spirit" = 15)
+/obj/item/reagent_containers/syringe/stim/greasy_lard
+	name = "syringe (Greasy Lard)"
+	desc = "A syringe containing the ethanol based stimulant Greaser. A favored chemical used by the Artificer's Guild to make even the lowliest adept a machine master."
+	preloaded_reagents = list("greasy lard" = 15)
 
 /obj/item/reagent_containers/syringe/stim/grape_drops
 	name = "syringe (Grape Drops)"
@@ -442,7 +454,7 @@
 
 /obj/item/reagent_containers/syringe/stim/menace
 	name = "syringe (MENACE)"
-	desc = "A syringe containing a dose of the powerful electrolyte based stimulant known as menace. A drug made famous for being used by suicidal naramadi shock troops employed by the Terran Federation."
+	desc = "A syringe containing a dose of the powerful electrolyte based stimulant known as menace. A drug made famous for being used by suicidal naramadi shock troops employed by the Solarian Federation."
 	preloaded_reagents = list("menace" = 15)
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -486,6 +498,16 @@
 
 /obj/item/reagent_containers/syringe/ld50_syringe/choral
 	preloaded_reagents = list("chloralhydrate" = 50)
+
+/obj/item/reagent_containers/syringe/paracetamol
+	name = "syringe (paracetamol)"
+	desc = "Contains paracetamol - a mild painkiller"
+	preloaded_reagents = list("paracetamol" = 15)
+
+/obj/item/reagent_containers/syringe/adrenaline
+	name = "syringe (adrenaline)"
+	desc = "Contains adrenaline - a natural stimulant"
+	preloaded_reagents = list("adrenaline" = 15)
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Large Syringes.

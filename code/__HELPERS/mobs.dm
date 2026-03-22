@@ -14,14 +14,53 @@
 /mob/get_mob()
 	return src
 
-/proc/mobs_in_view(var/range, var/source)
+/**
+ * Returns a list of all mobs within view(), using given arguments to determine the range of the search
+ * and the source of the proc.
+ *
+ * Args:
+ * range - How far, in a square, around this mob, will we search.
+ * source - The source of the search.
+**/
+/proc/mobs_in_view(range, atom/source)
 	var/list/mobs = list()
-	for(var/atom/movable/AM in view(range, source))
-		var/M = AM.get_mob()
-		if(M)
-			mobs += M
-
+	for(var/mob/target_mob in view(range, source))
+		mobs += target_mob
 	return mobs
+
+/**
+ * Returns a list of all LIVING mobs within view(), using given arguments to determine the range of the search
+ * and the source of the proc.
+ *
+ * Args:
+ * range - How far, in a square, around this mob, will we search.
+ * source - The source of the search.
+**/
+/proc/living_mobs_in_view(var/range, var/atom/source)
+	var/list/mobs = list()
+	for(var/mob/living/target_mob in view(range, source))
+		mobs += target_mob
+	return mobs
+
+
+/**
+ * Returns a list of all mobs within view(), even those within mechs, using given arguments to determine the range of the search
+ * and the source of the proc.
+ *
+ * Args:
+ * range - How far, in a square, around this mob, will we search.
+ * source - The source of the search.
+**/
+/proc/all_mobs_in_view(var/range, var/atom/source)
+	var/list/mobs = list()
+	for(var/mob/target_mob in view(range, source))
+		mobs += target_mob
+	for(var/obj/mecha/potential_mech in GLOB.mechas_list)
+		if(potential_mech.z == source.z && get_dist(potential_mech, source) < range && can_see(source, potential_mech, range))
+			var/mob/living/occupant = potential_mech.get_mob()
+			if (occupant)
+				mobs += occupant
+    return mobs
 
 /proc/random_hair_style(gender, species = "Human")
 	var/h_style = "Bald"
@@ -222,13 +261,13 @@ Proc for attack log creation, because really why not
 			progbar.update(world.time - starttime)
 
 		if(immobile)
-			if(!user || user.incapacitated(incapacitation_flags) || user.loc != original_loc)
+			if(user.loc != original_loc)
 				. = 0
 				break
 
-			if(target_loc && (!target || target_loc != target.loc))
-				. = 0
-				break
+		if(target_loc && (!target || target_loc != target.loc))
+			. = 0
+			break
 
 		if(needhand)
 			if(user.get_active_hand() != holding)
@@ -254,7 +293,7 @@ Proc for attack log creation, because really why not
 	)
 
 	for(var/obj/item/clothing/C in src)
-		if(l_hand == C || r_hand == C)
+		if(l_hand == C || r_hand == C || slot_l_store == C || slot_r_store == C || slot_s_store == C)
 			continue
 		if(C.body_parts_covered & bodyparts[bodypart])
 			return TRUE
@@ -264,7 +303,35 @@ Proc for attack log creation, because really why not
 /proc/is_neotheology_disciple(mob/living/L)
 	if(istype(L) && L.get_core_implant(/obj/item/implant/core_implant/cruciform))
 		return TRUE
+	return FALSE
 
+/proc/is_acolyte(mob/living/L)
+	if(!isliving(L))
+		return FALSE
+	var/obj/item/implant/core_implant/cruciform/C = L.get_core_implant(/obj/item/implant/core_implant/cruciform)
+	if(C && C.get_module(CRUCIFORM_COMMON))
+		return TRUE
+	return FALSE
+
+/proc/is_preacher(mob/living/L)
+	if(!isliving(L))
+		return FALSE
+	var/obj/item/implant/core_implant/cruciform/C = L.get_core_implant(/obj/item/implant/core_implant/cruciform)
+	if(C && C.get_module(CRUCIFORM_CLERGY) && C.get_module(CRUCIFORM_PRIME))
+		return TRUE
+	return FALSE
+
+/proc/is_inquisidor(mob/living/L)
+	if(!isliving(L))
+		return FALSE
+	var/obj/item/implant/core_implant/cruciform/C = L.get_core_implant(/obj/item/implant/core_implant/cruciform)
+	if(C && C.get_module(CRUCIFORM_INQUISITOR))
+		return TRUE
+	return FALSE
+
+/proc/is_carrion(mob/living/carbon/human/H)
+	if(istype(H) && (H.organ_list_by_process(BP_SPCORE)).len)
+		return TRUE
 	return FALSE
 
 /proc/is_excelsior(var/mob/M)
@@ -288,13 +355,6 @@ Proc for attack log creation, because really why not
 /mob/living/carbon/human/get_classification()
 	. = ..()
 	. |= CLASSIFICATION_ORGANIC | CLASSIFICATION_HUMANOID
-
-
-/proc/is_carrion(mob/living/carbon/human/H)
-	if(istype(H) && (H.organ_list_by_process(BP_SPCORE)).len)
-		return TRUE
-
-	return FALSE
 
 /mob/proc/can_see_reagents()
 	return TRUE
@@ -397,3 +457,17 @@ Proc for attack log creation, because really why not
 	if(isnull(choice) || src.incapacitated() || (required_item && !GLOB.hands_state.can_use_topic(required_item,src)))
 		return null
 	return choice
+
+/// Gets the client of the mob, allowing for mocking of the client.
+/// You only need to use this if you know you're going to be mocking clients somewhere else.
+#define GET_CLIENT(mob) (##mob.client) //  || ##mob.mock_client
+
+///Makes a call in the context of a different usr. Use sparingly
+/world/proc/push_usr(mob/user_mob, datum/callback/invoked_callback, ...)
+	var/temp = usr
+	usr = user_mob
+	if (length(args) > 2)
+		. = invoked_callback.Invoke(arglist(args.Copy(3)))
+	else
+		. = invoked_callback.Invoke()
+	usr = temp

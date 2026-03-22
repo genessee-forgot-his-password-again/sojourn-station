@@ -1,8 +1,62 @@
-/mob/living/carbon/superior_animal/robot/greyson
-	name = "Greyson Positronic RMB-A unit"
+/mob/living/carbon/superior/robot/gp
+	name = "Greyson Positronic RMB-A Unit"
 	desc = "A small round drone, usually tasked with carrying out menial tasks. This one seems pretty harmless."
 	icon = 'icons/mob/battle_roomba.dmi'
 	icon_state = "roomba"
 	faction = "greyson"
 	cant_be_pulled = TRUE
 
+	get_stat_modifier = TRUE
+
+	allowed_stat_modifiers = list(
+		/datum/stat_modifier/mob/living/carbon/superior/durable = 15,
+		/datum/stat_modifier/mob/living/carbon/superior/armor/mult/negative/low = 7,
+		/datum/stat_modifier/mob/living/carbon/superior/armor/mult/negative/medium = 3,
+		/datum/stat_modifier/mob/living/carbon/superior/young/robotic = 5, //we dont want them ALWAYS to be mega super fast
+		/datum/stat_modifier/mob/living/carbon/superior/old/robotic = 15,
+		/datum/stat_modifier/mob/living/carbon/superior/brutish/robotic = 15,
+		/datum/stat_modifier/mob/living/damage/negative/mixed/flat/low = 6,
+		/datum/stat_modifier/mob/living/carbon/superior/brutal/robotic = 6,
+		/datum/stat_modifier/mob/living/carbon/superior/aggressive/savage/robotic = 2,
+		/datum/stat_modifier/mob/living/carbon/superior/aggressive = 8,
+		/datum/stat_modifier/mob/living/carbon/superior/deadeye = 12,
+		/datum/stat_modifier/mob/living/carbon/superior/triggerfinger/robotic = 7,
+		/datum/stat_modifier/mob/living/carbon/superior/quickdraw = 3,
+		/datum/stat_modifier/mob/living/carbon/superior/slowdraw = 8,
+		/datum/stat_modifier/mob/living/carbon/superior/slowaimed = 8,
+	)
+
+/mob/living/carbon/superior/robot/gp/death()
+
+	if(istype(lastarea, /area/crawler))
+		var/area/crawler/C = lastarea
+		C.robo_deaths += 1
+
+		//The C.level_of_threat <= is so we dont spam check every death the area
+
+		if(C.robo_deaths >= 80 && C.level_of_threat <= 0)
+			C.raise_threat(1)
+
+			..()
+			return //Fast returns to not more ifs then needed
+
+		//Lighting updates
+		if(C.robo_deaths >= 100 && C.level_of_threat <= 1)
+			C.raise_threat(2)
+
+			..()
+			return
+
+		if(C.robo_deaths >= 150 && C.level_of_threat <= 2)
+			C.raise_threat(3)
+
+			..()
+			return
+
+		//Send back up!
+		if(C.robo_deaths >= 200 && C.level_of_threat <= 3)
+			C.raise_threat(4)
+			..()
+			return
+
+	..()

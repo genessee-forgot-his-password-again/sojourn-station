@@ -7,7 +7,9 @@
 	access_occupy = list(access_mining)
 
 /obj/structure/closet/secure_closet/personal/miner/populate_contents()
-
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/storage/backpack/industrial(src)
 	new /obj/item/storage/backpack/satchel/industrial(src)
 	new /obj/item/device/radio/headset/headset_cargo(src)
@@ -29,6 +31,12 @@
 	new /obj/item/gun/projectile/boltgun/flare_gun(src)
 	new /obj/item/ammo_casing/flare(src)
 	new /obj/item/device/ore_sonar(src)
+	new /obj/item/ammo_magazine/speed_loader_shotgun/empty(src)
+	new /obj/item/clothing/accessory/job/cape/mining(src) // ROCK AND STONE, BRUDDAH!
+	new /obj/item/gun/projectile/shotgun/pump(src)
+	new /obj/item/ammo_magazine/ammobox/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/ammobox/shotgun/buckshot(src)
+	new /obj/item/storage/firstaid/ifak(src)
 
 /******************************Lantern*******************************/
 
@@ -39,6 +47,13 @@
 	desc = "A mining lantern."
 	brightness_on = 4			// luminosity when on
 
+/obj/item/device/lighting/toggleable/lantern/censer
+	name = "censer"
+	icon_state = "censer"
+	item_state = "censer"
+	desc = "A silver-gold incense burner that releases a sweet, comforting perfume. Sometimes used in consecration ceremonies by the Church, where the incense is said to clean and purify the air so prayers may better reach the Absolute."
+	brightness_on = 3			// luminosity when on
+	turn_on_sound = 'sound/effects/Custom_flare.ogg'
 
 /*****************************Pickaxe********************************/
 

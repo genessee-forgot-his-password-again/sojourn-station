@@ -1,25 +1,32 @@
-/mob/living/carbon/superior_animal/roach/support
+/mob/living/carbon/superior/roach/support
 	name = "Seuche Roach"
 	desc = "A monstrous, dog-sized cockroach. This one smells like hell and secretes strange vapors."
 	icon_state = "seuche"
 	turns_per_move = 6
-	maxHealth = 20
-	health = 20
+	maxHealth = 15 * ROACH_HEALTH_MOD
+	health = 15 * ROACH_HEALTH_MOD
 	var/datum/reagents/gas_sac //Stores gas. Can't use the default reagents since that is now bloodstream
 	melee_damage_upper = 3
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/roachmeat/seuche
+	meat_type = /obj/item/reagent_containers/snacks/meat/roachmeat/seuche
 	meat_amount = 3
 
 	knockdown_odds = 3
 
 	blattedin_revives_left = 1
 	inherent_mutations = list(MUTATION_ROACH_BLOOD, MUTATION_PSN_BREATH, MUTATION_COUGHING, MUTATION_DEAF, MUTATION_TOURETTES, MUTATION_EPILEPSY)
+	hierarchy = 1
 
-/mob/living/carbon/superior_animal/roach/support/New()
+/mob/living/carbon/superior/roach/support/New()
 	.=..()
 	gas_sac = new /datum/reagents(100, src)
 
-/mob/living/carbon/superior_animal/roach/support/proc/gas_attack()
+/mob/living/carbon/superior/roach/support/Destroy()
+	gas_sac.my_atom = null
+	QDEL_NULL(gas_sac)
+
+	. = ..()
+
+/mob/living/carbon/superior/roach/support/proc/gas_attack()
 	if (!gas_sac.has_reagent("blattedin", 20) || stat != CONSCIOUS)
 		return
 
@@ -36,8 +43,11 @@
 	gas_sac.clear_reagents()
 	return TRUE
 
-/mob/living/carbon/superior_animal/roach/support/Life()
+/mob/living/carbon/superior/roach/support/Life()
 	. = ..()
+
+	var/atom/targetted_mob = (target_mob?.resolve())
+
 	if(stat != CONSCIOUS)
 		return
 
@@ -46,13 +56,41 @@
 
 	gas_sac.add_reagent("blattedin", 1)
 
-	if(!target_mob)
+	if(gas_sac.has_reagent("blattedin", 21))
+
+		//Upgrade are reagents, can even dip us below 20
+		if(prob(15))
+			gas_sac.remove_reagent("blattedin", 0.2)
+			gas_sac.add_reagent("diplopterum", 0.2)
+		if(prob(10))
+			gas_sac.remove_reagent("blattedin", 0.4)
+			gas_sac.add_reagent("seligitillin", 0.2)
+		if(prob(10))
+			gas_sac.remove_reagent("blattedin", 0.4)
+			gas_sac.add_reagent("starkellin", 0.2)
+		if(prob(5))
+			gas_sac.remove_reagent("blattedin", 0.6)
+			gas_sac.add_reagent("gewaltine", 0.2)
+		if(prob(1))
+			gas_sac.remove_reagent("blattedin", 0.8)
+			gas_sac.add_reagent("fuhrerole", 0.1)
+
+
+	if(!targetted_mob)
 		return
 
 	if(prob(7))
 		gas_attack()
 
-/mob/living/carbon/superior_animal/roach/support/findTarget()
+	if(gas_sac.has_reagent("blattedin", 25))
+		if(prob(25))
+			for(var/mob/living/carbon/superior/roach/R in orange(1, src))
+				if(R.faction == faction && R.hierarchy >= 5 && R.stance == HOSTILE_STANCE_ATTACKING && R.stat != DEAD)
+					gas_sac.trans_to_mob(R, 3, CHEM_BLOOD)
+					visible_message(SPAN_NOTICE("\the [src] sprays [R] with some built up chemicals."))
+					break
+
+/mob/living/carbon/superior/roach/support/doTargetMessage()
 	. = ..()
-	if(. && gas_attack())
+	if (gas_attack())
 		visible_emote("charges at [.] in clouds of poison!")

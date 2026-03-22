@@ -38,7 +38,9 @@
 		input = copytext(input, 1, max_length)
 
 	if(extra)
-		input = replace_characters(input, list("\n"=" ", "\t"=" "))
+		var/temp_input = replace_characters(input, list("\n"="  ","\t"=" "))//one character is replaced by two
+		if(length_char(input) < (length_char(temp_input) - 25)) //25 is the number of linebreaks allowed per message
+			input = replace_characters(temp_input,list("  "=" "))//replace again, this time the double spaces with single ones
 
 	if(encode)
 		// The below \ escapes have a space inserted to attempt to enable Travis auto-checking of span class usage. Please do not remove the space.
@@ -58,7 +60,7 @@
 	return input
 
 /proc/sanitizeFileName(var/input)
-	input = replace_characters(input, list(" "="_", "\\" = "_", "\""="'", "/" = "_", ":" = "_", "*" = "_", "?" = "_", "|" = "_", "<" = "_", ">" = "_"))
+	input = replace_characters(input, list(" "="_", "\\" = "_", "\""="'", "/" = "_", ":" = "_", "*" = "_", "?" = "_", "|" = "_", "<" = "_", ">" = "_", "#" = "_"))
 	if(findtext(input,"_") == 1)
 		input = copytext(input, 2)
 	return input
@@ -70,7 +72,7 @@
 	return sanitize(replace_characters(input, list(">"=" ", "<"=" ", "\""="'","&lt;" = " ","&gt;" = " ")), max_length, encode, trim, extra)
 
 //Filters out undesirable characters from names
-/proc/sanitizeName(var/input, var/max_length = MAX_NAME_LEN, var/allow_numbers = 0)
+/proc/sanitizeName(var/input, var/max_length = MAX_NAME_LEN, var/allow_numbers = TRUE)//Soj/Liberty edit, allows to use numbers in names
 	if(!input || length(input) > max_length)
 		return //Rejects the input if it is null or if it is longer then the max length allowed
 
@@ -163,6 +165,19 @@
 //Old variant. Haven't dared to replace in some places.
 /proc/sanitize_old(var/t, var/list/repl_chars = list("\n"="#", "\t"="#"))
 	return html_encode(replace_characters(t, repl_chars))
+
+//Removes a few problematic characters
+/proc/sanitize_simple(t,list/repl_chars = list("\n"="#","\t"="#"))
+	for(var/char in repl_chars)
+		var/index = findtext(t, char)
+		while(index)
+			t = copytext(t, 1, index) + repl_chars[char] + copytext(t, index + length(char))
+			index = findtext(t, char, index + length(char))
+	return t
+
+/proc/sanitize_filename(t)
+	return sanitize_simple(t, list("\n"="", "\t"="", "/"="", "\\"="", "?"="", "%"="", "*"="", ":"="", "|"="", "\""="", "<"="", ">"=""))
+
 
 /*
  * Text searches
@@ -263,6 +278,25 @@
 		return copytext(html_encode(name), 1, max_length)
 	else
 		return trim(html_encode(name), max_length) //trim is "outside" because html_encode can expand single symbols into multiple symbols (such as turning < into &lt;)
+
+/**
+ * Used to get a properly sanitized input in a larger box. Works very similarly to stripped_input.
+ *
+ * Arguments
+ ** user - Target of the input prompt.
+ ** message - The text inside of the prompt.
+ ** title - The window title of the prompt.
+ ** max_length - If you intend to impose a length limit - default is 1024.
+ ** no_trim - Prevents the input from being trimmed if you intend to parse newlines or whitespace.
+*/
+/proc/stripped_multiline_input(mob/user, message = "", title = "", default = "", max_length=MAX_MESSAGE_LEN, no_trim=FALSE)
+	var/user_input = input(user, message, title, default) as message|null
+	if(isnull(user_input)) // User pressed cancel
+		return
+	if(no_trim)
+		return copytext(html_encode(user_input), 1, max_length)
+	else
+		return trim(html_encode(user_input), max_length)
 
 //This proc strips html properly, remove < > and all text between
 //for complete text sanitizing should be used sanitize()
@@ -365,7 +399,7 @@ proc/TextPreview(var/string, var/len=40)
 /proc/create_text_tag(var/tagname, var/tagdesc = tagname, var/client/C = null)
 	if(!(C && C.get_preference_value(/datum/client_preference/chat_tags) == GLOB.PREF_SHOW))
 		return tagdesc
-	return icon2html(icon(text_tag_icons, tagname), world, realsize=TRUE)
+	return icon2html(icon(text_tag_icons, tagname), world)
 
 /proc/contains_az09(var/input)
 	for(var/i=1, i<=length(input), i++)
@@ -595,3 +629,21 @@ proc/TextPreview(var/string, var/len=40)
 	. = ""
 	for(var/i=1, i<=times, i++)
 		. += string
+
+
+/// Removes all non-alphanumerics from the text, keep in mind this can lead to id conflicts
+/proc/sanitize_css_class_name(name)
+	var/static/regex/regex = new(@"[^a-zA-Z0-9]","g")
+	return replacetext(name, regex, "")
+
+/proc/symbols_to_unicode(text)
+	for(var/key in GLOB.symbols_unicode_keys)
+		text = replacetext(text, key, GLOB.symbols_unicode_keys[key])
+	return text
+
+/proc/color_macro_to_html(text)
+	text = replacetext(text,"\red","<span class='red'>")
+	text = replacetext(text,"\blue","<span class='blue'>")
+	text = replacetext(text,"\green","<span class='green'>")
+	return text
+

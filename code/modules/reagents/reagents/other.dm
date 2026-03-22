@@ -41,7 +41,8 @@
 
 /datum/reagent/other/crayon_dust/initialize_data(var/newdata)
 	..()
-	color = newdata
+	if(newdata)
+		color = newdata
 	return
 
 /datum/reagent/other/crayon_dust/mix_data(var/newdata, var/newamount)
@@ -110,6 +111,14 @@
 	id = "crayon_dust_brown"
 	color = "#846F35"
 
+/datum/reagent/other/crayon_dust/random
+	name = "Arcane crayon dust"
+	id = "crayon_dust_random"
+
+/datum/reagent/other/crayon_dust/random/initialize_data(newdata)
+	..()
+	color = RANDOM_RGB
+
 /datum/reagent/other/paint
 	name = "Paint"
 	id = "paint"
@@ -139,7 +148,8 @@
 
 /datum/reagent/other/paint/initialize_data(var/newdata)
 	..()
-	color = newdata
+	if(newdata)
+		color = newdata
 	return
 
 /datum/reagent/other/paint/mix_data(var/newdata, var/newamount)
@@ -193,7 +203,7 @@
 	M.setOxyLoss(0)
 	M.radiation = 0
 	M.heal_organ_damage(5,5)
-	M.adjustToxLoss(-5)
+	M.add_chemical_effect(CE_TOXIN, -50)
 	M.hallucination_power = 0
 	M.setBrainLoss(0)
 	M.disabilities = 0
@@ -220,6 +230,14 @@
 	color = "#F7C430"
 	common = TRUE //People know what gold is at a glance.
 
+/datum/reagent/metal/gold/affect_ingest(var/mob/living/carbon/M, var/alien)
+	if(M.species.reagent_tag == IS_CHTMANT)
+		M.add_chemical_effect(CE_TOXIN, 0.1) //Small damage to Chtmants nothing too too lethal
+
+	if(M.stats.getPerk(PERK_NANITE_METAL_EATER))
+		M.add_chemical_effect(CE_BLOODCLOT, 0.2)
+		M.adjustNutrition(1.2) //King Midas!
+
 /datum/reagent/metal/silver
 	name = "Silver"
 	id = "silver"
@@ -227,6 +245,14 @@
 	taste_description = "expensive yet reasonable metal"
 	reagent_state = SOLID
 	color = "#D0D0D0"
+
+/datum/reagent/metal/gold/affect_ingest(var/mob/living/carbon/M, var/alien)
+	if(M.species.reagent_tag == IS_CHTMANT)
+		M.add_chemical_effect(CE_TOXIN, 0.1) //Small damage to Chtmants nothing too too lethal
+
+	if(M.stats.getPerk(PERK_NANITE_METAL_EATER))
+		M.add_chemical_effect(CE_BLOODCLOT, 0.2)
+		M.adjustNutrition(0.8) //used in a lot of crafting
 
 /datum/reagent/metal/uranium
 	name ="Uranium"
@@ -251,6 +277,17 @@
 			return TRUE
 	return TRUE
 
+/datum/reagent/liquid_ameridian
+	name = "Liquid Ameridian"
+	id = MATERIAL_AMERIDIAN
+	description = "A green liquid with small crystals floating in it."
+	taste_description = "crystalline crystals"
+	reagent_state = SOLID
+	color = "#5FE45E"
+	metabolism = 5
+
+/datum/reagent/liquid_ameridian/affect_blood(mob/living/carbon/M, alien, effect_multiplier)
+	M.apply_effect(effect_multiplier, IRRADIATE, 0, 0) // We ignore physical protection because we're inside
 
 /datum/reagent/adrenaline
 	name = "Adrenaline"
@@ -265,10 +302,20 @@
 	M.SetParalysis(0)
 	M.SetWeakened(0)
 	M.stats.addTempStat(STAT_TGH, STAT_LEVEL_ADEPT * effect_multiplier, STIM_TIME, "adrenaline")
-	M.adjustToxLoss(rand(3))
+	M.add_chemical_effect(CE_TOXIN, 3)
 
-/datum/reagent/adrenaline/withdrawal_act(mob/living/carbon/M)
-	M.adjustOxyLoss(15)
+/datum/reagent/other/viroputine
+	name = "Viroputine"
+	id = "viroputine"
+	description = "A horrific compound that is capable of creating other chemicals. vary bad withdrawels."
+	taste_description = "chalky backwash"
+	reagent_state = LIQUID
+	color = "#A5F0EE"
+	addiction_chance = 5
+	withdrawal_threshold = 8 //gives you chances to purge it
+
+/datum/reagent/other/viroputine/withdrawal_act(mob/living/carbon/M)
+	M.drowsyness = max(M.drowsyness, 20)
 
 /datum/reagent/other/diethylamine
 	name = "Diethylamine"
@@ -333,11 +380,11 @@
 	if(length(matter))
 		for(var/i in matter)
 			var/material/M = get_material_by_name(i)
-			var/matter_ammount = round(matter[i] * 0.75) // around 75% matterials back
-			if (matter_ammount < 1)
+			var/matter_amount = round(matter[i] * 0.75) // around 75% matterials back
+			if (matter_amount < 1)
 				continue
 			var/obj/item/stack/material/MS = new M.stack_type(O.drop_location())
-			MS.amount = matter_ammount
+			MS.amount = matter_amount
 		O.Destroy()
 
 /datum/reagent/other/space_cleaner
@@ -362,8 +409,11 @@
 				S.wet_floor(1, TRUE)
 		T.clean_blood()
 		for(var/obj/effect/O in T)
-			if(istype(O,/obj/effect/decal/cleanable) || istype(O,/obj/effect/overlay))
+			if(istype(O,/obj/effect/decal/cleanable) || istype(O,/obj/effect/overlay) && !istype(O,/obj/effect/overlay/water))
 				qdel(O)
+		for(var/obj/item/bluespace_leak/BSL in T)
+			if(istype(BSL,/obj/item/bluespace_leak))
+				qdel(BSL)
 		for(var/mob/living/carbon/slime/M in T)
 			M.adjustToxLoss(rand(5, 10))
 
@@ -452,11 +502,42 @@
 /datum/reagent/other/coolant
 	name = "Coolant"
 	id = "coolant"
-	description = "Industrial cooling substance."
+	description = "Industrial coolant. Used to lower the freezing point and raise the boiling point of liquid in a system."
 	taste_description = "sourness"
 	taste_mult = 1.1
 	reagent_state = LIQUID
 	color = "#C8A5DC"
+	var/reagent_property_coeff = 2796	// 0.7857 * 3559, the density (kg/L) and specific heat (J/(kg K)) of 50:50 propylene glycol water
+	var/latent_heat = 600				// Arbitrarily chosen amount. Just needs to be worse than refrigerant.
+
+/datum/reagent/other/coolant/affect_ingest(mob/living/carbon/M, alien, effect_multiplier)
+	var/cooling_coeff = round(latent_heat / 1000, 0.1)
+	M.add_chemical_effect(CE_MECH_STABLE, cooling_coeff)
+
+// This was created to give people a way to cool reagents without needing a chem heater. Use it in a sprayer.
+/datum/reagent/other/coolant/touch_obj(obj/O, amount)
+	if(!istype(O, /obj/item/reagent_containers))	// Remove this check if we want to apply this to all objects.
+		return
+
+	// Q = mc(del_T);	Realistically, we'd look at the properties of the reagent being cooled and the removed heat (Q) of the coolant/refrigerant.
+	// temp change = Q / mc
+	var/removed_heat = amount * latent_heat								// Ignoring surrounding temp for simplicity
+	var/volume_in_liters = amount / 30									// L, Water latent heat comment in core.dm says 30u is 1 L
+	var/reagent_property_divisor = volume_in_liters * reagent_property_coeff
+	var/temperature_change = removed_heat / reagent_property_divisor	// K
+
+	O.reagents.chem_temp = max(O.reagents.chem_temp - temperature_change, 2.7)
+	O.reagents.handle_reactions()
+
+// Not even close to how refrigerant is used IRL, but it's just a game.
+/datum/reagent/other/coolant/refrigerant
+	name = "Refrigerant"
+	id = "refrigerant"
+	description = "Industrial refrigerant R13. Used to remove heat."
+	taste_description = "fresh grass"
+	color = "#b6dca5"
+	reagent_property_coeff = 1496	// 1.21 * 1236, denstiy and specific heat of R22 refrigerant.
+	latent_heat = 1900				// Roughly a tenth of water's latent heat from core.dm
 
 /datum/reagent/other/ultraglue
 	name = "Ultra Glue"
@@ -473,6 +554,15 @@
 	reagent_state = LIQUID
 	color = "#B97A57"
 	common = TRUE //Wood pulp is identifiable at a glance
+
+/datum/reagent/other/clothfiber
+	name = "Cellulose Fibers"
+	id = "clothfiber"
+	description = "A bunch of loose fibers."
+	taste_description = "cloth"
+	reagent_state = SOLID
+	color = "#e7ded0"
+	common = TRUE
 
 /datum/reagent/other/luminol
 	name = "Luminol"

@@ -58,6 +58,12 @@
 			hard_drive.store_file(prog_file)
 
 /obj/item/modular_computer/Initialize()
+	if(!overlay_icon)
+		overlay_icon = icon
+	// Legacy
+	if(!icon_state_unpowered)
+		icon_state_unpowered = icon_state
+
 	START_PROCESSING(SSobj, src)
 
 	if(stores_pen && ispath(stored_pen))
@@ -109,28 +115,40 @@
 		return TRUE
 
 /obj/item/modular_computer/update_icon()
+	icon_state = icon_state_unpowered
+
 	cut_overlays()
-	if (screen_on)
-		if(bsod)
-			add_overlay("bsod")
-			set_light(screen_light_range, screen_light_strength, get_average_color(icon,"bsod"), skip_screen_check = TRUE)
-			return
-		if(!enabled)
-			if(icon_state_screensaver && try_use_power(0))
-				add_overlay(icon_state_screensaver)
-			set_light(0, skip_screen_check = TRUE)
-			return
-		if(active_program)
-			add_overlay(active_program.program_icon_state ? active_program.program_icon_state : icon_state_menu)
-			var/target_color = get_average_color(icon,active_program.program_icon_state ? active_program.program_icon_state : icon_state_menu)
-			set_light(screen_light_range, screen_light_strength, target_color, skip_screen_check = TRUE)
-			if(active_program.program_key_state)
-				add_overlay(active_program.program_key_state)
-		else
-			add_overlay(icon_state_menu)
-			set_light(screen_light_range, screen_light_strength, get_average_color(icon,icon_state_menu), skip_screen_check = TRUE)
-	else
+
+	. = list()
+
+	if(!screen_on)
 		set_light(0, skip_screen_check = TRUE)
+		return
+
+	if(!enabled)
+		if(icon_state_screensaver && try_use_power(0))
+			. += mutable_appearance(overlay_icon, icon_state_screensaver)
+		set_light(0, skip_screen_check = TRUE)
+		return add_overlay(.)
+
+	if(bsod)
+		. += mutable_appearance(overlay_icon, "bsod")
+		return add_overlay(.)
+
+	var/target_color
+
+	if(active_program)
+		. += mutable_appearance(overlay_icon, active_program.program_icon_state ? active_program.program_icon_state : icon_state_menu)
+		target_color = get_average_color(overlay_icon, active_program.program_icon_state ? active_program.program_icon_state : icon_state_menu)
+		if(active_program.program_key_state)
+			. += mutable_appearance(overlay_icon, active_program.program_key_state)
+	else
+		. += mutable_appearance(overlay_icon, icon_state_menu)
+		target_color = get_average_color(overlay_icon, icon_state_menu)
+	
+	set_light(screen_light_range, screen_light_strength, target_color, skip_screen_check = TRUE)
+
+	return add_overlay(.)
 
 //skip_screen_check is used when set_light is called from update_icon
 /obj/item/modular_computer/set_light(range, brightness, color, skip_screen_check = FALSE)
@@ -191,7 +209,7 @@
 		active_program = null
 	var/mob/user = usr
 	if(user && istype(user))
-		nano_ui_interact(user) // Re-open the UI on this computer. It should show the main screen now.
+		ui_interact(user) // Re-open the UI on this computer. It should show the main screen now.
 	update_icon()
 
 // Returns 0 for No Signal, 1 for Low Signal and 2 for Good Signal. 3 is for wired connection (always-on)
@@ -216,7 +234,7 @@
 		all_threads.Remove(PRG)
 
 	//Turn on all non-disabled hardware
-	for (var/obj/item/computer_hardware/H in src)
+	for (var/obj/item/pc_part/H in src)
 		if (H.enabled)
 			H.disabled()
 	if(loud)
@@ -229,7 +247,7 @@
 	update_icon()
 
 	//Turn on all non-disabled hardware
-	for (var/obj/item/computer_hardware/H in src)
+	for (var/obj/item/pc_part/H in src)
 		if (H.enabled)
 			H.enabled()
 
@@ -237,9 +255,9 @@
 	autorun_program(hard_drive)
 
 	if(user)
-		nano_ui_interact(user)
+		ui_interact(user)
 
-/obj/item/modular_computer/proc/autorun_program(obj/item/computer_hardware/hard_drive/disk)
+/obj/item/modular_computer/proc/autorun_program(obj/item/pc_part/drive/disk)
 	var/datum/computer_file/data/autorun = disk?.find_file_by_name("AUTORUN")
 	if(istype(autorun))
 		run_program(autorun.stored_data, disk)
@@ -250,12 +268,13 @@
 
 	active_program.program_state = PROGRAM_STATE_BACKGROUND // Should close any existing UIs
 	SSnano.close_uis(active_program.NM ? active_program.NM : active_program)
+	SStgui.close_uis(active_program.TM ? active_program.TM : active_program)
 	active_program = null
 	update_icon()
 	if(istype(user))
-		nano_ui_interact(user) // Re-open the UI on this computer. It should show the main screen now.
+		ui_interact(user) // Re-open the UI on this computer. It should show the main screen now.
 
-/obj/item/modular_computer/proc/run_program(prog_name, obj/item/computer_hardware/hard_drive/disk)
+/obj/item/modular_computer/proc/run_program(prog_name, obj/item/pc_part/drive/disk)
 	var/datum/computer_file/program/P = null
 	var/mob/user = usr
 
@@ -292,12 +311,13 @@
 	if(P.run_program(user))
 		active_program = P
 		all_threads.Add(P)
+		active_program.ui_interact(user)
 		active_program.nano_ui_interact(user)
 		update_uis()
 		update_icon()
 	return TRUE
 
-/obj/item/modular_computer/proc/on_disk_disabled(obj/item/computer_hardware/hard_drive/disk)
+/obj/item/modular_computer/proc/on_disk_disabled(obj/item/pc_part/drive/disk)
 	// Close all running apps before the disk is removed
 	for(var/p in all_threads)
 		var/datum/computer_file/program/PRG = p
@@ -314,11 +334,14 @@
 
 /obj/item/modular_computer/proc/update_uis()
 	if(active_program) //Should we update program ui or computer ui?
+		SStgui.update_uis(active_program)
 		SSnano.update_uis(active_program)
 		if(active_program.NM)
 			SSnano.update_uis(active_program.NM)
+		if(active_program.TM)
+			SStgui.update_uis(active_program.TM)
 	else
-		SSnano.update_uis(src)
+		SStgui.update_uis(src)
 
 /obj/item/modular_computer/proc/check_update_ui_need()
 	var/ui_update_needed = FALSE
@@ -382,9 +405,10 @@
 /obj/item/modular_computer/proc/open_terminal(mob/user)
 	if(!enabled)
 		return
-	if(has_terminal(user))
-		return
-	LAZYADD(terminals, new /datum/terminal/(user, src))
+	var/datum/terminal/already_open = has_terminal(user)
+	if(already_open)
+		return already_open.ui_interact(user)
+	LAZYADD(terminals, new /datum/terminal(user, src))
 
 
 /obj/item/modular_computer/proc/getProgramByType(type, include_portable=TRUE)
@@ -408,17 +432,3 @@
 		F = portable_drive.find_file_by_name(name)
 
 	return F
-
-// accepts either name or type
-/obj/item/modular_computer/proc/getNanoModuleByFile(var/name)
-	var/datum/computer_file/program/P
-	if(ispath(name))
-		P = getProgramByType(name)
-	else
-		P = getFileByName(name)
-	if(!P || !istype(P))
-		return null
-	var/datum/nano_module/module = P.NM
-	if(!module)
-		return null
-	return module

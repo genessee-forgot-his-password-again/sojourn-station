@@ -3,11 +3,11 @@
 /// (Mixing)Glass.
 ////////////////////////////////////////////////////////////////////////////////
 /obj/item/reagent_containers/glass
-	name = " "
+	name = "Glass based bottle"
 	var/base_name = " "
 	desc = " "
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "null"
+	icon_state = "bottle"
 	item_state = "null"
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25,30,60)
@@ -16,6 +16,7 @@
 	reagent_flags = OPENCONTAINER
 	unacidable = 1 //glass doesn't dissolve in acid
 	matter = list(MATERIAL_GLASS = 1)
+	var/display_label = TRUE // to show or not to show label on the sprite
 	var/label_icon_state = null
 	var/lid_icon_state = null
 
@@ -35,10 +36,9 @@
 		/mob/living/bot/medbot,
 		/obj/item/storage/secure/safe,
 		/obj/structure/medical_stand,
-		/obj/machinery/disease2/incubator,
 		/obj/machinery/disposal,
-		/mob/living/simple_animal/cow,
-		/mob/living/simple_animal/hostile/retaliate/goat,
+		/mob/living/simple/cow,
+		/mob/living/simple/hostile/retaliate/goat,
 		/obj/machinery/sleeper,
 		/obj/machinery/smartfridge/,
 		/obj/machinery/biogenerator,
@@ -51,6 +51,9 @@
 /obj/item/reagent_containers/glass/Initialize()
 	. = ..()
 	base_name = name
+	//For when beakers are pre-labled.
+	update_name_label(FALSE)
+	update_icon()
 
 /obj/item/reagent_containers/glass/proc/has_lid()
 	return !is_open_container()
@@ -159,8 +162,9 @@
 
 	..()
 
-/obj/item/reagent_containers/glass/proc/update_name_label()
-	playsound(src,'sound/effects/PEN_Ball_Point_Pen_Circling_01_mono.ogg',40,1)
+/obj/item/reagent_containers/glass/proc/update_name_label(play_sound = TRUE)
+	if (play_sound)
+		playsound(src,'sound/effects/PEN_Ball_Point_Pen_Circling_01_mono.ogg',40,1)
 	if(label_text == "")
 		name = base_name
 	else

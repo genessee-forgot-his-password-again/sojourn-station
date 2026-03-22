@@ -67,12 +67,13 @@
 		if(!giver && user.unEquip(O))
 			O.loc = src
 			giver = O
-
+//Soj edit commenting this out. Less confusion this way.
+/*
 			//By default we'll set it to all accesses on the inserted ID, rather than none
 			accesses = list()
 			for (var/A in giver.access)
 				accesses.Add(A)
-
+*/
 			updateUsrDialog()
 		else if(giver)
 			to_chat(user, SPAN_WARNING("There is already ID card inside."))
@@ -108,7 +109,7 @@
 				dat += "<a href='?src=\ref[src];choice=access;access=[A]'>[area]</a><br>"
 		dat += "<br><a href='?src=\ref[src];action=issue'>Issue pass</a><br>"
 
-	user << browse(dat, "window=guestpass;size=400x520")
+	user << browse(HTML_SKELETON(dat), "window=guestpass;size=400x520")
 	onclose(user, "guestpass")
 
 

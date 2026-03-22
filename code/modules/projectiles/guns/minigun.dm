@@ -9,12 +9,13 @@
 	wielded_icon = "minigun_doble"
 	origin_tech = list(TECH_COMBAT = 10)
 	w_class = ITEM_SIZE_BULKY
-	recoil_buildup = 0.2
+	init_recoil = CARBINE_RECOIL(0.01)
 	max_upgrades = 3
 	fire_delay = 1
 	fire_sound = 'sound/weapons/guns/fire/chaingun_fire.ogg'
 	matter = list(MATERIAL_STEEL = 25, MATERIAL_PLASTEEL = 15, MATERIAL_DURASTEEL = 5)
-	init_firemodes = list(BURST_3_ROUND, BURST_8_ROUND, FULL_AUTO_800)
+	init_firemodes = list(BURST_3_ROUND, BURST_8_ROUND, FULL_AUTO_600)
+	serial_type = "Kriosan"
 
 	var/projectile_type = /obj/item/projectile/bullet/heavy_rifle_408/hv
 	var/obj/item/minigun_backpack/connected = null // The backpack the gun is connected to
@@ -99,7 +100,7 @@
 			insert_item(W, user)
 
 	// Wrench to remove the gun
-	if(QUALITY_BOLT_TURNING)
+	if(QUALITY_BOLT_TURNING in W.tool_qualities)
 		if(the_gun) // Do we have the gun?
 			var/obj/item/tool/T = W // New var to use tool-only procs.
 			user.visible_message(

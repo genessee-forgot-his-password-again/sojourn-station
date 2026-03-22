@@ -22,6 +22,7 @@
 	display_contents_with_number = FALSE
 	use_to_pickup = TRUE
 	slot_flags = SLOT_BELT
+	price_tag = 25
 
 // -----------------------------
 //          Trash bag
@@ -73,10 +74,10 @@
 			var/held = W.get_equip_slot()
 			if (held == slot_l_hand)
 				var/obj/item/organ/external/E = H.get_organ(BP_L_ARM)
-				E.droplimb(0, DROPLIMB_BLUNT)
+				E.droplimb(0, DISMEMBER_METHOD_BLUNT)
 			else if (held == slot_r_hand)
 				var/obj/item/organ/external/E = H.get_organ(BP_R_ARM)
-				E.droplimb(0, DROPLIMB_BLUNT)
+				E.droplimb(0, DISMEMBER_METHOD_BLUNT)
 		user.drop_item()
 		return
 	..()
@@ -89,7 +90,7 @@
 	desc = "It's the ultra-heavy-duty yellow polymer kind. Time to take out the trash!"
 	icon_state = "superbag0"
 	item_state = "trashbag"
-	max_storage_space = DEFAULT_BULKY_STORAGE * 1.25
+	max_storage_space = DEFAULT_BULKY_STORAGE * 1.5
 	price_tag = 60
 
 /obj/item/storage/bag/trash/big/update_icon()
@@ -129,9 +130,9 @@
 	icon_state = "satchel"
 	slot_flags = SLOT_BELT | SLOT_POCKET
 	w_class = ITEM_SIZE_NORMAL
-	max_storage_space = 100
+	max_storage_space = 240 //So they can hold a full stack of ore
 	max_w_class = ITEM_SIZE_NORMAL
-	can_hold = list(/obj/item/ore)
+	can_hold = list(/obj/item/stack/ore)
 	var/stored_ore = list()
 	var/last_update = 0
 
@@ -143,12 +144,12 @@
 	max_w_class = ITEM_SIZE_BULKY
 	matter = list(MATERIAL_STEEL = 4, MATERIAL_GOLD = 4, MATERIAL_DIAMOND = 2, MATERIAL_URANIUM = 2)
 	origin_tech = list(TECH_BLUESPACE = 4)
-	can_hold = list(/obj/item/ore,
-	                /obj/item/reagent_containers/food/snacks/grown,
+	can_hold = list(/obj/item/stack/ore,
+	                /obj/item/reagent_containers/snacks/grown,
 	                /obj/item/seeds,
 	                /obj/item/grown,
-	                /obj/item/reagent_containers/food/snacks/egg,
-	                /obj/item/reagent_containers/food/snacks/meat)
+	                /obj/item/reagent_containers/snacks/egg,
+	                /obj/item/reagent_containers/snacks/meat)
 
 /obj/item/storage/bag/ore/holding/New()
 	..()
@@ -163,10 +164,10 @@
 			var/held = W.get_equip_slot()
 			if (held == slot_l_hand)
 				var/obj/item/organ/external/E = H.get_organ(BP_L_ARM)
-				E.droplimb(0, DROPLIMB_BLUNT)
+				E.droplimb(0, DISMEMBER_METHOD_BLUNT)
 			else if (held == slot_r_hand)
 				var/obj/item/organ/external/E = H.get_organ(BP_R_ARM)
-				E.droplimb(0, DROPLIMB_BLUNT)
+				E.droplimb(0, DISMEMBER_METHOD_BLUNT)
 		user.drop_item()
 		return
 	..()
@@ -182,11 +183,44 @@
 	max_storage_space = 100
 	max_w_class = ITEM_SIZE_NORMAL
 	w_class = ITEM_SIZE_NORMAL
-	can_hold = list(/obj/item/reagent_containers/food/snacks/grown,
+	can_hold = list(/obj/item/reagent_containers/snacks/grown,
 		/obj/item/seeds,
 		/obj/item/grown,
-		/obj/item/reagent_containers/food/snacks/egg,
-		/obj/item/reagent_containers/food/snacks/meat)
+		/obj/item/reagent_containers/snacks/egg,
+		/obj/item/reagent_containers/snacks/meat,
+		/obj/item/reagent_containers/snacks/chickenbreast)
+
+
+/obj/item/storage/bag/produce/big
+	name = "big produce bag"
+	desc = "It takes a long bag to hold long fruit!"
+	icon_state = "plantbag_long"
+	max_storage_space = 200
+	w_class = ITEM_SIZE_BULKY // Outta keep it from being more space efficient than a normal plant bag.
+
+// -----------------------------
+//          Xenobio bag
+// -----------------------------
+
+/obj/item/storage/bag/xenobio
+	name = "xenobio bag"
+	desc = "A mini backpack meant for storing everything you would want to have large storage of in xenobio."
+	icon = 'icons/obj/hydroponics_machines.dmi'
+	icon_state = "xenobag"
+	max_storage_space = 50
+	max_w_class = ITEM_SIZE_NORMAL
+	w_class = ITEM_SIZE_NORMAL
+	can_hold = list(/obj/item/reagent_containers/dropper,
+		/obj/item/reagent_containers/snacks/monkeycube,
+		/obj/item/slime_extract,
+		/obj/item/reagent_containers/glass/bottle,
+		/obj/item/stack/material/plasma,
+		/obj/item/slime_thermals,
+		/obj/item/slime_potion/slime_docile,
+		/obj/item/slime_potion/slime_docile_adult,
+		/obj/item/slime_potion/slimes_speed,
+		/obj/item/slime_potion/slimesteroid,
+		/obj/item/slimesteroid2)
 
 
 // -----------------------------

@@ -66,13 +66,12 @@
 #define NOBLOODY           	0x8   	// Used for items if they don't want to get a blood overlay.
 // OPENCONTAINER is defined in Eris as a reagent_flag as opposed to a generic flag.
 // NOREACT will likely be the same.
-#define PLASMAGUARD        	0x10 	// Does not get contaminated by plasma.
+//#define VACANT			0x10 	// Free Real Estate, uncomment and use for whatever
 #define PROXMOVE           	0x20  	// Does this object require proximity checking in Enter()?
 #define SILENT				0x40 	// Sneaky shoes and silenced tools
 #define LOUD			    0x80 	// Loud as hell tools
 #define HONKING			    0x100 	// Honking tools
 // 0x80 not used for no reason, feel free
-#define OVERLAY_QUEUED      0x100 // Atom queued to SSoverlay for COMPILE_over-lays
 #define INITIALIZED			0x200
 #define ADMIN_SPAWNED		0x400
 
@@ -191,8 +190,8 @@
 
 // Fire.
 #define FIRE_MIN_STACKS          -20
-#define FIRE_MAX_STACKS           25
-#define FIRE_MAX_FIRESUIT_STACKS  20 // If the number of stacks goes above this firesuits won't protect you anymore. If not, you can walk around while on fire like a badass.
+#define FIRE_MAX_STACKS           40
+#define FIRE_MAX_FIRESUIT_STACKS  40 // If the number of stacks goes above this firesuits won't protect you anymore. If not, you can walk around while on fire like a badass.
 
 #define THROWFORCE_SPEED_DIVISOR    5  // The throwing speed value at which the throwforce multiplier is exactly 1.
 #define THROWNOBJ_KNOCKBACK_SPEED   15 // The minumum speed of a w_class 2 thrown object that will cause living mobs it hits to be knocked back. Heavier objects can cause knockback at lower speeds.
@@ -240,3 +239,13 @@
 #define MEDIUM_OBSCURATION 3
 #define HEAVY_OBSCURATION 5
 
+//RIG ablation
+#define ABLATION_SKIN 2
+#define ABLATION_CERAMIC 3
+#define ABLATION_SOFT 5
+#define ABLATION_STANDARD 10
+#define ABLATION_RESILIENT 15
+#define ABLATION_DURABLE 20
+#define ABLATION_EVERLASTING 30
+
+//Style amount

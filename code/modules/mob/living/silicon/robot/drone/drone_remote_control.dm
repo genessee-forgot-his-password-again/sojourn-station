@@ -10,20 +10,21 @@
 	if(!istype(user) || controlling_ai || !config.allow_drone_spawn)
 		return
 
-	if(stat != 2 || client || key)
+	if(!ai_belonged || client || key)
 		to_chat(user, "<span class='warning'>You cannot take control of an autonomous, active drone.</span>")
 		return
 
-	if(health < -35 || emagged)
+	if(health < -35 || HasTrait(CYBORG_TRAIT_EMAGGED))
 		to_chat(user, "<span class='notice'><b>WARNING:</b> connection timed out.</span>")
 		return
 
 	assume_control(user)
 
 /mob/living/silicon/robot/drone/proc/assume_control(var/mob/living/silicon/ai/user)
+	ai_belonged = TRUE
 	user.controlling_drone = src
 	controlling_ai = user
-	verbs += /mob/living/silicon/robot/drone/proc/release_ai_control_verb
+	add_verb(src, /mob/living/silicon/robot/drone/proc/release_ai_control_verb)
 	local_transmit = FALSE
 	languages = controlling_ai.languages.Copy()
 
@@ -64,6 +65,7 @@
 		return
 
 	var/mob/living/silicon/robot/drone/new_drone = new drone_type(get_turf(src))
+	new_drone.ai_belonged = TRUE
 	new_drone.assume_control(user)
 
 
@@ -105,7 +107,7 @@
 	silicon_radio = drone_silicon_radio
 	drone_silicon_radio = null
 
-	verbs -= /mob/living/silicon/robot/drone/proc/release_ai_control_verb
+	remove_verb(src, /mob/living/silicon/robot/drone/proc/release_ai_control_verb)
 	full_law_reset()
 	updatename()
-	death()
+	stat = UNCONSCIOUS

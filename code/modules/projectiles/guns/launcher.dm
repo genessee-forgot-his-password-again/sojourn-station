@@ -18,11 +18,6 @@
 /obj/item/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
 	return 1
 
-//Override this to avoid a runtime with suicide handling.
-/obj/item/gun/launcher/handle_suicide(mob/living/user)
-	to_chat(user, SPAN_WARNING("Shooting yourself with \a [src] is pretty tricky. You can't seem to manage it."))
-	return
-
 /obj/item/gun/launcher/proc/update_release_force(obj/item/projectile)
 	return 0
 
@@ -47,7 +42,7 @@
 	icon = 'icons/obj/guns/matter/reclaimer.dmi'
 	slot_flags = SLOT_BACK
 	w_class = ITEM_SIZE_BULKY
-	fire_sound = 'sound/weapons/Genhit.ogg'
+	fire_sound = 'sound/weapons/guns/fire/GLfire.ogg'
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 3, TECH_BIO = 8, TECH_ILLEGAL = 1)
 	matter = list(MATERIAL_PLASTEEL = 10, MATERIAL_WOOD = 5, MATERIAL_PLASTIC = 20)
 	matter_type = MATERIAL_WOOD
@@ -55,6 +50,7 @@
 	stored_matter = 5
 	projectile_cost = 0.5
 	projectile_type = /obj/item/arrow/reclaiming
+	serial_type = "EXC"
 
 
 /obj/item/arrow/reclaiming
@@ -80,7 +76,7 @@
 	icon = 'icons/obj/guns/matter/breaker.dmi'
 	slot_flags = SLOT_BACK
 	w_class = ITEM_SIZE_BULKY
-	fire_sound = 'sound/weapons/Genhit.ogg'
+	fire_sound = 'sound/weapons/guns/fire/GLfire.ogg'
 	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 3, TECH_BIO = 8, TECH_ILLEGAL = 1)
 	matter = list(MATERIAL_PLASTEEL = 10, MATERIAL_WOOD = 5, MATERIAL_PLASTIC = 20)
 	matter_type = MATERIAL_WOOD
@@ -88,3 +84,4 @@
 	stored_matter = 0
 	projectile_cost = 1
 	projectile_type = /obj/item/arrow/reclaiming
+	serial_type = "AG"

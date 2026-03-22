@@ -4,6 +4,9 @@
 	icon_state = "ce"
 
 /obj/structure/closet/secure_closet/reinforced/engineering_chief/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	if(prob(50))
 		new /obj/item/storage/backpack/industrial(src)
 	else
@@ -14,10 +17,11 @@
 	new /obj/item/clothing/head/welding(src)
 	new /obj/item/clothing/gloves/insulated(src)
 	new /obj/item/clothing/shoes/color/brown(src)
+	new /obj/item/clothing/accessory/halfcape/gm(src)
 	new /obj/item/device/radio/headset/heads/ce(src)
 	new /obj/item/storage/toolbox/mechanical(src)
 	new /obj/item/clothing/suit/storage/hazardvest(src)
-	new /obj/item/clothing/mask/gas(src)
+	new /obj/item/clothing/mask/gas/artificer(src)
 	new /obj/item/tool/multitool(src)
 	new /obj/item/device/flash(src)
 	new /obj/item/taperoll/engineering(src)
@@ -26,12 +30,19 @@
 	new /obj/item/device/t_scanner/advanced(src)
 	new /obj/item/storage/hcases/parts(src)
 	new /obj/item/storage/hcases/engi(src)
+	new /obj/item/circuitboard/bullet_fab(src)
+	new /obj/item/rpd(src)
+	new /obj/item/gun/energy/laser/railgun/pistol/slab(src)
 	if(prob(50))
 		new /obj/item/tool_upgrade/augment/ai_tool(src)
 	else if(prob(50))
 		new /obj/item/tool_upgrade/augment/repair_nano(src)
 	else
 		new /obj/item/tool_upgrade/augment/randomizer(src)
+	new /obj/item/clothing/glasses/powered/meson(src)
+	new /obj/item/hand_labeler(src)
+	new /obj/item/storage/briefcase(src)
+	new /obj/item/storage/lunchbox(src)
 
 /obj/structure/closet/secure_closet/engineering_electrical
 	name = "electrical supplies"
@@ -40,6 +51,9 @@
 	icon_door = "eng_elec"
 
 /obj/structure/closet/secure_closet/engineering_electrical/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/gloves/insulated(src)
 	new /obj/item/clothing/gloves/insulated(src)
 	new /obj/item/storage/toolbox/electrical(src)
@@ -61,6 +75,9 @@
 	icon_door = "eng_weld"
 
 /obj/structure/closet/secure_closet/engineering_welding/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/head/welding(src)
 	new /obj/item/clothing/head/welding(src)
 	new /obj/item/clothing/head/welding(src)
@@ -84,6 +101,9 @@
 	icon_door = "eng_secure"
 
 /obj/structure/closet/secure_closet/personal/engineering_personal/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	if(prob(50))
 		new /obj/item/storage/backpack/industrial(src)
 	else
@@ -95,8 +115,10 @@
 	new /obj/item/clothing/gloves/insulated(src)
 	new /obj/item/device/radio/headset/headset_eng(src)
 	new /obj/item/clothing/suit/storage/hazardvest(src)
-	new /obj/item/clothing/mask/gas(src)
+	new /obj/item/clothing/mask/gas/artificer(src)
 	new /obj/item/clothing/glasses/powered/meson(src)
 	new /obj/item/device/t_scanner/advanced(src)
 	new /obj/item/storage/hcases/parts(src)
 	new /obj/item/storage/hcases/engi(src)
+	new /obj/item/rpd(src)
+	new /obj/item/taperoll/engineering(src)

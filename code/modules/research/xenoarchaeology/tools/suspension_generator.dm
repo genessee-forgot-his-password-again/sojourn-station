@@ -63,7 +63,7 @@
 			suspension_field.add_overlay("shield2")
 		I.forceMove(suspension_field)
 
-	for(var/mob/living/simple_animal/M in T)
+	for(var/mob/living/simple/M in T)
 		M.weakened = max(M.weakened, 3)
 		power_draw += power_use
 		if(prob(5))
@@ -112,7 +112,7 @@
 		dat += "<br>"
 	dat += "<A href='?src=\ref[src];refresh=1'>Refresh console</A><br>"
 	dat += "<A href='?src=\ref[src];close=1'>Close console</A>"
-	user << browse(dat, "window=suspension;size=500x400")
+	user << browse(HTML_SKELETON(dat), "window=suspension;size=500x400")
 	onclose(user, "suspension")
 
 /obj/machinery/suspension_gen/Topic(href, href_list)
@@ -231,7 +231,7 @@
 				M.weakened += 5
 				M.visible_message(SPAN_NOTICE("[M] begins to float in the air!"), "You feel tingly and light, but it is difficult to move.")
 
-	for(var/mob/living/simple_animal/M in T)
+	for(var/mob/living/simple/M in T)
 		M.weakened += 5
 		M.visible_message(SPAN_NOTICE("[M] begins to float in the air!"), "You feel tingly and light, but it is difficult to move.")
 

@@ -5,10 +5,10 @@
 	icon_state = "muscle"
 
 /obj/item/organ_module/muscle/onInstall(obj/item/organ/external/E)
-	E.tally -= 0.15
+	E.tally -= 0.1
 
 /obj/item/organ_module/muscle/onRemove(obj/item/organ/external/E)
-	E.tally += 0.15
+	E.tally += 0.1
 
 /obj/item/organ_module/muscle/organic
 	name = "organic muscle augments"
@@ -16,6 +16,7 @@
 	allowed_organs = list(BP_R_LEG, BP_L_LEG)
 	icon_state = "orgmuscle"
 	matter = list(MATERIAL_BIOMATTER = 15)
+	is_organic_module = FALSE
 
 //Putting this here because blargh it.
 //Not like it needs to be anywhere in particular and I don't want to make an entire new file for a small parent.

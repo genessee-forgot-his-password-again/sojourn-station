@@ -10,7 +10,7 @@
 	explosion_resistance = 1
 	health = 50
 	var/destroyed = 0
-
+	var/cover_value = 20 //20% of the time a bullet (or laser) may be stopped by this if its weak
 
 /obj/structure/grille/ex_act(severity)
 	qdel(src)
@@ -51,49 +51,49 @@
 /obj/structure/grille/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if(air_group || (height==0)) return 1
 	if(istype(mover) && mover.checkpass(PASSGRILLE))
-		return 1
+		return TRUE
 	else
 		if(istype(mover, /obj/item/projectile))
-			return prob(30)
+			return prob(cover_value)
 		else
 			return !density
 
-/obj/structure/grille/bullet_act(var/obj/item/projectile/Proj)
-	if(!Proj)	return
+
+/obj/structure/grille/bullet_act(obj/item/projectile/Proj)
+	if(!Proj)
+		return
+
+	if(Proj.testing)
+		return TRUE
 
 	//Flimsy grilles aren't so great at stopping projectiles. However they can absorb some of the impact
 	var/damage = Proj.get_structure_damage()
-	var/passthrough = 0
+	var/passthrough = FALSE
 
-	if(!damage) return
+	if(!damage)
+		return
 
-	//20% chance that the grille provides a bit more cover than usual. Support structure for example might take up 20% of the grille's area.
-	//If they click on the grille itself then we assume they are aiming at the grille itself and the extra cover behaviour is always used.
-	for(var/i in Proj.damage_types)
-		if(i == BRUTE)
-			//bullets
-			if(Proj.original == src || prob(20))
-				Proj.damage_types[i] *= between(0, Proj.damage_types[i]/60, 0.5)
-				if(prob(max((damage-10)/25, 0))*100)
-					passthrough = 1
-			else
-				Proj.damage_types[i] *= between(0, Proj.damage_types[i]/60, 1)
-				passthrough = 1
-		if(i == BURN)
-			//beams and other projectiles are either blocked completely by grilles or stop half the damage.
-			if(!(Proj.original == src || prob(20)))
-				Proj.damage_types[i] *= 0.5
-				passthrough = 1
+	//Grills mainly stop lasers doing nothing against a bullet.
+	//Note that if we DIDNT roll cover_value twice we would be completely blocked.
+	if(prob(cover_value))
+		passthrough = TRUE
+		bullet_weaken(Proj, subtractor_brute = 2, mult_brute = 0.8, subtractor_burn = 4, mult_burn = 0.6)
 
 	if(passthrough)
 		. = PROJECTILE_CONTINUE
+
+	if(!passthrough)
+		health -= damage*2
+	else
 		damage = between(0, (damage - Proj.get_structure_damage())*(Proj.damage_types[BRUTE] ? 0.4 : 1), 10) //if the bullet passes through then the grille avoids most of the damage
 
-	src.health -= damage*0.2
-	spawn(0) healthCheck() //spawn to make sure we return properly if the grille is deleted
+	healthCheck()
 
 /obj/structure/grille/attackby(obj/item/I, mob/user)
-
+	if(user.a_intent == I_HELP && istype(I, /obj/item/gun))
+		var/obj/item/gun/G = I
+		G.gun_brace(user, src)
+		return
 	var/list/usable_qualities = list(QUALITY_WIRE_CUTTING)
 	if(anchored)
 		usable_qualities.Add(QUALITY_SCREW_DRIVING)
@@ -213,13 +213,13 @@
 			healthCheck()
 	..()
 
-/obj/structure/grille/attack_generic(var/mob/user, var/damage, var/attack_verb)
+/obj/structure/grille/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(istype(user))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.do_attack_animation(src)
 		visible_message(SPAN_DANGER("[user] smashes into [src]!"))
 		take_damage(damage)
-		return 1
+		return TRUE
 
 /obj/structure/grille/proc/take_damage(amount)
 	health -= amount
@@ -241,16 +241,16 @@
 		tforce = I.throwforce
 	health = max(0, health - tforce)
 	if(health <= 0)
-		destroyed=1
+		destroyed = TRUE
 		new /obj/item/stack/rods(get_turf(src))
-		density=0
+		density = FALSE
 		update_icon()
 
 // Used in mapping to avoid
 /obj/structure/grille/broken
-	destroyed = 1
+	destroyed = TRUE
 	icon_state = "grille-b"
-	density = 0
+	density = FALSE
 	New()
 		..()
 		health = rand(-5, -1) //In the destroyed but not utterly threshold.
@@ -264,10 +264,10 @@
 
 /obj/structure/grille/cult/CanPass(atom/movable/mover, turf/target, height = 1.5, air_group = 0)
 	if(air_group)
-		return 0 //Make sure air doesn't drain
+		return FALSE //Make sure air doesn't drain
 	..()
 
-/obj/structure/grille/get_fall_damage(var/turf/from, var/turf/dest)
+/obj/structure/grille/get_fall_damage(turf/from, turf/dest)
 	var/damage = health * 0.4
 
 	if (from && dest)

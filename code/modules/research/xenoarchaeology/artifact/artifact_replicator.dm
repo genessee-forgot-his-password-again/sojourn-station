@@ -26,9 +26,9 @@
 	var/list/viables = list(\
 	/obj/item/roller,\
 	/obj/structure/closet/crate,\
-	/mob/living/simple_animal/hostile/mimic,\
-	/mob/living/simple_animal/hostile/viscerator,\
-	/mob/living/simple_animal/hostile/hivebot,\
+	/mob/living/simple/hostile/mimic,\
+	/mob/living/simple/hostile/viscerator,\
+	/mob/living/simple/hostile/hivebot,\
 	/obj/item/device/scanner/gas,\
 	/obj/item/device/camera,\
 	/obj/item/device/flash,\
@@ -123,7 +123,7 @@
 	for(var/index=1, index<=construction.len, index++)
 		dat += "<A href='?src=\ref[src];activate=[index]'>\[[construction[index]]\]</a><br>"
 
-	user << browse(dat, "window=alien_replicator")
+	user << browse(HTML_SKELETON(dat), "window=alien_replicator")
 
 /obj/machinery/replicator/attackby(obj/item/W as obj, mob/living/user as mob)
 	user.drop_item()

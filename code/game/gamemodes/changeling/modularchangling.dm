@@ -128,19 +128,19 @@ var/list/datum/power/carrion/powerinstances = list()
 	genomecost = 0
 	organpath = /obj/item/organ/internal/carrion/chemvessel
 
-/obj/item/organ/internal/carrion/core/proc/EvolutionMenu()	//Topic proc is stored in code\modules\organs\internal\carrion.dm
+/mob/living/carbon/human/proc/EvolutionMenu()	//Topic proc is stored in code\modules\organs\internal\carrion.dm
 	set category = "Carrion"
 	set desc = "Level up!"
+
+	var/obj/item/organ/internal/carrion/core/organ = first_organ_by_type(/obj/item/organ/internal/carrion/core)
+	if(!organ)
+		return
 
 	if(!powerinstances.len)
 		for(var/P in powers)
 			powerinstances += new P()
 
-	var/dat = "<html><head><title>Carrion Evolution Menu</title></head>"
-
-	//javascript, the part that does most of the work
-	dat += {"
-		<head>
+	var/header = {"
 			<script type='text/javascript'>
 				var locked_tabs = new Array();
 				function updateSearch(){
@@ -192,7 +192,7 @@ var/list/datum/power/carrion/powerinstances = list()
 					body += "<font size='2'><font color = 'red'><b>"+helptext+"</b></font></font><BR>"
 					if(!ownsthis)
 					{
-						body += "<a href='?src=\ref[src];P="+power+"'>Evolve</a>"
+						body += "<a href='?src=\ref[organ];P="+power+"'>Evolve</a>"
 					}
 					body += "</td><td align='center'>";
 					body += "</td></tr></table>";
@@ -271,7 +271,10 @@ var/list/datum/power/carrion/powerinstances = list()
 					filter_text.select();
 				}
 			</script>
-		</head>
+	"}
+	//javascript, the part that does most of the work
+	var/dat = ""
+	dat += {"
 	"}
 
 	//body tag start + onload and onkeypress (onkeyup) javascript event calls
@@ -284,7 +287,7 @@ var/list/datum/power/carrion/powerinstances = list()
 				<td align='center'>
 					<font size='5'><b>Carrion Evolution Menu</b></font><br>
 					Hover over a power to see more information<br>
-					Current evolution points left to evolve with: [geneticpoints]<br>
+					Current evolution points left to evolve with: [organ.geneticpoints]<br>
 					Absorb genomes to acquire more evolution points
 					<p>
 				</td>
@@ -305,7 +308,7 @@ var/list/datum/power/carrion/powerinstances = list()
 	for(var/datum/power/carrion/P in powerinstances)
 		var/ownsthis = 0
 
-		if(P in purchasedpowers)
+		if(P in organ.purchasedpowers)
 			ownsthis = 1
 
 
@@ -341,7 +344,11 @@ var/list/datum/power/carrion/powerinstances = list()
 	</body></html>
 	"}
 
-	usr << browse(dat, "window=powers;size=900x480")
+	var/datum/browser/popup = new (usr, "powers","Carrion Evolution Menu", 900, 480)
+	popup.set_content(dat)
+	popup.add_head_content(header)
+	popup.open()
+
 
 /obj/item/organ/internal/carrion/core/proc/purchasePower(var/Pname, var/free = FALSE)
 	var/datum/power/carrion/Thepower = Pname

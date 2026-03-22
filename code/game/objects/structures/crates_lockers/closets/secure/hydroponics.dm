@@ -5,6 +5,9 @@
 	icon_state = "hydro"
 
 /obj/structure/closet/secure_closet/personal/hydroponics/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	if(prob(25))
 		new /obj/item/storage/backpack/botanist(src)
 	else if(prob(25))
@@ -23,7 +26,7 @@
 	new /obj/item/tool/wirecutters(src)
 	new /obj/item/reagent_containers/spray/plantbgone(src)
 	new /obj/item/clothing/gloves/botanic_leather(src)
-	new /obj/item/clothing/mask/gas/alternate(src)
+	new /obj/item/clothing/mask/gas(src)
 	new /obj/item/tank/air(src)
 
 /obj/structure/closet/secure_closet/personal/hydroponics/
@@ -39,6 +42,9 @@
 	icon_state = "botanist"
 
 /obj/structure/closet/secure_closet/personal/agrolyte/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/suit/rank/botanist(src)
 	new /obj/item/storage/belt/utility/neotheology(src)
 	new /obj/item/storage/bag/produce(src)
@@ -53,5 +59,4 @@
 	new /obj/item/clothing/suit/armor/vest/botanist(src)
 	new /obj/item/clothing/head/helmet/botanist(src)
 	new /obj/item/clothing/gloves/botanic_leather(src)
-	new /obj/item/clothing/under/rank/church/sport(src)
 	new /obj/item/clothing/suit/storage/neotheosports(src)

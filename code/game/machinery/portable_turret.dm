@@ -13,6 +13,9 @@
 	icon_state = "turretCover"
 	anchored = TRUE
 
+	/// How far we will fire at mobs from. 7 by default.
+	var/firing_range = 7
+
 	density = FALSE
 	use_power = IDLE_POWER_USE				//this turret uses and requires power
 	idle_power_usage = 50		//when inactive, this turret takes up constant 50 Equipment power
@@ -31,6 +34,8 @@
 	var/obj/item/gun/energy/installation = /obj/item/gun/energy/gun	//the weapon that's installed. Store as path to initialize a new gun on creation.
 	var/projectile = null	//holder for bullettype
 	var/eprojectile = null	//holder for the shot when emagged
+	var/friendly_to_colony = FALSE //is our turret smart enough to bypass allies?
+	var/faction_iff = ""	//Are we the baddies?
 	var/reqpower = 500		//holder for power needed
 	var/iconholder = null	//holder for the icon_state. 1 for orange sprite, null for blue.
 	var/egun = null			//holder to handle certain guns switching bullettypes
@@ -71,6 +76,7 @@
 
 /obj/machinery/porta_turret/One_star
 	name = "greyson positronic turret"
+	faction_iff = "greyson"
 	installation = /obj/item/gun/energy/cog
 
 /obj/machinery/porta_turret/crescent
@@ -102,7 +108,7 @@
 
 /obj/machinery/porta_turret/New()
 	..()
-	req_access.Cut()
+	LAZYNULL(req_access)
 	req_one_access = list(access_security, access_heads, access_occupy)
 
 	//Sets up a spark system
@@ -110,18 +116,19 @@
 	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)
 	var/area/A = get_area(src)
-	SEND_SIGNAL(A, COMSIG_TURRENT, src)
+	LEGACY_SEND_SIGNAL(A, COMSIG_TURRENT, src)
 	setup()
 
 /obj/machinery/porta_turret/crescent/New()
 	..()
-	req_one_access.Cut()
+	LAZYNULL(req_one_access)
 	req_access = list(access_cent_specops)
 
 /obj/machinery/porta_turret/Destroy()
 	qdel(spark_system)
 	spark_system = null
 	QDEL_NULL(installation)
+	density = FALSE //Were broken and can be stepped over
 	. = ..()
 
 /obj/machinery/porta_turret/proc/setup()
@@ -158,20 +165,20 @@
 
 		if(/obj/item/gun/energy/taser)
 			eprojectile = /obj/item/projectile/beam
-			eshot_sound = 'sound/weapons/Laser.ogg'
+			eshot_sound = 'sound/weapons/energy/Laser.ogg'
 
 		if(/obj/item/gun/energy/stunrevolver)
 			eprojectile = /obj/item/projectile/beam
-			eshot_sound = 'sound/weapons/Laser.ogg'
+			eshot_sound = 'sound/weapons/energy/Laser.ogg'
 
 		if(/obj/item/gun/energy/gun)
 			eprojectile = /obj/item/projectile/beam	//If it has, going to kill mode
-			eshot_sound = 'sound/weapons/Laser.ogg'
+			eshot_sound = 'sound/weapons/energy/Laser.ogg'
 			egun = 1
 
 		if(/obj/item/gun/energy/gun/nuclear)
 			eprojectile = /obj/item/projectile/beam	//If it has, going to kill mode
-			eshot_sound = 'sound/weapons/Laser.ogg'
+			eshot_sound = 'sound/weapons/energy/Laser.ogg'
 			egun = 1
 
 var/list/turret_icons
@@ -401,8 +408,7 @@ var/list/turret_icons
 							SPAN_DANGER("[user] tripped the security protocol on the [src]! Run!"),
 							SPAN_DANGER("You trip the security protocol! Run!")
 						)
-						sleep(300)
-						hackfail = 0
+						addtimer(CALLBACK(src, PROC_REF(reset_hackfail)), 30 SECOND)
 					else
 						to_chat(user, SPAN_WARNING("You fail to hack the ID reader, but avoid tripping the security protocol."))
 					return TRUE //No whacking the turret with tools on help intent
@@ -426,7 +432,7 @@ var/list/turret_icons
 					if(TOOL_USE_SUCCESS)
 						to_chat(user, SPAN_NOTICE("You disconnect the turret's security protocol override!"))
 						overridden = 1
-						req_one_access.Cut()
+						LAZYNULL(req_one_access)
 						req_one_access = list(access_occupy)
 					if(TOOL_USE_FAIL)
 						user.visible_message(
@@ -435,8 +441,7 @@ var/list/turret_icons
 						)
 						enabled = 1
 						hackfail = 1
-						sleep(300)
-						hackfail = 0
+						addtimer(CALLBACK(src, PROC_REF(reset_hackfail)), 30 SECOND)
 			return TRUE //No whacking the turret with tools on help intent
 
 	if (!(I.flags & NOBLUDGEON) && I.force && !(stat & BROKEN))
@@ -457,6 +462,10 @@ var/list/turret_icons
 		return TRUE
 	..()
 
+
+/obj/machinery/porta_turret/proc/reset_hackfail()
+	hackfail = 0
+
 /obj/machinery/porta_turret/emag_act(var/remaining_charges, var/mob/user)
 	if(!emagged)
 		//Emagging the turret makes it go bonkers and stun everyone. It also makes
@@ -467,7 +476,7 @@ var/list/turret_icons
 		iconholder = 1
 		controllock = 1
 		enabled = 0 //turns off the turret temporarily
-		sleep(60) //6 seconds for the traitor to gtfo of the area before the turret decides to ruin his shit
+		sleep(60) //6 seconds for the contractor to gtfo of the area before the turret decides to ruin his shit
 		enabled = 1 //turns it back on. The cover popUp() popDown() are automatically called in process(), no need to define it here
 		return 1
 
@@ -487,6 +496,12 @@ var/list/turret_icons
 	if(health <= 0)
 		die()	//the death process :(
 
+/obj/machinery/porta_turret/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
+	if(!damage)
+		return 0
+	attack_animation(user)
+	take_damage(damage)
+
 /obj/machinery/porta_turret/bullet_act(obj/item/projectile/Proj)
 	var/damage = Proj.get_structure_damage()
 
@@ -496,15 +511,17 @@ var/list/turret_icons
 		return
 
 	if(enabled)
-		if(!attacked && !emagged)
-			attacked = 1
-			spawn()
-				sleep(60)
-				attacked = 0
+		if (!(Proj.testing))
+			if(!attacked && !emagged)
+				attacked = 1
+				spawn()
+					sleep(60)
+					attacked = 0
 
 	..()
 
-	take_damage(damage*Proj.structure_damage_factor)
+	if (!(Proj.testing))
+		take_damage(damage*Proj.structure_damage_factor)
 
 /obj/machinery/porta_turret/emp_act(severity)
 	if(enabled)
@@ -556,8 +573,14 @@ var/list/turret_icons
 	var/list/targets = list()			//list of primary targets
 	var/list/secondarytargets = list()	//targets that are least important
 
-	for(var/mob/M in mobs_in_view(world.view, src))
-		assess_and_assign(M, targets, secondarytargets)
+	for(var/mob/living/M in view(firing_range, src)) //WE USED WORLD.VIEW BEFORE THATS FUCKING PSYCHOPATHIC
+		assess_and_assign(M, targets, secondarytargets) //might want to not use a proc due to proc overhead cost
+
+	for(var/obj/mecha/mech in GLOB.mechas_list)
+		if (mech.z == z && (get_dist(mech, src) < firing_range) && can_see(src, mech, firing_range))
+			var/mob/living/occupant = mech.get_mob()
+			if (occupant)
+				assess_and_assign(occupant, targets, secondarytargets)
 
 	if(!tryToShootAt(targets))
 		if(!tryToShootAt(secondarytargets)) // if no valid targets, go for secondary targets
@@ -575,7 +598,7 @@ var/list/turret_icons
 		if(TURRET_SECONDARY_TARGET)
 			secondarytargets += L
 
-/obj/machinery/porta_turret/proc/assess_living(var/mob/living/L)
+/obj/machinery/porta_turret/proc/assess_living(var/mob/living/L) //TODO: optimize
 	var/obj/item/card/id/id_card = L.GetIdCard()
 
 	if(id_card && (id_card.registered_name in registered_names))
@@ -608,7 +631,7 @@ var/list/turret_icons
 	if(!emagged && issilicon(L))	// Don't target silica
 		return TURRET_NOT_TARGET
 
-	if(get_dist(src, L) > 7)	//if it's too far away, why bother?
+	if(get_dist(src, L) > firing_range)	//if it's too far away, why bother?
 		return TURRET_NOT_TARGET
 
 	if(!check_trajectory(L, src))	//check if we have true line of sight
@@ -670,13 +693,13 @@ var/list/turret_icons
 
 /obj/machinery/porta_turret/proc/tryToShootAt(var/list/mob/living/targets)
 	if(targets.len && last_target && (last_target in targets) && target(last_target))
-		return 1
+		return TRUE
 
 	while(targets.len > 0)
 		var/mob/living/M = pick(targets)
 		targets -= M
 		if(target(M))
-			return 1
+			return TRUE
 
 
 /obj/machinery/porta_turret/proc/popUp()	//pops the turret up
@@ -773,6 +796,9 @@ var/list/turret_icons
 	//Turrets aim for the center of mass by default.
 	//If the target is grabbing someone then the turret smartly aims for extremities
 	var/def_zone = get_exposed_defense_zone(target)
+	if(friendly_to_colony) //Reserved for more premium turrets
+		A.friendly_to_colony = TRUE
+	A.faction_iff = faction_iff
 	//Shooting Code:
 	A.launch(target, def_zone)
 

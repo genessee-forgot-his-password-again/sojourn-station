@@ -1,23 +1,25 @@
 /datum/trade_station/nt_cruisers
 	icon_states = "nt_cruiser"
-	markup = RARE_GOODS	// dept-specific stuff should be more expensive for guild
+	markup = COMMON_GOODS	// dept-specific stuff should be more expensive for guild
 	name_pool = list(
-		"CAV 'Faith'" = "'Church of Absolute Vessel 'Faith' We are currently resupplying from Nadezhda, but we can sell a few items from our stock.",
-		"CAV 'Hope'" = "'Church of Absolute Vessel 'Hope' We're in the system for the next few hours before we make a round trip to the confederacy, we're certainly willing to sell our goods."
+		"CAV 'Faith'" = "Church of the Absolute Vessel 'Faith': \"We are currently resupplying from Nadezhda, but we can sell a few items from our stock.\"",
+		"CAV 'Hope'" = "Church of the Absolute Vessel 'Hope': \"We're in the system for the next few hours before we make a round trip to the confederacy, we're certainly willing to sell our goods.\""
 		)
-	icon_states = "nt_cruiser"
+	icon_states = list("nt_frigate", "ship")
 	uid = "nt_basic"
+	tree_x = 0.34
+	tree_y = 0.9
 	start_discovered = TRUE
 	spawn_always = TRUE
 	base_income = 1600
 	wealth = 0
-	secret_inv_threshold = 2000
-	recommendation_threshold = 4000
+	hidden_inv_threshold = 2000
+	recommendation_threshold = 2000
 	stations_recommended = list("trapper")
-	assortiment = list(
+	inventory = list(
 		"Biomatter products" = list(
-			/obj/item/reagent_containers/food/snacks/meat,
-			/obj/item/reagent_containers/food/drinks/milk,
+			// /obj/item/reagent_containers/snacks/meat, no more directly buying and selling back meat. Now you've got to butcher an animal at the very least.
+			/obj/item/reagent_containers/drinks/milk,
 			/obj/item/soap/church,
 			/obj/item/storage/pouch/small_generic,
 			/obj/item/storage/pouch/medium_generic,
@@ -33,12 +35,27 @@
 			/obj/item/clothing/accessory/holster/waist,
 			/obj/item/clothing/accessory/holster/hip
 		),
-		"Agro Supply" = list(
-			/obj/structure/largecrate/animal/corgi,
-			/obj/structure/largecrate/animal/cow,
-			/obj/structure/largecrate/animal/goat,
-			/obj/structure/largecrate/animal/cat,
-			/obj/structure/largecrate/animal/chick,
+		"Livestock" = list(
+			/obj/structure/largecrate/animal/corgi = good_data("corgi crate", list(-1, 2), 800),
+			/obj/structure/largecrate/animal/cow = good_data("cow crate", list(-1, 2), 600),
+			/obj/structure/largecrate/animal/goat = good_data("goat crate", list(-1, 2), 500),
+			/obj/structure/largecrate/animal/cat = good_data("cat crate", list(-1, 2), 600),
+			/obj/structure/largecrate/animal/chick = good_data("chicken crate", list(-1, 2), 500),
+			/obj/structure/largecrate/animal/pig = good_data("pig crate", list(-1, 2), 500)
+		),
+		"Bee & Plant Supply" = list(
+			/obj/item/bee_pack,
+			/obj/item/beehive_assembly,
+			/obj/item/honey_frame,
+			/obj/item/bee_smoker,
+			/obj/item/circuitboard/honey_extractor = good_data("Honey Extractor Board", list(-1, 2), 300),
+			/obj/item/reagent_containers/spray/plantbgone,
+			/obj/item/reagent_containers/glass/bottle/ammonia,
+			/obj/item/tool/hatchet,
+			/obj/item/tool/minihoe,
+			/obj/item/device/scanner/plant,
+			/obj/item/clothing/gloves/botanic_leather,
+			/obj/machinery/portable_atmospherics/hydroponics
 		),
 		"Custodial Supply" = list(
 			/obj/item/reagent_containers/glass/bucket,
@@ -71,10 +88,16 @@
 			/obj/item/gun/projectile/revolver/lemant,
 			/obj/item/gun/projectile/shotgun/pump/combat,
 			/obj/item/gun/projectile/grenade
+		),
+		"Clothing" = list(
+			/obj/item/clothing/under/color/black = good_data("Black Jumpsuit", list(4, 4), 80),
+			/obj/item/clothing/head/beanie/black = good_data("Black Beanie", list(4, 4), 40),
+			/obj/item/clothing/gloves/thick = good_data("Black Gloves", list(4, 4), 40),
+			/obj/item/clothing/shoes/color/black = good_data("Black Shoes", list(4, 4), 40)
 		)
 	)
 
-	secret_inventory = list(
+	hidden_inventory = list(
 		"Melee weapons" = list(
 			/obj/item/tool/sword/nt/shortsword,
 			/obj/item/tool/sword/nt/longsword = custom_good_amount_range(list(-1, 2)),
@@ -100,10 +123,53 @@
 			/obj/item/cell/small/neotheology/plasma,
 			/obj/item/cell/medium/neotheology/plasma,
 			/obj/item/cell/large/neotheology/plasma
+		),
+		"Wine" = list(
+			/obj/item/reagent_containers/drinks/cans/cahors/cargo,
+			/obj/item/reagent_containers/drinks/bottle/ntcahors/cargo
+		),
+		"Seeds and Exodic Seeds" = list(
+			/obj/item/seeds/chiliseed,
+			/obj/item/seeds/berryseed,
+			/obj/item/seeds/cornseed,
+			/obj/item/seeds/eggplantseed,
+			/obj/item/seeds/tomatoseed,
+			/obj/item/seeds/appleseed,
+			/obj/item/seeds/soyaseed,
+			/obj/item/seeds/wheatseed,
+			/obj/item/seeds/carrotseed,
+			/obj/item/seeds/harebell,
+			/obj/item/seeds/lemonseed,
+			/obj/item/seeds/orangeseed,
+			/obj/item/seeds/grassseed,
+			/obj/item/seeds/sunflowerseed,
+			/obj/item/seeds/chantermycelium,
+			/obj/item/seeds/potatoseed,
+			/obj/item/seeds/sugarcaneseed,
+			/obj/item/seeds/libertymycelium,
+			/obj/item/seeds/reishimycelium,
+			/obj/item/seeds/random = good_data("Random Exodic Seed", list(-2, 1), 500),
+			/obj/item/seeds/kudzuseed
 		)
 	)
 	offer_types = list(
 		/obj/item/clothing/suit/space/void/NTvoid = offer_data("angel voidsuit", 1250, 15),
 		/obj/item/clothing/shoes/hermes_shoes = offer_data("hermes shoes", 420, 10),
-		/obj/item/reagent_containers/food/snacks/grown = offer_data("spare grown food", 10, 120)
+		/obj/item/reagent_containers/snacks/grown = offer_data("spare grown food", 10, 120),
+		///obj/item/reagent_containers/snacks/meat = offer_data("meat", 80, 20) //Buys it for less than Dionis/McRonalds, but is willing to buy more of it. SIKE! We're doing cutlets now.
+		/obj/item/reagent_containers/snacks/rawcutlet = offer_data("raw cutlet", 30, 30) //Up to 10 slabs of meat at a time!! (Assuming the given meat has slices_num = 3)
 	)
+
+/obj/item/reagent_containers/drinks/cans/cahors/cargo
+	price_tag = 600
+
+/obj/item/reagent_containers/drinks/cans/cahors/cargo/New()
+	..()
+	price_tag = 60
+
+/obj/item/reagent_containers/drinks/bottle/ntcahors/cargo
+	price_tag = 1200
+
+/obj/item/reagent_containers/drinks/bottle/ntcahors/cargo/New()
+	..()
+	price_tag = 100

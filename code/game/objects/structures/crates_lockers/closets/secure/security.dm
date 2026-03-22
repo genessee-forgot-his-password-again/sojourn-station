@@ -4,23 +4,25 @@
 	icon_state = "cap"
 
 /obj/structure/closet/secure_closet/reinforced/captains/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/storage/backpack/captain(src)
 	new /obj/item/storage/backpack/satchel/captain(src)
-	new /obj/item/clothing/head/rank/captain/cap(src)
 	new /obj/item/clothing/under/rank/captain(src)
+	new /obj/item/clothing/accessory/halfcape/premier(src)
 	new /obj/item/clothing/suit/armor/vest(src)
 	new /obj/item/clothing/head/helmet(src)
 	new /obj/item/clothing/shoes/color/brown(src)
 	new /obj/item/device/radio/headset/heads/captain(src)
 	new /obj/item/clothing/gloves/captain(src)
+	new /obj/item/device/flash(src)
 	new /obj/item/gun/projectile/basilisk(src)
 	new /obj/item/ammo_magazine/kurtz_50/rubber(src)
 	new /obj/item/ammo_magazine/kurtz_50/rubber(src)
 	new /obj/item/ammo_magazine/kurtz_50/rubber(src)
 	new /obj/item/ammo_magazine/kurtz_50/rubber(src)
 	new /obj/item/storage/pouch/baton_holster/telebaton(src)
-	new /obj/item/clothing/head/rank/captain/formal(src)
-	new /obj/item/clothing/under/rank/captain/formal(src)
 	new /obj/item/storage/pouch/pistol_holster(src)
 
 /obj/structure/closet/secure_closet/reinforced/hop
@@ -29,13 +31,16 @@
 	icon_state = "hop"
 
 /obj/structure/closet/secure_closet/reinforced/hop/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/glasses/sunglasses(src)
 	new /obj/item/clothing/under/rank/first_officer(src)
 	new /obj/item/clothing/head/rank/first_officer(src)
 	new /obj/item/clothing/suit/armor/vest(src)
 	new /obj/item/clothing/head/helmet(src)
 	new /obj/item/device/radio/headset/heads/hop(src)
-	new /obj/item/gun/projectile/colt/ten/dark(src)
+	new /obj/item/gun/projectile/colt/ten(src)
 	new /obj/item/ammo_magazine/magnum_40/rubber(src)
 	new /obj/item/ammo_magazine/magnum_40/rubber(src)
 	new /obj/item/ammo_magazine/magnum_40/rubber(src)
@@ -49,20 +54,18 @@
 	icon_state = "hos"
 
 /obj/structure/closet/secure_closet/reinforced/hos/populate_contents()
-	new /obj/item/storage/backpack/ironhammer(src)
-	if(prob(50))
-		new /obj/item/storage/backpack/satchel/ironhammer(src)
-	else
-		new /obj/item/storage/backpack/sport/ironhammer(src)
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/device/t_scanner/advanced(src)
 	new /obj/item/clothing/head/rank/commander(src)
 	new /obj/item/clothing/mask/gas/ihs(src)
 	new /obj/item/clothing/suit/armor/hos(src)
 	new /obj/item/clothing/suit/armor/platecarrier/hos(src)
 	new /obj/item/clothing/under/rank/ih_commander(src)
-	new /obj/item/clothing/glasses/sechud/tactical(src)
-	new /obj/item/clothing/accessory/badge/hos(src)
-	new /obj/item/clothing/suit/greatcoat/ihc(src)
+	new /obj/item/clothing/accessory/halfcape/wo(src)
+	new /obj/item/clothing/glasses/sechud(src)
+	new /obj/item/gun_upgrade/trigger/dnalock(src)
 	new /obj/item/storage/pouch/pistol_holster(src)
 	new /obj/item/storage/pouch/baton_holster/telebaton(src)
 	new /obj/item/storage/box/trackimp(src)
@@ -71,21 +74,16 @@
 	new /obj/item/device/radio/headset/heads/hos(src)
 	new /obj/item/device/holowarrant(src)
 	new /obj/item/taperoll/police(src)
-	new /obj/item/gun/projectile/shotgun/pump/swat(src)
-	new /obj/item/ammo_magazine/ammobox/shotgun/beanbags(src)
-	new /obj/item/ammo_magazine/ammobox/c10x24_small(src)
+	new /obj/item/gunbox/warrantofficer(src) // Primary on their locker, secondary on their hardcase.
 	new /obj/item/clothing/gloves/stungloves(src)
-	new /obj/item/cell/medium/high(src)
-	new /obj/item/gun/energy/glock(src)
-	new /obj/item/cell/small/high(src)
-	new /obj/item/gun/energy/gun/martin/preloaded(src)
-	new /obj/item/clothing/accessory/holster/waist(src)
+	new /obj/item/device/taperecorder(src)
+	new /obj/item/clipboard(src)
+	new /obj/item/device/camera(src)
 	new /obj/item/melee/classic_baton(src)
 	new /obj/item/oddity/code_book(src)
-	if(prob(50))
-		new /obj/item/clothing/head/helmet/faceshield/helmet_visor(src)
-	else
-		new /obj/item/clothing/head/helmet/marshal_full(src)
+	new /obj/item/clothing/head/helmet/warrant_officer(src)
+	new /obj/item/storage/sheath/judgement/filled(src)
+	new /obj/item/device/radio/headset/heads/hos(src)
 
 /obj/structure/closet/secure_closet/warden
 	name = "supply specialist's locker"
@@ -93,50 +91,39 @@
 	icon_state = "warden"
 
 /obj/structure/closet/secure_closet/warden/populate_contents()
-	if(prob(50))
-		new /obj/item/storage/backpack/ironhammer(src)
-	else
-		new /obj/item/storage/backpack/sport/ironhammer(src)
-	if(prob(50))
-		new /obj/item/gun/projectile/revolver/rev10(src)
-		new /obj/item/ammo_magazine/speed_loader_magnum_40(src)
-		new /obj/item/ammo_magazine/speed_loader_magnum_40(src)
-		new /obj/item/ammo_magazine/speed_loader_magnum_40/rubber(src)
-		new /obj/item/ammo_magazine/speed_loader_magnum_40/rubber(src)
-		new /obj/item/ammo_magazine/ammobox/magnum_40(src)
-	else
-		new /obj/item/gun/projectile/lamia(src)
-		new /obj/item/ammo_magazine/kurtz_50(src)
-		new /obj/item/ammo_magazine/kurtz_50(src)
-		new /obj/item/ammo_magazine/kurtz_50/rubber(src)
-		new /obj/item/ammo_magazine/ammobox/kurtz_50(src)
-	new /obj/item/storage/backpack/satchel/ironhammer(src)
+	if(populated_contents)
+		return
+	populated_contents = TRUE
+	new /obj/item/device/bullet_scanner(src)
+	new /obj/item/gun_upgrade/trigger/dnalock(src)
 	new /obj/item/device/holowarrant(src)
 	new /obj/item/clothing/under/rank/warden(src)
 	new /obj/item/clothing/head/rank/warden/beret(src)
-	new /obj/item/clothing/suit/storage/vest/ironhammer(src)
-	new /obj/item/clothing/under/rank/security/turtleneck(src)
-	new /obj/item/computer_hardware/hard_drive/portable/design/exotic_ammo(src)
-	new /obj/item/computer_hardware/hard_drive/portable/design/security/marshal_ammo(src)
+	new /obj/item/pc_part/drive/disk/design/exotic_ammo(src)
+	new /obj/item/pc_part/drive/disk/design/security/marshal_ammo(src)
+	new /obj/item/pc_part/drive/disk/design/gun_frames/marshal/surplus(src)
+	new /obj/item/device/radio/headset/headset_sec/bowman(src)
 	new /obj/item/device/radio/headset/headset_sec(src)
 	new /obj/item/clothing/glasses/sechud/tactical(src)
-	new /obj/item/storage/belt/security(src)
+	new /obj/item/clothing/glasses/sechud(src)
 	new /obj/item/clothing/mask/gas/ihs(src)
+	new /obj/item/storage/belt/security(src)
 	new /obj/item/storage/box/teargas(src)
 	new /obj/item/storage/box/flashbangs(src)
 	new /obj/item/storage/belt/webbing/ih(src)
 	new /obj/item/storage/box/holobadge(src)
-	new /obj/item/clothing/accessory/badge/warden(src)
 	new /obj/item/storage/pouch/pistol_holster(src)
-	new /obj/item/storage/pouch/baton_holster(src)
-	new /obj/item/clothing/suit/armor/commander/marshal_coat_ss(src)
+	new /obj/item/device/taperecorder(src)
+	new /obj/item/clipboard(src)
+	new /obj/item/device/camera(src)
+	new /obj/item/clothing/suit/storage/armor/marshal_coat_ss(src)
 	new /obj/item/storage/box/trackimp(src)
 	new /obj/item/oddity/code_book(src)
 	new /obj/item/device/t_scanner/advanced(src)
-	if(prob(50))
-		new /obj/item/clothing/head/helmet/faceshield/helmet_visor(src)
-	else
-		new /obj/item/clothing/head/helmet/marshal_full(src)
+	new /obj/item/clothing/head/helmet/marshal_full(src)
+	new /obj/item/voucher/marshal/specprimary(src)
+	new /obj/item/voucher/marshal/secondary(src)
+	new /obj/item/voucher/marshal/armor(src)
 
 /obj/structure/closet/secure_closet/personal/security
 	name = "marshal officer's locker"
@@ -145,90 +132,65 @@
 	icon_state = "sec"
 
 /obj/structure/closet/secure_closet/personal/security/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/storage/backpack/ironhammer(src)
 	if(prob(50))
 		new /obj/item/storage/backpack/ironhammer(src)
 	else
 		new /obj/item/storage/backpack/sport/ironhammer(src)
+	new /obj/item/voucher/marshal/primary(src)
+	new /obj/item/voucher/marshal/secondary(src)
+	new /obj/item/voucher/marshal/armor(src)
 	new /obj/item/storage/backpack/satchel/ironhammer(src)
 	new /obj/item/device/radio/headset/headset_sec(src)
 	new /obj/item/storage/belt/security(src)
-	new /obj/item/clothing/suit/storage/vest/ironhammer(src)
-	new /obj/item/clothing/under/rank/security/turtleneck(src)
+	new /obj/item/gun_upgrade/trigger/dnalock(src)
 	new /obj/item/device/holowarrant(src)
 	new /obj/item/clothing/mask/gas/ihs(src)
-	new /obj/item/clothing/glasses/sechud/tactical(src)
+	new /obj/item/clothing/glasses/sechud(src)
 	new /obj/item/storage/pouch/pistol_holster(src)
+	new /obj/item/clothing/accessory/holster/waist(src)
 	new /obj/item/storage/pouch/baton_holster(src)
 	new /obj/item/taperoll/police(src)
 	new /obj/item/device/taperecorder(src)
 	new /obj/item/clipboard(src)
 	new /obj/item/device/camera(src)
 	new /obj/item/device/t_scanner/advanced(src)
-	if(prob(50))
-		new /obj/item/clothing/head/helmet/faceshield/helmet_visor(src)
-	else
-		new /obj/item/clothing/head/helmet/marshal_full(src)
 
-/obj/structure/closet/secure_closet/medspec
-	name = "corpsman's locker"
-	req_access = list(access_medspec)
-	icon_state = "sec"
-
-/obj/structure/closet/secure_closet/medspec/populate_contents()
-	new /obj/item/clothing/glasses/sechud/tactical(src)
-	new /obj/item/clothing/mask/gas/ihs(src)
-	new /obj/item/taperoll/police(src)
-	new /obj/item/clothing/under/rank/medspec(src)
-	new /obj/item/device/radio/headset/headset_sec(src)
-	new /obj/item/storage/belt/security(src)
-	new /obj/item/clothing/shoes/reinforced(src)
-	new /obj/item/clothing/gloves/stungloves(src)
-	new /obj/item/cell/medium/high(src)
-	new /obj/item/clothing/suit/storage/toggle/labcoat/medspec(src)
-	new /obj/item/storage/pouch/pistol_holster(src)
-	new /obj/item/storage/briefcase/crimekit(src)
-	if(prob(5))
-		new /obj/random/rations/crayon(src)
-
-/obj/structure/closet/secure_closet/detective
+/obj/structure/closet/secure_closet/personal/detective
 	name = "ranger's locker"
-	req_access = list(access_forensics_lockers)
+	req_access = list(access_hos)
+	access_occupy = list(access_forensics_lockers) //So we can claim
 	icon_state = "cabinetdetective"
 
-/obj/structure/closet/secure_closet/detective/populate_contents()
-	new /obj/item/clothing/under/rank/inspector/suit(src)
-	new /obj/item/clothing/under/rank/inspector/black(src)
+/obj/structure/closet/secure_closet/personal/detective/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/under/rank/inspector(src)
-	new /obj/item/clothing/suit/storage/rank/det_trench(src)
-	new /obj/item/clothing/suit/storage/rank/det_trench/grey(src)
-	new /obj/item/clothing/suit/storage/rank/insp_trench(src)
 	new /obj/item/clothing/mask/gas/ihs(src)
 	new /obj/item/clothing/gloves/thick(src)
 	new /obj/item/clothing/head/rank/inspector(src)
-	new /obj/item/clothing/head/rank/inspector/grey(src)
+	new /obj/item/gun_upgrade/trigger/dnalock(src)
 	new /obj/item/clothing/shoes/reinforced(src)
 	new /obj/item/storage/box/evidence(src)
 	new /obj/item/device/radio/headset/headset_sec(src)
 	new /obj/item/storage/belt/security(src)
 	new /obj/item/device/holowarrant(src)
-	new /obj/item/clothing/suit/armor/vest/detective(src)
 	new /obj/item/clothing/glasses/sechud/tactical(src)
-	new /obj/item/cell/small/high(src)
-	new /obj/item/cell/small/high(src)
+	new /obj/item/clothing/glasses/sechud(src)
 	new /obj/item/taperoll/police(src)
 	new /obj/item/device/taperecorder(src)
 	new /obj/item/clipboard(src)
 	new /obj/item/device/camera(src)
-	new /obj/item/gun/projectile/revolver/deckard(src)
-	new /obj/item/clothing/accessory/holster/armpit(src)
-	new /obj/item/ammo_magazine/speed_loader_kurtz_50/rubber(src)
-	new /obj/item/ammo_magazine/speed_loader_kurtz_50/rubber(src)
-	new /obj/item/ammo_magazine/speed_loader_kurtz_50/rubber(src)
-	new /obj/item/ammo_magazine/speed_loader_kurtz_50/lethal(src)
-	new /obj/item/storage/pouch/pistol_holster(src)
+	new /obj/item/storage/pouch/pistol_holster/cowboy(src) // More thematic
 	new /obj/item/implantpad(src)
 	new /obj/item/device/t_scanner/advanced(src)
+	new /obj/item/voucher/marshal/rangerprimary(src)
+	new /obj/item/voucher/marshal/rangersecondary(src)
+	new /obj/item/voucher/marshal/armor(src)
 
 /obj/structure/closet/secure_closet/injection
 	name = "lethal injections locker"
@@ -236,6 +198,9 @@
 	icon_state = "secure"
 
 /obj/structure/closet/secure_closet/injection/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/reagent_containers/syringe/ld50_syringe/choral(src)
 	new /obj/item/reagent_containers/syringe/ld50_syringe/choral(src)
 
@@ -247,6 +212,9 @@
 	var/id
 
 /obj/structure/closet/secure_closet/brig/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/under/orange(src)
 	new /obj/item/clothing/shoes/orange(src)
 
@@ -256,6 +224,9 @@
 	icon_state = "sec"
 
 /obj/structure/closet/secure_closet/courtroom/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
 	new /obj/item/clothing/shoes/color/brown(src)
 	new /obj/item/paper/court(src)
 	new /obj/item/paper/court(src)
@@ -264,3 +235,61 @@
 	new /obj/item/clothing/suit/costume/job/judge(src)
 	new /obj/item/clothing/head/costume/history/powdered(src)
 	new /obj/item/storage/briefcase(src)
+
+/obj/structure/closet/secure_closet/armory_explosive
+	name = "high explosive grenades locker"
+	req_access = list(access_security)
+	icon_state = "sec"
+
+/obj/structure/closet/secure_closet/armory_explosive/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
+	new /obj/item/storage/box/blast_grenade_shells(src)
+	new /obj/item/storage/box/blast_grenade_shells(src)
+	new /obj/item/storage/box/blast_grenade_shells(src)
+	new /obj/item/storage/box/frag_grenade_shells(src)
+	new /obj/item/storage/box/frag_grenade_shells(src)
+	new /obj/item/storage/box/frag_grenade_shells(src)
+
+/obj/structure/closet/secure_closet/armory_ltl_emp
+	name = "LTL / EMP grenades locker"
+	req_access = list(access_security)
+	icon_state = "sec"
+
+/obj/structure/closet/secure_closet/armory_ltl_emp/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
+	new /obj/item/storage/box/baton_rounds(src)
+	new /obj/item/storage/box/baton_rounds(src)
+	new /obj/item/storage/box/anti_photons(src)
+	new /obj/item/storage/box/anti_photons(src)
+	new /obj/item/storage/box/emp_grenade_shells(src)
+	new /obj/item/storage/box/emp_grenade_shells(src)
+
+/obj/structure/closet/secure_closet/armory_ltl_shotgun
+	name = "LTL shotgun ammunition locker"
+	req_access = list(access_security)
+	icon_state = "sec"
+
+/obj/structure/closet/secure_closet/armory_ltl_shotgun/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
+	new /obj/item/ammo_magazine/ammobox/shotgun/beanbags(src)
+	new /obj/item/ammo_magazine/ammobox/shotgun/beanbags(src)
+	new /obj/item/ammo_magazine/ammobox/shotgun/flashshells(src)
+	new /obj/item/ammo_magazine/ammobox/shotgun/flash(src)
+	new /obj/item/ammo_magazine/ammobox/shotgun/stunshells(src)
+
+/obj/structure/closet/crate/secure/weapon/amr
+	name = "antimateriel rifle crate"
+	desc = "A secure weapons crate."
+	icon_state = "weaponcrate"
+
+/obj/structure/closet/crate/secure/weapon/amr/populate_contents()
+	if(populated_contents)
+		return
+	populated_contents = TRUE
+	new /obj/item/storage/box/syndie_kit/antimateriel_rifle(src)

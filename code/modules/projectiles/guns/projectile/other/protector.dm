@@ -1,6 +1,6 @@
 /obj/item/gun/projectile/grenade
-	name = "NT GL \"Protector\""
-	desc = "A bulky pump-action grenade launcher. Holds up to 6 grenade shells in a revolving magazine."
+	name = "OT GL \"Protector\""
+	desc = "A bulky pump-action grenade launcher, produced by the Old Testament. Holds up to 6 grenade shells in a revolving magazine."
 	icon = 'icons/obj/guns/launcher/riotgun.dmi'
 	icon_state = "riotgun"
 	item_state = "riotgun"
@@ -12,15 +12,22 @@
 	origin_tech = list(TECH_COMBAT = 7, TECH_MATERIAL = 2)
 	handle_casings = EJECT_CASINGS
 	price_tag = 5500
-	fire_sound = 'sound/weapons/guns/fire/GLfire.ogg'
-	bulletinsert_sound = 'sound/weapons/guns/interact/batrifle_magin.ogg'   //Placeholder, could use a new sound
+	fire_sound = 'sound/weapons/guns/fire/ubgl_fire.ogg'
+	bulletinsert_sound = 'sound/weapons/guns/interact/china_lake_reload.ogg'
 	fire_sound_text = "a metallic thunk"
-	recoil_buildup = 15
+	init_recoil = HANDGUN_RECOIL(2)
 	max_shells = 6
-	zoom_factor = 2.0
+	fire_delay = 15
+	slowdown_hold = 1
+	zoom_factors = list(2.0)
 	var/throw_distance = 7
 	var/release_force = 5
 	twohanded = TRUE
+	serial_type = "Absolute"
+
+	wield_delay = 1.5 SECOND
+	wield_delay_factor = 0.6 // 60 vig , heavy stuff
+	gun_parts = list(/obj/item/part/gun = 2, /obj/item/part/gun/grip/wood = 1, /obj/item/part/gun/mechanism/shotgun = 1)
 
 /* We no longer fire grenades like this. As we now use internal ammo
 /obj/item/gun/projectile/grenade/proc/load_grenade(obj/item/grenade/A, mob/user)  //For loading hand grenades, not ammo
@@ -46,7 +53,7 @@
 
 //revolves the magazine, allowing players to choose between multiple grenade types
 /obj/item/gun/projectile/grenade/proc/pump(mob/user as mob)
-	playsound(user, 'sound/weapons/shotgunpump.ogg', 60, 1)
+	playsound(user, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, 1)
 
 	var/obj/item/ammo_casing/next
 	if(loaded.len)

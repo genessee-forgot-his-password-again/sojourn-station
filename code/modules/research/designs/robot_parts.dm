@@ -1,6 +1,6 @@
 /datum/design/research/item/mechfab/robot
 	category = CAT_ROBOT
-	build_type = AUTOLATHE | MECHFAB
+	build_type = MECHFAB
 	starts_unlocked = TRUE
 
 /datum/design/research/item/mechfab/robot/exoskeleton
@@ -60,9 +60,13 @@
 	name = "Robot Armour plating"
 	build_path = /obj/item/robot_parts/robot_component/armour
 
-/datum/design/research/item/mechfab/robot/component/armour
-	name = "Robot Mark II Armour plating"
+/datum/design/research/item/mechfab/robot/component/armour/mkii
+	name = "Mark II energy armour plating"
 	build_path = /obj/item/robot_parts/robot_component/armour/mkii
+
+/datum/design/research/item/mechfab/robot/component/armour/mkv
+	name = "Mark V extra armour plating"
+	build_path = /obj/item/robot_parts/robot_component/armour/mkv
 
 
 /datum/design/research/item/mechfab/robot/component/jetpack
@@ -71,11 +75,9 @@
 	build_path = /obj/item/robot_parts/robot_component/jetpack
 	starts_unlocked = FALSE
 
-
-
 // Robot updates
 /datum/design/research/item/robot_upgrade
-	build_type = AUTOLATHE | MECHFAB
+	build_type = MECHFAB
 	category = CAT_ROBOT
 	name_category = "robot upgrade"
 
@@ -131,12 +133,12 @@
 /datum/design/research/item/robot_upgrade/medical_hypo_upgrade
 	name = "Expanded Medical Hypo Upgrade"
 	desc = "A smarter hypo synthesizer to make more complex chemicals. Made for medical modules."
-	build_path = /obj/item/borg/upgrade/hypospray/medical
+	build_path = /obj/item/borg/upgrade/hypospray_medical
 
 /datum/design/research/item/robot_upgrade/rescue_hypo_upgrade
 	name = "Expanded Rescue Hypo Upgrade"
 	desc = "A smarter hypo synthesizer to make more complex chemicals. Made for rescue modules."
-	build_path = /obj/item/borg/upgrade/hypospray/rescue
+	build_path = /obj/item/borg/upgrade/hypospray_rescue
 
 /datum/design/research/item/robot_upgrade/syndicate
 	name = "Illegal upgrade"

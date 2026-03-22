@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/megafauna/one_star
+/mob/living/simple/hostile/megafauna/one_star
 	name = "Type - 0315"
 	desc = "Love and concrete."
 
@@ -30,26 +30,28 @@
 
 	projectiletype = /obj/item/projectile/bullet/light_rifle_257/nomuzzle
 
-/mob/living/simple_animal/hostile/megafauna/one_star/death(gibbed, var/list/force_grant)
-	if(health <= 0)
+/mob/living/simple/hostile/megafauna/one_star/death(gibbed, var/list/force_grant)
+	if(health <= death_threshold)
 		visible_message("<b>[src]</b> blows apart in an explosion!")
 		explosion(src.loc, 0,1,3)
 		new /obj/effect/decal/cleanable/blood/gibs/robot(src.loc)
 		var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
 		s.set_up(3, 1, src)
 		s.start()
+		if(prob(10))
+			new /obj/item/gun_upgrade/mechanism/greyson_master_catalyst(src.loc)
 		..()
 
 
-/mob/living/simple_animal/hostile/megafauna/one_star/LoseTarget()
+/mob/living/simple/hostile/megafauna/one_star/LoseTarget()
 	..()
 	icon_state = initial(icon_state)
 
-/mob/living/simple_animal/hostile/megafauna/one_star/LostTarget()
+/mob/living/simple/hostile/megafauna/one_star/LostTarget()
 	..()
 	icon_state = initial(icon_state)
 
-/mob/living/simple_animal/hostile/megafauna/one_star/FindTarget()
+/mob/living/simple/hostile/megafauna/one_star/FindTarget()
 	if(istype(src.loc, /turf))
 		var/turf/TURF = src.loc
 		if(TURF.get_lumcount() < 1)
@@ -64,27 +66,29 @@
 	else
 		icon_state = initial(icon_state)
 
-/mob/living/simple_animal/hostile/megafauna/one_star/AttackingTarget()
-	if(!Adjacent(target_mob))
+/mob/living/simple/hostile/megafauna/one_star/AttackingTarget()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if(!Adjacent(targetted_mob))
 		return
-	if(isliving(target_mob))
-		var/mob/living/L = target_mob
+	if(isliving(targetted_mob))
+		var/mob/living/L = targetted_mob
 		L.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 		return L
-	if(istype(target_mob,/obj/mecha))
-		var/obj/mecha/M = target_mob
+	if(istype(targetted_mob,/obj/mecha))
+		var/obj/mecha/M = targetted_mob
 		M.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 		return M
-	if(istype(target_mob,/obj/machinery/bot))
-		var/obj/machinery/bot/B = target_mob
+	if(istype(targetted_mob,/obj/machinery/bot))
+		var/obj/machinery/bot/B = targetted_mob
 		B.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 		return B
-	if(istype(target_mob,/obj/machinery/porta_turret))
-		var/obj/machinery/porta_turret/P = target_mob
+	if(istype(targetted_mob,/obj/machinery/porta_turret))
+		var/obj/machinery/porta_turret/P = targetted_mob
 		P.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 		return P
 
-/mob/living/simple_animal/hostile/megafauna/one_star/proc/shoot_rocket(turf/marker, set_angle)
+/mob/living/simple/hostile/megafauna/one_star/proc/shoot_rocket(turf/marker, set_angle)
 	if(!isnum(set_angle) && (!marker || marker == loc))
 		return
 	var/turf/startloc = get_turf(src)
@@ -95,29 +99,27 @@
 	P.launch( get_step(marker, pick(SOUTH, NORTH, WEST, EAST, SOUTHEAST, SOUTHWEST, NORTHEAST, NORTHWEST)) )
 
 
-/mob/living/simple_animal/hostile/megafauna/one_star/OpenFire()
+/mob/living/simple/hostile/megafauna/one_star/OpenFire()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
 	anger_modifier = CLAMP(((maxHealth - health)/50),0,20)
 	ranged_cooldown = world.time + 30
-	walk(src, 0)
+	SSmove_manager.stop_looping(src)
 	telegraph()
 	icon_state = "onestar_boss"
 	if(prob(35))
-		shoot_rocket(target_mob.loc, rand(0,90))
-		move_to_delay = initial(move_to_delay)
+		shoot_rocket(targetted_mob.loc, rand(0,90))
 		MoveToTarget()
 		return
 	if(prob(45))
 		select_spiral_attack()
-		move_to_delay = initial(move_to_delay)
 		MoveToTarget()
 		return
-	if(target_mob)
+	if(targetted_mob)
 		if(prob(75))
 			wave_shots()
-			move_to_delay = initial(move_to_delay)
 			MoveToTarget()
 			return
 		else
-			shoot_projectile(target_mob.loc, rand(0,90))
+			shoot_projectile(targetted_mob.loc, rand(0,90))
 			MoveToTarget()
-	move_to_delay = initial(move_to_delay)

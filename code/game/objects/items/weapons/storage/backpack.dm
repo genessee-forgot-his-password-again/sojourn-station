@@ -52,20 +52,23 @@
 
 
 /obj/item/storage/backpack/proc/worn_check(var/no_message = FALSE)
+	var/mob/living/L = loc
+	if(istype(L, /mob/living/carbon/human) && L:species:reagent_tag == IS_SLIME) // Slimes don't have joints.
+		// TODO, special messages
+		return TRUE
+
 	if(!equip_access && is_equipped())
-		var/mob/living/L = loc
 		if (istype(L))
 			if(!no_message)
-				to_chat(L, "<span class='warning'>The [src] is too cumbersome to handle with one hand, you're going to have to set it down somewhere!</span>")
+				to_chat(L, "<span class='warning'>\The [src] is too cumbersome to handle with one hand, you're going to have to set it down somewhere!</span>")
 		if (!no_message && use_sound)
 			playsound(loc, use_sound, 50, 1, -5)
 		return FALSE
 
 	else if(!worn_access && is_worn())
-		var/mob/living/L = loc
 		if (istype(L))
 			if(!no_message)
-				to_chat(L, "<span class='warning'>Oh no! Your arms are not long enough to open [src] while it is on your back!</span>")
+				to_chat(L, "<span class='warning'>Oh no! Your arms are not long enough to reach inside \the [src] while it is on your back!</span>")
 		if (!no_message && use_sound)
 			playsound(loc, use_sound, 50, 1, -5)
 		return FALSE
@@ -99,11 +102,11 @@
 			var/held = W.get_equip_slot()
 			if (held == slot_l_hand)
 				var/obj/item/organ/external/E = H.get_organ(BP_L_ARM)
-				E.droplimb(0, DROPLIMB_BLUNT)
+				E.droplimb(0, DISMEMBER_METHOD_BLUNT)
 				playsound(src.loc, 'sound/sanity/limb_tear_off.ogg', 100, 1)
 			else if (held == slot_r_hand)
 				var/obj/item/organ/external/E = H.get_organ(BP_R_ARM)
-				E.droplimb(0, DROPLIMB_BLUNT)
+				E.droplimb(0, DISMEMBER_METHOD_BLUNT)
 				playsound(src.loc, 'sound/sanity/limb_tear_off.ogg', 100, 1)
 		user.drop_item()
 		return
@@ -184,8 +187,11 @@
 	desc = "A robust military backpack with crudely added IFF stripes of the Blackshield."
 	icon_state = "backpack_mil"
 
+/obj/item/storage/backpack/militia/green
+	icon_state = "backpack_milgreen"
+
 /obj/item/storage/backpack/corpsman
-	name = "Corpsman backpack"
+	name = "corpsman backpack"
 	desc = "A robust military backpack with medical liverly."
 	icon_state = "backpack_corps"
 
@@ -221,6 +227,22 @@
 	desc = "Designed for planetary infantry, holds a lot of equipment."
 	icon_state = "backpack_military"
 	max_storage_space = DEFAULT_HUGE_STORAGE * 1.3
+
+/obj/item/storage/backpack/guncase
+	name = "gun case"
+	desc = "A sturdy metal case made for transporting ranged weaponry."
+	icon_state = "rifle_case"
+	flags = CONDUCT
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 1
+	throw_range = 4
+	max_w_class = null
+	max_storage_space = 24 //So we can hold even the biggest gun with the most attachments
+	can_hold = list(/obj/item/gun,
+		/obj/item/ammo_magazine
+		)
+	matter = list(MATERIAL_STEEL = 8, MATERIAL_PLASTIC = 4)
 
 /*
  * Backsport Types (alternative style)
@@ -263,8 +285,13 @@
 //Faction-specific backsports
 /obj/item/storage/backpack/sport/ironhammer
 	name = "operator's sport backpack"
-	desc = "Done in a complementing shade for Ironhammer Security forces. It looks as if it belongs on a kindergartener rather than a operative, which is why in actuality this style makes perfect sense."
+	desc = "Done in a complementing shade for Nadezhda security. It looks as if it belongs on a kindergartener rather than a operative, which is why in actuality this style makes perfect sense."
 	icon_state = "backsport_ironhammer"
+
+/obj/item/storage/backpack/sport/militia
+	name = "blackshield sport backpack"
+	desc = "Done in a complementing shade for Nadezhda militia. It looks as if it belongs on a kindergartener rather than a operative, which is why in actuality this style makes perfect sense."
+	icon_state = "backsport_militia"
 
 /obj/item/storage/backpack/sport/neotheology
 	name = "cruciform sport backpack"
@@ -357,6 +384,11 @@
 	desc = "Done in a complementing shade for Nadezhda security forces, for the itinerant military contractor."
 	icon_state = "satchel_ironhammer"
 
+/obj/item/storage/backpack/satchel/militia
+	name = "blackshield satchel"
+	desc = "Done in a complementing shade for Nadezhda militia, for the itinerant military contractor."
+	icon_state = "satchel_militia"
+
 /obj/item/storage/backpack/satchel/neotheology
 	name = "cruciform satchel"
 	desc = "Slightly more accessible means for your holy goods."
@@ -377,3 +409,11 @@
 	name = "leather duffel"
 	desc = "A big duffel made of leather"
 	icon_state = "duffel_leather"
+
+/obj/item/storage/backpack/duffelbag/loot
+	name = "lootbag"
+	desc = "You wear this on your back and put items into it."
+	icon_state = "lootbag" //Sprite by CeUvi
+	max_storage_space = DEFAULT_HUGE_STORAGE * 1.5
+	matter = list(MATERIAL_BIOMATTER = 20, MATERIAL_PLASTIC = 3)
+	equip_access = FALSE

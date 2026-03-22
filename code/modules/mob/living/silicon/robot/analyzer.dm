@@ -52,9 +52,10 @@
 	user.visible_message(SPAN_NOTICE("\The [user] has analyzed [M]'s components."),SPAN_NOTICE("You have analyzed [M]'s components."))
 	switch(scan_type)
 		if("robot")
+			playsound(src.loc, 'sound/machines/ping.ogg', 50, 0)
 			var/BU = M.getFireLoss() > 50 	? 	"<b>[M.getFireLoss()]</b>" 		: M.getFireLoss()
 			var/BR = M.getBruteLoss() > 50 	? 	"<b>[M.getBruteLoss()]</b>" 	: M.getBruteLoss()
-			user.show_message("\blue Analyzing Results for [M]:\n\t Overall Status: [M.stat > 1 ? "fully disabled" : "[M.health - M.halloss]% functional"]")
+			user.show_message("\blue Analyzing Results for [M]:\n\t Overall Status: [M.stat > 1 ? "fully disabled" : "[(M.health / M.maxHealth) * 100]% functional"]")
 			user.show_message("\t Key: <font color='#FFA500'>Electronics</font>/<font color='red'>Brute</font>", 1)
 			user.show_message("\t Damage Specifics: <font color='#FFA500'>[BU]</font> - <font color='red'>[BR]</font>")
 			if(M.tod && M.stat == DEAD)
@@ -73,7 +74,7 @@
 					(org.powered)	?	"Power ON"		:	"<font color='red'>Power OFF</font>"),1)
 			else
 				user.show_message("\blue \t Components are OK.",1)
-			if(H.emagged && prob(5))
+			if(H.HasTrait(CYBORG_TRAIT_EMAGGED) && prob(5))
 				user.show_message("\red \t ERROR: INTERNAL SYSTEMS COMPROMISED",1)
 			user.show_message("\blue Operating Temperature: [M.bodytemperature-T0C]&deg;C ([M.bodytemperature*1.8-459.67]&deg;F)", 1)
 

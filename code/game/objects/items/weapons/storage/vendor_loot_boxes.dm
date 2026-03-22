@@ -9,12 +9,12 @@
 /obj/item/storage/box/vendor_lootbox/populate_contents()
 	if(prob(10)) //Small double chance to get a decent theme pack. First pack, colony survival pack.
 		if(prob(50))
-			new /obj/item/reagent_containers/food/snacks/openable/mre(src)
+			new /obj/item/reagent_containers/snacks/openable/mre(src)
 		else
-			new /obj/item/reagent_containers/food/snacks/openable/mre/alt(src)
+			new /obj/item/reagent_containers/snacks/openable/mre/alt(src)
 		new /obj/item/tool/knife/dagger(src)
-		new /obj/item/stack/medical/advanced/bruise_pack(src)
-		new /obj/item/stack/medical/advanced/ointment(src)
+		new /obj/item/stack/medical/bruise_pack/advanced(src)
+		new /obj/item/stack/medical/ointment/advanced(src)
 	else if(prob(10)) //Welcome to the colony pack, heres yer pda, id, wallet, and a gun.
 		new /obj/item/oddity/common/old_pda(src)
 		new /obj/item/oddity/common/old_id(src)
@@ -34,15 +34,15 @@
 
 /obj/item/storage/box/vendor_lootbox/combat_basic_light/populate_contents()
 	if(prob(10)) //Medical man!
-		new /obj/item/stack/medical/advanced/bruise_pack(src)
-		new /obj/item/stack/medical/advanced/bruise_pack(src)
-		new /obj/item/stack/medical/advanced/ointment(src)
-		new /obj/item/stack/medical/advanced/ointment(src)
+		new /obj/item/stack/medical/bruise_pack/advanced(src)
+		new /obj/item/stack/medical/bruise_pack/advanced(src)
+		new /obj/item/stack/medical/ointment/advanced(src)
+		new /obj/item/stack/medical/ointment/advanced(src)
 		new /obj/item/storage/pill_bottle/dylovene(src)
 	else if(prob(10)) //Time to kick ass!
 		new /obj/item/clothing/gloves/thick/combat(src)
 		new /obj/item/clothing/shoes/combat(src)
-		new /obj/item/reagent_containers/food/snacks/candy_drop_red(src)
+		new /obj/item/reagent_containers/snacks/candy_drop_red(src)
 		new /obj/item/gun/projectile/basilisk(src)
 		new /obj/item/ammo_magazine/kurtz_50/lethal(src)
 	else
@@ -59,15 +59,15 @@
 
 /obj/item/storage/box/vendor_lootbox/combat_basic_medium/populate_contents()
 	if(prob(10))
-		new /obj/item/stack/medical/advanced/bruise_pack(src)
-		new /obj/item/stack/medical/advanced/bruise_pack(src)
-		new /obj/item/stack/medical/advanced/ointment(src)
-		new /obj/item/stack/medical/advanced/ointment(src)
+		new /obj/item/stack/medical/bruise_pack/advanced(src)
+		new /obj/item/stack/medical/bruise_pack/advanced(src)
+		new /obj/item/stack/medical/ointment/advanced(src)
+		new /obj/item/stack/medical/ointment/advanced(src)
 		new /obj/item/storage/pill_bottle/dylovene(src)
 	else if(prob(10))
 		new /obj/item/clothing/gloves/thick/combat(src)
 		new /obj/item/clothing/shoes/combat(src)
-		new /obj/item/reagent_containers/food/snacks/candy_drop_red(src)
+		new /obj/item/reagent_containers/snacks/candy_drop_red(src)
 		new /obj/item/gun/projectile/basilisk(src)
 		new /obj/item/ammo_magazine/kurtz_50/lethal(src)
 	else
@@ -84,15 +84,15 @@
 
 /obj/item/storage/box/vendor_lootbox/combat_basic_high/populate_contents()
 	if(prob(10))
-		new /obj/item/stack/medical/advanced/bruise_pack(src)
-		new /obj/item/stack/medical/advanced/bruise_pack(src)
-		new /obj/item/stack/medical/advanced/ointment(src)
-		new /obj/item/stack/medical/advanced/ointment(src)
+		new /obj/item/stack/medical/bruise_pack/advanced(src)
+		new /obj/item/stack/medical/bruise_pack/advanced(src)
+		new /obj/item/stack/medical/ointment/advanced(src)
+		new /obj/item/stack/medical/ointment/advanced(src)
 		new /obj/item/storage/pill_bottle/dylovene(src)
 	else if(prob(10))
 		new /obj/item/clothing/gloves/thick/combat(src)
 		new /obj/item/clothing/shoes/combat(src)
-		new /obj/item/reagent_containers/food/snacks/candy_drop_red(src)
+		new /obj/item/reagent_containers/snacks/candy_drop_red(src)
 		new /obj/item/gun/projectile/basilisk(src)
 		new /obj/item/ammo_magazine/kurtz_50/lethal(src)
 	else
@@ -109,7 +109,7 @@
 
 /obj/item/storage/box/vendor_lootbox/medicine_basic/populate_contents()
 	if(prob(10)) //Lucky!
-		new /obj/item/storage/firstaid/adv(src)
+		new /obj/item/storage/firstaid/regular(src)
 		new /obj/item/storage/firstaid/fire(src)
 		new /obj/item/storage/firstaid/toxin(src)
 		new /obj/item/storage/firstaid/o2(src)
@@ -132,7 +132,7 @@
 
 /obj/item/storage/box/vendor_lootbox/medicine_moderate/populate_contents()
 	if(prob(10)) //Lucky!
-		new /obj/item/storage/firstaid/adv(src)
+		new /obj/item/storage/firstaid/regular(src)
 		new /obj/item/storage/firstaid/fire(src)
 		new /obj/item/storage/firstaid/toxin(src)
 		new /obj/item/storage/firstaid/o2(src)
@@ -155,7 +155,7 @@
 
 /obj/item/storage/box/vendor_lootbox/medicine_high/populate_contents()
 	if(prob(10)) //Lucky!
-		new /obj/item/storage/firstaid/adv(src)
+		new /obj/item/storage/firstaid/regular(src)
 		new /obj/item/storage/firstaid/fire(src)
 		new /obj/item/storage/firstaid/toxin(src)
 		new /obj/item/storage/firstaid/o2(src)
@@ -178,7 +178,7 @@
 
 /obj/item/storage/box/vendor_lootbox/oddity_low/populate_contents()
 	if(prob(1)) //Lucky!
-		new /obj/random/oddity_guns(src)
+		new /obj/random/oddity_guns/propis_box(src)
 	else
 		new /obj/random/common_oddities/always_spawn(src)
 
@@ -189,7 +189,7 @@
 
 /obj/item/storage/box/vendor_lootbox/oddity_moderate/populate_contents()
 	if(prob(5)) //Lucky!
-		new /obj/random/oddity_guns(src)
+		new /obj/random/oddity_guns/propis_box(src)
 	else
 		new /obj/random/common_oddities/always_spawn(src)
 		new /obj/random/common_oddities/always_spawn(src)
@@ -201,9 +201,8 @@
 
 /obj/item/storage/box/vendor_lootbox/oddity_high/populate_contents()
 	if(prob(10)) //Lucky!
-		new /obj/random/oddity_guns(src)
+		new /obj/random/oddity_guns/propis_box(src)
 	else
 		new /obj/random/common_oddities/always_spawn(src)
 		new /obj/random/common_oddities/always_spawn(src)
 		new /obj/random/common_oddities/always_spawn(src)
-

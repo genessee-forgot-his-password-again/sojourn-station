@@ -3,6 +3,7 @@
 	desc = "A very compact computer, designed to keep its user always connected."
 	icon = 'icons/obj/modular_pda.dmi'
 	icon_state = "pda"
+	icon_state_unpowered = "pda"
 	matter = list(MATERIAL_STEEL = 3, MATERIAL_GLASS = 1)
 	hardware_flag = PROGRAM_PDA
 	max_hardware_size = 1
@@ -16,10 +17,10 @@
 	suitable_cell = /obj/item/cell/small //We take small battery
 
 	var/scanner_type = null
-	var/tesla_link_type = /obj/item/computer_hardware/tesla_link
-	var/hard_drive_type = /obj/item/computer_hardware/hard_drive/small
-	var/processor_unit_type = /obj/item/computer_hardware/processor_unit/small
-	var/network_card_type = /obj/item/computer_hardware/network_card
+	var/tesla_link_type = /obj/item/pc_part/tesla_link
+	var/hard_drive_type = /obj/item/pc_part/drive/small
+	var/processor_unit_type = /obj/item/pc_part/processor_unit/small
+	var/network_card_type = /obj/item/pc_part/network_card
 
 /obj/item/modular_computer/pda/Initialize()
 	. = ..()

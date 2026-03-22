@@ -114,7 +114,7 @@ var/list/mob_hat_cache = list()
 	//Stats must be initialised before creating the module
 	if(!module) module = new module_type(src)
 
-	verbs += /mob/living/proc/hide
+	add_verb(src, /mob/living/proc/hide)
 	remove_language(LANGUAGE_ROBOT)
 	add_language(LANGUAGE_ROBOT, 0)
 	add_language(LANGUAGE_DRONE, 1)
@@ -131,7 +131,7 @@ var/list/mob_hat_cache = list()
 		var/datum/robot_component/C = components[V]
 		C.max_damage = 10
 
-	verbs -= /mob/living/silicon/robot/verb/Namepick
+	remove_verb(src, /mob/living/silicon/robot/verb/Namepick)
 	//choose_overlay()
 	updateicon()
 
@@ -147,12 +147,14 @@ var/list/mob_hat_cache = list()
 
 	flavor_text = "It's a tiny little repair drone. The casing is stamped with an corporate logo and the subscript: '[company_name] Recursive Repair Systems: Fixing Tomorrow's Problem, Today!'"
 	playsound(src.loc, 'sound/machines/twobeep.ogg', 50, 0)
+	recalibrate_hotkeys()
 
 //Redefining some robot procs...
 /mob/living/silicon/robot/drone/SetName(pickedName as text)
 	// Would prefer to call the grandparent proc but this isn't possible, so..
 	real_name = pickedName
 	name = real_name
+	recalibrate_hotkeys()
 
 /mob/living/silicon/robot/drone/updatename()
 	if(controlling_ai)
@@ -164,15 +166,15 @@ var/list/mob_hat_cache = list()
 
 /mob/living/silicon/robot/drone/updateicon()
 
-	overlays.Cut()
+	cut_overlays()
 	if(stat == CONSCIOUS && eyecolor)
-		overlays += "eyes-drone[eyecolor]"
+		add_overlay("eyes-drone[eyecolor]")
 
 	if(armguard)
-		overlays += "model-[armguard]"
+		add_overlay("model-[armguard]")
 
 	if(hat) // Let the drones wear hats.
-		overlays |= get_hat_icon(hat, hat_x_offset, hat_y_offset)
+		add_overlay(get_hat_icon(hat, hat_x_offset, hat_y_offset))
 
 /mob/living/silicon/robot/drone/choose_icon()
 	return
@@ -206,7 +208,7 @@ var/list/mob_hat_cache = list()
 
 		if(stat == 2)
 
-			if(!config.allow_drone_spawn || emagged || health < -35) //It's dead, Dave.
+			if(!config.allow_drone_spawn || HasTrait(CYBORG_TRAIT_EMAGGED) || health < -35) //It's dead, Dave.
 				to_chat(user, SPAN_DANGER("The interface is fried, and a distressing burned smell wafts from the robot's interior. You're not rebooting this one."))
 				return
 
@@ -227,7 +229,7 @@ var/list/mob_hat_cache = list()
 		else
 			user.visible_message(SPAN_DANGER("\The [user] swipes \his ID card through \the [src], attempting to shut it down."), SPAN_DANGER("You swipe your ID card through \the [src], attempting to shut it down."))
 
-			if(emagged)
+			if(HasTrait(CYBORG_TRAIT_EMAGGED))
 				return
 
 			if(allowed(usr))
@@ -244,7 +246,7 @@ var/list/mob_hat_cache = list()
 		to_chat(user, SPAN_DANGER("There's not much point subverting this heap of junk."))
 		return
 
-	if(emagged)
+	if(HasTrait(CYBORG_TRAIT_EMAGGED))
 		to_chat(src, SPAN_DANGER("\The [user] attempts to load subversive software into you, but your hacked subroutines ignore the attempt."))
 		to_chat(user, SPAN_DANGER("You attempt to subvert [src], but the sequencer has no effect."))
 		return
@@ -257,7 +259,7 @@ var/list/mob_hat_cache = list()
 	var/time = time2text(world.realtime,"hh:mm:ss")
 	lawchanges.Add("[time] <B>:</B> [user.name]([user.key]) emagged [name]([key])")
 
-	emagged = 1
+	AddTrait(CYBORG_TRAIT_EMAGGED)
 	lawupdate = 0
 	connected_ai = null
 	clear_supplied_laws()
@@ -279,6 +281,8 @@ var/list/mob_hat_cache = list()
 		stat = CONSCIOUS
 		return
 	health = maxHealth - (getBruteLoss() + getFireLoss())
+	if(health <= death_threshold && stat != DEAD) //stops constantly procing death
+		death()
 	return
 
 //Easiest to check this here, then check again in the robot proc.
@@ -286,7 +290,7 @@ var/list/mob_hat_cache = list()
 //Drones killed by damage will gib.
 /mob/living/silicon/robot/drone/handle_regular_status_updates()
 	var/turf/T = get_turf(src)
-	if((!T || health <= 0) && src.stat != DEAD)
+	if((!T || health <= death_threshold) && src.stat != DEAD)
 		timeofdeath = world.time
 		death() //Possibly redundant, having trouble making death() cooperate.
 		gib()
@@ -300,7 +304,7 @@ var/list/mob_hat_cache = list()
 //CONSOLE PROCS
 /mob/living/silicon/robot/drone/proc/law_resync()
 	if(stat != 2)
-		if(emagged)
+		if(HasTrait(CYBORG_TRAIT_EMAGGED))
 			to_chat(src, SPAN_DANGER("You feel something attempting to modify your programming, but your hacked subroutines are unaffected."))
 		else
 			to_chat(src, SPAN_DANGER("A reset-to-factory directive packet filters through your data connection, and you obediently modify your programming to suit it."))
@@ -309,7 +313,7 @@ var/list/mob_hat_cache = list()
 
 /mob/living/silicon/robot/drone/proc/shut_down()
 	if(stat != 2)
-		if(emagged)
+		if(HasTrait(CYBORG_TRAIT_EMAGGED))
 			to_chat(src, SPAN_DANGER("You feel a system kill order percolate through your tiny brain, but it doesn't seem like a good idea to you."))
 		else
 			to_chat(src, SPAN_DANGER("You feel a system kill order percolate through your tiny brain, and you obediently destroy yourself."))
@@ -324,7 +328,9 @@ var/list/mob_hat_cache = list()
 //Reboot procs.
 
 /mob/living/silicon/robot/drone/proc/we_live_again(var/mob/living/silicon/robot/R) //we shall live again!
-	..() //Can never go wrong with one of these!
+	//..() //Can never go wrong with one of these!
+	//Hex: Yes you can! STOP MAKING LINTER CHAN CRY!
+
 	R.stat = CONSCIOUS //We live again!
 	GLOB.dead_mob_list -= R //Were not dead...
 	GLOB.living_mob_list |= R //Were infact alive
@@ -368,6 +374,7 @@ var/list/mob_hat_cache = list()
 /mob/living/silicon/robot/drone/construction/welcome_drone()
 	to_chat(src, "<b>You are a construction drone, an autonomous engineering and fabrication system.</b>.")
 	to_chat(src, "You are assigned to a Sol Central construction project. The name is irrelevant. Your task is to complete construction and subsystem integration as soon as possible.")
+	to_chat(src, "You generally should not leave the construction site unless absolutely required for the completion of the Sol Central construction project.")
 	to_chat(src, "Use <b>:d</b> to talk to other drones and <b>say</b> to speak silently to your nearby fellows.")
 	to_chat(src, "<b>You do not follow orders from anyone; not the AI, not humans, and not other synthetics.</b>.")
 
@@ -380,9 +387,9 @@ var/list/mob_hat_cache = list()
 	name = real_name
 
 /mob/living/silicon/robot/drone/construction/updateicon()
-	overlays.Cut()
+	cut_overlays()
 	if(stat == CONSCIOUS)
-		overlays += "eyes-[module_sprites[icontype]]"
+		add_overlay("eyes-[module_sprites[icontype]]")
 
 /proc/too_many_active_drones()
 	var/drones = 0
@@ -428,5 +435,5 @@ var/list/mob_hat_cache = list()
 		armguard = ""
 		return
 
-	verbs -= /mob/living/silicon/robot/drone/verb/choose_armguard
+	remove_verb(src, /mob/living/silicon/robot/drone/verb/choose_armguard)
 	to_chat(src, "Your armguard has been set.")

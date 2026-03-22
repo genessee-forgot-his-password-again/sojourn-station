@@ -6,7 +6,7 @@
 	name = "hunter seeker robot module"
 	languages = list(
 					LANGUAGE_COMMON = 1,
-					LANGUAGE_SERBIAN = 1,
+					LANGUAGE_ILLYRIAN = 1,
 					LANGUAGE_CYRILLIC = 1,
 					LANGUAGE_JIVE = 0
 					//LANGUAGE_TERMINATOR = 1 this is not real
@@ -24,19 +24,19 @@
 	//src.modules += new /obj/item/melee/energy/glaive(src)
 	src.modules += new /obj/item/tool/weldingtool/robotic(src)
 	src.modules += new /obj/item/tool/multitool/robotic(src)
-	src.modules += new /obj/item/tool/robotic_omni_engi(src)
+	src.modules += new /obj/item/tool/robotic_omni/engi(src)
 	src.modules += new /obj/item/tool/tape_roll/fiber/robotic(src) //Window repair
 	src.modules += new /obj/item/device/gps(src)
 
 	..(R)
 
-//Syndicate borg is intended for summoning by traitors. Not currently implemented
+//Syndicate borg is intended for summoning by contractors. Not currently implemented
 /obj/item/robot_module/syndicate
 	name = "syndicate robot module"
 	hide_on_manifest = TRUE
 	languages = list(
 					LANGUAGE_COMMON = 1,
-					LANGUAGE_SERBIAN = 1,
+					LANGUAGE_ILLYRIAN = 1,
 					LANGUAGE_CYRILLIC = 1,
 					LANGUAGE_JIVE = 0
 					)
@@ -64,7 +64,7 @@
 	src.modules += new /obj/item/melee/energy/sword(src)
 	src.modules += new /obj/item/tool/weldingtool/robotic(src)
 	src.modules += new /obj/item/tool/multitool/robotic(src)
-	src.modules += new /obj/item/tool/robotic_omni_engi(src)
+	src.modules += new /obj/item/tool/robotic_omni/engi(src)
 	src.modules += new /obj/item/tool/tape_roll/fiber/robotic(src) //handcuffs and mouth tape
 	//Todo, replace these with suitable weapons from eris
 	//src.modules += new /obj/item/gun/energy/mountedsmg(src)
@@ -97,7 +97,7 @@
 	src.modules += new /obj/item/rcd/borg(src)
 	src.modules += new /obj/item/tool/weldingtool/robotic(src)
 	src.modules += new /obj/item/tool/multitool/robotic(src)
-	src.modules += new /obj/item/tool/robotic_omni_engi(src)
+	src.modules += new /obj/item/tool/robotic_omni/engi(src)
 	src.modules += new /obj/item/tool/tape_roll/fiber/robotic(src) //Window repair
 	src.modules += new /obj/item/device/pipe_painter(src)
 	src.modules += new /obj/item/gripper/no_use/loader(src)
@@ -183,7 +183,7 @@
 	//Rescue module has built in crew monitor
 	//General medical does not, they're expected to stay in medbay and use the computers
 	subsystems = list(/datum/nano_module/crew_monitor)
-	supported_upgrades = list(/obj/item/borg/upgrade/hypospray/medical,
+	supported_upgrades = list(/obj/item/borg/upgrade/hypospray_medical,
 							  /obj/item/borg/upgrade/jetpack)
 	health = 270 //Tough
 	speed_factor = 1.3 //Turbospeed!
@@ -208,7 +208,7 @@
 	src.modules += new /obj/item/device/flash(src)
 	src.modules += new /obj/item/borg/sight/hud/med(src)
 	src.modules += new /obj/item/device/scanner/health(src)
-	src.modules += new /obj/item/tool/robotic_omni_standard(src)
+	src.modules += new /obj/item/tool/robotic_omni/standard(src)
 	src.modules += new /obj/item/tool/weldingtool/robotic/weaker(src)
 	src.modules += new /obj/item/roller_holder(src)
 	src.modules += new /obj/item/hatton/robot(src)

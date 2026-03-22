@@ -24,33 +24,48 @@
 
 // Languages.
 #define LANGUAGE_COMMON		"English Common"
-#define LANGUAGE_CYRILLIC	"Techno-Russian"
-#define LANGUAGE_SERBIAN	"Serbian"
+#define LANGUAGE_CYRILLIC	"Interslavic"
+#define LANGUAGE_ILLYRIAN	"Illyrian"
 #define LANGUAGE_JIVE		"Jive"
-#define LANGUAGE_GERMAN		"German"
+#define LANGUAGE_EURO		"Eurolang"
 #define LANGUAGE_JANA	    "Jana"
-#define LANGUAGE_LATIN 		"Ancient Latin"
+#define LANGUAGE_LATIN 		"Latin"
+#define LANGUAGE_ROMANA		"Lingua Romana"
+#define LANGUAGE_YASSARI	"Yassari"
 
+//Alein / Species specific langauges.
 #define LANGUAGE_ROBOT "Robot Talk"
-#define LANGUAGE_DRONE "Drone Talk"
-#define LANGUAGE_MONKEY "Chimpanzee"
+#define LANGUAGE_OPIFEXEE "Opifexee"
+#define LANGUAGE_CHTMANT "Chthive"
+#define LANGUAGE_KRIOSAN "Kriosan"
+#define LANGUAGE_AKULA "Akula"
+#define LANGUAGE_MARQUA "Marqua"
+#define LANGUAGE_PLANT "Native Plant"
+#define LANGUAGE_SYNTHETIC "Technical Cant"
+#define LANGUAGE_MERP "Narad Pidgin"
+#define LANGUAGE_BLORP "Aulvae Sonet"
+#define LANGUAGE_WEH "Cindarite Voc"
+#define LANGUAGE_SABLEKYNE "Crinos"
 
+// Special / Antag langauges.
+#define LANGUAGE_MONKEY "Chimpanzee"
+#define LANGUAGE_DRONE "Drone Talk"
 #define LANGUAGE_XENOMORPH "Xenomorph"
 #define LANGUAGE_HIVEMIND "Hivemind"
 #define LANGUAGE_CORTICAL "Cortical Link"
 #define LANGUAGE_CULT "Cult"
-#define LANGUAGE_OCCULT "Occult"
+#define LANGUAGE_OCCULT "Occult Projection"
 #define LANGUAGE_BLITZ "Blitzshell Communique"
-#define LANGUAGE_OPIFEXEE "Opifexee"
-#define LANGUAGE_CHTMANT "Chthive"
 
 // Language flags.
-#define WHITELISTED  1   // Language is available if the speaker is whitelisted.
-#define RESTRICTED   2   // Language can only be acquired by spawning or an admin.
-#define NONVERBAL    4   // Language has a significant non-verbal component. Speech is garbled without line-of-sight.
-#define SIGNLANG     8   // Language is completely non-verbal. Speech is displayed through emotes for those who can understand.
-#define HIVEMIND     16  // Broadcast to all mobs with this language.
-#define NONGLOBAL    32  // Do not add to general languages list.
-#define INNATE       64  // All mobs can be assumed to speak and understand this language. (audible emotes)
-#define NO_TALK_MSG  128 // Do not show the "\The [speaker] talks into \the [radio]" message
-#define NO_STUTTER   256 // No stuttering, slurring, or other speech problems
+#define WHITELISTED  1    // Language is available if the speaker is whitelisted.
+#define RESTRICTED   2    // Language can only be acquired by spawning or an admin.
+#define NONVERBAL    4    // Language has a significant non-verbal component. Speech is garbled without line-of-sight.
+#define SIGNLANG     8    // Language is completely non-verbal. Speech is displayed through emotes for those who can understand.
+#define HIVEMIND     16   // Broadcast to all mobs with this language.
+#define NONGLOBAL    32   // Do not add to general languages list.
+#define INNATE       64   // All mobs can be assumed to speak and understand this language. (audible emotes)
+#define NO_SPEAK     128  // Language can be understood, but not spoken.
+#define NO_TALK_MSG  256  // Do not show the "\The [speaker] talks into \the [radio]" message
+#define NO_STUTTER   512  // No stuttering, slurring, or other speech problems
+#define NO_TRANSLATE 1024 // Prevents translation with omni translators

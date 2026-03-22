@@ -2,12 +2,22 @@
 
 //// Loot table on all tiers
 // Tier 1
+/obj/structure/closet/onestar/populate_contents()
+	populated_contents = TRUE
+
+/obj/structure/closet/onestar/proc/dont_spawn_items()
+	if(populated_contents)
+		return TRUE
+	return FALSE
+
 /obj/structure/closet/onestar/tier1
 	name = "\improper Greyson forgotten closet"
 	desc = "It's an old Greyson closet. Doesn't seem like it contains anything worthwhile. Probably."
 	icon_state = "lootcloset"
 
 /obj/structure/closet/onestar/tier1/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/contraband/low_chance(src)
 	new /obj/random/contraband/low_chance(src)
 	new /obj/random/pack/rare/low_chance(src)
@@ -23,6 +33,11 @@
 	new /obj/random/pack/cloth/low_chance(src)
 	new /obj/random/pack/gun_loot/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/low(src)
+	if(prob(40))
+		new /obj/random/gun_parts/frames(src)
+	..()
 
 // Tier 2
 /obj/structure/closet/onestar/tier2
@@ -31,6 +46,8 @@
 	icon_state = "lootcloset1"
 
 /obj/structure/closet/onestar/tier2/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/contraband/low_chance(src)
 	new /obj/random/contraband/low_chance(src)
 	new /obj/random/pack/rare/low_chance(src)
@@ -45,6 +62,14 @@
 	new /obj/random/pack/cloth/low_chance(src)
 	new /obj/random/pack/cloth/low_chance(src)
 	new /obj/random/pack/gun_loot/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/low(src)
+	if(prob(80))
+		new /obj/random/gun_parts/frames(src)
+		new /obj/random/gun_parts/frames(src)
+	..()
+
 
 // Tier 3
 /obj/structure/closet/onestar/tier3
@@ -53,6 +78,8 @@
 	icon_state = "lootcloset2"
 
 /obj/structure/closet/onestar/tier3/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/contraband/low_chance(src)
 	new /obj/random/contraband/low_chance(src)
 	new /obj/random/pack/rare/low_chance(src)
@@ -71,6 +98,16 @@
 	new /obj/random/tool/advanced/onestar/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
 	new /obj/random/lathe_disk/advanced/onestar/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
+	new /obj/random/gun_parts/frames(src)
+	if(prob(80))
+		new /obj/random/gun_parts/frames(src)
+		new /obj/random/gun_parts/frames(src)
+	..()
 
 ////// Closets
 
@@ -84,6 +121,7 @@
 // Empty
 /obj/structure/closet/onestar/tier1/normal/empty
 /obj/structure/closet/onestar/tier1/normal/empty/populate_contents()
+	return
 
 //Tier 2
 /obj/structure/closet/onestar/tier2/normal
@@ -94,6 +132,7 @@
 // Empty
 /obj/structure/closet/onestar/tier2/normal/empty
 /obj/structure/closet/onestar/tier2/normal/empty/populate_contents()
+	return
 
 //Tier 3
 /obj/structure/closet/onestar/tier3/normal
@@ -104,6 +143,7 @@
 // Empty
 /obj/structure/closet/onestar/tier3/normal/empty
 /obj/structure/closet/onestar/tier3/normal/empty/populate_contents()
+	return
 
 
 ////Special
@@ -114,15 +154,20 @@
 	old_chance = 70
 
 /obj/structure/closet/onestar/tier1/special/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/pack/rare/low_chance(src)
 	new /obj/random/pack/rare/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
 	..()
+
 
 // Empty
 /obj/structure/closet/onestar/tier1/special/empty
 /obj/structure/closet/onestar/tier1/special/empty/populate_contents()
+	return
 
 //Tier 2
 /obj/structure/closet/onestar/tier2/special
@@ -131,15 +176,21 @@
 	old_chance = 30
 
 /obj/structure/closet/onestar/tier2/special/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/pack/rare/low_chance(src)
 	new /obj/random/pack/rare/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
 	..()
+
 
 // Empty
 /obj/structure/closet/onestar/tier2/special/empty
 /obj/structure/closet/onestar/tier2/special/empty/populate_contents()
+	return
 
 //Tier 3
 /obj/structure/closet/onestar/tier3/special
@@ -148,15 +199,21 @@
 	old_chance = 10
 
 /obj/structure/closet/onestar/tier3/special/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/pack/rare/low_chance(src)
 	new /obj/random/pack/rare/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
+	new /obj/random/gun_parts/frames(src)
 	..()
 
 // Empty
 /obj/structure/closet/onestar/tier3/special/empty
 /obj/structure/closet/onestar/tier3/special/empty/populate_contents()
+	return
 
 ////Mineral
 //Tier 1
@@ -166,14 +223,19 @@
 	old_chance = 70
 
 /obj/structure/closet/onestar/tier1/mineral/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/pack/tech_loot/low_chance(src)
 	new /obj/random/pack/tech_loot/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
+	new /obj/random/gun_parts/frames(src)
 	..()
-
 // Empty
 /obj/structure/closet/onestar/tier1/mineral/empty
 /obj/structure/closet/onestar/tier1/mineral/empty/populate_contents()
+	return
 
 //Tier 2
 /obj/structure/closet/onestar/tier2/mineral
@@ -182,14 +244,19 @@
 	old_chance = 30
 
 /obj/structure/closet/onestar/tier2/mineral/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/pack/tech_loot/low_chance(src)
 	new /obj/random/pack/tech_loot/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
+	new /obj/random/gun_parts/frames(src)
 	..()
-
 // Empty
 /obj/structure/closet/onestar/tier2/mineral/empty
 /obj/structure/closet/onestar/tier2/mineral/empty/populate_contents()
+	return
 
 //Tier 3
 /obj/structure/closet/onestar/tier3/mineral
@@ -198,14 +265,19 @@
 	old_chance = 10
 
 /obj/structure/closet/onestar/tier3/mineral/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/pack/tech_loot/low_chance(src)
 	new /obj/random/pack/tech_loot/low_chance(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
+	new /obj/random/gun_parts/frames(src)
 	..()
-
 // Empty
 /obj/structure/closet/onestar/tier3/mineral/empty
 /obj/structure/closet/onestar/tier3/mineral/empty/populate_contents()
+	return
 
 ////Medical
 //Tier 1
@@ -215,14 +287,19 @@
 	old_chance = 70
 
 /obj/structure/closet/onestar/tier1/medical/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/lowkeyrandom(src)
 	new /obj/random/lowkeyrandom(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
+	new /obj/random/gun_parts/frames(src)
 	..()
-
 // Empty
 /obj/structure/closet/onestar/tier1/medical/empty
 /obj/structure/closet/onestar/tier1/medical/empty/populate_contents()
+	return
 
 //Tier 2
 /obj/structure/closet/onestar/tier2/medical
@@ -231,14 +308,17 @@
 	old_chance = 30
 
 /obj/structure/closet/onestar/tier2/medical/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/lowkeyrandom(src)
 	new /obj/random/lowkeyrandom(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
 	..()
-
 // Empty
 /obj/structure/closet/onestar/tier2/medical/empty
 /obj/structure/closet/onestar/tier2/medical/empty/populate_contents()
+	return
 
 //Tier 3
 /obj/structure/closet/onestar/tier3/medical
@@ -247,11 +327,15 @@
 	old_chance = 10
 
 /obj/structure/closet/onestar/tier3/medical/populate_contents()
+	if(dont_spawn_items())
+		return
 	new /obj/random/lowkeyrandom(src)
 	new /obj/random/lowkeyrandom(src)
 	new /obj/random/cloth/greyson_clothing/low_chance(src)
+	new /obj/random/gun_parts/low(src)
+	new /obj/random/gun_parts/frames(src)
 	..()
-
 // Empty
 /obj/structure/closet/onestar/tier3/medical/empty
 /obj/structure/closet/onestar/tier3/medical/empty/populate_contents()
+	return

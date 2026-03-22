@@ -3,10 +3,10 @@
 	desc = "A thick airtight helmet designed for planetside warfare retrofitted with seals to act like normal space suit helmet."
 	icon_state = "scaf"
 	item_state = "scaf"
-	armor = list(
-		melee = 60,
-		bullet = 55,
-		energy = 50,
+	armor_list = list(
+		melee = 15,
+		bullet = 13,
+		energy = 12,
 		bomb = 75,
 		bio = 100,
 		rad = 25
@@ -16,6 +16,32 @@
 	camera_networks = list(NETWORK_MERCENARY)
 	light_overlay = "helmet_light_green"
 	obscuration = MEDIUM_OBSCURATION
+	max_upgrades = 0
+
+/obj/item/clothing/head/helmet/space/void/SCAF/verb/toggle_style()
+	set name = "Adjust Helmet Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["Standard"] = "scaf"
+	options["Cat eared"] = "skat"
+	options["Heavy"] = "scafalt2" //original sprites by- Apparently Rebel?
+	options["Commando"] = "scafalt" //it really does look like the Commandos headgear. Same credit as alt2
+
+	var/choice = input(M,"What kind of helmet style do you want to switch to?","Adjust style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		to_chat(M, "You adjusted your helmet's appearance into [choice] mode.")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
 
 /obj/item/clothing/suit/space/void/SCAF
 	name = "SCAF suit"
@@ -24,10 +50,10 @@
 	item_state = "scaf"
 	slowdown = 1.3
 	flags_inv = HIDEGLOVES|HIDEJUMPSUIT|HIDETAIL
-	armor = list(
-		melee = 60,
-		bullet = 55,
-		energy = 50,
+	armor_list = list(
+		melee = 15,
+		bullet = 13,
+		energy = 12,
 		bomb = 75,
 		bio = 100,
 		rad = 25
@@ -37,12 +63,14 @@
 	helmet = /obj/item/clothing/head/helmet/space/void/SCAF
 	price_tag = 950
 	stiffness = MEDIUM_STIFFNESS
+	max_upgrades = 0
 
 /obj/item/clothing/suit/space/void/SCAF/voidwolf
 	name = "REAVER-SCAF suit"
 	desc = "A bulky antique suit of refurbished infantry armour, retrofitted with seals and coatings to make it EVA capable but also reducing mobility. This one has a void wolf paint job with intimidating red colors."
 	icon_state = "scaf_wolf"
 	item_state = "scaf_wolf"
+	slowdown = 1.1 // Red makes it go fasta!
 	helmet = /obj/item/clothing/head/helmet/space/void/SCAF/voidwolf
 
 /obj/item/clothing/head/helmet/space/void/SCAF/voidwolf
@@ -50,6 +78,29 @@
 	desc = "A thick airtight helmet designed for planetside warfare retrofitted with seals to act like normal space suit helmet. This one has a void wolf paint job with intimidating red colors."
 	icon_state = "scaf_wolf"
 	item_state = "scaf_wolf"
+
+/obj/item/clothing/head/helmet/space/void/SCAF/voidwolf/toggle_style()
+	set name = "Adjust Helmet Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["Standard"] = "scaf_wolf"
+	options["Void Cat"] = "scaf_cat" // Requested by Trilby long ago
+
+	var/choice = input(M,"What kind of helmet style do you want to switch to?","Adjust style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		to_chat(M, "You adjusted your helmet's appearance into [choice] mode.")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
 
 /obj/item/clothing/head/helmet/space/void/SCAF/blackshield
 	name = "blackshield SCAF helmet"
@@ -59,6 +110,29 @@
 	camera_networks = list(NETWORK_SECURITY)
 	light_overlay = "helmet_light_white"
 
+/obj/item/clothing/head/helmet/space/void/SCAF/blackshield/toggle_style()
+	set name = "Adjust Helmet Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["Standard"] = "scaf_mil"
+	options["Cat eared"] = "skat_mil"
+
+	var/choice = input(M,"What kind of helmet style do you want to switch to?","Adjust style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		to_chat(M, "You adjusted your helmet's appearance into [choice] mode.")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
+
 /obj/item/clothing/suit/space/void/SCAF/blackshield
 	name = "blackshield SCAF suit"
 	desc = "A bulky antique suit of refurbished into elite infantry armour, retrofitted with seals and coatings to make it EVA capable but also reducing mobility. The blackshields answers to an all purpose mobile tank suit."
@@ -66,16 +140,16 @@
 	item_state = "scaf_mil"
 	helmet = /obj/item/clothing/head/helmet/space/void/SCAF/blackshield
 
-//Voidsuit for traitors
+//Voidsuit for contractors
 /obj/item/clothing/head/helmet/space/void/merc
 	name = "blood-red voidsuit helmet"
 	desc = "An advanced helmet designed for work in special operations. This version is additionally reinforced against melee attacks."
 	icon_state = "syndiehelm"
 	item_state = "syndiehelm"
-	armor = list(
-		melee = 50,
-		bullet = 40,
-		energy = 30,
+	armor_list = list(
+		melee = 12,
+		bullet = 10,
+		energy = 7,
 		bomb = 50,
 		bio = 100,
 		rad = 75
@@ -99,10 +173,11 @@
 	name = "blood-red voidsuit"
 	desc = "An advanced suit that protects against injuries during special operations. This version is additionally reinforced against melee attacks."
 	item_state = "syndie_voidsuit"
-	armor = list(
-		melee = 50,
-		bullet = 40,
-		energy = 30,
+	slowdown = 0.5 //decent armor, decent slowdown
+	armor_list = list(
+		melee = 12,
+		bullet = 10,
+		energy = 7,
 		bomb = 50,
 		bio = 100,
 		rad = 75
@@ -110,6 +185,7 @@
 	siemens_coefficient = 0.35
 	species_restricted = list("Human")
 	helmet = /obj/item/clothing/head/helmet/space/void/merc
+	price_tag = 675
 	stiffness = MEDIUM_STIFFNESS
 
 /obj/item/clothing/suit/space/void/merc/equipped
@@ -129,55 +205,16 @@
 	helmet = /obj/item/clothing/head/helmet/space/void/merc/xanorath
 	price_tag = 650
 
-
-//Church Crusader armor, credit to Valterak for the original sprite.
-/obj/item/clothing/head/helmet/space/void/crusader
-	name = "crusader hood"
-	desc = "An armored helmet with a built in light system allowing you to shine heavens grace on heretics before you purge them."
-	icon_state = "inqarmor_hood"
-	item_state = "inqarmor_hood"
-	armor = list(
-		melee = 65,
-		bullet = 65,
-		energy = 65,
-		bomb = 70,
-		bio = 100,
-		rad = 100
-	)
-	siemens_coefficient = 0
-	species_restricted = list("Human")
-	light_overlay = "helmet_light_white"
-	brightness_on = 8 //luminosity when on
-
-/obj/item/clothing/suit/space/void/crusader
-	name = "crusader 'Deus Vult' power armor"
-	desc = "The church of absolutes most powerful creation, the Mark I 'Deus Vult' power armor, a void capable ablative durasteel-forged suit with built in power systems linked to a wearers cruciform, recharged by its presence to prevent slow down from the armors weight. The only thing they fear is you."
-	icon_state = "inqarmor"
-	item_state = "inqarmor"
-	slowdown = 0
-	flags_inv = HIDEGLOVES|HIDEJUMPSUIT|HIDETAIL
-	armor = list(
-		melee = 65,
-		bullet = 65,
-		energy = 65,
-		bomb = 70,
-		bio = 100,
-		rad = 100
-	)
-	siemens_coefficient = 0
-	species_restricted = list("Human")
-	helmet = /obj/item/clothing/head/helmet/space/void/crusader
-
 /obj/item/clothing/head/helmet/space/void/peking
 	name = "peking void-hat"
 	desc = "A strange albiet intriguing mask and hat design. The creases at its neck are visible but the field cover appears to be attached to the air-tight mask itself. \
 	It might be air-tight and fitted for space but god knows how well it actually protects the wearer.."
 	icon_state = "peking"
 	item_state = "peking"
-	armor = list(
-		melee = 45,
-		bullet = 40,
-		energy = 40,
+	armor_list = list(
+		melee = 11,
+		bullet = 10,
+		energy = 10,
 		bomb = 25,
 		bio = 100,
 		rad = 50
@@ -195,10 +232,10 @@
 	item_state = "peking"
 	slowdown = 0.35
 	flags_inv = HIDEGLOVES|HIDEJUMPSUIT|HIDETAIL
-	armor = list(
-		melee = 55,
-		bullet = 45,
-		energy = 40,
+	armor_list = list(
+		melee = 13,
+		bullet = 11,
+		energy = 10,
 		bomb = 50,
 		bio = 100,
 		rad = 50
@@ -212,10 +249,10 @@
 	desc = "An advanced helmet designed specifically to shrug off blunt force blows, blades and even conventional projectiles with its domed armor design."
 	icon_state = "ronin"
 	item_state = "ronin"
-	armor = list(
-		melee = 66,
-		bullet = 60,
-		energy = 45,
+	armor_list = list(
+		melee = 16,
+		bullet = 15,
+		energy = 11,
 		bomb = 45,
 		bio = 100,
 		rad = 75
@@ -224,6 +261,7 @@
 	species_restricted = list("Human")
 	camera_networks = list(NETWORK_MERCENARY)
 	light_overlay = "helmet_light_ihs"
+	max_upgrades = 0
 
 /obj/item/clothing/suit/space/void/ronin
 	name = "\"Ronin\" heavy voidsuit"
@@ -234,10 +272,10 @@
 	item_state = "ronin"
 	slowdown = 0.45
 	flags_inv = HIDEGLOVES|HIDEJUMPSUIT|HIDETAIL|HIDESHOES
-	armor = list(
-		melee = 66,
-		bullet = 60,
-		energy = 45,
+	armor_list = list(
+		melee = 16,
+		bullet = 15,
+		energy = 11,
 		bomb = 45,
 		bio = 100,
 		rad = 75
@@ -245,6 +283,7 @@
 	siemens_coefficient = 0.35
 	species_restricted = list("Human")
 	helmet = /obj/item/clothing/head/helmet/space/void/ronin
+	max_upgrades = 0
 
 /obj/item/clothing/suit/space/void/ronin/equipped
 	boots = /obj/item/clothing/shoes/magboots
@@ -252,3 +291,110 @@
 
 /obj/item/clothing/suit/space/void/ronin/boxed
 	tank = /obj/item/tank/emergency_oxygen/double
+
+/obj/item/clothing/head/helmet/space/void/os
+	name = "greyson positronic space helm"
+	icon_state = "os_spacehelm"
+	item_state = "os_spacehelm"
+	desc = "A helmet produced by GP. It's outdated but sleek design makes it still viable to use even after all these years."
+	w_class = ITEM_SIZE_NORMAL
+	flash_protection = FLASH_PROTECTION_MODERATE
+	tint = TINT_NONE
+	armor_list = list(
+		melee =7,
+		bullet = 7,
+		energy = 7,
+		bomb = 25,
+		bio = 100,
+		rad = 100
+	)
+	siemens_coefficient = 0.6
+
+/obj/item/clothing/suit/space/void/os
+	name = "greyson positronic space suit"
+	icon_state = "os_spacesuit"
+	item_state = "os_spacesuit"
+	desc = "A engineering space suit with slight armor plates to help protect the warer form space dust and haul breaches well not impeeding speed, folds up really tightly as well."
+	w_class = ITEM_SIZE_NORMAL
+	slowdown = 0
+	armor_list = list(
+		melee =7,
+		bullet = 7,
+		energy = 7,
+		bomb = 25,
+		bio = 100,
+		rad = 100
+	)
+	siemens_coefficient = 0.6
+	helmet = /obj/item/clothing/head/helmet/space/void/os
+
+/obj/item/clothing/head/helmet/space/void/os/nova
+	name = "Greyson Star Traders Enviromental Helm"
+	icon_state = "gsn_spacehelm"
+	item_state = "gsn_spacehelm"
+	desc = "A helmet produced by Greyson Star Traders. It's more outdated than the usual version, but with sleeker design makes it still viable to use even after all these years."
+	flash_protection = FLASH_PROTECTION_MINOR
+	tint = TINT_NONE
+	armor_list = list( // nerf the value compared to the original
+		melee = 2,
+		bullet = 1,
+		energy = 3,
+		bomb = 5,
+		bio = 100,
+		rad = 50
+	)
+	siemens_coefficient = 0.3 // half of the original helm value
+
+/obj/item/clothing/suit/space/void/os/nova
+	name = "Greyson Star Traders Enviromental Suit"
+	icon_state = "os_spacesuit"
+	item_state = "os_spacesuit"
+	desc = "A engineering space suit with slight armor plates to help protect the warer form space dust and haul breaches well not impeeding speed, folds up really tightly as well.."
+	w_class = ITEM_SIZE_NORMAL
+	slowdown = 0
+	armor_list = list(
+		melee = 1,
+		bullet = 1,
+		energy = 3,
+		bomb = 0,
+		bio = 100,
+		rad = 50
+	)
+	siemens_coefficient = 0.3
+	helmet = /obj/item/clothing/head/helmet/space/void/os/nova
+
+//Upgraded version of the above, found rarely in greyson loot.
+/obj/item/clothing/head/helmet/space/void/greyson
+	name = "greyson 'zhengdou' hardsuit helm" //Credit for sprites go to Près de l'oiseau over at Eris
+	icon_state = "os_hardsuit_helm"
+	item_state = "os_hardsuit_helm"
+	desc = "A combat rated hard-suit helmet produced by GP. Despite its age, the sleek suit still stands up against its more modern counterparts."
+	flash_protection = FLASH_PROTECTION_MODERATE
+	tint = TINT_NONE
+	armor_list = list(
+		melee = 10,
+		bullet = 11,
+		energy = 11,
+		bomb = 45,
+		bio = 100,
+		rad =  25
+	)
+	siemens_coefficient = 0.6
+
+/obj/item/clothing/suit/space/void/greyson
+	name = "greyson 'zhengdou' hardsuit" //Credit for sprites go to Près de l'oiseau over at Eris
+	icon_state = "os_hardsuit"
+	item_state = "os_hardsuit"
+	desc = "A combat rated hard-suit produced by GP. Despite its age, the sleek suit still stands up against its more modern counterparts and is surprisingly comfortable!"
+	w_class = ITEM_SIZE_BULKY
+	slowdown = 0
+	helmet = /obj/item/clothing/head/helmet/space/void/greyson
+	armor_list = list(
+		melee = 10,
+		bullet = 12,
+		energy = 12,
+		bomb = 45,
+		bio = 100,
+		rad = 25
+	)
+	siemens_coefficient = 0.6

@@ -1,6 +1,6 @@
-/mob/living/carbon/superior_animal/handmade/roomba
+/mob/living/carbon/superior/handmade/roomba
 	name = "Custom-Made Roomba Drone"
-	desc = "Built from the Soteria robotics division's craftsmanship, and gathered designs of Greyson positronics, each of these fully robotic automatons is a unique, handmade, heavily armored assembly."
+	desc = "Built from the Soteria robotics division's craftsmanship, and gathered designs of Greyson positronics, each of these fully robotic automatons is a unique, handmade, heavily armored assembly. Capable of IFF."
 	faction = "neutral"
 	icon_state = "roomba"
 	melee_damage_lower = 10
@@ -9,7 +9,6 @@
 	maxHealth = 100
 	colony_friend = TRUE
 	friendly_to_colony = TRUE
-	can_buckle = TRUE
 	mob_size = MOB_SMALL
 	stop_automated_movement_when_pulled = TRUE
 	density = FALSE
@@ -17,10 +16,10 @@
 
 	// Default armor values so that we can reference them.
 	var/default_armor = list(
-		melee = 15,
-		bullet = 15,
-		energy = 15,
-		bomb = 15,
+		melee = 3,
+		bullet = 3,
+		energy = 3,
+		bomb = 3,
 		bio = 100, // It is a robot, shouldn't be affected by viruses or pain
 		agony = 100
 	)
@@ -32,11 +31,11 @@
 	var/obj/item/mine/kamikaze = null // Store the mine the roomba can hold.
 	cell = new /obj/item/cell/medium/moebius // Hold the roomba's power cell, but default to a cheap one
 
-	follow_message = "emits an affirmative blip and start following."
-	stop_message = "emits an affirmative blip and stop following."
+	follow_message = "emits an affirmative blip and starts following you."
+	stop_message = "emits an affirmative blip and stops in place."
 	exam_message = null
 
-/mob/living/carbon/superior_animal/handmade/roomba/New()
+/mob/living/carbon/superior/handmade/roomba/New()
 	armor = default_armor // Give the roomba it's default armor.
 	..()
 	update_icon()
@@ -45,7 +44,7 @@
  * The attackby() is basically a decision tree with branches.
  * Since most of the branches are binary choices, there will be 'if' which return, and if you don't enter the 'if', consider it the 'else'.
 \*/
-/mob/living/carbon/superior_animal/handmade/roomba/attackby(obj/item/W as obj, mob/user as mob)
+/mob/living/carbon/superior/handmade/roomba/attackby(obj/item/W as obj, mob/user as mob)
 	var/obj/item/T // Define the tool variable early on to avoid compilation problem and to allow us to use tool-unique variables
 	if(user.a_intent == I_HELP) // Are we helping ?
 
@@ -77,7 +76,7 @@
 			var/obj/item/card/id/C = W
 
 			// Check for robotic access
-			if(!access_robotics in C.access)
+			if(!(access_robotics in C.access))
 				to_chat(user, "You do not have access.")
 				return
 
@@ -262,7 +261,7 @@
 	..()
 
 // Custom examine message to show it's various states.
-/mob/living/carbon/superior_animal/handmade/roomba/examine(mob/user)
+/mob/living/carbon/superior/handmade/roomba/examine(mob/user)
 	..() // Default stuff
 
 	// Is the panel open.
@@ -278,7 +277,7 @@
 		to_chat(user, "The roomba got a [weaponry.name] attached to it.")
 
 // Make it drop its loot on death.
-/mob/living/carbon/superior_animal/handmade/roomba/death()
+/mob/living/carbon/superior/handmade/roomba/death()
 	if(weaponry) // Only if it does have a weapon.
 		weaponry.forceMove(src.loc) // Drop the weapon
 		weaponry = null // No more weapon in the roomba
@@ -290,16 +289,16 @@
 	update_icon()
 	return
 
-/mob/living/carbon/superior_animal/handmade/roomba/UnarmedAttack()
+/mob/living/carbon/superior/handmade/roomba/UnarmedAttack()
 	. = ..()
 	if((.) && (kamikaze)) // If we succeeded in hitting and the roomba got a bomb.
 		death() // Kill the roomba which will in turn trigger the bomb.
 
-/mob/living/carbon/superior_animal/handmade/roomba/update_icon()
-	overlays.Cut()
+/mob/living/carbon/superior/handmade/roomba/update_icon()
+	cut_overlays()
 	if(panel_open)
-		overlays += image(icon, "roomba_panel")
+		add_overlay(image(icon, "roomba_panel"))
 	if(armored)
-		overlays += image(icon, "roomba_plating")
+		add_overlay(image(icon, "roomba_plating"))
 	if(weaponry)
-		overlays += image(icon, "roomba_gun")
+		add_overlay(image(icon, "roomba_gun"))

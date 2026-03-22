@@ -2,23 +2,20 @@
 	name_pool = list(
 		"FTB 'Nauka'" = "Free Trade Beacon 'Nauka': \"Privet, this is the trade beacon 'Nauka'.\""
 	)
+	icon_states = list("moe_cruiser", "planet")
 	uid = "techno_adv"
+	tree_x = 0.18
+	tree_y = 0.7
 	spawn_always = TRUE
-	markup = UNCOMMON_GOODS
+	markup = COMMON_GOODS
 	offer_limit = 20
 	base_income = 1600
 	wealth = 0
-	secret_inv_threshold = 2000
-	recommendation_threshold = 4000
-	stations_recommended = list("oddities", "anomalies")
+	hidden_inv_threshold = 2000
+	recommendation_threshold = 3000
+	stations_recommended = list()
 	recommendations_needed = 1
-	assortiment = list(
-		"Design Disks" = list(
-			/obj/item/computer_hardware/hard_drive/portable/design/components = custom_good_name("Artificer's ARK-034 Components"),
-			/obj/item/computer_hardware/hard_drive/portable/design/adv_tools = custom_good_name("Artificer's IJIRO-451 Advanced Tools"),
-			/obj/item/computer_hardware/hard_drive/portable/design/circuits = custom_good_name("Artificer's ESPO-830 Circuits"),
-			/obj/item/computer_hardware/hard_drive/portable/design/logistics = custom_good_name("Artificer's LAT-018 Logistics")
-		),
+	inventory = list(
 		"Reinforcement Mods" = list(
 			/obj/item/tool_upgrade/reinforcement/stick = custom_good_amount_range(list(1, 5)),
 			/obj/item/tool_upgrade/reinforcement/heatsink = custom_good_amount_range(list(1, 5)),
@@ -55,7 +52,7 @@
 			/obj/item/tool_upgrade/augment/hydraulic = custom_good_amount_range(list(1, 5))
 		)
 	)
-	secret_inventory = list(
+	hidden_inventory = list(
 		"Silent Mods" = list(
 			/obj/item/tool_upgrade/augment/dampener = custom_good_amount_range(list(1, 3)),
 			/obj/item/tool_upgrade/refinement/vibcompensator = custom_good_amount_range(list(1, 2))
@@ -64,10 +61,10 @@
 	offer_types = list(
 		/obj/item/oddity/techno = offer_data("unknown technological part", 1600, 2),
 		/obj/item/tool/crowbar/onestar = offer_data("greyson crowbar", 1500, 3),
-		/obj/item/tool/pickaxe/onestar = offer_data("greyson pickaxe", 1500, 3),
+		/obj/item/tool/pickaxe/onestar = offer_data("greyson pickaxe", 2500, 3),  // Takes diamond to print
 		/obj/item/tool/pickaxe/jackhammer/onestar = offer_data("greyson jackhammer", 1500, 3),
 		/obj/item/tool/screwdriver/combi_driver/onestar = offer_data("greyson combi driver", 2000, 3),
 		/obj/item/tool/weldingtool/onestar  = offer_data("greyson welding tool", 2000, 3),
-		/obj/item/tool_upgrade/augment/repair_nano = offer_data("repair nano", 5000, 1),
+		/obj/item/tool_upgrade/augment/repair_nano = offer_data("repair nano", 1500, 1),
 		/obj/item/organ/external/robotic/one_star = offer_data("greyson external prosthetic", 2700, 4)			// base price: 900
 	)

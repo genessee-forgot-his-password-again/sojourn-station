@@ -1,52 +1,12 @@
-/obj/item/clothing/suit/greatcoat/ihc
-	name = "warrant officer's greatcoat"
-	desc = "A durable greatcoat, designed for protecion and style."
-	icon_state = "ihc_coat"
-	item_state = "ihc_coat"
-	blood_overlay_type = "coat"
-	permeability_coefficient = 0.50
-	armor = list(melee = 40, bullet = 40, energy = 30, bomb = 25, bio = 0, rad = 0) //Same as IH Commander standard coat
-	body_parts_covered = UPPER_TORSO|ARMS|LOWER_TORSO|LEGS
-	cold_protection = UPPER_TORSO|ARMS|LOWER_TORSO|LEGS
-	min_cold_protection_temperature = T0C - 20
-	siemens_coefficient = 0.7
-	stiffness = LIGHT_STIFFNESS
-
-/obj/item/clothing/suit/greatcoat/ihc/verb/toggle_style()
-	set name = "Adjust Style"
-	set category = "Object"
-	set src in usr
-
-	if(!isliving(loc))
-		return
-
-	var/mob/M = usr
-	var/list/options = list()
-	options["WO Greatcoat"] = "ihc_coat"
-	options["WO Cloaked Greatcoat"] = "ihc_coat_cloak"
-	options["WO Blue Greatcoat"] = "ihc_coat_blue"
-	options["WO Blue Cloaked Greatcoat"] = "ihc_coat_cloak_blue"
-
-	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
-
-	if(src && choice && !M.incapacitated() && Adjacent(M))
-		icon_state = options[choice]
-		item_state = options[choice]
-		to_chat(M, "You adjusted your attire's style into [choice] mode.")
-		update_icon()
-		update_wear_icon()
-		usr.update_action_buttons()
-		return 1
-
 
 /obj/item/clothing/suit/greatcoat/cap
 	name = "premier's greatcoat"
 	desc = "A green greatcoat. Makes you feel like the leader you are supposed to be."
-	icon_state = "cap_coat"
+	icon_state = "cap_coat"  //Sprites from Eris
 	item_state = "cap_coat"
 	blood_overlay_type = "coat"
 	permeability_coefficient = 0.50
-	armor = list(melee = 35, bullet = 35, energy = 15, bomb = 5, bio = 0, rad = 0)
+	armor_list = list(melee =8, bullet = 8, energy = 3, bomb = 5, bio = 0, rad = 0)
 	body_parts_covered = UPPER_TORSO|ARMS|LOWER_TORSO|LEGS
 	cold_protection = UPPER_TORSO|ARMS|LOWER_TORSO|LEGS
 	min_cold_protection_temperature = T0C - 20
@@ -62,51 +22,13 @@
 
 	var/mob/M = usr
 	var/list/options = list()
-	options["Premier Cloaked Greatcoat"] = "cap_coat_cloak"
 	options["Premier Greatcoat"] = "cap_coat"
-
+	options["Premier old Greatcoat"] = "cap_coat-old"
+	options["Premiers old Cloaked Greatcoat"] = "cap_coat_cloak-old"
 	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
 
 	if(src && choice && !M.incapacitated() && Adjacent(M))
 		icon_state = options[choice]
-		item_state = options[choice]
-		to_chat(M, "You adjusted your attire's style into [choice] mode.")
-		update_icon()
-		update_wear_icon()
-		usr.update_action_buttons()
-		return 1
-
-/obj/item/clothing/suit/greatcoat/ihc/bmc
-	name = "blackshield commander's greatcoat"
-	desc = "A durable greatcoat, designed for protecion and style."
-	icon_state = "mc_coat"
-	item_state = "mc_coat"
-	blood_overlay_type = "coat"
-	permeability_coefficient = 0.50
-	armor = list(melee = 40, bullet = 40, energy = 30, bomb = 25, bio = 0, rad = 0) //It's a formal coat, meant to protect against assassination and little else.
-	body_parts_covered = UPPER_TORSO|ARMS|LOWER_TORSO|LEGS
-	cold_protection = UPPER_TORSO|ARMS|LOWER_TORSO|LEGS
-	min_cold_protection_temperature = T0C - 20
-	siemens_coefficient = 0.7
-
-/obj/item/clothing/suit/greatcoat/ihc/bmc/toggle_style()
-	set name = "Adjust Style"
-	set category = "Object"
-	set src in usr
-
-	if(!isliving(loc))
-		return
-
-	var/mob/M = usr
-	var/list/options = list()
-	options["BC Cloaked Greatcoat"] = "mc_coat_cloak"
-	options["BC Greatcoat"] = "mc_coat"
-
-	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
-
-	if(src && choice && !M.incapacitated() && Adjacent(M))
-		icon_state = options[choice]
-		item_state = options[choice]
 		to_chat(M, "You adjusted your attire's style into [choice] mode.")
 		update_icon()
 		update_wear_icon()
@@ -122,10 +44,10 @@
 	item_state = "divisor_coat"
 	blood_overlay_type = "coat"
 	permeability_coefficient = 0.50
-	armor = list(
-		melee = 30,
-		bullet = 30,
-		energy = 10,
+	armor_list = list(
+		melee = 7,
+		bullet = 7,
+		energy = 2,
 		bomb = 30,
 		bio = 100,
 		rad = 100
@@ -137,16 +59,16 @@
 	stiffness = LIGHT_STIFFNESS
 
 /obj/item/clothing/suit/greatcoat/absolutecoat
-	name = "absolutist coat"
-	desc = "A comfortable, decorated coat for the Absolutist faith and its supporters. Not as armored but just as ostentatious"
+	name = "absolutist greatcoat"
+	desc = "A comfortable, decorated coat for the absolutists and their supporters. Not as armored but just as ostentatious"
 	icon_state = "absolutecoat"
 	item_state = "absolutecoat"
 	blood_overlay_type = "coat"
 	permeability_coefficient = 0.50
-	armor = list(
-		melee = 10,
-		bullet = 10,
-		energy = 10,
+	armor_list = list(
+		melee = 2,
+		bullet = 2,
+		energy = 2,
 		bomb = 10,
 		bio = 100,
 		rad = 100
@@ -155,6 +77,50 @@
 	cold_protection = UPPER_TORSO|ARMS|LOWER_TORSO
 	min_cold_protection_temperature = T0C - 20
 	siemens_coefficient = 0.7
+
+/obj/item/clothing/suit/greatcoat/nt_wintercoat //Sprite recolour from a Civ13 open github skyrim hidden piece with a few change ups to match our pallet -Dongels
+	name = "absolutist wintercoat"
+	desc = "A comfortably warm and thick decorated wintercoat for the absolutists and their supporters. Keeping the faithful warm in the Amethyn heat since 2652."
+	icon_state = "nt_wintercoat"
+	item_state = "nt_wintercoat"
+	blood_overlay_type = "coat"
+	permeability_coefficient = 0.50
+	stiffness = LIGHT_STIFFNESS
+	armor_list = list( //thicker material so +5 boost (from base 10) to armor values, but lower rad/same bomb since not metal lined. Maybe add in minor slowdown if needed -Dongels
+		melee = 3,
+		bullet = 3,
+		energy = 3,
+		bomb = 10,
+		bio = 100,
+		rad = 50
+	)
+	body_parts_covered = UPPER_TORSO|ARMS|LOWER_TORSO
+	cold_protection = UPPER_TORSO|ARMS|LOWER_TORSO
+	min_cold_protection_temperature = T0C - 20
+	siemens_coefficient = 0.7
+
+/obj/item/clothing/suit/greatcoat/nt_wintercoat/verb/toggle_style()
+	set name = "Adjust Style"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["wintercoat default"] = "nt_wintercoat"
+	options["wintercoat dark"] = "nt_wintercoat_dark"
+
+	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		icon_state = options[choice]
+		to_chat(M, "You adjusted your attire's style into [choice] mode.")
+		update_icon()
+		update_wear_icon()
+		usr.update_action_buttons()
+		return 1
 
 /obj/item/clothing/suit/greatcoat/general
 	name = "grey greatcoat"
@@ -180,19 +146,37 @@
 	min_cold_protection_temperature = T0C - 20
 	siemens_coefficient = 0.7
 
-/obj/item/clothing/suit/greatcoat/general/overcoatblack
+/obj/item/clothing/suit/storage/greatcoat/overcoatblack
 	name = "black overcoat"
 	desc = "A sturdy overcoat that harkens back to a simpler time."
 	icon_state = "overcoat_black"
 	item_state = "overcoat_black"
 
-/obj/item/clothing/suit/greatcoat/general/overcoatblack/brown
+/obj/item/clothing/suit/storage/greatcoat/overcoatblack/brown
 	name = "brown overcoat"
 	desc = "A sturdy overcoat that harkens back to a simpler time."
 	icon_state = "overcoat_brown"
 	item_state = "overcoat_brown"
 
-/obj/item/clothing/suit/greatcoat/general/overcoatblack/german
+/obj/item/clothing/suit/storage/greatcoat/overcoatblack/edgy // Purse owner 5 reference.
+	name = "phantom overcoat"
+	desc = "Looking good, edgelord."
+	icon_state = "phantom"
+	item_state = "phantom"
+
+/obj/item/clothing/suit/storage/greatcoat/overcoatblack/crimson // Saint's Row reference.
+	name = "red overcoat"
+	desc = "This coat costed more than Ryan's little crystal there in the vault."
+	icon_state = "morningstar"
+	item_state = "morningstar"
+
+/obj/item/clothing/suit/storage/greatcoat/overcoatblack/anarchist
+	name = "tactical black overcoat"
+	desc = "A sturdy black overcoat that has some seen some wear and tear with time. Someone has outfitted this one with a aged leather bandolier and belt built into it."
+	icon_state = "anarchist"
+	item_state = "anarchist"
+
+/obj/item/clothing/suit/greatcoat/general/german
 	name = "thalatta overcoat"
 	desc = "A sturdy overcoat from Thalatta, the city-ship filled with people of faith and technology. Not related to the local church, strangely enough, but worn by them sometimes."
 	icon_state = "germancoat"
@@ -200,7 +184,7 @@
 
 /obj/item/clothing/suit/greatcoat/cossackcoat
 	name = "jaeger riding coat"
-	desc = "A traditional riding coat often worn by Jaegers, typically inherited or tailored as an expensive practical gift. The design is murder in the humid jungle, but is a time-honored and comfortable jacket for irregulars who served on Krios, where they dressed like woodsmen in their ambush patrols on Sol-Fed regulars in the cold forests and swamps of home."
+	desc = "A traditional riding coat often worn by Jaegers, typically inherited or tailored as an expensive practical gift. The design is murder in the humid Amethyn forests, but is a time-honored and comfortable jacket for irregulars who served on Krios, where they dressed like woodsmen in their ambush patrols on Sol-Fed regulars in the cold forests and swamps of home."
 	icon_state = "cossackcoat"
 	item_state = "cossackcoat"
 	blood_overlay_type = "coat"
@@ -223,9 +207,9 @@
 	item_state = "cossackcoat_kislev"
 	blood_overlay_type = "coat"
 	permeability_coefficient = 0.50
-	armor = list(
-		melee = 10,
-		bullet = 10,
+	armor_list = list(
+		melee = 2,
+		bullet = 2,
 		energy = 0,
 		bomb = 10,
 		bio = 0,
@@ -238,7 +222,20 @@
 	icon_state = "os_overcoat"
 	item_state = "os_overcoat"
 	blood_overlay_type = "coat"
-	armor = list(melee = 30, bullet = 10, energy = 25, bomb = 25, bio = 0, rad = 40)
+	armor_list = list(melee = 7, bullet = 2, energy = 6, bomb = 25, bio = 0, rad = 40)
+	body_parts_covered = UPPER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|ARMS
+	min_cold_protection_temperature = T0C - 20
+	siemens_coefficient = 0.7
+	stiffness = LIGHT_STIFFNESS
+
+/obj/item/clothing/suit/greatcoat/os/nova
+	name = "Greyson Star Traders greatcoat"
+	desc = "A thick, heavy coat for workers that really enjoys paperwork."
+	icon_state = "os_overcoat"
+	item_state = "os_overcoat"
+	blood_overlay_type = "coat"
+	armor_list = list(melee = 1, bullet = 1, energy = 3, bomb = 0, bio = 0, rad = 25)
 	body_parts_covered = UPPER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|ARMS
 	min_cold_protection_temperature = T0C - 20

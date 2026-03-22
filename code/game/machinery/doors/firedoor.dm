@@ -86,7 +86,7 @@
 
 /obj/machinery/door/firedoor/Initialize(mapload)
 	if(mapload)
-		addtimer(CALLBACK(src, .proc/link_to_zas), 30 SECONDS)
+		addtimer(CALLBACK(src, PROC_REF(link_to_zas)), 30 SECONDS)
 	else
 		link_to_zas()
 	. = ..()
@@ -140,8 +140,8 @@
 			continue
 		var/zone = registered_zas_zones[cardinal_inside]
 		registered += zone
-		RegisterSignal(zone, COMSIG_ZAS_TICK, .proc/update_firedoor_data)
-		RegisterSignal(zone, COMSIG_ZAS_DELETE, .proc/link_to_zas)
+		RegisterSignal(zone, COMSIG_ZAS_TICK, PROC_REF(update_firedoor_data))
+		RegisterSignal(zone, COMSIG_ZAS_DELETE, PROC_REF(link_to_zas))
 
 
 /obj/machinery/door/firedoor/get_material()
@@ -194,7 +194,12 @@
 		if(data[FIREDOOR_ALERT] & FIREDOOR_ALERT_HOT)
 			text_to_say += SPAN_DANGER("ALERT : HIGH TEMPERATURE DETECTED |")
 		to_chat(user, text_to_say)
-
+	if(islist(users_to_open) && users_to_open.len)
+		var/users_to_open_string = users_to_open[1]
+		if(users_to_open.len >= 2)
+			for(var/i = 2 to users_to_open.len)
+				users_to_open_string += ", [users_to_open[i]]"
+		to_chat(user, "These people have opened \the [src] during an alert: [users_to_open_string].")
 	/*
 	if(!. || !density)
 		return FALSE
@@ -223,12 +228,7 @@
 		o += "<span style='color:blue'>"
 		o += "[pressure]kPa</span></li>"
 		to_chat(user, o)
-	if(islist(users_to_open) && users_to_open.len)
-		var/users_to_open_string = users_to_open[1]
-		if(users_to_open.len >= 2)
-			for(var/i = 2 to users_to_open.len)
-				users_to_open_string += ", [users_to_open[i]]"
-		to_chat(user, "These people have opened \the [src] during an alert: [users_to_open_string].")
+
 	*/
 
 /obj/machinery/door/firedoor/Bumped(atom/AM)
@@ -494,7 +494,7 @@
 		for(var/cardinals in tile_info)
 			var/target_card = text2dir(cardinals)
 			var/list/turf_data = tile_info[cardinals]
-			if(turf_data[FIREDOOR_ALERT])
+			if(length(turf_data) && turf_data[FIREDOOR_ALERT])
 				var/our_alert_color = (turf_data[FIREDOOR_ALERT] & FIREDOOR_ALERT_HOT) ? 1 : 2
 				add_overlay(new/icon(icon,"alert_[ALERT_STATES[our_alert_color]]", dir=target_card))
 		/*

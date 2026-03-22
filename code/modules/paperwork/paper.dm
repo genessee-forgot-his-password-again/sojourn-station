@@ -20,6 +20,7 @@
 	body_parts_covered = HEAD
 	attack_verb = list("bapped")
 	matter = list(MATERIAL_BIOMATTER = 1)
+	preloaded_reagents = list("woodpulp" = 3)
 
 	var/info		//What's actually written on the paper.
 	var/info_links	//A different version of the paper which includes html links at fields and EOF
@@ -33,10 +34,18 @@
 	var/rigged = 0
 	var/spam_flag = 0
 	var/crumpled = FALSE
+	var/datum/language/language = LANGUAGE_COMMON // Language the paper was written in. Editable by users up until something's actually written
 
-	var/const/deffont = "Verdana"
-	var/const/signfont = "Times New Roman"
-	var/const/crayonfont = "Comic Sans MS"
+	var/crayon_pen = FALSE
+
+	var/deffont = "Verdana"
+	var/signfont = "Times New Roman"
+	var/crayonfont = "Comic Sans MS"
+
+/obj/item/paper/ui_host(mob/user)
+	if(istype(loc, /obj/structure/noticeboard))
+		return loc
+	return ..()
 
 /obj/item/paper/card
 	name = "blank card"
@@ -82,11 +91,19 @@
 		info = parsepencode(info)
 		return
 
-/obj/item/paper/New(loc, text,title)
+/obj/item/paper/New(loc, text,title, datum/language/L = null)
 	..(loc)
 	pixel_y = rand(-8, 8)
 	pixel_x = rand(-9, 9)
 	set_content(text ? text : info, title)
+
+	if (L)
+		language = L
+
+	var/old_language = language
+	if (!set_language(language, TRUE))
+		log_debug("[src] ([type]) initialized with invalid or missing language `[old_language]` defined.")
+		set_language(LANGUAGE_COMMON, TRUE)
 
 /obj/item/paper/proc/set_content(text,title)
 	if(title)
@@ -97,8 +114,20 @@
 	update_space(info)
 	updateinfolinks()
 
+/obj/item/paper/proc/set_language(datum/language/new_language, force = FALSE)
+	if (!new_language || (info && !force))
+		return FALSE
+
+	if (!istype(new_language))
+		new_language = global.all_languages[new_language]
+	if (!istype(new_language))
+		return FALSE
+
+	language = new_language
+	return TRUE
+
 /obj/item/paper/update_icon()
-	if (icon_state == "paper_talisman")
+	if (icon_state == "paper_talisman" || icon_state == "Scroll ink") // For Alchemy related stuff
 		return
 	else if (info)
 		icon_state = "paper_words"
@@ -118,13 +147,78 @@
 	else
 		to_chat(user, "<span class='notice'>You have to go closer if you want to read it.</span>")
 
-/obj/item/paper/proc/show_content(mob/user, forceshow)
+/obj/item/paper/verb/user_set_language()
+	set name = "Set writing language"
+	set category = "Object"
+	set src in usr
+
+	choose_language(usr)
+
+/obj/item/paper/proc/choose_language(mob/user, admin_force = FALSE)
+	if (info)
+		to_chat(user, SPAN_WARNING("\The [src] already has writing on it and cannot have its language changed."))
+		return
+	if (!admin_force && !user.languages.len)
+		to_chat(user, SPAN_WARNING("You don't know any languages to choose from."))
+		return
+
+	var/list/selectable_languages = list()
+	if (admin_force)
+		for (var/key in global.all_languages)
+			var/datum/language/L = global.all_languages[key]
+			if (L.has_written_form)
+				selectable_languages += L
+	else
+		for (var/datum/language/L in user.languages)
+			if (L.has_written_form)
+				selectable_languages += L
+
+	var/new_language = input(user, "What language do you want to write in?", "Change language", language) as null|anything in selectable_languages
+	if (!new_language || new_language == language)
+		to_chat(user, SPAN_NOTICE("You decide to leave the language as [language.name]."))
+		return
+	if (!admin_force && !Adjacent(src, user) && !CanInteract(user, GLOB.deep_inventory_state))
+		to_chat(user, SPAN_WARNING("You must remain next to or continue holding \the [src] to do that."))
+		return
+	set_language(new_language)
+
+/obj/item/paper/proc/show_content(mob/user, forceshow, editable = FALSE)
 	var/can_read = (istype(user, /mob/living/carbon/human) || isghost(user) || istype(user, /mob/living/silicon)) || forceshow
 	if(!forceshow && istype(user,/mob/living/silicon/ai))
 		var/mob/living/silicon/ai/AI = user
 		can_read = get_dist(src, AI.camera) < 2
-	user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY bgcolor='[color]'>[can_read ? info : stars(info)][stamps]</BODY></HTML>", "window=[name]")
+		if(can_read)
+			user << browse(HTML_SKELETON_PAPER(name,null,info + stamps,color), "window=[name]")
+
+	var/html = ""
+	var/body
+	if (can_read && editable)
+		body = info_links
+		if (isobserver(user) || (language in user.languages))
+			if (info)
+				html += "<p><i>This paper is written in [language.name].</i></p>"
+			else
+				html += "<p><i>You are writing in <a href='?src=\ref[src];change_language=1'>[language]</a>.</i></p>"
+		else
+			html += "<p style=\"color: red;\"><i>This paper is written in a language you don't understand.</i></p>"
+			body = language.scramble(info, user.languages)
+	else if (!can_read)
+		html += "<p style=\"color:red;\"><i>The paper is too far away to read.</i></p>"
+	else
+		body = info
+		if (isobserver(user) || (language in user.languages))
+			html += "<p><i>This paper is written in [language.name].</i></p>"
+		else
+			html += "<p style=\"color: red;\"><i>This paper is written in a language you don't understand.</i></p>"
+			body = language.scramble(body, user.languages)
+
+	html += "<hr />"
+	html += body + stamps
+	user << browse(HTML_SKELETON_PAPER(name,null,html,color), "window=[name]")
 	onclose(user, "[name]")
+
+/obj/item/paper/proc/write_content(mob/user)
+
 
 /obj/item/paper/verb/rename()
 	set name = "Rename paper"
@@ -279,6 +373,7 @@
 
 	if (iscrayon)
 		t = "<font face=\"[crayonfont]\" color=[P ? P.colour : "black"]><b>[t]</b></font>"
+		crayon_pen = TRUE
 	else
 		t = "<font face=\"[deffont]\" color=[P ? P.colour : "black"]>[t]</font>"
 
@@ -323,6 +418,11 @@
 /obj/item/paper/Topic(href, href_list)
 	..()
 	if(!usr || (usr.stat || usr.restrained()))
+		return
+
+	if (href_list["change_language"])
+		choose_language(usr)
+		show_content(usr, editable = TRUE)
 		return
 
 	if(href_list["write"])
@@ -371,12 +471,9 @@
 		playsound(src,'sound/effects/PEN_Ball_Point_Pen_Circling_01_mono.ogg',40,1)
 		update_space(t)
 
-		usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY bgcolor='[color]'>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
+		usr << browse(HTML_SKELETON_PAPER(name,null,info_links + stamps,color), "window=[name]")
 
 		update_icon()
-
-
-
 
 /obj/item/paper/attackby(obj/item/P as obj, mob/user as mob)
 	..()
@@ -443,7 +540,7 @@
 		if ( istype(RP) && RP.mode == 2 )
 			RP.RenamePaper(user,src)
 		else
-			user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY bgcolor='[color]'>[info_links][stamps]</BODY></HTML>", "window=[name]")
+			user << browse(HTML_SKELETON_PAPER(name,null,info_links + stamps,color), "window=[name]")
 		return
 
 	else if(istype(P, /obj/item/stamp))
@@ -482,6 +579,33 @@
 /*
  * Premade paper
  */
+/obj/item/paper/euro
+	language = LANGUAGE_EURO
+
+/obj/item/paper/slavic
+	language = LANGUAGE_CYRILLIC
+
+/obj/item/paper/illyrian
+	language = LANGUAGE_ILLYRIAN
+
+/obj/item/paper/jana
+	language = LANGUAGE_JANA
+
+/obj/item/paper/yassari
+	language = LANGUAGE_YASSARI
+
+/obj/item/paper/opifex
+	language = LANGUAGE_OPIFEXEE
+
+/obj/item/paper/latin
+	language = LANGUAGE_LATIN
+
+/obj/item/paper/romana
+	language = LANGUAGE_ROMANA
+
+/obj/item/paper/cult
+	language = LANGUAGE_CULT	//May god save your soul.
+
 /obj/item/paper/Court
 	name = "Judgement"
 	info = "For crimes against the Nadezhda colony, the offender is sentenced to:<BR>\n<BR>\n"
@@ -531,3 +655,64 @@
 	icon_state = "paper_neo_crumpled_bloodied"
 
 #undef MAX_FIELDS
+
+/obj/item/paper/verb/crayon_change_deffont()
+	set name = "Change Cryon Font Type"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["Comic Sans MS (Default)"] = "Comic Sans MS"
+	options["Candara"] = "Candara"
+	options["Impact"] = "Impact"
+	options["cursive"] = "cursive"
+	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		crayonfont = options[choice]
+		to_chat(M, "You adjusted your crayon style into [choice] mode.")
+		return 1
+
+/obj/item/paper/verb/change_sign_font()
+	set name = "Change Signing Fount Type"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["Times New Roman (Default)"] = "Times New Roman"
+	options["fantasy"] = "fantasy"
+	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		signfont = options[choice]
+		to_chat(M, "You adjusted your pen style into [choice] mode.")
+		return 1
+
+/obj/item/paper/verb/change_deffont()
+	set name = "Change Fount Type"
+	set category = "Object"
+	set src in usr
+
+	if(!isliving(loc))
+		return
+
+	var/mob/M = usr
+	var/list/options = list()
+	options["Verdana (Default)"] = "Verdana"
+	options["Segoe Script"] = "Segoe Script"
+	options["cursive"] = "cursive"
+	options["monospace"] = "monospace"
+	var/choice = input(M,"What kind of style do you want?","Adjust Style") as null|anything in options
+
+	if(src && choice && !M.incapacitated() && Adjacent(M))
+		deffont = options[choice]
+		to_chat(M, "You adjusted your pen style into [choice] mode.")
+		return 1

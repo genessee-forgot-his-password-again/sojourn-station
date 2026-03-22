@@ -1,11 +1,12 @@
-/mob/living/carbon/superior_animal/vox
-	name = "Matasa sojoji"
+//Bronze Bird - Bronze Bird
+/mob/living/carbon/superior/vox
+	name = "Bronzosko Ciriklo"
 	desc = "A small predator native to these lands. They are known for their limited craftsmanship and manipulation of objects."
 	icon_state = "vox_marsmud"
 	icon = 'icons/mob/mobs-voxy.dmi'
 
-	maxHealth = 75
-	health = 75
+	maxHealth = 50 * VOXBIRD_HEALTH_MOD
+	health = 50 * VOXBIRD_HEALTH_MOD
 
 	faction = "vox_tribe" //In case of different tribes
 	turns_per_move = 5
@@ -14,7 +15,7 @@
 	emote_see = list("looks around for a target.")
 	attacktext = "claws"
 	meat_amount = 4
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/chicken/vox
+	meat_type = /obj/item/reagent_containers/snacks/meat/chicken/vox
 	mob_size = MOB_MEDIUM
 	can_burrow = FALSE
 	randpixel = 0
@@ -24,7 +25,27 @@
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
 
-	armor = list(melee = 10, bullet = 15, energy = 5, bomb = 20, bio = 20, rad = 0)
+	armor = list(melee = 2, bullet = 1, energy = 0, bomb = 20, bio = 20, rad = 0)
+
+	get_stat_modifier = TRUE
+
+	melee_sharp = TRUE //Claws
+	armor_divisor = 1.25
+	fancy_attack_overlay = "claw_attack_flick"
+	fancy_attack_shading = "#FFFFFF"
+
+	allowed_stat_modifiers = list(
+		/datum/stat_modifier/mob/living/carbon/superior/armor/mult/positive/low = 15,
+		/datum/stat_modifier/mob/living/carbon/superior/armor/mult/negative/low = 15,
+		/datum/stat_modifier/mob/living/carbon/superior/young = 10,
+		/datum/stat_modifier/mob/living/carbon/superior/old = 10,
+		/datum/stat_modifier/mob/living/carbon/superior/brutish = 5,
+		/datum/stat_modifier/mob/living/carbon/superior/brutal = 3,
+		/datum/stat_modifier/mob/living/carbon/superior/deadeye = 6,
+		/datum/stat_modifier/mob/living/carbon/superior/quickdraw = 5,
+		/datum/stat_modifier/mob/living/speed/flat/positive/low = 5,
+		/datum/stat_modifier/mob/living/speed/flat/negative/low = 5,
+	)
 
 	fire_verb = "flings a rock"
 
@@ -39,9 +60,11 @@
 	mag_drop = FALSE
 	ranged = TRUE
 	rounds_left = 1
-	mag_type = /obj/item/ore
+	mag_type = /obj/item/stack/ore
 	mags_left = 6 //each vox has 6 rocks normally
 	rounds_per_fire = 1
 	reload_message = "picks up a rock!"
-
+	range_telegraph = "starts to spin their sling around, orienting it towards"
+	bones_amount = 1
 	var/knock_over_odds = 5
+	inherent_mutations = list(MUTATION_BLOOD_BANK)

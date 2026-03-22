@@ -55,6 +55,10 @@ SUBSYSTEM_DEF(statverbs)
 				to_chat(user, SPAN_WARNING("You're not smart enough to do that!"))
 			if(STAT_VIG)
 				to_chat(user, SPAN_WARNING("You're not perceptive enough to do that!"))
+			if(STAT_VIV)
+				to_chat(user, SPAN_WARNING("Your nerves can't handle this!"))
+			if(STAT_ANA)
+				to_chat(user, SPAN_WARNING("You're not healthy enough to do this!"))
 		return FALSE
 
 	action(user, target)
@@ -65,7 +69,7 @@ SUBSYSTEM_DEF(statverbs)
 
 // Atom part //
 /atom
-	var/list/statverbs
+	var/list/statverbs = null
 
 /atom/Initialize()
 	. = ..()
@@ -73,28 +77,20 @@ SUBSYSTEM_DEF(statverbs)
 
 /atom/Destroy()
 	. = ..()
-	if(statverbs)
-		statverbs.Cut()
+	LAZYNULL(statverbs)
 
 /atom/proc/initalize_statverbs()
-	var/list/paths = statverbs
-	statverbs = new
-	for(var/path in paths)
-		add_statverb(path)
+	return
 
 /atom/proc/add_statverb(path)
-	if(!statverbs)
-		statverbs = new
 	var/datum/statverb/SV = path
-	statverbs[initial(SV.required_stat)] = path
+	LAZYSET(statverbs, initial(SV.required_stat), path)
 
 /atom/proc/remove_statverb(path)
-	statverbs -= path
-
-
+	LAZYREMOVE(statverbs, path)
 
 /atom/proc/show_stat_verbs()
-	if(statverbs && statverbs.len)
+	if(LAZYLEN(statverbs))
 		. = "Apply: "
 		for(var/stat in statverbs)
 			. += " <a href='?src=\ref[src];statverb=[stat];obj_name=[src]'>[stat]</a>"
@@ -202,7 +198,7 @@ SUBSYSTEM_DEF(statverbs)
 		if(do_mob(user, target, timer))
 			keyboardsound.stop()
 			keyboardsound = null
-			target.req_access.Cut()
+			LAZYNULL(target.req_access)
 			target.hacked = 1
 			user.visible_message(
 				SPAN_DANGER("[user] breaks the access encryption on [target]!"),

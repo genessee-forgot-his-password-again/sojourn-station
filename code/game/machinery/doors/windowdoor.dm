@@ -22,7 +22,7 @@
 /obj/machinery/door/window/New()
 	..()
 	update_nearby_tiles()
-	if (src.req_access && src.req_access.len)
+	if (LAZYLEN(req_access))
 		src.icon_state = "[src.icon_state]"
 		src.base_state = src.icon_state
 	return
@@ -36,10 +36,10 @@
 		ae = new/obj/item/airlock_electronics( src.loc )
 		if(!src.req_access)
 			src.check_access()
-		if(src.req_access.len)
+		if(LAZYLEN(req_access))
 			ae.conf_access = src.req_access
-		else if (src.req_one_access.len)
-			ae.conf_access = src.req_one_access
+		else if (LAZYLEN(req_one_access))
+			ae.conf_access = req_one_access
 			ae.one_access = 1
 	else
 		ae = electronics
@@ -87,14 +87,17 @@
 		close()
 	return
 
-/obj/machinery/door/window/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+/obj/machinery/door/window/CanPass(atom/movable/mover, turf/target, height=0, air_group=0, direction)
 	if(istype(mover) && mover.checkpass(PASSGLASS))
 		return 1
-	if(get_dir(loc, target) == dir) //Make sure looking at appropriate border
-		if(air_group) return 0
+	if (isnull(direction))
+		direction = get_dir(loc, target)
+	if(direction == dir) //Make sure looking at appropriate border
+		if(air_group)
+			return 0
 		return !density
 	else
-		return 1
+		return TRUE
 
 /obj/machinery/door/window/CheckExit(atom/movable/mover as mob|obj, turf/target as turf)
 	if(istype(mover) && mover.checkpass(PASSGLASS))
@@ -241,10 +244,10 @@
 						ae = new/obj/item/airlock_electronics( src.loc )
 						if(!src.req_access)
 							src.check_access()
-						if(src.req_access.len)
-							ae.conf_access = src.req_access
-						else if (src.req_one_access.len)
-							ae.conf_access = src.req_one_access
+						if(LAZYLEN(req_access.len))
+							ae.conf_access = req_access
+						else if(LAZYLEN(req_one_access))
+							ae.conf_access = req_one_access
 							ae.one_access = 1
 					else
 						ae = electronics

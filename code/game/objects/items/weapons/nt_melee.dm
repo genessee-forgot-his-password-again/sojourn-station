@@ -2,96 +2,124 @@
 /obj/item/tool/sword/nt // not supposed to be in the game, had to make the shortsword its own type to prevent fucking up the scourge. sorry.
 	name = "short sword"
 	desc = "A saintly looking sword, made to do God's work. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division."
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
 	icon = 'icons/obj/nt_melee.dmi'
 	icon_state = "nt_shortsword"
 	item_state = "nt_shortsword"
+	w_class = ITEM_SIZE_NORMAL
+	extra_bulk = 3 //a little more size, it's awkward to store out of a sheath.
 	force = WEAPON_FORCE_DANGEROUS
 	throwforce = WEAPON_FORCE_WEAK
-	armor_penetration = ARMOR_PEN_DEEP
+	armor_divisor = ARMOR_PEN_DEEP
 	price_tag = 300
 	matter = list(MATERIAL_BIOMATTER = 25, MATERIAL_STEEL = 5)
 
 /obj/item/tool/sword/nt/equipped(mob/living/M)
 	. = ..()
 	if(is_held() && is_neotheology_disciple(M))
-		embed_mult = 0.1
+		embed_mult = 0.05
 	else
 		embed_mult = initial(embed_mult)
 
 /obj/item/tool/sword/nt/shortsword
 	name = "short sword"
 	desc = "A saintly looking sword, made to do God's work. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division."
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
 	icon = 'icons/obj/nt_melee.dmi'
 	icon_state = "nt_shortsword"
 	item_state = "nt_shortsword"
 	force = WEAPON_FORCE_DANGEROUS
 	throwforce = WEAPON_FORCE_WEAK
-	armor_penetration = ARMOR_PEN_DEEP
+	armor_divisor = ARMOR_PEN_DEEP
 	price_tag = 300
 	matter = list(MATERIAL_BIOMATTER = 25, MATERIAL_STEEL = 5)
 
 /obj/item/tool/sword/nt/longsword
 	name = "longsword"
 	desc = "A saintly looking longsword, recommended by experienced crusaders. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division."
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
 	icon_state = "nt_longsword"
 	item_state = "nt_longsword"
-	force = WEAPON_FORCE_ROBUST
-	armor_penetration = ARMOR_PEN_EXTREME
+	force = WEAPON_FORCE_ROBUST + 4
+	armor_divisor = ARMOR_PEN_HALF
 	w_class = ITEM_SIZE_BULKY
 	price_tag = 500
-	matter = list(MATERIAL_BIOMATTER = 75, MATERIAL_STEEL = 10, MATERIAL_PLASTEEL = 5)
+	matter = list(MATERIAL_BIOMATTER = 50, MATERIAL_STEEL = 10, MATERIAL_PLASTEEL = 5)
+
+/obj/item/tool/sword/nt/longsword/implant
 
 /obj/item/tool/knife/dagger/nt
 	name = "dagger"
 	desc = "A saintly looking dagger, may the absolute have mercy. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division."
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
 	icon = 'icons/obj/nt_melee.dmi'
 	icon_state = "nt_dagger"
 	item_state = "nt_dagger"
 	force = WEAPON_FORCE_PAINFUL
-	armor_penetration = ARMOR_PEN_MASSIVE
+	armor_divisor = ARMOR_PEN_MASSIVE
 	price_tag = 120
-	matter = list(MATERIAL_BIOMATTER = 10, MATERIAL_STEEL = 1)
+	matter = list(MATERIAL_BIOMATTER = 5, MATERIAL_STEEL = 1)
 
 /obj/item/tool/spear/halberd
 	name = "halberd"
 	desc = "This weapon of ancient design appears to be a spear-axe hybrid. \
 	It saw a lot of use back in the Dark Ages back on Earth - in more recent times, sablekyne hunters use a similar weapon \
-	on their homeworlds, the weapons practical use taking down huge and heavily armored wildlife lead to the church adopting its own design."
+	on their homeworlds, the weapon's practical use in taking down huge and heavily armored wildlife lead to the church adopting its own design."
 	icon = 'icons/obj/nt_melee.dmi'
 	icon_state = "nt_halberd"
 	item_state = "nt_halberd"
 	wielded_icon = "nt_halberd_wielded"
-	force = WEAPON_FORCE_BRUTAL
-	armor_penetration = ARMOR_PEN_MASSIVE
+	force = WEAPON_FORCE_BRUTAL + 5
+	armor_divisor = ARMOR_PEN_MODERATE
+	max_upgrades = 3
+	w_class = ITEM_SIZE_HUGE
+	slot_flags = SLOT_BACK
+	extended_reach = TRUE
+	forced_broad_strike = TRUE
 	price_tag = 600
-	matter = list(MATERIAL_BIOMATTER = 80, MATERIAL_STEEL = 8, MATERIAL_WOOD = 10, MATERIAL_PLASTEEL = 2)
+	matter = list(MATERIAL_BIOMATTER = 60, MATERIAL_STEEL = 8, MATERIAL_WOOD = 10, MATERIAL_PLASTEEL = 2)
+
+/obj/item/tool/spear/polehammer
+	name = "polehammer"
+	desc = "This weapon of ancient design appears to be a spear-hammer hybrid. \
+	A close relative to the halberd with focus on penetrating armor more easily. \
+	This polehammer is the Church's adaption to ever stronger power shells and thicker furs from mutations on Amethyn. \
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
+	icon = 'icons/obj/nt_melee.dmi'
+	icon_state = "nt_polehammer"
+	item_state = "nt_polehammer"
+	wielded_icon = "nt_polehammer"
+	force = WEAPON_FORCE_NORMAL
+	armor_divisor = ARMOR_PEN_MAX
+	max_upgrades = 3
+	w_class = ITEM_SIZE_HUGE
+	slot_flags = SLOT_BACK
+	extended_reach = TRUE
+	forced_broad_strike = TRUE
+	price_tag = 600
+	tool_qualities = list(QUALITY_HAMMERING = 15) //Able to help make baracades and hammer out cracks.
+	matter = list(MATERIAL_BIOMATTER = 50, MATERIAL_STEEL = 6, MATERIAL_WOOD = 12, MATERIAL_PLASTEEL = 4)
 
 /obj/item/tool/sword/nt/scourge
 	name = "scourge"
-	desc = "A saintly looking scourge, extreme punishment in handheld form. Can be extended to hurt more. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division."
+	desc = "A saintly looking whip sword, extreme punishment in handheld form. Can be extended to inflict even more pain. \
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
 	icon_state = "nt_scourge"
 	item_state = "nt_scourge"
 	force = WEAPON_FORCE_ROBUST
 	var/force_extended = WEAPON_FORCE_PAINFUL
-	armor_penetration = ARMOR_PEN_MASSIVE
-	var/armor_penetration_extended = ARMOR_PEN_HALF
+	armor_divisor = 1
+	var/armor_divisor_extended = 0.5
 	var/extended = FALSE
 	var/agony = 20
 	var/agony_extended = 45 //Church harmbaton! This is legit better then a normal baton as it can be upgraded AND has base 15 damage
 	var/stun = 0
 	w_class = ITEM_SIZE_BULKY
 	price_tag = 800
-	matter = list(MATERIAL_BIOMATTER = 50, MATERIAL_STEEL = 5, MATERIAL_PLASTEEL = 2)
+	matter = list(MATERIAL_BIOMATTER = 30, MATERIAL_STEEL = 5, MATERIAL_PLASTEEL = 2)
+	has_alt_mode = FALSE
 
 /obj/item/tool/sword/nt/scourge/attack_self(mob/user)
-	if(isBroken)
-		to_chat(user, SPAN_WARNING("\The [src] is broken."))
-		return
 	if(extended)
 		unextend()
 	else
@@ -100,7 +128,7 @@
 /obj/item/tool/sword/nt/scourge/proc/extend()
 	extended = TRUE
 	force += (force_extended - initial(force))
-	armor_penetration += (armor_penetration_extended - initial(armor_penetration))
+	armor_divisor += (armor_divisor_extended - initial(armor_divisor))
 	agony += (agony_extended - initial(agony))
 	slot_flags = null
 	w_class = ITEM_SIZE_HUGE
@@ -112,7 +140,7 @@
 	w_class = initial(w_class)
 	agony = initial(agony)
 	slot_flags = initial(slot_flags)
-	armor_penetration = initial(armor_penetration)
+	armor_divisor = initial(armor_divisor)
 	refresh_upgrades() //it's also sets all to default
 	update_icon()
 
@@ -132,8 +160,8 @@
 
 /obj/item/tool/sword/nt/spear
 	name = "spear"
-	desc = "A saint looking short spear, designed for use with a shield or as a throwing weapon. \
-	The spear-tip usually breaks after being thrown at a target, but it can be hammered into shape again."
+	desc = "A saintly looking short spear to be used with a shield. It's even deadlier when thrown. \
+	The tip usually breaks after being thrown at a target. Can be hammered into shape again."
 	icon_state = "nt_spear"
 	item_state = "nt_spear"
 	wielded_icon = "nt_spear_wielded"
@@ -141,24 +169,24 @@
 	var/tipbroken = FALSE
 	w_class = ITEM_SIZE_HUGE
 	slot_flags = SLOT_BACK | SLOT_BELT
-	throwforce = 75 //We 2 shot anyone!
-	armor_penetration = ARMOR_PEN_HALF
+	throwforce = WEAPON_FORCE_LETHAL * 1.5
+	armor_divisor = ARMOR_PEN_MASSIVE
 	throw_speed = 3
-	price_tag = 150
-	matter = list(MATERIAL_BIOMATTER = 10, MATERIAL_STEEL = 5) // easy to mass-produce and arm the faithful
+	price_tag = 450
+	allow_spin = FALSE
+	extended_reach = TRUE
+	push_attack = TRUE
+	matter = list(MATERIAL_BIOMATTER = 20, MATERIAL_PLASTEEL = 10) // More expensive, high-end spear
 
 /obj/item/tool/sword/nt/spear/equipped(mob/living/W)
 	. = ..()
 	if(is_held() && is_neotheology_disciple(W))
-		embed_mult = 0.1
+		embed_mult = 0.2
 	else
 		embed_mult = initial(embed_mult)
-	if(isBroken)
-		force = WEAPON_FORCE_NORMAL
-		throwforce = WEAPON_FORCE_HARMLESS
 
 /obj/item/tool/sword/nt/spear/dropped(mob/living/W)
-	embed_mult = 300
+	embed_mult = 600
 	..()
 
 /obj/item/tool/sword/nt/spear/on_embed(mob/user)
@@ -170,21 +198,29 @@
 	if (tipbroken)
 		to_chat(user, SPAN_WARNING("\The [src] is broken. It looks like it could be repaired with a hammer."))
 
+/obj/item/tool/sword/nt/spear/attackby(obj/item/I, var/mob/user)
+	. = ..()
+	if (I.has_quality(QUALITY_HAMMERING))
+		if(I.use_tool(user, src, WORKTIME_FAST, QUALITY_HAMMERING, FAILCHANCE_EASY, STAT_MEC))
+			to_chat(user, SPAN_NOTICE("You repair \the damaged spear-tip."))
+			tipbroken = FALSE
+
 /obj/item/tool/sword/nt/flanged
 	name = "flanged mace"
 	desc = "A saintly looking mace, designed to be a beacon of hope in the darkest of times. Devotees can activate it to light their path. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division."
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
 	icon_state = "nt_flanged"
 	item_state = "nt_flanged"
 	force = WEAPON_FORCE_ROBUST
-	armor_penetration = ARMOR_PEN_MASSIVE
+	armor_divisor = ARMOR_PEN_HALF
 	w_class = ITEM_SIZE_BULKY
 	price_tag = 800
-	matter = list(MATERIAL_BIOMATTER = 50, MATERIAL_STEEL = 5, MATERIAL_PLASTEEL = 5, MATERIAL_SILVER = 3)
+	matter = list(MATERIAL_BIOMATTER = 30, MATERIAL_STEEL = 5, MATERIAL_PLASTEEL = 5, MATERIAL_SILVER = 3)
 	tool_qualities = list(QUALITY_HAMMERING = 10) //Not designed for that fine nailing
 	var/glowing = FALSE
 	sharp = FALSE
 	embed_mult = 0
+	has_alt_mode = FALSE
 
 /obj/item/tool/sword/nt/flanged/attack_self(mob/user)
 	var/mob/living/carbon/human/theuser = user
@@ -194,9 +230,6 @@
 		return
 	if(CI.power < 20)
 		to_chat(user, SPAN_WARNING("You do not have enough power to light up the beacon!"))
-		return
-	if(isBroken)
-		to_chat(user, SPAN_WARNING("The [src] is broken."))
 		return
 	if(glowing)
 		to_chat(user, SPAN_WARNING("The flanged mace is still lit up."))
@@ -225,15 +258,16 @@
 /obj/item/tool/sword/nt/warhammer
 	name = "warhammer"
 	desc = "A saintly looking warhammer, designed to knock back attackers when held in both hands. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division."
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
 	icon_state = "nt_warhammer"
 	item_state = "nt_warhammer"
 	wielded_icon = "nt_warhammer_wielded"
-	force = WEAPON_FORCE_DANGEROUS //Naturally weaker do to knockbacking are targets (can stun lock)
-	armor_penetration = ARMOR_PEN_EXTREME
+	force = WEAPON_FORCE_BRUTAL - 3 //Naturally weaker due to knocking back targets (can stun lock)
+	structure_damage_factor = STRUCTURE_DAMAGE_BREACHING
+	armor_divisor = ARMOR_PEN_MODERATE
 	w_class = ITEM_SIZE_BULKY
 	price_tag = 800
-	matter = list(MATERIAL_BIOMATTER = 50, MATERIAL_STEEL = 5, MATERIAL_PLASTEEL = 12)
+	matter = list(MATERIAL_BIOMATTER = 30, MATERIAL_STEEL = 5, MATERIAL_PLASTEEL = 8)
 	tool_qualities = list(QUALITY_HAMMERING = 30) //Not designed for that fine nailing
 	var/glowing = FALSE
 	sharp = FALSE
@@ -248,28 +282,80 @@
 		target.throw_at(get_edge_target_turf(target, throwdir),whack_speed,whack_speed)
 	..()
 
+/obj/item/tool/sword/nt/power
+	name = "\"Vexilar\" forceblade"
+	desc = "A sleek and heavy bastard-sword with golden wiring embedded into its handle and blade, designed to channel the power of a cruciform to project an ultra-sharp energy blade. \
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division."
+	icon_state = "nt_force"
+	item_state = "nt_force"
+	switched_on_icon_state = "nt_force_on"
+	switched_on_item_state = "nt_force_on"
+	force = WEAPON_FORCE_DANGEROUS
+	armor_divisor = ARMOR_PEN_MODERATE
+	w_class = ITEM_SIZE_BULKY
+	no_swing = TRUE
+	f
+	matter = list(MATERIAL_BIOMATTER = 50, MATERIAL_STEEL = 10, MATERIAL_PLASTEEL = 6, MATERIAL_GOLD = 3)
+	toggleable = TRUE
+	heat = 3800
+	switched_on_forcemult = 1.75 //35 total; slightly better than a halberd
+	switched_on_penmult = 2 //30 total; same as a halberd
+	switched_on_qualities = list(QUALITY_CUTTING = 30, QUALITY_SAWING = 30)
+	switched_off_qualities = list(QUALITY_CUTTING = 10, QUALITY_SAWING = 10)
+	tool_qualities = list(QUALITY_CUTTING = 10, QUALITY_SAWING = 10)
+	effective_faction = list("psi_monster", "hive") //DEUS VULT
+	damage_mult = 1.2 //20% damage buff when purging the ABOMINATION
+	var/faith_cost = 5 //How much faith does it use per attack?
 
-/obj/item/tool/sword/nt/spear/attackby(obj/item/I, var/mob/user)
+/obj/item/tool/sword/nt/power/attack_self(mob/living/user)
+	if(!user.get_core_implant(/obj/item/implant/core_implant/cruciform)) //No cruciform, no activation
+		to_chat(user, SPAN_WARNING("You have absolutely no idea how this works."))
+		return FALSE
+	else
+		var/obj/item/implant/core_implant/cruciform/user_cruci = user.get_core_implant(/obj/item/implant/core_implant/cruciform)
+		if(user_cruci.power < faith_cost && !switched_on)
+			to_chat(user, SPAN_WARNING("Your cruciform has to recharge before you activate the [name]!"))
+			return FALSE
+		else if(!switched_on)
+			user_cruci.use_power(faith_cost)
+	set_light(l_range = 3, l_power = 1, l_color = COLOR_BLUE_LIGHT)
+	..()
+
+/obj/item/tool/sword/nt/power/attack(mob/living/M, mob/living/user)
+	if(switched_on)
+		var/obj/item/implant/core_implant/cruciform/user_cruci = user.get_core_implant(/obj/item/implant/core_implant/cruciform)
+		if(!user_cruci || user_cruci.power < faith_cost)
+			turn_off()
+			to_chat(user, SPAN_WARNING("The light of the [name] dims, its power extinguished."))
+		else
+			user_cruci.use_power(faith_cost)
+	..()
+
+/obj/item/tool/sword/nt/power/turn_off(mob/user)
 	. = ..()
-	if (I.has_quality(QUALITY_HAMMERING))
-		if(I.use_tool(user, src, WORKTIME_FAST, QUALITY_HAMMERING, FAILCHANCE_EASY, STAT_MEC))
-			to_chat(user, SPAN_NOTICE("You repair \the damaged spear-tip."))
-			tipbroken = FALSE
+	set_light(l_range = 0, l_power = 0, l_color = COLOR_BLUE_LIGHT)
+
+/obj/item/tool/sword/nt/power/is_hot()
+	if (switched_on)
+		return heat
 
 /obj/item/shield/riot/nt
-	name = "shield"
-	desc = "A saintly looking shield, let the God protect you. \
-	It bears a tau cross marking it as produced by the Church of Absolute's New Testament weapons division. \
-	Has several leather straps on the back to hold melee weapons."
+	name = "NT Greatshield"
+	desc = "A saintly looking shield, let the Absolute protect you. \
+	It bears a tau cross marking it as produced by the Church of the Absolute's New Testament weapons division. \
+	Has several leather straps on the inside to hold melee weapons."
 	icon = 'icons/obj/nt_melee.dmi'
 	icon_state = "nt_shield"
 	item_state = "nt_shield"
 	force = WEAPON_FORCE_DANGEROUS
-	armor = list(melee = 20, bullet = 30, energy = 30, bomb = 0, bio = 0, rad = 0)
-	matter = list(MATERIAL_BIOMATTER = 50, MATERIAL_STEEL = 10, MATERIAL_PLASTEEL = 10, MATERIAL_GOLD = 5)
+	armor_list = list(melee = 5, bullet = 5, energy = 2, bomb = 15, bio = 0, rad = 0)
+	matter = list(MATERIAL_BIOMATTER = 35, MATERIAL_STEEL = 10, MATERIAL_PLASTEEL = 5, MATERIAL_GOLD = 3)
 	price_tag = 1000
 	base_block_chance = 60
 	item_flags = DRAG_AND_DROP_UNEQUIP
+
+	max_durability = 180
+	durability = 180
 
 	item_icons = list(
 		slot_back_str = 'icons/inventory/back/mob.dmi')
@@ -286,6 +372,7 @@
 		/obj/item/tool/knife/dagger/nt,
 		/obj/item/tool/knife/neotritual,
 		/obj/item/book/ritual/cruciform,
+		/obj/item/stack/thrown/nt/verutum
 		)
 
 /obj/item/shield/riot/nt/New()
@@ -328,26 +415,26 @@
 
 /obj/item/shield/buckler/nt
 	name = "NT Parma"
-	desc = "A round shield with a golden trim. Has several biomatter-leather straps on the back to hold melee weapons."
+	desc = "A round shield with a golden trim. Has several biomatter-leather straps on the inside to hold melee weapons."
 	icon = 'icons/obj/nt_melee.dmi'
 	icon_state = "nt_buckler" //by CeUvi we thx thy
 	item_state = "nt_buckler"
 	matter = list(MATERIAL_BIOMATTER = 15, MATERIAL_STEEL = 5, MATERIAL_PLASTEEL = 2, MATERIAL_GOLD = 1)
-	//aspects = list(SANCTIFIED) todo:port this
 	price_tag = 300
 	base_block_chance = 45
 	item_flags = DRAG_AND_DROP_UNEQUIP
-	max_durability = 110 //So we can brake and need healing time to time
-	durability = 110
+	max_durability = 60 //So we can brake and need healing time to time
+	durability = 60
 	var/obj/item/storage/internal/container
-	var/storage_slots = 2
+	var/storage_slots = 1
 	var/max_w_class = ITEM_SIZE_HUGE
 	var/list/can_hold = list(
 		/obj/item/tool/sword/nt/shortsword,
-		/obj/item/tool/sword/nt/spear, //Romans would have these with their shield to ware down their foe
+		/obj/item/tool/sword/nt/spear, //Romans would have these with their shield to wear down their foe // Storing your spears and throwing them like a pilum is viable with this
 		/obj/item/tool/knife/dagger/nt,
 		/obj/item/tool/knife/neotritual,
 		/obj/item/book/ritual/cruciform,
+		/obj/item/stack/thrown/nt/verutum
 		)
 
 /obj/item/shield/buckler/nt/New()
@@ -393,6 +480,54 @@
 	icon_state = "crusader"
 	item_state = "crusader"
 	force = WEAPON_FORCE_LETHAL
-	armor_penetration = ARMOR_PEN_HALF
+	armor_divisor = ARMOR_PEN_HALF
 	matter = list(MATERIAL_DURASTEEL = 25, MATERIAL_GOLD = 3)
+	tool_qualities = list(QUALITY_CUTTING = 10, QUALITY_SAWING = 10)
+	effective_faction = list("psi_monster", "hive") // The Vexilar Forceblade has this quality and since crusaders are usually only called against a hivemind, the sword should reflect that
+	damage_mult = 1.2 //20% damage buff when purging the ABOMINATION
 	price_tag = 10000
+
+//Throwables
+
+/obj/item/stack/thrown/nt
+	name = "Faithful Throwing knife"
+	desc = "A saintly-looking knife delivering the Absolute's word over distance."
+	icon_state = "nt_shortsword"
+	item_state = "nt_shortsword"
+	force = WEAPON_FORCE_DANGEROUS
+	throwforce = WEAPON_FORCE_WEAK
+	armor_divisor = ARMOR_PEN_SHALLOW
+	price_tag = 300
+	matter = list(MATERIAL_BIOMATTER = 25, MATERIAL_STEEL = 5)
+
+/obj/item/stack/thrown/nt/equipped(mob/living/M)
+	..()
+	if(is_held() && is_neotheology_disciple(M))
+		embed_mult = 0.2
+	else
+		embed_mult = initial(embed_mult)
+
+/obj/item/stack/thrown/nt/verutum
+	name = "verutum"
+	desc = "A short, saintly-looking javelin for throwing or use with a shield. They are small enough to allow holding multiple in one hand."
+	icon_state = "nt_verutum"
+	item_state = "nt_verutum"
+	singular_name = "verutum"
+	plural_name = "veruta"
+	wielded_icon = "nt_verutum_wielded"
+	force = WEAPON_FORCE_PAINFUL
+	throwforce = WEAPON_FORCE_BRUTAL
+	w_class = ITEM_SIZE_HUGE
+	slot_flags = SLOT_BACK | SLOT_BELT
+	armor_divisor = ARMOR_PEN_DEEP
+	throw_speed = 2
+	price_tag = 150
+	no_swing = TRUE // Small javelin
+	allow_spin = FALSE
+	matter = list(MATERIAL_BIOMATTER = 10, MATERIAL_PLASTEEL = 5)
+
+/obj/item/stack/thrown/nt/verutum/launchAt(atom/target, mob/living/carbon/C)
+	var/ROB_throwing_damage = max(C.stats.getStat(STAT_ROB), 1)
+	throwforce = WEAPON_FORCE_BRUTAL / (1 + 100 / ROB_throwing_damage) + initial(throwforce)
+	..()
+

@@ -7,7 +7,7 @@
 //So combine all of that to defeat them
 
 
-/mob/living/simple_animal/hostile/hivemind
+/mob/living/simple/hostile/hivemind
 	name = "creature"
 	icon = 'icons/mob/hivemind.dmi'
 	icon_state = "slicer"
@@ -22,53 +22,71 @@
 	var/malfunction_chance = 5
 	var/ability_cooldown = 30 SECONDS
 	var/list/target_speak = list()			//this is like speak list, but when we see our target
+	research_value = 250
 
 	mob_classification = CLASSIFICATION_SYNTHETIC
+
+	// Loot
+	var/drop_chance = 20
+	var/list/loot_possibilities = list(
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/input = 5,
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/input/uncommon = 2,
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/input/rare = 1,
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/process = 5,
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/output = 5,
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/output/uncommon = 2,
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/output/rare = 1,
+		/obj/item/organ/internal/scaffold/aberrant/teratoma/special = 3
+	)
 
 	//internals
 	var/obj/machinery/hivemind_machine/master
 	var/special_ability_cooldown = 0		//use ability_cooldown, don't touch this
 
 
-	New()
-		. = ..()
-		//here we change name, so design them according to this
-		name = pick("Warped ", "Altered ", "Modified ", "Upgraded ", "Abnormal ") + name
+/mob/living/simple/hostile/hivemind/New()
+	. = ..()
+	real_name = name
+	if(!(real_name in GLOB.hivemind_mobs))
+		GLOB.hivemind_mobs.Add(real_name)
+	GLOB.hivemind_mobs[real_name]++
+	//here we change name, so design them according to this
+	name = pick("Warped ", "Altered ", "Modified ", "Upgraded ", "Abnormal ") + name
 
 //It's sets manually
-/mob/living/simple_animal/hostile/hivemind/proc/special_ability()
+/mob/living/simple/hostile/hivemind/proc/special_ability()
 	return
 
 
-/mob/living/simple_animal/hostile/hivemind/proc/is_on_cooldown()
+/mob/living/simple/hostile/hivemind/proc/is_on_cooldown()
 	if(world.time >= special_ability_cooldown)
 		return FALSE
 	return TRUE
 
 
 //simple shaking animation, this one move our target horizontally
-/mob/living/simple_animal/hostile/hivemind/proc/anim_shake(atom/target)
+/mob/living/simple/hostile/hivemind/proc/anim_shake(atom/target)
 	var/init_px = target.pixel_x
 	animate(target, pixel_x=init_px + 10*pick(-1, 1), time=1)
 	animate(pixel_x=init_px, time=8, easing=BOUNCE_EASING)
 
 
 //That's just stuns us for a while and start second proc
-/mob/living/simple_animal/hostile/hivemind/proc/mulfunction()
+/mob/living/simple/hostile/hivemind/proc/mulfunction()
 	stance = HOSTILE_STANCE_IDLE //it give us some kind of stun effect
 	target_mob = null
-	walk(src, FALSE)
+	SSmove_manager.stop_looping(src)
 	var/datum/effect/effect/system/spark_spread/sparks = new /datum/effect/effect/system/spark_spread()
 	sparks.set_up(3, 3, loc)
 	sparks.start()
 	anim_shake(src)
 	if(prob(30))
 		say(pick("Running diagnostics.", "Organ damaged. Aquire replacement.", "Seek new organic components.", "New muscles needed."))
-	addtimer(CALLBACK(src, .proc/malfunction_result), 2 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(malfunction_result)), 2 SECONDS)
 
 
 //It's second proc, result of our malfunction
-/mob/living/simple_animal/hostile/hivemind/proc/malfunction_result()
+/mob/living/simple/hostile/hivemind/proc/malfunction_result()
 	if(prob(malfunction_chance))
 		apply_damage(rand(5, 15), BURN) //10-25 is too severe, 5-15 seems better
 
@@ -76,14 +94,14 @@
 //sometimes, players use closets, to staff mobs into it
 //and it's works pretty good, you just weld it and that's all
 //but not this time
-/mob/living/simple_animal/hostile/hivemind/proc/closet_interaction()
+/mob/living/simple/hostile/hivemind/proc/closet_interaction()
 	if(mob_size >= MOB_MEDIUM)
 		var/obj/structure/closet/closed_closet = loc
 		if(closed_closet && istype(closed_closet))
 			closed_closet.open(src)
 
 
-/mob/living/simple_animal/hostile/hivemind/say()
+/mob/living/simple/hostile/hivemind/say()
 	..()
 	playsound(src, pick('sound/machines/robots/robot_talk_heavy1.ogg',
 							'sound/machines/robots/robot_talk_heavy2.ogg',
@@ -97,7 +115,7 @@
 							), 50, 1)
 
 
-/mob/living/simple_animal/hostile/hivemind/Life()
+/mob/living/simple/hostile/hivemind/Life()
 	if(stat == DEAD)
 		return
 	. = ..()
@@ -119,11 +137,17 @@
 		if(B)
 			B.unbuckle_mob()
 
+	if(!hive_mind_ai)
+		if(prob(5))
+			death()
+		else if(prob(15))
+			mulfunction()
 
+/mob/living/simple/hostile/hivemind/proc/speak()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
 
-/mob/living/simple_animal/hostile/hivemind/proc/speak()
 	if(!client && speak_chance && prob(speak_chance) && speak.len)
-		if(target_mob && target_speak.len)
+		if(targetted_mob && target_speak.len)
 			say(pick(target_speak))
 		else
 			say(pick(speak))
@@ -131,19 +155,26 @@
 
 //damage and raise malfunction chance
 //due to nature of malfunction, they just burn to death sometimes
-/mob/living/simple_animal/hostile/hivemind/emp_act(severity)
+/mob/living/simple/hostile/hivemind/emp_act(severity)
 	switch(severity)
 		if(1)
 			if(malfunction_chance < 15)
-				malfunction_chance = 15
+				malfunction_chance = 15 * GLOB.hive_data_float["hivemind_emp_mult"]
 		if(2)
 			if(malfunction_chance < 25)
-				malfunction_chance = 25
-	adjustFireLoss(rand(20,80)*severity)
+				malfunction_chance = 25 * GLOB.hive_data_float["hivemind_emp_mult"]
+	adjustFireLoss((rand(20,80)*severity * GLOB.hive_data_float["hivemind_emp_mult"]))
 
-/mob/living/simple_animal/hostile/hivemind/death()
+/mob/living/simple/hostile/hivemind/death()
+	GLOB.hivemind_mobs[real_name]--
+	if(!GLOB.hivemind_mobs[real_name])
+		GLOB.hivemind_mobs.Remove(real_name)
 	if(master) //for spawnable mobs
 		master.spawned_creatures.Remove(src)
+	if(prob(drop_chance))
+		var/loot_type = pickweight(loot_possibilities)
+		if(loot_type)
+			new loot_type(get_turf(src))
 	. = ..()
 
 
@@ -154,7 +185,7 @@
 
 
 //these guys is appears from bodies, and takes corpses appearence
-/mob/living/simple_animal/hostile/hivemind/resurrected
+/mob/living/simple/hostile/hivemind/resurrected
 	name = "Marionette"
 	malfunction_chance = 10
 
@@ -164,20 +195,20 @@
 //this also should add random special abilities, so they can be more individual, but it's in future
 //how to use: Make hive mob, then just use this one and don't forget to delete victim
 
-/mob/living/simple_animal/hostile/hivemind/resurrected/proc/take_appearance(mob/living/victim)
+/mob/living/simple/hostile/hivemind/resurrected/proc/take_appearance(mob/living/victim)
 	icon = victim.icon
 	icon_state = victim.icon_state
 	//simple_animal's change their icons to dead one after death, so we make special check
-	if(istype(victim, /mob/living/simple_animal))
-		var/mob/living/simple_animal/SA = victim
+	if(istype(victim, /mob/living/simple))
+		var/mob/living/simple/SA = victim
 		icon_state = SA.icon_living
 		icon_living = SA.icon_living
 		speed = SA.speed + 3 //why not?
 		attacktext = SA.attacktext
 
 	//another check for superior mobs, fuk this mob spliting
-	if(istype(victim, /mob/living/carbon/superior_animal))
-		var/mob/living/carbon/superior_animal/SA = victim
+	if(istype(victim, /mob/living/carbon/superior))
+		var/mob/living/carbon/superior/SA = victim
 		icon_state = SA.icon_living
 		icon_living = SA.icon_living
 		attacktext = SA.attacktext
@@ -208,7 +239,7 @@
 		speak.Add(phrase)
 
 
-/mob/living/simple_animal/hostile/hivemind/resurrected/death()
+/mob/living/simple/hostile/hivemind/resurrected/death()
 	..()
 	gibs(loc, null, /obj/effect/gibspawner/robot)
 	qdel(src)
@@ -226,7 +257,7 @@
 //Appears from dead small mobs or from hive spawner
 //////////////////////////////////////////////////////////////////////////////
 
-/mob/living/simple_animal/hostile/hivemind/stinger
+/mob/living/simple/hostile/hivemind/stinger
 	name = "Medibot"
 	desc = "A little medical robot. He looks somewhat underwhelmed. Wait a minute, is that a blade?"
 	icon_state = "slicer"
@@ -234,8 +265,8 @@
 	density = 0
 	speak_chance = 3
 	malfunction_chance = 5
-	health = 50
-	maxHealth = 50 //Should be a little bit sturdy, 2-3 hits with a crowbar is enough to take it down
+	health = 40
+	maxHealth = 40 //Should be a little bit sturdy, 2-3 hits with a crowbar is enough to take it down
 	melee_damage_lower = 15
 	melee_damage_upper = 20 //this is how much damage a scalpel does (at the time of writing),
 	speak_chance = 5
@@ -261,7 +292,7 @@
 				)
 
 
-/mob/living/simple_animal/hostile/hivemind/stinger/death()
+/mob/living/simple/hostile/hivemind/stinger/death()
 	..()
 	gibs(loc, null, /obj/effect/gibspawner/robot)
 	qdel(src)
@@ -275,16 +306,16 @@
 //Appears from dead small mobs or from hive spawner
 //////////////////////////////////////////////////////////////////////////////
 
-/mob/living/simple_animal/hostile/hivemind/bomber
+/mob/living/simple/hostile/hivemind/bomber
 	name = "Bomber"
 	desc = "This hovering cyborg emits a faint smell of welding fuel."
 	icon_state = "bomber"
-	density = 0
+	density = 1
 	speak_chance = 3
 	malfunction_chance = 1
 	speak_chance = 4
-	health = 5
-	maxHealth = 5 //extremely fucking fragile, don't try fighting it in melee though
+	health = 2
+	maxHealth = 2 //extremely fucking fragile, don't try fighting it in melee though
 	malfunction_chance = 1 //1% chance of it exploding, for no reason at all
 	mob_size = MOB_SMALL
 	pass_flags = PASSTABLE
@@ -305,19 +336,19 @@
 						)
 
 
-/mob/living/simple_animal/hostile/hivemind/bomber/Initialize()
+/mob/living/simple/hostile/hivemind/bomber/Initialize()
 	..()
 	set_light(2, 1, "#820D1C")
 
 
-/mob/living/simple_animal/hostile/hivemind/bomber/death()
+/mob/living/simple/hostile/hivemind/bomber/death()
 	..()
 	gibs(loc, null, /obj/effect/gibspawner/robot)
 	explosion(get_turf(src), 0, 0, 3)
 	qdel(src)
 
 
-/mob/living/simple_animal/hostile/hivemind/bomber/AttackingTarget()
+/mob/living/simple/hostile/hivemind/bomber/AttackingTarget()
 	death()
 
 /////////////////////////////////////Lobber///////////////////////////////////
@@ -330,14 +361,14 @@
 //Appears rarely than bomber or stinger
 //////////////////////////////////////////////////////////////////////////////
 
-/mob/living/simple_animal/hostile/hivemind/lobber
+/mob/living/simple/hostile/hivemind/lobber
 	name = "Lobber"
 	desc = "It's a little cleaning robot. This one appears to have its cleaning solutions replaced with goo. It also appears to have its targeting protocols overridden..."
 	icon_state = "lobber"
 	attacktext = "spray painted" //this shouldn't appear anyways
 	density = FALSE
-	health = 150
-	maxHealth = 150
+	health = 50
+	maxHealth = 50
 	melee_damage_lower = 0
 	melee_damage_upper = 0
 	speak_chance = 6
@@ -369,24 +400,26 @@
 				)
 
 
-/mob/living/simple_animal/hostile/hivemind/lobber/Life()
+/mob/living/simple/hostile/hivemind/lobber/Life()
 	. = ..()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
 //checks if cooldown is over and is targeting mob, if so, activates special ability
-	if(target_mob && world.time > special_ability_cooldown)
+	if(targetted_mob && world.time > special_ability_cooldown)
 		special_ability()
 
 
-/mob/living/simple_animal/hostile/hivemind/lobber/special_ability()
+/mob/living/simple/hostile/hivemind/lobber/special_ability()
 //if rapid is FALSE, swiches rapid to be TRUE, combined with the overheat proc this is like an on/off switch
 //shows a neat message and adds a 10 second timer, afterwich the proc overheat is activated
 	if(rapid == FALSE)
 		rapid = TRUE
 		visible_message(SPAN_DANGER("<b>[name]</b> begins to shake violenty, sparks spurting out from its chassis!"), 1)
-		addtimer(CALLBACK(src, .proc/overheat), 10 SECONDS)
+		addtimer(CALLBACK(src, PROC_REF(overheat)), 10 SECONDS)
 		return
 
 
-/mob/living/simple_animal/hostile/hivemind/lobber/proc/overheat()
+/mob/living/simple/hostile/hivemind/lobber/proc/overheat()
 //upon activating overheat, if rapid is TRUE, switches rapid to be FALSE,
 //shows a cool (pun intended) message, malfunctions, and starts the cooldown
 	if(rapid == TRUE)
@@ -397,7 +430,7 @@
 		return
 
 
-/mob/living/simple_animal/hostile/hivemind/lobber/death()
+/mob/living/simple/hostile/hivemind/lobber/death()
 	..()
 	gibs(loc, null, /obj/effect/gibspawner/robot)
 	qdel(src)
@@ -420,13 +453,13 @@
 //Appears from dead cyborgs
 //////////////////////////////////////////////////////////////////////////////
 
-/mob/living/simple_animal/hostile/hivemind/hiborg
+/mob/living/simple/hostile/hivemind/hiborg
 	name = "Hiborg"
 	desc = "A cyborg covered with something... something alive."
 	icon_state = "hiborg"
 	icon_dead = "hiborg-dead"
-	health = 400
-	maxHealth = 400
+	health = 180
+	maxHealth = 180
 	melee_damage_lower = 25
 	melee_damage_upper = 30
 	attacktext = "clawed"
@@ -448,8 +481,13 @@
 						)
 
 
-/mob/living/simple_animal/hostile/hivemind/hiborg/AttackingTarget()
-	if(!Adjacent(target_mob))
+/mob/living/simple/hostile/hivemind/hiborg/AttackingTarget()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if (isnull(targetted_mob))
+		return
+
+	if(!Adjacent(targetted_mob))
 		return
 
 	//special attacks
@@ -464,7 +502,7 @@
 	return ..() //default attack
 
 
-/mob/living/simple_animal/hostile/hivemind/hiborg/proc/splash_slash()
+/mob/living/simple/hostile/hivemind/hiborg/proc/splash_slash()
 	src.visible_message(SPAN_DANGER("[src] spins around and slashes in a circle!"))
 	for(var/atom/target in range(1, src))
 		if(target != src)
@@ -473,9 +511,14 @@
 		say(pick("Bad children!", "Look what you made me do!"))
 
 
-/mob/living/simple_animal/hostile/hivemind/hiborg/proc/stun_with_claw()
-	if(isliving(target_mob))
-		var/mob/living/victim = target_mob
+/mob/living/simple/hostile/hivemind/hiborg/proc/stun_with_claw()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if (isnull(targetted_mob))
+		return
+
+	if(isliving(targetted_mob))
+		var/mob/living/victim = targetted_mob
 		victim.Weaken(5) //decent-length stun
 		src.visible_message(SPAN_WARNING("[src] pins [victim] to the floor with its claw!"))
 		if(!client && prob(speak_chance))
@@ -493,13 +536,13 @@
 //Appears from dead human corpses
 //////////////////////////////////////////////////////////////////////////////
 
-/mob/living/simple_animal/hostile/hivemind/himan
+/mob/living/simple/hostile/hivemind/himan
 	name = "Himan"
 	desc = "Once a man, now metal plates and tubes weave in and out of their oozing sores."
 	icon_state = "himan"
 	icon_dead = "himan-dead"
-	health = 250
-	maxHealth = 250
+	health = 105
+	maxHealth = 105
 	melee_damage_lower = 20
 	melee_damage_upper = 25
 	attacktext = "slashed"
@@ -530,16 +573,18 @@
 						)
 
 
-/mob/living/simple_animal/hostile/hivemind/himan/Life()
+/mob/living/simple/hostile/hivemind/himan/Life()
 	. = ..()
 
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
 	//shriek
-	if(target_mob && !fake_dead && world.time > special_ability_cooldown)
+	if(targetted_mob && !fake_dead && world.time > special_ability_cooldown)
 		special_ability()
 
 
 	//low hp? It's time to play dead
-	if(health < 160 && !fake_dead && world.time > fake_death_cooldown)
+	if(health < 40 && !fake_dead && world.time > fake_death_cooldown)
 		fake_death()
 
 	//shhhh, there an ambush
@@ -547,40 +592,49 @@
 		stop_automated_movement = TRUE
 
 
-/mob/living/simple_animal/hostile/hivemind/himan/speak()
+/mob/living/simple/hostile/hivemind/himan/speak()
 	if(!fake_dead)
 		..()
 
 
-/mob/living/simple_animal/hostile/hivemind/himan/mulfunction()
+/mob/living/simple/hostile/hivemind/himan/mulfunction()
 	if(fake_dead)
 		return
 	..()
 
 
-/mob/living/simple_animal/hostile/hivemind/himan/MoveToTarget()
+/mob/living/simple/hostile/hivemind/himan/MoveToTarget()
 	if(!fake_dead)
 		..()
 	else
-		if(!target_mob || SA_attackable(target_mob))
+
+		var/mob/living/targetted_mob = (target_mob?.resolve())
+
+		if(!targetted_mob || SA_attackable(targetted_mob))
 			stance = HOSTILE_STANCE_IDLE
-		if(target_mob in ListTargets(10))
-			if(get_dist(src, target_mob) > 1)
+		if(targetted_mob in ListTargets(10))
+			if(get_dist(src, targetted_mob) > 1)
 				stance = HOSTILE_STANCE_ATTACKING
 
 
-/mob/living/simple_animal/hostile/hivemind/himan/AttackingTarget()
+/mob/living/simple/hostile/hivemind/himan/AttackingTarget()
 	if(fake_dead)
-		if(!Adjacent(target_mob))
+
+		var/mob/living/targetted_mob = (target_mob?.resolve())
+
+		if (isnull(targetted_mob))
 			return
-		if(target_mob && (world.time > fake_dead_wait_time))
+
+		if(!Adjacent(targetted_mob))
+			return
+		if(targetted_mob && (world.time > fake_dead_wait_time))
 			awake()
 	else
 		..()
 
 
 //Shriek stuns our victims and make them deaf for a while
-/mob/living/simple_animal/hostile/hivemind/himan/special_ability()
+/mob/living/simple/hostile/hivemind/himan/special_ability()
 	visible_emote("screams!")
 	playsound(src, 'sound/hallucinations/veryfar_noise.ogg', 90, 1)
 	for(var/mob/living/victim in view(src))
@@ -589,26 +643,29 @@
 
 		if(ishuman(victim))
 			var/mob/living/carbon/human/H = victim
-			if(istype(H.l_ear, /obj/item/clothing/ears/earmuffs) && istype(H.r_ear, /obj/item/clothing/ears/earmuffs))
+			if(H.earcheck() >= 2) //ear muffs or headset + helm
 				continue
-
-		victim.Weaken(5)
+			H.Weaken(2 - H.earcheck())
+		else
+			victim.Weaken(5)
 		to_chat(victim, SPAN_WARNING("You hear loud and terrible scream!"))
 	special_ability_cooldown = world.time + ability_cooldown
 
 
 //Insidiously
-/mob/living/simple_animal/hostile/hivemind/himan/proc/fake_death()
+/mob/living/simple/hostile/hivemind/himan/proc/fake_death()
 	src.visible_message("<b>[src]</b> dies!")
 	destroy_surroundings = FALSE
 	fake_dead = TRUE
-	walk(src, FALSE)
+	SSmove_manager.stop_looping(src)
 	icon_state = icon_dead
 	fake_dead_wait_time = world.time + 10 SECONDS
 
 
-/mob/living/simple_animal/hostile/hivemind/himan/proc/awake()
-	var/mob/living/L = target_mob
+/mob/living/simple/hostile/hivemind/himan/proc/awake()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	var/mob/living/L = targetted_mob
 	if(L)
 		L.attack_generic(src, rand(15, 25)) //stealth attack
 		L.Weaken(5)
@@ -632,14 +689,14 @@
 //Rarely can appear from infested machinery (with a circuit board, like an Autholate)
 //////////////////////////////////////////////////////////////////////////////
 
-/mob/living/simple_animal/hostile/hivemind/mechiver
+/mob/living/simple/hostile/hivemind/mechiver
 	name = "Mechiver"
 	desc = "Once an exosuit, this hulking amalgamation of flesh and machine drips fresh blood out of the pilot's hatch."
 	icon = 'icons/mob/hivemind.dmi'
 	icon_state = "mechiver-closed"
 	icon_dead = "mechiver-dead"
-	health = 1000
-	maxHealth = 1000
+	health = 600
+	maxHealth = 600
 	melee_damage_lower = 30
 	melee_damage_upper = 40
 	mob_size = MOB_LARGE
@@ -693,7 +750,7 @@
 						"Will you release me?")
 
 
-/mob/living/simple_animal/hostile/hivemind/mechiver/Life()
+/mob/living/simple/hostile/hivemind/mechiver/Life()
 	. = ..()
 	update_icon()
 
@@ -710,21 +767,26 @@
 		playsound(src, 'sound/effects/clang.ogg', 70, 1)
 
 
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
 	//corpse ressurection
-	if(!target_mob && !passenger)
+	if(!targetted_mob && !passenger) //may break on null
 		for(var/mob/living/Corpse in view(src))
 			if(Corpse.stat == DEAD)
 				if(get_dist(src, Corpse) <= 1)
 					special_ability(Corpse)
 				else
-					walk_to(src, Corpse, 1, 1, 4)
+					SSmove_manager.move_to(src, Corpse, 1, 1)
 				break
 
 
-/mob/living/simple_animal/hostile/hivemind/mechiver/speak()
+/mob/living/simple/hostile/hivemind/mechiver/speak()
 	if(!client && prob(speak_chance) && speak.len)
 		if(pilot)
-			if(target_mob)
+
+			var/mob/living/targetted_mob = (target_mob?.resolve())
+
+			if(targetted_mob)
 				visible_message("<b>[name]'s pilot</b> says, [pick(pilot_target_speak)]")
 				say(pick(common_answers))
 			else
@@ -736,8 +798,11 @@
 
 //animations
 //updates every life tick
-/mob/living/simple_animal/hostile/hivemind/mechiver/update_icon()
-	if(target_mob && !passenger && (get_dist(target_mob, src) <= 4) && !is_on_cooldown())
+/mob/living/simple/hostile/hivemind/mechiver/update_icon()
+
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if(targetted_mob && !passenger && (get_dist(targetted_mob, src) <= 4) && !is_on_cooldown())
 		if(!hatch_closed)
 			return
 		cut_overlays()
@@ -758,19 +823,24 @@
 			add_overlay("mechiver-process")
 
 
-/mob/living/simple_animal/hostile/hivemind/mechiver/AttackingTarget()
-	if(!Adjacent(target_mob))
+/mob/living/simple/hostile/hivemind/mechiver/AttackingTarget()
+
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if(!Adjacent(targetted_mob))
 		return
 
-	if(world.time > special_ability_cooldown && !passenger)
-		special_ability(target_mob)
+	if(world.time > special_ability_cooldown && !passenger && !ismecha(targetted_mob.loc) && !ismecha(targetted_mob))
+		special_ability(targetted_mob)
 
 	..()
 
 
 //picking up our victim for good 20 seconds of best road trip ever
-/mob/living/simple_animal/hostile/hivemind/mechiver/special_ability(mob/living/target)
-	if(!target_mob && hatch_closed) //when we picking up corpses
+/mob/living/simple/hostile/hivemind/mechiver/special_ability(mob/living/target)
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if(!targetted_mob && hatch_closed) //when we picking up corpses
 		if(pilot)
 			flick("mechiver-opening", src)
 		else
@@ -780,11 +850,11 @@
 	target.canmove = FALSE
 	to_chat(target, SPAN_DANGER("Wires snare your limbs and pull you inside the maneater! You feel yourself bound with a thousand steel tendrils!"))
 	playsound(src, 'sound/effects/blobattack.ogg', 70, 1)
-	addtimer(CALLBACK(src, .proc/release_passenger), 40 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(release_passenger)), 40 SECONDS)
 
 
 
-/mob/living/simple_animal/hostile/hivemind/mechiver/proc/release_passenger(var/safely = FALSE)
+/mob/living/simple/hostile/hivemind/mechiver/proc/release_passenger(var/safely = FALSE)
 	if(passenger)
 		if(pilot)
 			flick("mechiver-opening", src)
@@ -813,35 +883,38 @@
 		playsound(src, 'sound/effects/blobattack.ogg', 70, 1)
 
 
-/mob/living/simple_animal/hostile/hivemind/mechiver/proc/dead_body_restoration(mob/living/corpse)
+/mob/living/simple/hostile/hivemind/mechiver/proc/dead_body_restoration(mob/living/corpse)
 	var/picked_mob
 	if(passenger.mob_size <= MOB_SMALL && !client && prob(50))
-		picked_mob = pick(/mob/living/simple_animal/hostile/hivemind/stinger, /mob/living/simple_animal/hostile/hivemind/bomber)
+		picked_mob = pick(/mob/living/simple/hostile/hivemind/stinger, /mob/living/simple/hostile/hivemind/bomber)
 	else
 		if(pilot)
 			if(istype(corpse, /mob/living/carbon/human))
-				picked_mob = /mob/living/simple_animal/hostile/hivemind/himan
+				picked_mob = /mob/living/simple/hostile/hivemind/himan
 			else if(istype(corpse, /mob/living/silicon/robot))
-				picked_mob = /mob/living/simple_animal/hostile/hivemind/hiborg
+				picked_mob = /mob/living/simple/hostile/hivemind/hiborg
 	if(picked_mob)
 		new picked_mob(get_turf(src))
 	else
-		var/mob/living/simple_animal/hostile/hivemind/resurrected/fixed_mob = new(get_turf(src))
+		var/mob/living/simple/hostile/hivemind/resurrected/fixed_mob = new(get_turf(src))
 		fixed_mob.take_appearance(corpse)
 	destroy_passenger()
 
 
-/mob/living/simple_animal/hostile/hivemind/mechiver/proc/destroy_passenger()
-	qdel(passenger)
+/mob/living/simple/hostile/hivemind/mechiver/proc/destroy_passenger()
+	if(GLOB.hive_data_bool["gibbing_warning_timer"])
+		qdel(passenger)
+	else
+		release_passenger(TRUE) //HAS to be true or we do an endless loop!
 	passenger = null
 
 
 //we're not forgot to release our victim safely after death
-/mob/living/simple_animal/hostile/hivemind/mechiver/Destroy()
+/mob/living/simple/hostile/hivemind/mechiver/Destroy()
 	release_passenger(TRUE)
 	return ..()
 
-/mob/living/simple_animal/hostile/hivemind/mechiver/death()
+/mob/living/simple/hostile/hivemind/mechiver/death()
 	release_passenger(TRUE)
 	. = ..()
 	gibs(loc, null, /obj/effect/gibspawner/robot)
@@ -858,13 +931,13 @@
 //Appears from dead human body
 //////////////////////////////////////////////////////////////////////////////
 
-/mob/living/simple_animal/hostile/hivemind/phaser
+/mob/living/simple/hostile/hivemind/phaser
 	name = "Phaser"
 	desc = "A warped human with a strange device on its head. Or for its head."
 	icon = 'icons/mob/hivemind.dmi'
 	icon_state = "phaser-1"
-	health = 160
-	maxHealth = 160
+	health = 80
+	maxHealth = 80
 	speak_chance = 0
 	malfunction_chance = 0
 	mob_size = MOB_MEDIUM
@@ -873,22 +946,24 @@
 	var/can_use_special_ability = TRUE
 	var/list/my_copies = list()
 
-/mob/living/simple_animal/hostile/hivemind/phaser/New()
+/mob/living/simple/hostile/hivemind/phaser/New()
 	..()
 	filters += filter(type="blur", size = 0)
 
 
-/mob/living/simple_animal/hostile/hivemind/phaser/Life()
+/mob/living/simple/hostile/hivemind/phaser/Life()
 	stop_automated_movement = TRUE
 	. = ..()
 
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
 	//special ability using
 	if(world.time > special_ability_cooldown && can_use_special_ability)
-		if(target_mob && (health <= 120))
+		if(targetted_mob && (health <= 60))
 			special_ability()
 
 	//closet hiding
-	if(!target_mob)
+	if(!targetted_mob)
 		var/obj/structure/closet/C = locate() in get_turf(src)
 		if(C && loc != C)
 			if(!C.opened)
@@ -901,29 +976,33 @@
 				break
 
 
-/mob/living/simple_animal/hostile/hivemind/phaser/AttackTarget()
-	if(target_mob && get_dist(src, target_mob) > 1)
+/mob/living/simple/hostile/hivemind/phaser/AttackTarget()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if(targetted_mob && get_dist(src, targetted_mob) > 1)
 		stance = HOSTILE_STANCE_ATTACK
 	..()
 
 
-/mob/living/simple_animal/hostile/hivemind/phaser/MoveToTarget()
-	if(!target_mob || SA_attackable(target_mob))
+/mob/living/simple/hostile/hivemind/phaser/MoveToTarget()
+	var/mob/living/targetted_mob = (target_mob?.resolve())
+
+	if(!targetted_mob || SA_attackable(targetted_mob))
 		stance = HOSTILE_STANCE_IDLE
-	if(target_mob in ListTargets(10))
-		if(get_dist(src, target_mob) > 1)
+	if(targetted_mob in ListTargets(10))
+		if(get_dist(src, targetted_mob) > 1)
 			stance = HOSTILE_STANCE_ATTACK
-			phase_move_to(target_mob, nearby = TRUE)
+			phase_move_to(targetted_mob, nearby = TRUE)
 		else
 			stance = HOSTILE_STANCE_ATTACKING
 
 
-/mob/living/simple_animal/hostile/hivemind/phaser/proc/is_can_jump_on(turf/target)
+/mob/living/simple/hostile/hivemind/phaser/proc/is_can_jump_on(turf/target)
 	if(!target || target.density || istype(target, /turf/space) || istype(target, /turf/simulated/open))
 		return FALSE
 
 	//to prevent reflection's stacking
-	var/mob/living/simple_animal/hostile/hivemind/phaser/P = locate() in target
+	var/mob/living/simple/hostile/hivemind/phaser/P = locate() in target
 	if(P)
 		return FALSE
 
@@ -935,7 +1014,7 @@
 
 
 //first part of phase moving is just preparation
-/mob/living/simple_animal/hostile/hivemind/phaser/proc/phase_move_to(atom/target, var/nearby = FALSE)
+/mob/living/simple/hostile/hivemind/phaser/proc/phase_move_to(atom/target, var/nearby = FALSE)
 	var/turf/new_place
 	var/distance_to_target = get_dist(src, target)
 	var/turf/target_turf = get_turf(target)
@@ -968,11 +1047,11 @@
 	animate(src, pixel_x=init_px + 16*pick(-1, 1), time=5)
 	animate(pixel_x=init_px, time=6, easing=SINE_EASING)
 	animate(filters[1], size = 5, time = 5, flags = ANIMATION_PARALLEL)
-	addtimer(CALLBACK(src, .proc/phase_jump, new_place), 0.5 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(phase_jump), new_place), 0.5 SECONDS)
 
 
 //second part - is jump to target
-/mob/living/simple_animal/hostile/hivemind/phaser/proc/phase_jump(turf/place)
+/mob/living/simple/hostile/hivemind/phaser/proc/phase_jump(turf/place)
 	playsound(place, 'sound/effects/phasein.ogg', 60, 1)
 	animate(filters[1], size = 0, time = 5)
 	icon_state = "phaser-[rand(1,4)]"
@@ -984,14 +1063,14 @@
 			L.Weaken(3)
 
 
-/mob/living/simple_animal/hostile/hivemind/phaser/special_ability()
+/mob/living/simple/hostile/hivemind/phaser/special_ability()
 	my_copies = list() //let's clean it up
 	var/possible_directions = alldirs - cardinal
 	var/turf/spawn_point = get_turf(src)
 	//we gives to copies our appearence and pick random direction for them
 	//with animation it's hard to say, who's real. And i hope it looks great
 	for(var/i = 1 to 3)
-		var/mob/living/simple_animal/hostile/hivemind/phaser/reflection = new type(spawn_point)
+		var/mob/living/simple/hostile/hivemind/phaser/reflection = new type(spawn_point)
 		reflection.can_use_special_ability = FALSE
 		var/mutable_appearance/my_appearance = new(src)
 		reflection.appearance = my_appearance
@@ -1003,21 +1082,21 @@
 		if(reflection.is_can_jump_on(new_position))
 			spawn(1) //ugh, i know, i know, it's bad. Animation
 				reflection.forceMove(new_position)
-		addtimer(CALLBACK(GLOBAL_PROC, .proc/qdel, reflection), 60 SECONDS)
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(qdel), reflection), 60 SECONDS)
 	loc = get_step(spawn_point, possible_directions[1]) //there must left last direction
 	special_ability_cooldown = world.time + ability_cooldown
 	playsound(spawn_point, 'sound/effects/cascade.ogg', 100, 1)
 
 
-/mob/living/simple_animal/hostile/hivemind/phaser/closet_interaction()
+/mob/living/simple/hostile/hivemind/phaser/closet_interaction()
 	var/obj/structure/closet/closed_closet = loc
 	if(closed_closet && istype(closed_closet) && closed_closet.welded)
 		phase_jump(closed_closet.loc)
 
 
-/mob/living/simple_animal/hostile/hivemind/phaser/death()
+/mob/living/simple/hostile/hivemind/phaser/death()
 	if(my_copies.len)
-		for(var/mob/living/simple_animal/hostile/hivemind/phaser/My_copy in my_copies)
+		for(var/mob/living/simple/hostile/hivemind/phaser/My_copy in my_copies)
 			qdel(My_copy)
 	..()
 	gibs(loc, null, /obj/effect/gibspawner/human)

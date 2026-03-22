@@ -11,7 +11,7 @@ var/list/ventcrawl_machinery = list(
 	/obj/item/device/radio/borg,
 	/obj/item/holder,
 	/obj/machinery/camera,
-	/mob/living/simple_animal/borer,
+	/mob/living/simple/borer,
 	/obj/item/paper/,
 	/obj/item/pen
 	)
@@ -49,17 +49,14 @@ var/list/ventcrawl_machinery = list(
 	if(is_type_in_list(carried_item, can_enter_vent_with))
 		return !get_inventory_slot(carried_item)
 
-/mob/living/carbon/is_allowed_vent_crawl_item(var/obj/item/carried_item)
-	if(carried_item in stomach_contents)
-		return 1
-	return ..()
+
 
 /mob/living/carbon/human/is_allowed_vent_crawl_item(var/obj/item/carried_item)
 	if(carried_item in list(l_hand,r_hand))
 		return carried_item.w_class <= ITEM_SIZE_NORMAL
 	return ..()
 
-/mob/living/simple_animal/spiderbot/is_allowed_vent_crawl_item(var/obj/item/carried_item)
+/mob/living/simple/spiderbot/is_allowed_vent_crawl_item(var/obj/item/carried_item)
 	if(carried_item in list(held_item, radio, connected_ai, cell, camera, mmi))
 		return 1
 	return ..()

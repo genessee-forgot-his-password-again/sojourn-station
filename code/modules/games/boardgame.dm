@@ -16,9 +16,10 @@
 	icon_state = "dicebag"
 
 /obj/item/storage/pill_bottle/chechker/populate_contents()
-	for(var/i = 1 to 16)
-		new /obj/item/checker(src.loc)
-		new /obj/item/checker/red(src.loc)
+	for(var/black = 1 to 16)
+		new /obj/item/checker(src)
+	for(var/red = 1 to 16)
+		new /obj/item/checker/red(src)
 
 /obj/item/board/examine(mob/user, var/distance = -1)
 	if(in_range(user,src))
@@ -78,7 +79,7 @@ obj/item/board/attackby(obj/item/I as obj, mob/user as mob)
 		user.unset_machine()
 		return
 
-	var/dat = "<HTML>"
+	var/dat = ""
 	dat += "<table border='0'>"
 	var i, stagger
 	stagger = 0 //so we can have the checkerboard effect
@@ -110,7 +111,7 @@ obj/item/board/attackby(obj/item/I as obj, mob/user as mob)
 
 	if(selected >= 0 && !isobserver(user))
 		dat += "<br><A href='?src=\ref[src];remove=0'>Remove Selected Piece</A>"
-	user << browse(dat,"window=boardgame;size=500x500")
+	user << browse(HTML_SKELETON(dat),"window=boardgame;size=500x500")
 	onclose(usr, "boardgame")
 
 /obj/item/board/Topic(href, href_list)

@@ -7,22 +7,45 @@
 	max_shells = 4
 	w_class = ITEM_SIZE_HUGE
 	force = WEAPON_FORCE_PAINFUL
-	flags = CONDUCT
 	slot_flags = SLOT_BACK
-	caliber = CAL_SHOTGUN
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 2)
-	load_method = SINGLE_CASING
+	gun_tags = list(GUN_PROJECTILE, GUN_INTERNAL_MAG, GUN_KNIFE) //Unlike base shotguns, can take a bayonet. Why? Because trench shotgun funni.
 	ammo_type = /obj/item/ammo_casing/shotgun/beanbag
 	handle_casings = HOLD_CASINGS
-	fire_sound = 'sound/weapons/guns/fire/shotgunp_fire.ogg'
-	bulletinsert_sound 	= 'sound/weapons/guns/interact/shotgun_insert.ogg'
 	matter = list(MATERIAL_PLASTEEL = 20, MATERIAL_WOOD = 10)
 	price_tag = 600
-	damage_multiplier = 1.1
-	recoil_buildup = 15
-	one_hand_penalty = 10 //full sized shotgun level
+	damage_multiplier = 1 //Baseline shotgun
+	init_recoil = RIFLE_RECOIL(1.1)
 	saw_off = TRUE
 	sawn = /obj/item/gun/projectile/shotgun/pump/sawn
+	allow_racking = FALSE
+	serial_type = "H&S"
+
+	wield_delay = 0.6 SECOND
+	wield_delay_factor = 0.3 // 30 vig
+	gun_parts = list(/obj/item/part/gun/frame/grizzly = 1, /obj/item/part/gun/grip/wood = 1, /obj/item/part/gun/mechanism/shotgun = 1, /obj/item/part/gun/barrel/shotgun = 1)
+	alt_plus_one_loading = TRUE //sideload edit
+
+/obj/item/part/gun/frame/grizzly
+	name = "Grizzly frame"
+	desc = "A Grizzly shotgun frame. A militiaman's favorite."
+	icon_state = "frame_shotgun"
+	result = /obj/item/gun/projectile/shotgun/pump
+	resultvars = list(/obj/item/gun/projectile/shotgun/pump)
+	gripvars = list(/obj/item/part/gun/grip/wood)
+	mechanismvar = /obj/item/part/gun/mechanism/shotgun
+	barrelvars = list(/obj/item/part/gun/barrel/shotgun)
+
+//Snowflake update-icon code for bayonets.
+/obj/item/gun/projectile/shotgun/pump/update_icon()
+	..()
+	cut_overlays()
+	var/iconstring = initial(icon_state)
+
+	if (bayonet)
+		add_overlay("bayonet")
+
+	icon_state = iconstring
 
 /obj/item/gun/projectile/shotgun/pump/consume_next_projectile()
 	if(chambered)
@@ -36,11 +59,13 @@
 
 /obj/item/gun/projectile/shotgun/pump/proc/pump(mob/M as mob)
 	var/turf/newloc = get_turf(src)
-	playsound(M, pumpshotgun_sound, 60, 1)
+	playsound(M, cocked_sound, 60, 1)
 
 	if(chambered)//We have a shell in the chamber
 		chambered.forceMove(newloc) //Eject casing
 		chambered = null
+
+	side_loading(M)
 
 	if(loaded.len)
 		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
@@ -61,10 +86,12 @@
 	price_tag = 450
 	damage_multiplier = 1
 	penetration_multiplier = 0.9
-	recoil_buildup = 20
-	one_hand_penalty = 15 //full sized shotgun level
+	init_recoil = RIFLE_RECOIL(1.2)
 	saw_off = TRUE
 	sawn = /obj/item/gun/projectile/shotgun/pump/obrez
+	gun_parts = list(/obj/item/part/gun/grip/wood = 1, /obj/item/part/gun/mechanism/shotgun = 1, /obj/item/stack/material/plasteel = 2)
+	wield_delay = 0.4 SECOND
+	wield_delay_factor = 0.3 // 30 vig
 
 /obj/item/gun/projectile/shotgun/pump/obrez
 	name = "obrez \"Grizzly\" shotgun"
@@ -80,6 +107,8 @@
 	price_tag = 350
 	damage_multiplier = 0.8
 	penetration_multiplier = 0.8
-	recoil_buildup = 24
-	one_hand_penalty = 23 //full sized shotgun level
+	init_recoil = RIFLE_RECOIL(1.3)
 	saw_off = FALSE
+	gun_parts = list(/obj/item/stack/material/wood = 2, /obj/item/part/gun/mechanism/shotgun = 1, /obj/item/stack/material/plasteel = 2)
+	wield_delay = 0.2 SECOND
+	wield_delay_factor = 0.2 // 20 vig

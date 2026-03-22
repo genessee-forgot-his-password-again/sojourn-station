@@ -29,7 +29,7 @@
 
 #define ADMINISTRATIVE 2
 #define CLOTHING 3
-#define SECURITY 4
+#define ECO_SECURITY 4
 #define SPECIAL_SECURITY 5
 
 #define FOOD 6
@@ -93,11 +93,10 @@ var/global/datum/computer_file/data/email_account/service/payroll/payroll_mailer
 		create_department_account(GLOB.all_departments[d])
 
 	station_account = department_accounts[DEPARTMENT_COMMAND]
-	vendor_account = department_accounts[DEPARTMENT_LSS] //Vendors are operated by the guild and purchases pay into their stock
 
 	for(var/obj/machinery/vending/V in GLOB.machines)
-		if(!V.custom_vendor)
-			V.earnings_account = V.vendor_department ? department_accounts[V.vendor_department] : vendor_account
+		if(V.vendor_department)
+			V.earnings_account = department_accounts[V.vendor_department]
 
 	current_date_string = "[num2text(rand(1,31))] [pick("January","February","March","April","May","June","July","August","September","October","November","December")], [game_year]"
 

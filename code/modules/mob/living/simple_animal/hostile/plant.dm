@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/plant
+/mob/living/simple/hostile/plant
 	name = "Mycus"
 	desc = "Is that a mushroom person? It's wearing a loin cloth and a hide mantle. Weird."
 	icon = 'icons/mob/mobs-humanoid.dmi'
@@ -33,16 +33,17 @@
 	leather_amount = 0
 	bones_amount = 0
 	faction = "neutral"
+	research_value = 2750
 
-/mob/living/simple_animal/hostile/plant/alt
+/mob/living/simple/hostile/plant/alt
 	icon_state = "shroom_2"
 	desc = "Is that a mushroom person? It's wearing a loin cloth and a black cloak. Weird."
 
-/mob/living/simple_animal/hostile/plant/folken
+/mob/living/simple/hostile/plant/folken
 	name = "Folken"
 	desc = "Is that a plant person? It's wearing a scavenged poncho and a flat cap."
 	icon_state = "plant_1"
 
-/mob/living/simple_animal/hostile/plant/folken/alt
+/mob/living/simple/hostile/plant/folken/alt
 	icon_state = "plant_2"
 	desc = "Is that a plant person? It's wearing a scavenged pair of jeans and shirt with a dusty cowboy hat."

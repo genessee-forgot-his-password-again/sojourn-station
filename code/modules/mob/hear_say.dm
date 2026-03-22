@@ -7,7 +7,14 @@
 	var/speaker_name = speaker.name
 	if(ishuman(speaker))
 		var/mob/living/carbon/human/H = speaker
-		speaker_name = H.rank_prefix_name(H.GetVoice())
+		// GetVoice(TRUE) checks if mask hiding the voice
+		speaker_name = H.rank_prefix_name(H.GetVoice(TRUE))
+		// If we have the right perk or standing close - GetVoice() again, but skip mask check
+		if((get_dist(src, H) < 2) || stats?.getPerk(PERK_EAR_OF_QUICKSILVER))
+			speaker_name = H.rank_prefix_name(H.GetVoice(FALSE))
+		//If the person is a ghost/spectator - you should be able to get the voice of the person.
+		if(isghost(src))
+			speaker_name = H.rank_prefix_name(H.GetVoice(FALSE))
 
 	if(speech_volume)
 		message = "<FONT size='[speech_volume]'>[message]</FONT>"
@@ -15,11 +22,15 @@
 		message = "<i>[message]</i>"
 
 	if(verb == "reports")
-		var/cop_code = get_cop_code()
+		var/cop_code
+		if(is_neotheology_disciple(src))
+			cop_code = get_cop_code(holy = TRUE)
+		else
+			cop_code = get_cop_code()
 		if(isghost(src))
 			message = cop_code + " (" + replace_characters(message, list("@"=")"))
 		else
-			if(!src.stats.getPerk(/datum/perk/codespeak))
+			if(!src.stats.getPerk(PERK_CODESPEAK))
 				message = cop_code
 			else
 				message = cop_code + " (" + replace_characters(message, list("@"=")"))
@@ -72,11 +83,15 @@
 	var/speaker_name = get_hear_name(speaker, hard_to_hear, voice_name)
 
 	if(rverb == "reports")
-		var/cop_code = get_cop_code()
+		var/cop_code
+		if(is_neotheology_disciple(src))
+			cop_code = get_cop_code(holy = TRUE)
+		else
+			cop_code = get_cop_code()
 		if(isghost(src))
 			message = cop_code + " (" + replace_characters(message, list("@"=")"))
 		else
-			if(!src.stats.getPerk(/datum/perk/codespeak))
+			if(!src.stats.getPerk(PERK_CODESPEAK))
 				message = cop_code
 			else
 				message = cop_code + " (" + replace_characters(message, list("@"=")"))
@@ -128,7 +143,7 @@
 	if(ishuman(speaker))
 		var/mob/living/carbon/human/H = speaker
 
-		if(H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask/gas/voice))
+		if(H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask/chameleon/voice))
 			changed_voice = TRUE
 			var/mob/living/carbon/human/I
 

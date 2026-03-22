@@ -1,4 +1,14 @@
-#define SEND_SIGNAL(target, sigtype, arguments...) ( !target.comp_lookup || !target.comp_lookup[sigtype] ? NONE : target._SendSignal(sigtype, list(##arguments)) )
+/// Used to trigger signals and call procs registered for that signal
+/// The datum hosting the signal is automaticaly added as the first argument
+/// Returns a bitfield gathered from all registered procs
+/// Arguments given here are packaged in a list and given to _SendSignal
+#define SEND_SIGNAL(target, sigtype, arguments...) ( !target.comp_lookup || !target.comp_lookup[sigtype] ? NONE : target._SendSignal(sigtype, list(target, ##arguments)) )
+
+//Simular to the above but this one is done by eris
+#define ERIS_SEND_SIGNAL(target, sigtype, arguments...) ( !target.comp_lookup || !target.comp_lookup[sigtype] ? NONE : target._SendSignal(sigtype, list(##arguments)) )
+
+/// Depreciated. Use SEND_SIGNAL instead. This only exists for compatability.
+#define LEGACY_SEND_SIGNAL(target, sigtype, arguments...) ( !target.comp_lookup || !target.comp_lookup[sigtype] ? NONE : target._SendSignal(sigtype, list(##arguments)) )
 
 #define SEND_GLOBAL_SIGNAL(sigtype, arguments...) ( SEND_SIGNAL(SSdcs, sigtype, ##arguments) )
 
@@ -45,9 +55,23 @@
 #define COMSIG_PARENT_QDELETING "parent_qdeleting"			  // just before a datum's Destroy() is called: (force), at this point none of the other components chose to interrupt qdel and Destroy will be called
 #define COMSIG_PARENT_QDELETED "parent_qdeleted"				//after a datum's Destroy() is called: (force, qdel_hint), at this point none of the other components chose to interrupt qdel and Destroy has been called
 
+#define COMSIG_QDELETING_NEW "parent_qdeleting_new"
+
 #define COMSIG_SHUTTLE_SUPPLY "shuttle_supply"  //form sell()
+#define COMSIG_TRADE_BEACON "trade_beacon"
+
 #define COMSIG_RITUAL "ritual"
 #define COMSIG_TRANSATION "transation"          //from transfer_funds()
+
+/// from datum ui_act (usr, action)
+#define COMSIG_UI_ACT "COMSIG_UI_ACT"
+
+// /datum/mecha signals
+#define COMSIG_HUD_DELETED "hud_deleted"
+
+// /client signals
+/// from base of client/Click(): (atom/target, atom/location, control, params, mob/user)
+#define COMSIG_CLIENT_CLICK "atom_client_click"
 
 // /atom signals
 #define COMSIG_EXAMINE "examine"								//from atom/examine(): (mob/user, distance)
@@ -55,12 +79,16 @@
 #define COMSIG_ATOM_UNFASTEN "atom_unfasten" // set_anchored()
 #define COMSIG_CLICK_ALT "alt_click"//from atom/AltClick(): (/mob)
 #define COMSIG_CLICK_CTRL "ctrl_click"//from atom/CtrlClick(): (/mob)
+#define COMSIG_SHIFTCLICK "shiftclick" // used for ai_like_control component
+#define COMSIG_CTRLCLICK "ctrlclick" // used for ai_like_control component
+#define COMSIG_ALTCLICK "altclick" // used for ai_like_control component
 
 // /area signals
 #define COMSIG_AREA_SANCTIFY "sanctify_area"
 
 // /turf signals
 #define COMSIG_TURF_LEVELUPDATE "turf_levelupdate" //levelupdate()
+#define COMSIG_TURF_CHANGE "turf_change"
 
 // /atom/movable signals
 #define COMSIG_MOVABLE_MOVED "movable_moved"					//from base of atom/movable/Moved(): (/atom, origin_loc, new_loc)
@@ -69,7 +97,11 @@
 // /mob signals
 #define COMSIG_MOB_LIFE  "mob_life"							 //from mob/Life()
 #define COMSIG_MOB_LOGIN "mob_login"							//from mob/Login()
+///from base of /mob/Logout(): ()
+#define COMSIG_MOB_LOGOUT "mob_logout"
 #define COMSIG_MOB_DEATH "mob_death"							//from mob/death()
+
+#define COMSIG_TRACE_IMPACT "trace_impact" //Soj edit
 
 // /mob/living signals
 #define COMSIG_LIVING_STUN_EFFECT "stun_effect_act"			 //mob/living/proc/stun_effect_act()
@@ -95,6 +127,11 @@
 #define COMSIG_HUMAN_HEALTH "human_health"					   //from human/updatehealth()
 #define COMSIG_HUMAN_SANITY "human_sanity"						//from /datum/sanity/proc/onLife()
 #define COMSIG_HUMAN_INSTALL_IMPLANT "human_install_implant"
+
+// /mob/living/carbon/superior signals
+#define COMSIG_SUPERIOR_FIRED_PROJECTILE "superior_fired_projectile"
+#define COMSIG_ATTACKED "attacked" // Soj edit, feel free to adapt this to other types
+
 // /datum/species signals
 
 // /obj signals
@@ -105,6 +142,8 @@
 
 //machinery
 #define COMSIG_AREA_APC_OPERATING "area_operating"  //from apc process()
+#define COMSIG_AREA_APC_DELETED "area_apc_gone"
+#define COMSIG_AREA_APC_POWER_CHANGE "area_apc_power_change"
 #define COMSING_DESTRUCTIVE_ANALIZER "destructive_analizer"
 #define COMSIG_TURRENT "create_turrent"
 
@@ -116,6 +155,7 @@
 #define COMSIG_REMOVE "uninstall"
 #define COMSIG_ITEM_DROPPED	"item_dropped"					//from  /obj/item/weapon/tool/attackby(): Called to remove an upgrade
 #define COMSIG_ITEM_PICKED "item_picked"
+#define COMSIG_ODDITY_USED "used_oddity"                    //from /datum/sanity/proc/oddity_stat_up(): called to notify the used oddity it was used.
 // /obj/item/clothing signals
 #define COMSIG_CLOTH_DROPPED "cloths_missing"
 #define COMSIG_CLOTH_EQUIPPED "cloths_recovered"
@@ -129,6 +169,33 @@
 
 //obj/item/gun signals
 #define COMSIG_GUN_POST_FIRE "gun_post_fire"	//from base of /obj/item/gun/proc/handle_post_fire(): (atom/target, pointblank, reflex)
+
+// Internal organ signals
+#define COMSIG_IORGAN_REFRESH_SELF "internal_organ_self_refresh"
+#define COMSIG_IORGAN_REFRESH_PARENT "internal_organ_parent_refresh"
+#define COMSIG_IORGAN_APPLY "internal_organ_apply_modifiers"
+#define COMSIG_IORGAN_ADD_WOUND "add_internal_wound"
+#define COMSIG_IORGAN_REMOVE_WOUND "remove_internal_wound"
+#define COMSIG_IORGAN_WOUND_COUNT "count_internal_wounds"
+
+// Internal wound signals
+#define COMSIG_IWOUND_EFFECTS "internal_wound_effects"
+#define COMSIG_IWOUND_LIMB_EFFECTS "internal_wound_limb_effects"
+#define COMSIG_IWOUND_FLAGS_ADD "internal_wound_flags_add"
+#define COMSIG_IWOUND_FLAGS_REMOVE "internal_wound_flags_remove"
+#define COMSIG_IWOUND_DAMAGE "internal_wound_damage"
+#define COMSIG_IWOUND_TREAT "internal_wound_autodoc"
+
+// ABERRANT signals
+#define COMSIG_ABERRANT_INPUT "aberrant_input"
+#define COMSIG_ABERRANT_PROCESS "aberrant_process"
+#define COMSIG_ABERRANT_OUTPUT "aberrant_output"
+#define COMSIG_ABERRANT_SECONDARY "aberrant_secondary"
+#define COMSIG_ABERRANT_COOLDOWN "aberrant_cooldown"
+
+// Note that this is only defined for actions because this could be a good bit expensive otherwise
+/// From base of /atom/movable/screen/movable/action_button/MouseWheel(src, delta_x, delta_y, location, control, params)
+#define COMSIG_ACTION_SCROLLED "action_scrolled"
 
 /*******Component Specific Signals*******/
 //Janitor

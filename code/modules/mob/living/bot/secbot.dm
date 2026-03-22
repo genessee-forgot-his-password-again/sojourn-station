@@ -89,7 +89,7 @@
 		dat += "Operating Mode: <A href='?src=\ref[src];operation=switchmode'>[arrest_type ? "Detain" : "Arrest"]</A><BR>"
 		dat += "Report Arrests: <A href='?src=\ref[src];operation=declarearrests'>[declare_arrests ? "Yes" : "No"]</A><BR>"
 		dat += "Auto Patrol: <A href='?src=\ref[src];operation=patrol'>[auto_patrol ? "On" : "Off"]</A>"
-	user << browse("<HEAD><TITLE>Securitron v[bot_version] controls</TITLE></HEAD>[dat]", "window=autosec")
+	user << browse(HTML_SKELETON_TITLE("Securitron v[bot_version] controls",dat), "window=autosec")
 	onclose(user, "autosec")
 	return
 
@@ -287,7 +287,7 @@
 				if(preparing_arrest_sounds.len)
 					playsound(loc, pick(preparing_arrest_sounds), 50, 0)
 	else if(isanimal(M))
-		var/mob/living/simple_animal/S = M
+		var/mob/living/simple/S = M
 		S.AdjustStunned(10)
 		S.adjustBruteLoss(15)
 		do_attack_animation(M)
@@ -300,7 +300,7 @@
 		visible_message(SPAN_WARNING("[M] was beaten by [src] with a stun baton!"))
 
 	else if(issuperioranimal(M))
-		var/mob/living/carbon/superior_animal/A = M
+		var/mob/living/carbon/superior/A = M
 		A.AdjustStunned(20) //Stop right their dirtbag
 		A.adjustBruteLoss(30) //You are removed creep!
 		do_attack_animation(M)

@@ -108,14 +108,6 @@
 	build_path = /obj/machinery/computer/operating
 	origin_tech = list(TECH_DATA = 2, TECH_BIO = 2)
 
-/obj/item/circuitboard/curefab
-	build_name = "cure fabricator"
-	build_path = /obj/machinery/computer/curer
-
-/obj/item/circuitboard/splicer
-	build_name = "disease splicer"
-	build_path = /obj/machinery/computer/diseasesplicer
-
 /obj/item/circuitboard/centrifuge
 	build_name = "centrifuge"
 	build_path = /obj/machinery/centrifuge
@@ -131,11 +123,6 @@
 /obj/item/circuitboard/nav
 	build_name = "navigation console"
 	build_path = /obj/machinery/computer/navigation
-
-/obj/item/circuitboard/ordercomp
-	build_name = "supply ordering console"
-	build_path = /obj/machinery/computer/supplycomp/order
-	origin_tech = list(TECH_DATA = 2)
 
 /*
 /obj/item/circuitboard/mining_shuttle

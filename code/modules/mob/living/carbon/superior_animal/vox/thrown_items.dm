@@ -2,7 +2,7 @@
 	name = "sharp stone"
 	damage_types = list(BRUTE = 16)
 	agony = 12
-	armor_penetration = 5
+	armor_divisor = 1
 	step_delay = 1.15
 	check_armour = ARMOR_MELEE
 	can_ricochet = FALSE
@@ -15,7 +15,7 @@
 	name = "rock fragements"
 	damage_types = list(BRUTE = 24) //Same as a .40
 	agony = 15
-	armor_penetration = 25
+	armor_divisor = 1.25 //primitive.
 	step_delay = 1
 	check_armour = ARMOR_MELEE
 	can_ricochet = FALSE
@@ -31,9 +31,25 @@
 /obj/item/projectile/bullet/spear/toxic/New()
 	 toxin_coated = pick("amatoxin","pararein","toxin","fuel") //they get fuel form random containers
 
+	 return ..()
+
 /obj/item/projectile/bullet/spear/toxic/on_hit(atom/target, def_zone = null)
-	if(isliving(target))
-		var/mob/living/L = target
-		if(istype(L) && L.reagents)
-			L.reagents.add_reagent(toxin_coated, 1) //Really really bad so low amouts
-			to_chat(target, "<span class='info'>The tip of the spear was coated in something!</span>")
+	if (!testing)
+		if(isliving(target))
+			var/mob/living/L = target
+			if(istype(L) && L.reagents)
+				L.reagents.add_reagent(toxin_coated, 1) //Really really bad so low amouts
+				to_chat(target, "<span class='info'>The tip of the spear was coated in something!</span>")
+
+//Anti friendly firing
+/obj/item/projectile/bullet/rock/attack_mob(mob/living/target_mob, distance, miss_modifier=0)
+	if(target_mob.faction == "vox_tribe")
+		return FALSE
+	else
+		return ..()
+
+/obj/item/projectile/bullet/spear/attack_mob(mob/living/target_mob, distance, miss_modifier=0)
+	if(target_mob.faction == "vox_tribe")
+		return FALSE
+	else
+		return ..()

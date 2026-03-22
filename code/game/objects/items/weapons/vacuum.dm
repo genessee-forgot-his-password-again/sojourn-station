@@ -7,6 +7,8 @@
 	throwforce = WEAPON_FORCE_WEAK
 	throw_speed = 5
 	throw_range = 3
+	no_double_tact = TRUE
+	sanctified = TRUE //Already struggles to compete with mop, let's not make it slower in the hands of those who use it most
 	w_class = ITEM_SIZE_BULKY
 	attack_verb = list("bashed", "bludgeoned", "whacked")
 	matter = list(MATERIAL_PLASTIC = 5, MATERIAL_STEEL = 10, MATERIAL_BIOMATTER = 5)
@@ -14,7 +16,7 @@
 
 	var/amount = 0
 	var/max_amount = 30
-	var/vacuum_time = 60
+	var/vacuum_time = 45
 
 /obj/item/holyvacuum/Initialize()
 	.=..()
@@ -48,7 +50,7 @@
 
 /obj/item/holyvacuum/afterattack(atom/A, mob/user, proximity)
 	if(!proximity) return
-	if(istype(A, /turf) || istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay))
+	if(istype(A, /turf) || istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay) && !istype(A, /obj/effect/overlay/water))
 		if(amount >= max_amount)
 			to_chat(user, SPAN_NOTICE("The storage tank of the [src] is full!"))
 			return

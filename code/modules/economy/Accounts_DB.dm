@@ -1,4 +1,6 @@
-
+// SPCR 2022
+// Pay extra attention to Topic() security for anything in this code-file , everything about money_Accounts is read in HTML , printed in paper
+// and can be used for exploits if variables are not safety checked.
 /obj/machinery/account_database
 	name = "accounts uplink terminal"
 	desc = "Access transaction logs, account data and all kinds of other financial records."
@@ -71,6 +73,7 @@
 
 	if (detailed_account_view)
 		data["account_number"] = detailed_account_view.account_number
+		data["remote_access_pin"] = detailed_account_view.remote_access_pin
 		data["owner_name"] = detailed_account_view.owner_name
 		data["money"] = detailed_account_view.money
 		data["suspended"] = detailed_account_view.suspended
@@ -93,6 +96,7 @@
 		var/datum/money_account/D = all_money_accounts[i]
 		accounts.Add(list(list(\
 			"account_number"=D.account_number,\
+			"remote_access_pin"=D.remote_access_pin,\
 			"owner_name"=D.owner_name,\
 			"suspended"=D.suspended ? "SUSPENDED" : "",\
 			"account_index"=i)))
@@ -134,6 +138,7 @@
 
 			if("finalise_create_account")
 				var/account_name = href_list["holder_name"]
+				account_name = sanitizeSafe(account_name, MAX_NAME_LEN, TRUE)
 				var/starting_funds = max(text2num(href_list["starting_funds"]), 0)
 
 				starting_funds = CLAMP(starting_funds, 0, station_account.money)	// Not authorized to put the station in debt.
@@ -199,6 +204,7 @@
 					text = {"
 						[accounting_letterhead(title)]
 						<u>Holder:</u> [detailed_account_view.owner_name]<br>
+						<u>Account Pin:</u> [detailed_account_view.remote_access_pin]<br>
 						<u>Balance:</u> [detailed_account_view.money][CREDS]<br>
 						<u>Status:</u> [detailed_account_view.suspended ? "Suspended" : "Active"]<br>
 						<u>Transactions:</u> ([detailed_account_view.transaction_log.len])<br>
@@ -240,6 +246,7 @@
 							<thead>
 								<tr>
 									<td>Account Number</td>
+									<td>Account Remote Access Pin</td>
 									<td>Holder</td>
 									<td>Balance</td>
 									<td>Status</td>
@@ -253,6 +260,7 @@
 						text += {"
 								<tr>
 									<td>#[D.account_number]</td>
+									<td>#[D.remote_access_pin]</td>
 									<td>[D.owner_name]</td>
 									<td>[D.money][CREDS]</td>
 									<td>[D.suspended ? "Suspended" : "Active"]</td>

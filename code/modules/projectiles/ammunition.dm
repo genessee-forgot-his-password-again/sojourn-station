@@ -19,21 +19,43 @@
 	var/reload_delay = 0
 	var/shell_color = ""
 
+	var/transform_scale = 1
+
 /obj/item/ammo_casing/Initialize()
 	. = ..()
+
 	if(ispath(projectile_type))
 		BB = new projectile_type(src)
+
+	if(spent_icon && !BB)
+		icon_state = spent_icon
+
 	pixel_x = rand(-10, 10)
 	pixel_y = rand(-10, 10)
 	if(amount > 1)
 		update_icon()
 
+/obj/item/ammo_casing/Destroy()
+	make_young()
+	qdel(BB)
+	BB = null
+
+	. = ..()
+
+/obj/item/ammo_casing/add_initial_transforms()
+	. = ..()
+
+	add_new_transformation(/datum/transform_type/modular, list(transform_scale, transform_scale, flag = CASING_INITIAL_SCALE_TRANSFORM, priority = CASING_INITIAL_SCALE_TRANSFORM_PRIORITY))
+
 //removes the projectile from the ammo casing
 /obj/item/ammo_casing/proc/expend()
 	. = BB
 	BB = null
+	if(is_caseless)
+		qdel(src)
 	set_dir(pick(cardinal)) //spin spent casings
 	update_icon()
+
 
 /obj/item/ammo_casing/attack_hand(mob/user)
 	if((src.amount > 1) && (src == user.get_inactive_hand()))
@@ -198,6 +220,13 @@
 			stored_ammo += new ammo_type(src)
 	update_icon()
 
+/obj/item/ammo_magazine/Destroy()
+	make_young()
+	QDEL_LIST(contents)
+	QDEL_LIST(stored_ammo)
+
+	. = ..()
+
 /obj/item/ammo_magazine/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = W
@@ -210,23 +239,27 @@
 		insertCasing(C)
 	else if(istype(W, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/other = W
+		if(src.used_now)
+			to_chat(user, SPAN_NOTICE("You're already loading into [src]."))
+			return
 		if(!src.stored_ammo.len)
 			to_chat(user, SPAN_WARNING("There is no ammo in \the [src]!"))
 			return
 		if(other.stored_ammo.len >= other.max_ammo)
 			to_chat(user, SPAN_NOTICE("\The [other] is already full."))
 			return
+		src.used_now = TRUE
 		var/diff = FALSE
 		for(var/obj/item/ammo in src.stored_ammo)
 			if(other.stored_ammo.len < other.max_ammo && do_after(user, reload_delay/other.max_ammo, src) && other.insertCasing(removeCasing()))
 				diff = TRUE
 				continue
 			break
+		src.used_now = FALSE
 		if(diff)
 			to_chat(user, SPAN_NOTICE("You finish loading \the [other]. It now contains [other.stored_ammo.len] rounds, and \the [src] now contains [stored_ammo.len] rounds."))
 		else
 			to_chat(user, SPAN_WARNING("You fail to load anything into \the [other]"))
-
 /obj/item/ammo_magazine/attack_hand(mob/user)
 	if(user.get_inactive_hand() == src && stored_ammo.len)
 		var/obj/item/ammo_casing/stack = removeCasing()
@@ -245,7 +278,8 @@
 		return
 	..()
 
-/obj/item/ammo_magazine/AltClick(var/mob/living/user)
+/obj/item/ammo_magazine/CtrlClick(mob/living/user)
+	. = ..()
 	var/obj/item/W = user.get_active_hand()
 	if(istype(W, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = W
@@ -265,6 +299,29 @@
 			var/obj/item/ammo_casing/AC = removeCasing()
 			if(AC)
 				user.put_in_active_hand(AC)
+
+/obj/item/ammo_magazine/AltClick(mob/living/user)
+	..()
+	if(!stored_ammo.len)
+		return
+	if(get_dist(get_turf(src), get_turf(user)) > 1)
+		return
+	if(user.get_active_hand()) //if they're holdign somethingwe cant do it
+		return
+	var/obj/item/ammo_casing/stack = removeCasing()
+	if(stack)
+		if(stored_ammo.len)
+			// We end on -1 since we already removed one
+			for(var/i = 1, i <= stack.maxamount - 1, i++)
+				if(!stored_ammo.len)
+					break
+				var/obj/item/ammo_casing/AC = removeCasing()
+				if(!stack.mergeCasing(AC, null, user, noIconUpdate = TRUE))
+					insertCasing(AC)
+					break
+		stack.update_icon()
+		user.put_in_active_hand(stack)
+	return
 
 /obj/item/ammo_magazine/proc/insertCasing(var/obj/item/ammo_casing/C)
 	if(!istype(C))

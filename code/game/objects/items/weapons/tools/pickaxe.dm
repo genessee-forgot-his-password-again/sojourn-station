@@ -4,8 +4,9 @@
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_DANGEROUS
-	armor_penetration = ARMOR_PEN_EXTREME // It's a pickaxe. It's destined to poke holes in things, even armor.
+	armor_divisor = ARMOR_PEN_EXTREME // It's a pickaxe. It's destined to poke holes in things, even armor.
 	throwforce = WEAPON_FORCE_NORMAL
+	worksound = WORKSOUND_PICKAXE
 	icon_state = "pickaxe"
 	item_state = "pickaxe"
 	max_health = 500
@@ -44,6 +45,14 @@
 	to_chat(user, SPAN_NOTICE("You loosen your grip on [src], and prepare to remove debris."))
 	..()
 
+/obj/item/tool/pickaxe/upgraded
+	name = "plasteel-head pickaxe"
+	desc = "A normal-looking pickaxe with the head replaced with plasteel."
+	matter = list(MATERIAL_STEEL = 4, MATERIAL_PLASTEEL = 2)
+	tool_qualities = list(QUALITY_EXCAVATION = 20, QUALITY_PRYING = 20)
+	switched_off_qualities = list(QUALITY_EXCAVATION = 20, QUALITY_PRYING = 20)
+	switched_on_qualities = list(QUALITY_DIGGING = 40, QUALITY_PRYING = 20)
+	workspeed = 1.1
 
 /obj/item/tool/pickaxe/onestar
 	name = "Greyson Positronic Pickaxe"
@@ -53,14 +62,15 @@
 	matter = list(MATERIAL_STEEL = 4, MATERIAL_PLATINUM = 2, MATERIAL_DIAMOND = 2)
 	price_tag = 900 //Diamond and fancy.
 	origin_tech = list(TECH_MATERIAL = 3, TECH_ENGINEERING = 2, TECH_POWER = 3)
-	switched_on_force = WEAPON_FORCE_ROBUST
+	switched_on_forcemult = 1.3 //26
 	tool_qualities = list(QUALITY_EXCAVATION = 50, QUALITY_PRYING = 25)
 	switched_off_qualities = list(QUALITY_EXCAVATION = 50, QUALITY_PRYING = 25)
 	switched_on_qualities = list(QUALITY_DIGGING = 50, QUALITY_PRYING = 25)
 	glow_color = COLOR_BLUE_LIGHT
-	degradation = 0.6
+	degradation = 2
 	workspeed = 1.2
 	use_power_cost = 0
+	allow_greyson_mods = TRUE
 
 /obj/item/tool/pickaxe/onestar/turn_on(mob/user)
 	..(null, TRUE)
@@ -101,7 +111,7 @@
 	matter = list(MATERIAL_STEEL = 7, MATERIAL_PLATINUM = 2)
 	tool_qualities = list(QUALITY_EXCAVATION = 35)
 	switched_off_qualities = list(QUALITY_EXCAVATION = 35)
-	switched_on_qualities = list(QUALITY_DIGGING = 60)
+	switched_on_qualities = list(QUALITY_DIGGING = 75)
 	origin_tech = list(TECH_MATERIAL = 4, TECH_POWER = 2, TECH_ENGINEERING = 3)
 	degradation = 0.6
 	workspeed = 1.7
@@ -159,8 +169,7 @@
 	price_tag = 900
 
 /obj/item/tool/pickaxe/diamonddrill/rig
-	switched_off_qualities = list(QUALITY_DIGGING = 50, QUALITY_DRILLING = 50)
-	switched_on_qualities = list(QUALITY_EXCAVATION = 10, QUALITY_DRILLING = 20)
+	tool_qualities = list(QUALITY_DIGGING = 50, QUALITY_DRILLING = 50)
 	use_fuel_cost = 0
 	passive_fuel_cost = 0
 
@@ -176,3 +185,16 @@
 	w_class = ITEM_SIZE_SMALL
 	matter = list(MATERIAL_STEEL = 3)
 	price_tag = 70
+
+/obj/item/tool/pickaxe/borgonly
+	name = "Cyborg Mining Tool"
+	desc = "A dedicated mining tool. Essentially just a hunk of plasteel backed up by a small canister of inexpensive nanites that keep it from falling apart or dulling. \
+	Due to the reinforcement it's very heavy which makes it great at pacifying natives, but not so much at precise excavation. There is little space for tool mods due to it's dedicated nature."
+	force = WEAPON_FORCE_DANGEROUS * 1.5
+	tool_qualities = list(QUALITY_PRYING = 20)
+	toggleable = TRUE
+	workspeed = 0.75 // way faster than it appears. Normal pickaxe qualities make mining cyborgs with default skillset go lightning fast.
+	max_upgrades = 2
+	degradation = 0
+	switched_off_qualities = list(QUALITY_EXCAVATION = 5, QUALITY_PRYING = 20)
+	switched_on_qualities = list(QUALITY_DIGGING = 25, QUALITY_PRYING = 20)

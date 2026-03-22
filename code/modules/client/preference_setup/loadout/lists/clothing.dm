@@ -3,33 +3,30 @@
 	path = /obj/item/clothing/mask/surgical
 	slot = slot_wear_mask
 	sort_category = "Clothing Pieces"
+	cost = 0
 
 /datum/gear/clothing/kriosan
 	display_name = "kriosan sterile mask"
 	path = /obj/item/clothing/mask/surgical/kriosan
 	slot = slot_wear_mask
-	cost = 2
+	cost = 0
 
 /datum/gear/clothing/bandana
 	display_name = "bandana mask selection"
 	path = /obj/item/clothing/mask/bandana
 	slot = slot_wear_mask
 	flags = GEAR_HAS_TYPE_SELECTION
+	cost = 0
 
 /datum/gear/clothing/balaclava
 	display_name = "balaclava"
 	path = /obj/item/clothing/mask/balaclava
 	slot = slot_wear_mask
+	cost = 1
 
 /datum/gear/clothing/gasmask
 	display_name = "gas mask"
 	path = /obj/item/clothing/mask/gas
-	slot = slot_wear_mask
-	cost = 2
-
-/datum/gear/clothing/gasmask/kriosan
-	display_name = "kriosan gas mask"
-	path = /obj/item/clothing/mask/gas/kriosan
 	slot = slot_wear_mask
 	cost = 2
 
@@ -44,6 +41,13 @@
 	path = /obj/item/clothing/mask/gas/industrial
 	slot = slot_wear_mask
 	cost = 2
+
+/datum/gear/clothing/withnosurvivors
+	display_name = "rebreather"
+	path = /obj/item/clothing/mask/gas/bigguy
+	slot = slot_wear_mask
+	cost = 2
+	flags= GEAR_HAS_TYPE_SELECTION
 
 /datum/gear/clothing/mask/costume/history/plaguedoctor
 	display_name = "Plague Doctor mask"
@@ -102,3 +106,9 @@ datum/gear/clothing/mask/tiki/New()
 		"happy tiki mask"				=	/obj/item/clothing/mask/costume/misc/tiki/happy,
 	)
 	gear_tweaks += new /datum/gear_tweak/path(tiki)
+
+/datum/gear/clothing/mimemask
+	display_name = "mime mask"
+	slot = slot_wear_mask
+	path = /obj/item/clothing/mask/costume/job/mime
+	cost = 1

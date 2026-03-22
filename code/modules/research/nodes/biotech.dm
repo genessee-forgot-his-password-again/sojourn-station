@@ -15,7 +15,9 @@
 							/datum/design/research/item/part/basic_sensor,
 							/datum/design/research/item/medical/autopsy_scanner,
 							/datum/design/research/item/beaker/smoll,
-							/datum/design/research/item/beaker/big
+							/datum/design/research/item/beaker/big,
+							/datum/design/research/item/implant/pad,
+							/datum/design/research/item/implant/track
 						)
 
 /datum/technology/medical_cooling
@@ -103,8 +105,7 @@
 							/datum/design/research/circuit/extractor,
 							/datum/design/research/circuit/seed_extractor,
 							/datum/design/research/circuit/editor,
-							/datum/design/research/item/weapon/flora_gun,
-							/datum/design/research/item/botany_disk
+							/datum/design/research/item/weapon/flora_gun
 							)
 
 /datum/technology/portable_chemistry
@@ -165,7 +166,7 @@
 */
 /datum/technology/basic_medical_tools
 	name = "Basic Medical Tools"
-	desc = "Mass Spectrometry method. Experimental surgical, laser tools. Medical sensors intergrated hud in hud-glass and large revival electrical shocks. Artificial quick dry bone gel composite."
+	desc = "Mass Spectrometry method. Experimental surgical, laser tools. Medical sensors intergrated HUD in hud-glass and large revival electrical shocks. Artificial quick dry bone gel composite."
 	tech_type = RESEARCH_BIOTECH
 
 	x = 0.4
@@ -186,7 +187,7 @@
 
 /datum/technology/improved_biotech
 	name = "Improved Biotech"
-	desc = "Improved micro manipulations, advaced scanning method. Chemical implant and better surgerical tools, be careful."
+	desc = "Improved micro manipulations, advanced scanning methods. Chemical implants and better surgical tools, be careful."
 	tech_type = RESEARCH_BIOTECH
 
 	x = 0.5
@@ -216,7 +217,7 @@
 							)
 
 /datum/technology/portable_biotech
-	name = "Portable Biotech"
+	name = "Advanced and Portable Chemistry Biotech"
 	desc = "Portable injection and scan method, capitalists' and not capitalists portable sleeper. Integrated medical sensors hud with hardsuits' systems."
 	tech_type = RESEARCH_BIOTECH
 
@@ -238,8 +239,7 @@
 							/datum/design/research/structure/bidontrigger,
 							/datum/design/research/item/medical/compact_defibs,
 							/datum/design/research/item/implant/alarm,
-							/datum/design/research/item/petite_scanner
-							)
+							/datum/design/research/item/petite_scanner)
 
 /datum/technology/tracker_tablet
 	name = "Tracker tablet"
@@ -274,7 +274,7 @@
 */
 /datum/technology/advanced_biotech
 	name = "Advanced Biotech"
-	desc = "Top-tier micro manipulations systems. Top-tier scan method. Upgraded mass spectrometry. Advaced sprayer. Machinegunlike syringe-gun."
+	desc = "Top-tier micro manipulations systems. Top-tier scan method. Upgraded mass spectrometry. Advanced sprayer. Machinegun-like syringe-gun."
 	tech_type = RESEARCH_BIOTECH
 
 	x = 0.6
@@ -291,12 +291,11 @@
 							/datum/design/research/item/medical/adv_reagent_scanner,
 							/datum/design/research/item/weapon/chemsprayer,
 							/datum/design/research/item/weapon/rapidsyringe,
-							/datum/design/research/item/ammo/rapidsyringe
-							)
+							/datum/design/research/item/ammo/rapidsyringe)
 
 /datum/technology/top_biotech
 	name = "Augmentations' Biotech"
-	desc = "Augmentations for body, this tech using almost all previous technologies."
+	desc = "Body augmentations in the way of Soteria-brand prosthesis and implantable omnitools."
 	tech_type = RESEARCH_BIOTECH
 
 	x = 0.7
@@ -320,12 +319,34 @@
 							/datum/design/research/item/mechfab/prosthesis_moebius/l_leg,
 							/datum/design/research/item/mechfab/prosthesis_moebius/groin,
 							/datum/design/research/item/mechfab/prosthesis_moebius/head,
-							/datum/design/research/item/mechfab/prosthesis_moebius/chest
+							/datum/design/research/item/mechfab/prosthesis_moebius/chest,
+							/datum/design/research/item/mechfab/prosthesis/liver_buffer
 							)
+
+/datum/technology/blood_n_guts
+	name = "Blood and Hunger Cyberware"
+	desc = "A set of cyberware for helping with hunger and blood."
+	tech_type = RESEARCH_BIOTECH
+
+	x = 0.7
+	y = 0.5
+	icon = "scalpelmanager"
+
+	required_technologies = list(	/datum/technology/top_biotech
+								)
+	required_tech_levels = list()
+	cost = 1250
+
+	unlocks_designs = list(
+							/datum/design/research/item/mechfab/modules/snack_system,
+							/datum/design/research/item/mechfab/modules/sanguin_stash,
+							/datum/design/research/item/mechfab/prosthesis/oxy_armor_blood
+							)
+
 
 /datum/technology/omega_biotech
 	name = "Advanced Augmentations Biotech"
-	desc = "Refined and end of the line advancements that the body and the mind can handle."
+	desc = "Refined and end of the line advancements that both body and mind can handle."
 	tech_type = RESEARCH_BIOTECH
 
 	x = 0.7
@@ -338,6 +359,7 @@
 	cost = 1500
 
 	unlocks_designs = list(	/datum/design/research/item/mechfab/modules/armor,
+							/datum/design/research/item/mechfab/modules/ablativearmor,
 							/datum/design/research/item/mechfab/modules/armblade,
 							/datum/design/research/item/mechfab/modules/wolverine,
 							/datum/design/research/item/mechfab/modules/energy_blade,
@@ -347,12 +369,35 @@
 							/datum/design/research/item/mechfab/modules/runner,
 							/datum/design/research/item/mechfab/modules/hud/med,
 							/datum/design/research/item/mechfab/modules/hud/sec,
-							/datum/design/research/item/mechfab/modules/hud/welder
+							/datum/design/research/item/mechfab/modules/hud/welder,
+							/datum/design/research/item/mechfab/prosthesis/agu_eye_lens,
+							/datum/design/research/item/mechfab/prosthesis/nerve_sync
+							)
+
+/datum/technology/brain_ware
+	name = "Brain Cyberware"
+	desc = "A set of highly advanced Cyberwares for the brain."
+	tech_type = RESEARCH_BIOTECH
+
+	x = 0.85
+	y = 0.9
+	icon = "scalpelmanager"
+
+	required_technologies = list(	/datum/technology/omega_biotech
+								)
+	required_tech_levels = list()
+	cost = 2000
+
+	unlocks_designs = list(	/datum/design/research/item/mechfab/modules/sanity_on_a_buget,
+							/datum/design/research/item/mechfab/modules/viv_bank,
+							/datum/design/research/item/mechfab/modules/sanity_mind_helper,
+							/datum/design/research/item/mechfab/prosthesis/brain_bank_cog,
+							/datum/design/research/item/mechfab/prosthesis/brain_bank_bio
 							)
 
 /datum/technology/rig_medical_stuff
-	name = "RIG Medical Addaptation"
-	desc = "Augmentations for body, this tech using almost all previous technologies."
+	name = "RIG Medical Adaptation"
+	desc = "Top of the line RIG Modules for medical application."
 	tech_type = RESEARCH_BIOTECH
 
 	x = 0.85

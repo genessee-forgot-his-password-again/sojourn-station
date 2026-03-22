@@ -8,7 +8,7 @@
 
 // Nonsensical value for l_color default, so we can detect if it gets set to null.
 #define NONSENSICAL_VALUE -99999
-/atom/proc/set_light(l_range, l_power, l_color = NONSENSICAL_VALUE)
+/atom/proc/set_light(l_range, l_power, l_color = NONSENSICAL_VALUE, no_update = FALSE)
 	. = 0 //make it less costly if nothing's changed
 
 	if(l_power != null && l_power != light_power)
@@ -21,7 +21,8 @@
 		light_color = l_color
 		. = 1
 
-	if(.) update_light()
+	if(. && !no_update)
+		update_light()
 
 #undef NONSENSICAL_VALUE
 
@@ -56,7 +57,9 @@
 
 /atom/Destroy()
 	if(light)
-		light.destroy()
+		light.destroy() //wtf is this? why arent we just qdelling it or setting the refs to null? what??
+		light.top_atom = null //i hope this works
+		light.source_atom = null
 		light = null
 	return ..()
 
@@ -71,12 +74,6 @@
 		var/turf/simulated/open/open = loc
 		if(open.isOpen())
 			open.fallThrough(src)
-
-/atom/movable/Destroy()
-	var/turf/T = loc
-	if(opacity && istype(T))
-		T.reconsider_lights()
-	return ..()
 
 /atom/movable/Move()
 	var/turf/old_loc = loc
@@ -125,5 +122,5 @@
 
 /obj/item/dropped()
 	. = ..()
-	SEND_SIGNAL(src, COMSIG_ITEM_DROPPED, src)
+	LEGACY_SEND_SIGNAL(src, COMSIG_ITEM_DROPPED, src)
 	update_light()

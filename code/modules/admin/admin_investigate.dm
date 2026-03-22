@@ -29,17 +29,17 @@
 //ADMINVERBS
 ADMIN_VERB_ADD(/client/proc/investigate_show, R_ADMIN, TRUE)
 //various admintools for investigation. Such as a singulo grief-log
-/client/proc/investigate_show( subject in list("hrefs","notes","singulo","telesci","atmos","chemistry", INVESTIGATE_CIRCUIT) )
+/client/proc/investigate_show( subject in list("hrefs","notes","singulo","telesci","atmos","chemistry", INVESTIGATE_CIRCUIT, "fluff") )
 	set name = "Investigate"
 	set category = "Admin"
 	if(!holder)	return
 	switch(subject)
-		if("singulo", "telesci", "atmos", "chemistry")			//general one-round-only stuff
+		if("singulo", "telesci", "atmos", "chemistry", "fluff")			//general one-round-only stuff
 			var/F = investigate_subject2file(subject)
 			if(!F)
 				to_chat(src, "<font color='red'>Error: admin_investigate: [INVESTIGATE_DIR][subject] is an invalid path or cannot be accessed.</font>")
 				return
-			src << browse(F,"window=investigate[subject];size=800x300")
+			src << browse(HTML_SKELETON(F),"window=investigate[subject];size=800x300")
 
 		if("hrefs")				//persistant logs and stuff
 			if(config && config.log_hrefs)

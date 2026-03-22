@@ -63,7 +63,6 @@
 				/obj/item/extinguisher = 5,
 				/obj/item/device/t_scanner = 2,
 				/obj/item/device/scanner/price = 2,
-				/obj/item/device/antibody_scanner = 1,
 				/obj/item/device/destTagger = 1,
 				/obj/item/device/scanner/plant = 1,
 				/obj/item/autopsy_scanner = 1,
@@ -163,7 +162,7 @@
 						/obj/item/tool/screwdriver/combi_driver/onestar = 1,
 						/obj/item/tool/weldingtool/onestar = 1,
 						/obj/item/tool/wirecutters/onestar_pliers = 0.2,
-						/obj/item/tool/onestar_multitool = 0.1))
+						/obj/item/tool/multitool/advanced/onestar = 0.1))
 
 /obj/random/tool/advanced/onestar/low_chance
 	icon_state = "tool-orange-low"

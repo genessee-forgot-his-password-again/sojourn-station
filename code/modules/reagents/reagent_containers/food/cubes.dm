@@ -1,7 +1,7 @@
 
 //Growables and cubes
 
-/obj/item/reagent_containers/food/snacks/monkeycube
+/obj/item/reagent_containers/snacks/monkeycube
 	name = "monkey cube"
 	desc = "Just add water!"
 	reagent_flags = REFILLABLE
@@ -12,15 +12,14 @@
 	matter = list(MATERIAL_BIOMATTER = 20)
 	var/wrapped = FALSE
 	var/monkey_type = "Monkey"
-	 //Well this looks like a pill but better, but its required do to roach cubes do to how many reagents get added to the cube on microwaving
-	volume = 200
+	volume = 500
 	preloaded_reagents = list("protein" = 10)
 
-/obj/item/reagent_containers/food/snacks/monkeycube/attack_self(mob/user as mob)
+/obj/item/reagent_containers/snacks/monkeycube/attack_self(mob/user as mob)
 	if(wrapped)
 		Unwrap(user)
 
-/obj/item/reagent_containers/food/snacks/monkeycube/proc/Expand()
+/obj/item/reagent_containers/snacks/monkeycube/proc/Expand()
 	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
 	var/turf/T = get_turf(src)
 	if(istype(T))
@@ -28,7 +27,7 @@
 	qdel(src)
 	return TRUE
 
-/obj/item/reagent_containers/food/snacks/monkeycube/proc/Unwrap(mob/user as mob)
+/obj/item/reagent_containers/snacks/monkeycube/proc/Unwrap(mob/user as mob)
 	icon_state = "monkeycube"
 	desc = "Just add water!"
 	to_chat(user, "You unwrap the cube.")
@@ -36,20 +35,28 @@
 	reagent_flags |= REFILLABLE
 	matter = list(MATERIAL_BIOMATTER = 21)
 
-/obj/item/reagent_containers/food/snacks/monkeycube/on_reagent_change()
+/obj/item/reagent_containers/snacks/monkeycube/on_reagent_change()
 	if(reagents.has_reagent("water"))
 		Expand()
 
-/obj/item/reagent_containers/food/snacks/monkeycube/wrapped
+/obj/item/reagent_containers/snacks/monkeycube/wrapped
 	desc = "Still wrapped in some paper."
 	icon_state = "monkeycubewrap"
 	reagent_flags = NONE
 	wrapped = TRUE
 
-/obj/item/reagent_containers/food/snacks/cube
+/obj/item/reagent_containers/snacks/cube
 	matter = list(MATERIAL_BIOMATTER = 20)
+	var/grow_into = /mob/living/carbon/human/monkey
 
-/obj/item/reagent_containers/food/snacks/cube/gun
+/obj/item/reagent_containers/snacks/cube/proc/Expand()
+	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
+	var/turf/T = get_turf(src)
+	new grow_into(T)
+	qdel(src)
+	return TRUE
+
+/obj/item/reagent_containers/snacks/cube/gun
 	name = "Grow-A-Gun Cube"
 	desc = "Just add Water!"
 	reagent_flags = REFILLABLE
@@ -58,25 +65,18 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("plasticide" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /obj/item/gun/projectile/automatic/slaught_o_matic
 
-/obj/item/reagent_containers/food/snacks/cube/gun/New()
+/obj/item/reagent_containers/snacks/cube/gun/New()
 	..()
 	color = pick("#EE204D", "#FCE883", "#1F75FE", "#B5674D", "#FF7538", "#1CAC78", "#926EAE", "#232323")
 
-/obj/item/reagent_containers/food/snacks/cube/gun/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/obj/item/gun/projectile/automatic/slaught_o_matic(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/gun/on_reagent_change()
+/obj/item/reagent_containers/snacks/cube/gun/on_reagent_change()
 	if(reagents.has_reagent("water"))
 		Expand()
 
-
-/obj/item/reagent_containers/food/snacks/cube/roach
+/obj/item/reagent_containers/snacks/cube/roach
 	name = "Roach Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -86,20 +86,15 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	volume = 500
 
-/obj/item/reagent_containers/food/snacks/cube/roach/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/roach/on_reagent_change()
+/obj/item/reagent_containers/snacks/cube/roach/on_reagent_change()
 	if(reagents.has_reagent("blood"))
 		Expand()
 
-/obj/item/reagent_containers/food/snacks/cube/fuhrer
+/obj/item/reagent_containers/snacks/cube/roach/fuhrer
 	name = "Fuhrer Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -109,20 +104,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/fuhrer
 
-/obj/item/reagent_containers/food/snacks/cube/fuhrer/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/fuhrer(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/fuhrer/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/jager
+/obj/item/reagent_containers/snacks/cube/roach/jager
 	name = "Jager Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -132,20 +117,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/hunter
 
-/obj/item/reagent_containers/food/snacks/cube/jager/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/hunter(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/jager/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/kraftwerk
+/obj/item/reagent_containers/snacks/cube/roach/kraftwerk
 	name = "Kraftwerk Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -155,20 +130,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/nanite
 
-/obj/item/reagent_containers/food/snacks/cube/kraftwerk/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/nanite(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/kraftwerk/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/roachling
+/obj/item/reagent_containers/snacks/cube/roach/roachling
 	name = "Roachling Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -178,20 +143,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/roachling
 
-/obj/item/reagent_containers/food/snacks/cube/roachling/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/roachling(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/roachling/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/seuche
+/obj/item/reagent_containers/snacks/cube/roach/seuche
 	name = "Seuche Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -201,20 +156,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/support
 
-/obj/item/reagent_containers/food/snacks/cube/seuche/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/support(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/seuche/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/panzer
+/obj/item/reagent_containers/snacks/cube/roach/panzer
 	name = "Panzer Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -224,20 +169,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/tank
 
-/obj/item/reagent_containers/food/snacks/cube/panzer/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/tank(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/panzer/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/elektromagnetisch
+/obj/item/reagent_containers/snacks/cube/roach/elektromagnetisch
 	name = "Elektromagnetisch Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -247,20 +182,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/elektromagnetisch
 
-/obj/item/reagent_containers/food/snacks/cube/elektromagnetisch/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/elektromagnetisch(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/elektromagnetisch/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/glowing
+/obj/item/reagent_containers/snacks/cube/roach/glowing
 	name = "Gluhend Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -270,20 +195,10 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/glowing
 
-/obj/item/reagent_containers/food/snacks/cube/glowing/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/glowing(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/glowing/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
-
-/obj/item/reagent_containers/food/snacks/cube/grestrahlte
+/obj/item/reagent_containers/snacks/cube/roach/grestrahlte
 	name = "Grestrahlte Cube"
 	desc = "Just add Blood!"
 	reagent_flags = REFILLABLE
@@ -293,15 +208,18 @@
 	filling_color = "#ADAC7F"
 	center_of_mass = list("x"=16, "y"=14)
 	preloaded_reagents = list("protein" = 10)
-	//taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/toxic
 
-/obj/item/reagent_containers/food/snacks/cube/grestrahlte/proc/Expand()
-	src.visible_message(SPAN_NOTICE("\The [src] expands!"))
-	var/turf/T = get_turf(src)
-	new/mob/living/carbon/superior_animal/roach/toxic(T)
-	qdel(src)
-	return TRUE
-
-/obj/item/reagent_containers/food/snacks/cube/grestrahlte/on_reagent_change()
-	if(reagents.has_reagent("blood"))
-		Expand()
+/obj/item/reagent_containers/snacks/cube/roach/nitro
+	name = "Benzin Cube"
+	desc = "Just add Blood!"
+	reagent_flags = REFILLABLE
+	icon = 'icons/obj/roach_cubes.dmi'
+	icon_state = "benzincube"
+	bitesize = 12
+	filling_color = "#ADAC7F"
+	center_of_mass = list("x"=16, "y"=14)
+	preloaded_reagents = list("protein" = 10)
+	taste_tag = list(MEAT_FOOD,BLAND_FOOD)
+	grow_into = /mob/living/carbon/superior/roach/nitro

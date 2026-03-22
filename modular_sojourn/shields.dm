@@ -1,6 +1,8 @@
 /obj/item/shield/riot/bastion
 	name = "Deployable: Bastion Shield"
-	desc = "A Project inspired by an idea for a true deployable barrier, the \"Bastion Shield\" came as surprisingly successful idea, both light enough kit to carry out into a combat zone. A true marval of Guild, SI and Blackshield team work to pull off such a task."
+	desc = "A project inspired by an idea for a true deployable barrier, the \"Bastion Shield\" came as a surprisingly successful one, \
+	both surprisingly light and insurmountably sturdy enough to be carried out into the most dangerous combat zones. \
+	A true marvel of Guild, SI and Blackshield joint effort. When deployed, you can even brace a gun on it."
 	icon = 'icons/obj/bastion.dmi'
 	icon_state = "bastion"
 	item_state = "bastion"
@@ -22,11 +24,12 @@
 		slot_back_str = "bastion_back"
 		)
 
-
 /obj/item/bastion_broken
 	name = "Broken: Bastion Shield"
-	desc = "Once project inspired by an idea for a true deployable barrier, once the \"Bastion Shield\" was surprisingly successful idea, both light enough kit to carry out into a combat zone. Once a marval of Guild, SI and Blackshield team work to pull off such a task. \
-	Now a broken shell of its former self, maybe it still has scrap inside..."
+	desc = "Once a project inspired by an idea for a true deployable barrier, the \"Bastion Shield\" came as a surprisingly successful one, \
+	both surprisingly light and insurmountably sturdy enough to be carried out into the most dangerous combat zones. \
+	A true marvel of Guild, SI and Blackshield joint effort. \
+	Now a broken shell of its former self, maybe it can still be scrapped for what it's worth..."
 	icon = 'icons/obj/bastion.dmi'
 	icon_state = "bastion_broken"
 	matter = list(MATERIAL_STEEL = 2, MATERIAL_PLASTEEL = 4)
@@ -47,7 +50,7 @@
 
 /obj/structure/shield_deployed
 	name = "Bastion Barrier"
-	desc = "A Deployed Bastion shield, ready to be used as a combat barrier for gunfights."
+	desc = "A deployed Bastion shield, ready to be used as a combat barrier for gunfights. Guns can be braced on it."
 	icon = 'icons/obj/bastion.dmi'
 	icon_state = "barrier"
 	density = TRUE
@@ -56,6 +59,10 @@
 	climbable = TRUE
 	maxHealth = 300 //Lets not like, be unkillable or what not, would suck to eat like 500 shots or hits
 	health = 300
+	var/base_blocking = 60
+	var/reinforced_blocking = 40
+	var/base_cover = 50
+	var/reinforced_added_cover = 50
 	var/reinforced = FALSE
 	var/item_form_type = /obj/item/shield/riot/bastion
 
@@ -67,12 +74,16 @@
 
 /obj/structure/shield_deployed/proc/damage(damage)
 	health -= damage
-	if(health <= 0)
+	if(health < 1)
 		new /obj/item/bastion_broken(get_turf(src))
 		qdel(src)
 
 /obj/structure/shield_deployed/attackby(obj/item/I, mob/living/user)
 	.=..()
+	if(user.a_intent == I_HELP && istype(I, /obj/item/gun))
+		var/obj/item/gun/G = I
+		G.gun_brace(user, src)
+		return
 	if(I.has_quality(QUALITY_WELDING))
 		if(health == maxHealth)
 			to_chat(user, SPAN_NOTICE("\The [src] is already fully repaired!"))
@@ -107,7 +118,7 @@
 					update_icon()
 					return
 
-/obj/structure/shield_deployed/attack_generic(var/mob/user, var/damage, var/attack_message = "smashes", var/wallbreaker)//Occulus Edit
+/obj/structure/shield_deployed/attack_generic(mob/user, damage, attack_message, damagetype = BRUTE, attack_flag = ARMOR_MELEE, sharp = FALSE, edge = FALSE)
 	if(damage)//Occulus edit
 		damage(damage)//Occulus Edit
 		attack_animation(user)
@@ -115,21 +126,29 @@
 		return 1
 
 /obj/structure/shield_deployed/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if(air_group || (height==0)) return 1
+	if(air_group || (height==0))
+		return 1
 	if(istype(mover,/obj/item/projectile))
-		if(locate(/mob/living/) in get_turf(loc))
-			return (check_cover(mover,target))
 
 		var/obj/item/projectile/P = mover
-		var/chance = 40
+		var/chance = base_blocking
+
+		if(locate(/mob/living/) in get_turf(loc))
+			return (check_cover(P,target))
 		if(get_dist(P.starting, loc) <= 1)
 			return 1
+		if(istype(P, /obj/item/projectile/test) || P.testing) // Turrets need to try to kill the shield and so their test bullet needs to penetrate.
+			return 1
+		if(!this_direction_is_protected(P))
+			return 1
+
 		if(health >= 1)
 			if(reinforced == TRUE)
-				chance += 40
-			if(prob(chance))
+				chance += reinforced_blocking
+			if((prob(chance)) && (!(P.testing)))
 				damage(P.get_structure_damage())
 				visible_message(SPAN_WARNING("[P] hits \the [src]!"))
+				qdel(P)
 				return 0
 		else
 			return 1
@@ -154,21 +173,27 @@
 		return 1
 	if(get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
 		return 1
-	if(get_turf(P.original) == cover)
-		var/chance = 40
-		if(reinforced == TRUE)
-			chance += 40
-		if(health==0)
-			chance = 0
-		if(prob(chance))
-			damage(P.get_structure_damage())
-			if (health > 0)
-				visible_message(SPAN_WARNING("[P] hits \the [src]!"))
-				return 0
-			else
-				//visible_message(SPAN_WARNING("[src] breaks down!"))
-				//break_to_parts()
-				return 1
+
+	if(istype(P, /obj/item/projectile/test) || P.testing) // Turrets need to try to kill the shield and so their test bullet needs to penetrate.
+		return 1
+
+	if(!this_direction_is_protected(P))
+		return 1
+
+	var/chance = base_cover
+	if(reinforced == TRUE)
+		chance += reinforced_added_cover
+	if((prob(chance)) && (!(P.testing)))
+		damage(P.get_structure_damage())
+		if (health > 0)
+			visible_message(SPAN_WARNING("[P] hits \the [src]!"))
+			qdel(P)
+			return 0
+		else
+			//visible_message(SPAN_WARNING("[src] breaks down!"))
+			//break_to_parts()
+			return 1
+
 	return 1
 
 /obj/structure/shield_deployed/CheckExit(atom/movable/O as mob|obj, target as turf)
@@ -189,13 +214,13 @@
 	if(!CanMouseDrop(over_object))	return
 	if(!(ishuman(usr) || isrobot(usr)))	return
 	if(reinforced)
-		to_chat(usr, SPAN_NOTICE("\The [src] needs collapsed first!"))
+		to_chat(usr, SPAN_NOTICE("\The [src] needs to be collapsed first!"))
 		return
 	if(health < maxHealth)
-		to_chat(usr, SPAN_NOTICE("\The [src] is damaged and needs repaired first!"))
+		to_chat(usr, SPAN_NOTICE("\The [src] is damaged and needs to be repaired first!"))
 		return
 	if(get_dir(loc, usr) == dir)
-		to_chat(usr, SPAN_NOTICE("You cant pick it up from this side!"))
+		to_chat(usr, SPAN_NOTICE("You can't pick up \the [src] from this side!"))
 		return
 
 	collapse()
@@ -205,21 +230,25 @@
 		return
 
 	usr.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"))
-	climbers |= user
+	LAZYOR(climbers, user)
 
 	var/delay = (issmall(user) ? 20 : 34) * user.mod_climb_delay
 	var/duration = max(delay * user.stats.getMult(STAT_VIG, STAT_LEVEL_EXPERT), delay * 0.66)
+
+	if(user.stats?.getPerk(PERK_PARKOUR))
+		duration *= 0.15 //85% time delay reduction.
+
 	if(!do_after(user, duration))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	if(!can_climb(user, post_climb_check=1))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	if(!neighbor_turf_passable())
 		to_chat(user, SPAN_DANGER("You can't climb there, the way is blocked."))
-		climbers -= user
+		LAZYREMOVE(climbers, user)
 		return
 
 	if(get_turf(user) == get_turf(src))
@@ -228,4 +257,35 @@
 		usr.forceMove(get_turf(src))
 
 	usr.visible_message(SPAN_WARNING("[user] climbed over \the [src]!"))
-	climbers -= user
+	LAZYREMOVE(climbers, user)
+
+/obj/structure/shield_deployed/proc/this_direction_is_protected(obj/item/projectile/P)
+
+
+	//message_admins("dir = [dir] vs P.dir [P.dir]")
+	//This is a directional check. If you are coming in the direction of the shield then we protect ya
+	switch(dir)
+
+		if(NORTH)
+			if(P.dir == SOUTH || P.dir == SOUTHEAST || P.dir == SOUTHWEST)
+				return TRUE
+			return FALSE
+
+		if(SOUTH)
+			if(P.dir == NORTH || P.dir == NORTHEAST || P.dir == NORTHWEST)
+				return TRUE
+			return FALSE
+
+		if(EAST)
+			if(P.dir == WEST || P.dir == NORTHWEST || P.dir == SOUTHWEST)
+				return TRUE
+			return FALSE
+
+		if(WEST)
+			if(P.dir == EAST || P.dir == NORTHEAST || P.dir == SOUTHEAST)
+				return TRUE
+			return FALSE
+
+
+	//If we are without direction, then we block all.
+	return TRUE

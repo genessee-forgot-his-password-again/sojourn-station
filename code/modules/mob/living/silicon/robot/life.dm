@@ -5,15 +5,13 @@
 	if (HAS_TRANSFORMATION_MOVEMENT_HANDLER(src))
 		return
 
-	src.blinded = null
-
 	//Status updates, death etc.
 	clamp_values()
-	handle_regular_status_updates()
 	handle_actions()
 
 	if(client)
 		handle_regular_hud_updates()
+		handle_regular_status_updates()
 		update_items()
 	if (src.stat != DEAD) //still using power
 		use_power()
@@ -29,11 +27,41 @@
 	for(var/mob/living/L in view(7)) //Sucks to put this here, but otherwise mobs will ignore them
 		L.try_activate_ai()
 
+/mob/living/silicon/robot/Life_Check_Light()
+	set invisibility = 0
+	set background = 1
+
+	if (HAS_TRANSFORMATION_MOVEMENT_HANDLER(src))
+		return
+
+	//Status updates, death etc.
+	clamp_values()
+	handle_actions()
+
+	if(client)
+		handle_regular_hud_updates()
+		handle_regular_status_updates()
+		update_items()
+	if (src.stat != DEAD) //still using power
+		use_power()
+		process_killswitch()
+		process_locks()
+		process_queued_alarms()
+	else
+		if (!src.death_notified && src.connected_ai)
+			src.notify_ai(ROBOT_NOTIFICATION_SIGNAL_LOST)
+			src.death_notified = TRUE
+	update_lying_buckled_and_verb_status()
+
+	for(var/mob/living/L in view(7)) //Sucks to put this here, but otherwise mobs will ignore them
+		L.try_activate_ai()
+
+
 /mob/living/silicon/robot/proc/clamp_values()
 
-//	SetStunned(min(stunned, 30))
+	SetStunned(min(stunned, 30))
 	SetParalysis(min(paralysis, 30))
-//	SetWeakened(min(weakened, 20))
+	SetWeakened(min(weakened, 20))
 	sleeping = 0
 	adjustBruteLoss(0)
 	adjustToxLoss(0)
@@ -90,16 +118,16 @@
 	if(src.resting)
 		Weaken(5)
 
-	if(health <= 0 && src.stat != 2) //die only once
+	if(health <= death_threshold && src.stat != DEAD) //die only once
 		death()
 
 	if (src.stat != 2) //Alive.
-		if (src.paralysis || src.stunned || src.weakened || !src.has_power) //Stunned etc.
+		if (src.paralysis || src.stunned || !src.has_power || src.weakened) //Stunned etc.
 			src.stat = 1
-			if (src.stunned > 0)
-				AdjustStunned(-1)
 			if (src.weakened > 0)
 				AdjustWeakened(-1)
+			if (src.stunned > 0)
+				AdjustStunned(-1)
 			if (src.paralysis > 0)
 				AdjustParalysis(-1)
 				src.blinded = 1
@@ -161,16 +189,9 @@
 		return
 
 
-
-
-
-
-
 	for (var/obj/screen/H in HUDprocess)
 //		var/obj/screen/B = H
 		H.Process()
-
-
 
 	return 1
 
@@ -270,8 +291,8 @@
 			weaponlock_time = 120
 
 /mob/living/silicon/robot/update_lying_buckled_and_verb_status()
-	if(paralysis || stunned || weakened || buckled || lockcharge || !is_component_functioning("actuator")) canmove = 0
-	else canmove = 1
+	if(paralysis || stunned || weakened || buckled || lockcharge || !is_component_functioning("actuator")) canmove = FALSE
+	else canmove = TRUE
 	return canmove
 
 /mob/living/silicon/robot/update_fire()

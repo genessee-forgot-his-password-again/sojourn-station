@@ -2,6 +2,9 @@
 #define MOVE_DELAY_BASE 1.1
 #define MOVE_DELAY_VENTCRAWL MOVE_DELAY_BASE //Ventcrawling has a static speed for all mobs
 
+#define MOVE_DELAY_DIAGONAL_ADDER 1.4
+
+
 //Glidesize
 #define FRACTIONAL_GLIDESIZES 1
 #ifdef FRACTIONAL_GLIDESIZES
@@ -24,5 +27,5 @@
 #define MOVE_INTENT_EXERTIVE   0x0002
 #define MOVE_INTENT_QUICK      0x0004
 
-#define MOVING_DELIBERATELY(X) (X.move_intent.flags & MOVE_INTENT_DELIBERATE)
-#define MOVING_QUICKLY(X) (X.move_intent.flags & MOVE_INTENT_QUICK)
+#define MOVING_DELIBERATELY(X) (X ? X.move_intent?.flags & MOVE_INTENT_DELIBERATE : TRUE)
+#define MOVING_QUICKLY(X) (X.move_intent?.flags & MOVE_INTENT_QUICK)

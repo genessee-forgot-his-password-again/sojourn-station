@@ -1,8 +1,8 @@
 /datum/craft_recipe/guild
 	category = "Guild"
 	time = 100
-	related_stats = list(STAT_COG)
-	avaliableToEveryone = FALSE
+	related_stats = list(STAT_MEC)
+	requiredPerk = PERK_HANDYMAN
 
 //Materal Craft ------------------
 
@@ -12,11 +12,25 @@
 	icon_state = "clothing"
 	steps = list(
 		list(CRAFT_MATERIAL, 2, MATERIAL_GLASS, "time" = 1),
-		list(QUALITY_WELDING, 40, "time" = 5), //Insainly quick do tobeing 1 sheet a time
+		list(QUALITY_WELDING, 40, "time" = 5), //Insanely quick do tobeing 1 sheet a time
 		list(CRAFT_MATERIAL, 1, MATERIAL_PLASMA, "time" = 1),
 		list(QUALITY_WELDING, 40, "time" = 5),
 		list(QUALITY_SAWING, 30, "time" = 5)
 	)
+
+//bullets -----------------------------
+
+/datum/craft_recipe/guild/payload_arrow
+	name = "bulk empty payload arrow"
+	result = /obj/item/ammo_casing/arrow/empty_payload/bulk
+	icon_state = "woodworking"
+	steps = list(
+		list(CRAFT_MATERIAL, 1, MATERIAL_PLASTEEL, "time" = 1),
+		list(QUALITY_WELDING, 40, "time" = 5),
+		list(CRAFT_MATERIAL, 2, MATERIAL_PLASTIC, "time" = 1),
+		list(QUALITY_CUTTING, 40, "time" = 5)
+	)
+
 
 //Armor mods ----------------------
 /datum/craft_recipe/guild/melee
@@ -83,8 +97,22 @@
 		list(QUALITY_SAWING, 30, "time" = 60)
 	)
 
-/datum/craft_recipe/guild/robotmelee //Lots of steps
-	name = "robot mark v armor plating"
+/datum/craft_recipe/guild/robotmelee //Lots of heating and hammering. Forge your blade samurai.
+	name = "robot mark III reinforced armor plating"
+	result = /obj/item/robot_parts/robot_component/armour/mkiii
+	steps = list(
+		list(CRAFT_MATERIAL, 25, MATERIAL_STEEL, "time" = 30),
+		list(QUALITY_WELDING, 40, "time" = 90),
+		list(QUALITY_HAMMERING, 30, "time" = 180),
+		list(QUALITY_WELDING, 40, "time" = 90),
+		list(QUALITY_HAMMERING, 30, "time" = 180),
+		list(QUALITY_WELDING, 40, "time" = 90),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 90),
+		list(QUALITY_CUTTING, 30, "time" = 180),
+	)
+
+/datum/craft_recipe/guild/robothp //Lots of steps
+	name = "robot mark v extra armor plating"
 	result = /obj/item/robot_parts/robot_component/armour/mkv
 	steps = list(
 		list(CRAFT_MATERIAL, 10, MATERIAL_PLASTEEL, "time" = 90),
@@ -96,6 +124,62 @@
 		list(QUALITY_BOLT_TURNING, 40, "time" = 120),
 		list(QUALITY_SAWING, 30, "time" = 60)
 	)
+
+//Cells --------------------------
+/datum/craft_recipe/guild/cellsmall
+	name = "Artificer's Guild \"Workhorse 300S\""
+	result = /obj/item/cell/small/guild/depleted
+	icon_state = "electronic"
+	steps = list(
+		list(CRAFT_MATERIAL, 1, MATERIAL_STEEL, "time" = 60),
+		list(CRAFT_MATERIAL, 1, MATERIAL_PLASTIC, "time" = 30),
+		list(QUALITY_DRILLING, 60, "time" = 180),
+		list(CRAFT_MATERIAL, 1, MATERIAL_SILVER, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
+		list(CRAFT_MATERIAL, 1, MATERIAL_GOLD, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 40),
+		list(/obj/item/stack/cable_coil, 5, "time" = 20),
+		list(QUALITY_WIRE_CUTTING, 40, "time" = 20),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 20)
+	)
+
+/datum/craft_recipe/guild/cellmedium
+	name = "Artificer's Guild \"Workhorse 1200M\""
+	result = /obj/item/cell/medium/guild/depleted
+	icon_state = "electronic"
+	steps = list(
+		list(CRAFT_MATERIAL, 2, MATERIAL_STEEL, "time" = 60),
+		list(CRAFT_MATERIAL, 2, MATERIAL_PLASTIC, "time" = 30),
+		list(QUALITY_DRILLING, 60, "time" = 180),
+		list(CRAFT_MATERIAL, 1, MATERIAL_SILVER, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
+		list(CRAFT_MATERIAL, 1, MATERIAL_GOLD, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 40),
+		list(/obj/item/stack/cable_coil, 5, "time" = 20),
+		list(QUALITY_WIRE_CUTTING, 40, "time" = 20),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 20)
+	)
+
+/datum/craft_recipe/guild/cellbig
+	name = "Artificer's Guild \"Workhorse 14000L\""
+	result = /obj/item/cell/large/guild/depleted
+	icon_state = "electronic"
+	steps = list(
+		list(CRAFT_MATERIAL, 3, MATERIAL_STEEL, "time" = 60),
+		list(CRAFT_MATERIAL, 3, MATERIAL_PLASTIC, "time" = 30),
+		list(QUALITY_DRILLING, 60, "time" = 180),
+		list(CRAFT_MATERIAL, 2, MATERIAL_SILVER, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
+		list(CRAFT_MATERIAL, 1, MATERIAL_GOLD, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 40),
+		list(/obj/item/stack/cable_coil, 5, "time" = 20),
+		list(QUALITY_WIRE_CUTTING, 40, "time" = 20),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 20)
+	)
+
 
 //Tools --------------------------
 /datum/craft_recipe/guild/arcwelder
@@ -153,9 +237,29 @@
 		list(QUALITY_BOLT_TURNING, 30, "time" = 10)
 	)
 
+/datum/craft_recipe/guild/turbo_shovel
+	name = "Artificer's power crovel"
+	result = /obj/item/tool/shovel/combat/turbo
+	steps = list(
+		list(/obj/item/tool/shovel/combat, 1),
+		list(QUALITY_SAWING, 45, "time" = 40),
+		list(QUALITY_HAMMERING, 30, "time" = 40),
+		list(CRAFT_MATERIAL, 4, MATERIAL_PLASTEEL, "time" = 60),
+		list(/obj/item/tool_upgrade/productivity/motor, 1, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 30),
+		list(/obj/item/tool_upgrade/augment/fuel_tank, 1),
+		list(QUALITY_BOLT_TURNING, 40, "time" = 10),
+		list(QUALITY_DRILLING, 45, 10),
+		list(CRAFT_MATERIAL, 1, MATERIAL_DIAMOND, "time" = 60),
+		list(QUALITY_HAMMERING, 30, "time" = 40),
+		list(QUALITY_SAWING, 45, "time" = 40),
+		list(QUALITY_WELDING, 30, "time" = 60)
+	)
+
+
 /datum/craft_recipe/guild/rocket_engine
 	name = "rocket engine"
-	result = /obj/item/rocket_engine
+	result = /obj/item/tool_upgrade/productivity/rocket_engine
 	icon_state = "electronic"
 	steps = list(
 		list(CRAFT_MATERIAL, 3, MATERIAL_PLASTEEL, "time" = 60),
@@ -186,7 +290,7 @@
 //Weapons ------------------------
 /datum/craft_recipe/guild/railgunrifle
 	name = "reductor rail rifle"
-	result = /obj/item/gun/energy/laser/railgun
+	result = /obj/item/gun/energy/laser/railgun/railrifle
 	icon_state = "gun"
 	steps = list(
 		list(CRAFT_MATERIAL, 20, MATERIAL_PLASTEEL, "time" = 60),
@@ -195,6 +299,45 @@
 		list(QUALITY_CUTTING, 30, "time" = 40),
 		list(QUALITY_HAMMERING, 30, "time" = 40),
 		list(/obj/item/stack/cable_coil, 10, "time" = 20),
+		list(QUALITY_WIRE_CUTTING, 40, 30),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
+		list(QUALITY_BOLT_TURNING, 40, "time" = 40)
+	)
+
+/datum/craft_recipe/guild/gaussrifle
+	name = "bat'ko gauss rifle"
+	result = /obj/item/gun/energy/laser/railgun/gauss
+	icon_state = "gun"
+	steps = list(
+		list(CRAFT_MATERIAL, 30, MATERIAL_PLASTEEL, "time" = 60),
+		list(CRAFT_MATERIAL, 8, MATERIAL_GOLD, "time" = 20),
+		list(CRAFT_MATERIAL, 10, MATERIAL_SILVER, "time" = 20),
+		list(CRAFT_MATERIAL, 4, MATERIAL_PLATINUM, "time" = 20),
+		list(QUALITY_CUTTING, 30, "time" = 40),
+		list(QUALITY_HAMMERING, 30, "time" = 40),
+		list(/obj/item/stack/cable_coil, 30, "time" = 20),
+		list(QUALITY_WELDING, 40, "time" = 60),
+		list(QUALITY_WIRE_CUTTING, 40, 30),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
+		list(QUALITY_BOLT_TURNING, 40, "time" = 40)
+	)
+
+/datum/craft_recipe/guild/IRKDissolver
+	name = "Dissolver Beam Rifle"
+	result = /obj/item/gun/energy/IRKDissolver
+	icon_state = "gun"
+	steps = list(
+		list(/obj/item/gun/energy/gun/nuclear, 1, "time" = 60),
+		list(/obj/item/gun_upgrade/mechanism/overdrive, 1, "time" = 40),
+		list(/obj/item/gun_upgrade/mechanism/battery_shunt, 1, "time" = 40),
+		list(/obj/item/stack/cable_coil, 30, "time" = 20),
+		list(CRAFT_MATERIAL, 20, MATERIAL_PLASTEEL, "time" = 60),
+		list(CRAFT_MATERIAL, 6, MATERIAL_GOLD, "time" = 20),
+		list(CRAFT_MATERIAL, 6, MATERIAL_SILVER, "time" = 20),
+		list(CRAFT_MATERIAL, 4, MATERIAL_PLATINUM, "time" = 20),
+		list(QUALITY_CUTTING, 30, "time" = 40),
+		list(QUALITY_HAMMERING, 30, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 60),
 		list(QUALITY_WIRE_CUTTING, 40, 30),
 		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
 		list(QUALITY_BOLT_TURNING, 40, "time" = 40)
@@ -218,9 +361,9 @@
 
 /datum/craft_recipe/guild/guild_bull
 	name = "bison double barrel shotgun"
-	result = /obj/item/gun/projectile/shotgun/bull/bison
+	result = /obj/item/gun/projectile/shotgun/pump/bull/bison
 	steps = list(
-		list(/obj/item/gun/projectile/shotgun/bull, 1, "time" = 80),
+		list(/obj/item/gun/projectile/shotgun/pump/bull, 1, "time" = 80),
 		list(/obj/item/gun_upgrade/barrel/bore, 1, "time" = 60),
 		list(CRAFT_MATERIAL, 10, MATERIAL_PLASTEEL, "time" = 60),
 		list(QUALITY_DRILLING, 60, "time" = 90),
@@ -233,6 +376,19 @@
 		list(QUALITY_BOLT_TURNING, 40, "time" = 40)
 	)
 
+/datum/craft_recipe/guild/martinupgraded
+	name = "overclocked martin energy pistol"
+	result = /obj/item/gun/energy/gun/martin/upgraded
+	steps = list(
+		list(/obj/item/gun/energy/gun/martin, 1, time = 60),
+		list(QUALITY_SCREW_DRIVING, 20, "time" = 40),
+		list(/obj/item/stack/cable_coil, 5, "time" = 20),
+		list(QUALITY_WIRE_CUTTING, 30, "time" = 15),
+		list(QUALITY_WELDING, 40, "time" = 30),
+		list(CRAFT_MATERIAL, 1, MATERIAL_URANIUM, "time" = 20),
+		list(CRAFT_MATERIAL, 2, MATERIAL_PLASTEEL, "time" = 20),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 20)
+	)
 //An exspensive but powerful CQC weapon that also can be used as a flar gun
 /datum/craft_recipe/guild/abdicatorshotgun
 	name ="abdicator energy shotgun"
@@ -256,7 +412,7 @@
 		list(CRAFT_MATERIAL, 6, MATERIAL_RGLASS, "time" = 10),
 		list(/obj/item/stock_parts/capacitor/adv, 1, "time" = 10),
 		list(/obj/item/stock_parts/micro_laser/high, 1, "time" = 10),
-		list(/obj/item/computer_hardware/tesla_link, 1, "time" = 10),
+		list(/obj/item/pc_part/tesla_link, 1, "time" = 10),
 		list(QUALITY_SCREW_DRIVING, 40, "time" = 20),
 		list(CRAFT_MATERIAL, 1, MATERIAL_PLASMAGLASS, "time" = 20),
 		list(CRAFT_MATERIAL, 1, MATERIAL_URANIUM, "time" = 20),
@@ -264,6 +420,41 @@
 		list(CRAFT_MATERIAL, 15, MATERIAL_PLASTIC, "time" = 20),
 		list(CRAFT_MATERIAL, 4, MATERIAL_STEEL, "time" = 5),
 		list(QUALITY_SCREW_DRIVING, 40, "time" = 5)
+	)
+
+
+/datum/craft_recipe/guild/tetrasmg
+	name = "tetra laser smg"
+	result = /obj/item/gun/energy/tetra
+	icon_state = "gun"
+	steps = list(
+		list(CRAFT_MATERIAL, 18, MATERIAL_PLASTEEL, "time" = 60),
+		list(CRAFT_MATERIAL, 8, MATERIAL_STEEL, "time" = 20),
+		list(CRAFT_MATERIAL, 8, MATERIAL_PLASTIC, "time" = 20),
+		list(QUALITY_CUTTING, 30, "time" = 40),
+		list(QUALITY_HAMMERING, 30, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 40),
+		list(CRAFT_MATERIAL, 12, MATERIAL_SILVER, "time" = 20),
+		list(/obj/item/stack/cable_coil, 10, "time" = 20),
+		list(CRAFT_MATERIAL, 2, MATERIAL_GOLD, "time" = 20),
+		list(QUALITY_WIRE_CUTTING, 40, 30),
+		list(/obj/item/stock_parts/micro_laser, 2, "time" = 80),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
+		list(QUALITY_BOLT_TURNING, 40, "time" = 40)
+	)
+
+/datum/craft_recipe/guild/pilgrim_devout
+	name = "pilgrim devout"
+	result = /obj/item/gun/projectile/revolver/lemant/belt
+	steps = list(
+		list(/obj/item/gun/projectile/revolver/lemant, 1, "time" = 30),
+		list(CRAFT_MATERIAL, 4, MATERIAL_PLASTEEL, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 30, "time" = 40),
+		list(QUALITY_BOLT_TURNING, 30, "time" = 40),
+		list(QUALITY_SAWING, 30, "time" = 60),
+		list(QUALITY_CUTTING, 30, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 60),
+		list(QUALITY_HAMMERING, 30, "time" = 40),
 	)
 
 /datum/craft_recipe/guild/ten_shot_conversion
@@ -281,7 +472,7 @@
 	)
 
 /datum/craft_recipe/guild/heavypulserifle
-	name = "jury-rigged EZ-13 MK2 heavy pulse rifle"
+	name = "\"PL-3\" Heavy Pulse Rifle"
 	result = /obj/item/gun/energy/laser/heavypulserifle
 	icon_state = "gun"
 	steps = list(
@@ -310,7 +501,7 @@
 	name = "claymore"
 	result = /obj/item/tool/sword
 	steps = list(
-		list(CRAFT_MATERIAL, 15, MATERIAL_STEEL, "time" = 30),
+		list(CRAFT_MATERIAL, 15, MATERIAL_PLASTEEL, "time" = 30),
 		list(QUALITY_SAWING, 30, "time" = 60),
 		list(QUALITY_HAMMERING, 30, "time" = 40),
 		list(QUALITY_WELDING, 40, "time" = 60)
@@ -367,6 +558,22 @@
 
 
 //Wearables =========================
+/datum/craft_recipe/guild/nv_guild
+	name = "Optimized NV Goggles"
+	result = /obj/item/clothing/glasses/powered/night/guild/crafted
+	icon_state = "clothing"
+	steps = list(
+		list(/obj/item/clothing/glasses/powered/meson, 1, "time" = 30),
+		list(CRAFT_MATERIAL, 2, MATERIAL_RGLASS),
+		list(QUALITY_WELDING, 40, "time"= 60),
+		list(CRAFT_MATERIAL, 2, MATERIAL_PLASTEEL, "time" = 30),
+		list(QUALITY_BOLT_TURNING, 40, "time" = 40),
+		list(CRAFT_MATERIAL, 1, MATERIAL_URANIUM, "time" = 20),
+		list(QUALITY_WIRE_CUTTING, 40, 30),
+		list(/obj/item/stack/cable_coil, 2, "time" = 20),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 60),
+	)
+
 /datum/craft_recipe/guild/technosuit
 	name = "'Mark V' environmental protection suit"
 	result = /obj/item/clothing/suit/armor/vest/technomancersuit
@@ -399,8 +606,23 @@
 		list(QUALITY_BOLT_TURNING, 40, "time" = 40)
 	)
 
+/datum/craft_recipe/guild/swat_yellow
+	name = "Artificers insulated gloves"
+	result = /obj/item/clothing/gloves/insulated/guild
+	steps = list(
+		list(/obj/item/clothing/gloves/thick, 1, "time" = 15),
+		list(QUALITY_CUTTING, 15, 10),
+		list(/obj/item/clothing/gloves/insulated, 1, "time" = 15),
+		list(/obj/item/stack/cable_coil, 2, "time" = 5),
+		list(QUALITY_CUTTING, 15, 10),
+		list(CRAFT_MATERIAL, 3, MATERIAL_PLASTIC), //So if we use buget we have a reason to think its really shock proof
+		list(QUALITY_WELDING, 10, "time" = 40),
+		list(CRAFT_MATERIAL, 3, MATERIAL_STEEL),
+		list(QUALITY_HAMMERING, 15, 10)
+	)
+
 /datum/craft_recipe/guild/webbing
-	name = "artificer guild web harness"
+	name = "Artificer Guild web harness"
 	icon_state = "clothing"
 	result = /obj/item/storage/belt/webbing/artificer
 	steps = list(
@@ -483,6 +705,32 @@
 		list(QUALITY_SCREW_DRIVING, 25, "time" = 90)
 	)
 
+//Gun Mods
+/datum/craft_recipe/guild/tensioner
+	name =  "weighted pulley kit"
+	result = /obj/item/gun_upgrade/mechanism/tensioner
+	steps = list(
+		list(CRAFT_MATERIAL, 5, MATERIAL_PLASTEEL, "time" = 30),
+		list(QUALITY_SAWING, 30, "time" = 60),
+		list(QUALITY_HAMMERING, 20, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 40),
+		list(/obj/item/stack/cable_coil, 5, "time" = 30),
+		list(QUALITY_WIRE_CUTTING, 25, "time" = 90)
+	)
+
+//Gun Mods
+/datum/craft_recipe/guild/detensioner
+	name =  "compound pulley kit"
+	result = /obj/item/gun_upgrade/mechanism/detensioner
+	steps = list(
+		list(CRAFT_MATERIAL, 10, MATERIAL_STEEL, "time" = 30),
+		list(QUALITY_SAWING, 30, "time" = 60),
+		list(QUALITY_HAMMERING, 20, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 40),
+		list(CRAFT_MATERIAL, 2, MATERIAL_PLASTIC, "time" = 30),
+		list(QUALITY_WIRE_CUTTING, 25, "time" = 90)
+	)
+
 /datum/craft_recipe/guild/overshooter
 	name = "\"Overshooter\" internal magazine kit"
 	result = /obj/item/gun_upgrade/mechanism/overshooter
@@ -539,11 +787,16 @@
 	)
 
 /datum/craft_recipe/guild/heavy_barrel
-	name = "Heavy Forged Barrel"
+	name = "Heavy barrel"
 	result = /obj/item/gun_upgrade/barrel/bore
 	icon_state = "gun"
 	steps = list(
-		list(/obj/item/gun_upgrade/barrel/forged, 1, "time" = 30),
+		list(CRAFT_MATERIAL, 1, MATERIAL_PLASTEEL, "time" = 30),
+		list(QUALITY_SAWING, 30, "time" = 60),
+		list(QUALITY_HAMMERING, 20, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 40),
+		list(CRAFT_MATERIAL, 1, MATERIAL_PLASTIC, "time" = 30),
+		list(QUALITY_BOLT_TURNING, 25, "time" = 90),
 		list(QUALITY_SAWING, 30, "time" = 60),
 		list(QUALITY_HAMMERING, 20, "time" = 40),
 		list(QUALITY_WELDING, 40, "time" = 40),
@@ -598,12 +851,31 @@
 	result = /obj/item/circuitboard/artificer_turret
 	icon_state = "electronic"
 	steps = list(
-		list(/obj/item/computer_hardware/processor_unit/adv, 1, "time" = 30),
+		list(/obj/item/pc_part/processor_unit/adv, 1, "time" = 30),
 		list(/obj/item/stack/cable_coil, 5, "time" = 20),
 		list(QUALITY_SCREW_DRIVING, 40, "time" = 90),
 		list(QUALITY_WELDING, 40, "time" = 90)
 	)
-
+/*
+Thee would be able to smith tho
+tis my failing
+My deeplest sorrow for this keepsake of the rnd's hoard
+- Trilby, a SI main (somehow)
+/datum/craft_recipe/guild/autolathe_industrial
+	name = "Circuit: Industrial Autolathe"
+	result = /obj/item/circuitboard/autolathe_industrial
+	icon_state = "electronic"
+	steps = list(
+		list(/obj/item/pc_part/processor_unit, 2, "time" = 30),
+		list(CRAFT_MATERIAL, 1, MATERIAL_GOLD),
+		list(CRAFT_MATERIAL, 1, MATERIAL_SILVER),
+		list(/obj/item/circuitboard/autolathe, 1, "time" = 30),
+		list(/obj/item/stack/cable_coil, 5, "time" = 20),
+		list(CRAFT_MATERIAL, 2, MATERIAL_GLASS),
+		list(QUALITY_SCREW_DRIVING, 40, "time" = 40),
+		list(QUALITY_WELDING, 40, "time" = 20)
+	)
+*/
 /datum/craft_recipe/guild/matter_nanoforge
 	name = "Circuit: Matter Nano-Forge"
 	result = /obj/item/circuitboard/matter_nanoforge
@@ -621,7 +893,7 @@
 	name = "Black Box: Matter Nano-Forge"
 	result = /obj/item/oddity/blackbox_nanoforge
 	steps = list(
-		list(/obj/item/computer_hardware/processor_unit, 1, "time" = 120),
+		list(/obj/item/pc_part/processor_unit, 1, "time" = 120),
 		list(QUALITY_SCREW_DRIVING, 20, 70, "time" = 10),
 		list(CRAFT_MATERIAL, 12, MATERIAL_PLASTEEL, "time" = 90),
 		list(CRAFT_MATERIAL, 2, MATERIAL_RGLASS, "time" = 20),
@@ -636,6 +908,37 @@
 		list(CRAFT_MATERIAL, 2, MATERIAL_GOLD),
 		list(QUALITY_BOLT_TURNING, 10, 70),
 		list(CRAFT_MATERIAL, 2, MATERIAL_SILVER)
+	)
+
+/datum/craft_recipe/guild/safety_clamp
+	name = "Hydraulic clamp overclock: KILL CLAMP"
+	result = /obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp/safety_clamp
+	steps = list(
+		list(/obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp, 1, "time" = 60),
+		list(QUALITY_BOLT_TURNING, 30, "time" = 40),
+		list(/obj/item/tool_upgrade/productivity/motor, 1, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 10, 70),
+		list(/obj/item/tool_upgrade/augment/hydraulic, 1, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 10, 70),
+		list(CRAFT_MATERIAL, 6, MATERIAL_PLASTEEL),
+		list(QUALITY_WELDING, 30, "time" = 40),
+		list(/obj/item/tool_upgrade/augment/spikes, 1, "time" = 60)
+	)
+
+/datum/craft_recipe/guild/tesla_energy_relay
+	name = "Mech energy relay"
+	result = /obj/item/mecha_parts/mecha_equipment/tesla_energy_relay
+	steps = list(
+		list(CRAFT_MATERIAL, 10, MATERIAL_STEEL, "time" = 30),
+		list(QUALITY_WELDING, 45, "time" = 40),
+		list(QUALITY_BOLT_TURNING, 40, 70),
+		list(/obj/item/pc_part/tesla_link, 2, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 40, 70),
+		list(/obj/item/stack/cable_coil, 15, "time" = 90),
+		list(QUALITY_WIRE_CUTTING, 25, "time" = 90),
+		list(/obj/item/stock_parts/capacitor/guild, 1, "time" = 60),
+		list(QUALITY_SCREW_DRIVING, 10, 70),
+		list(CRAFT_MATERIAL, 1, MATERIAL_GOLD)
 	)
 
 /datum/craft_recipe/guild/guild_bin

@@ -1,0 +1,422 @@
+/datum/perk/cooldown
+	var/perk_lifetime = 5 MINUTES
+	var/timestamp_start
+	gain_text = "You feel tired. Your body needs some time to recover from all this training."
+	lose_text = "You feel a bit more rested from the training."
+
+/datum/perk/cooldown/assign(mob/living/carbon/human/H)
+	if(..())
+		timestamp_start = world.time
+
+/datum/perk/cooldown/on_process()
+	if(!..() || ((timestamp_start + perk_lifetime) < world.time))
+		holder.stats.removePerk(type)
+
+/datum/perk/cooldown/exertion
+	name = "Overexertion"
+	desc = "Your muscles hurt after an intense workout. \
+			Your TGH stat is reduced for some time. \
+			A protein shake might help with recovery."
+	icon_state = "exertion" //https://game-icons.net/1x1/delapouite/weight-lifting-up.html
+
+/datum/perk/cooldown/exertion/on_process()
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = holder
+		if(H.ingested.has_reagent("protein_shake"))
+			perk_lifetime -= 3 SECONDS
+		else if(H.ingested.has_reagent("protein_shake_commercial"))
+			perk_lifetime -= 2 SECONDS
+	..()
+
+/datum/perk/cooldown/exertion/assign(mob/living/carbon/human/H)
+	..()
+	holder?.stats.changeStat(STAT_TGH, -5)
+
+/datum/perk/cooldown/exertion/remove()
+	if(holder)
+		holder.stats.changeStat(STAT_TGH, 5)
+	..()
+
+/datum/perk/cooldown/reason
+	name = "Dimmed reason"
+	desc = "Your mind had soaked up a lot of knowledge. \
+			Your COG stat is reduced for some time."
+	icon_state = "reason" //https://game-icons.net/1x1/lorc/brainstorm.html
+
+/datum/perk/cooldown/reason/assign(mob/living/carbon/human/H)
+	..()
+	holder?.stats.changeStat(STAT_COG, -5)
+
+/datum/perk/cooldown/reason/remove()
+	if(holder)
+		holder.stats.changeStat(STAT_COG, 5)
+	..()
+
+/datum/perk/cooldown/artist_no
+	name = "Burnout"
+	desc = "Art as taken its toll and you are resting the soul. Tea would help."
+	icon_state = "paintbrush_no"
+	perk_lifetime = 10 MINUTES //6 arts an hour or if you drink enuff green tea it should be more
+	gain_text = "You feel tired. Your mind needs some time to recover from all this exspression."
+	lose_text = "You feel a bit more rested from the burnout."
+
+/datum/perk/cooldown/artist_no/on_process()
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = holder
+		if(H.ingested.has_reagent("icegreentea"))
+			perk_lifetime -= 2 SECONDS
+		else if(H.ingested.has_reagent("greentea"))
+			perk_lifetime -= 1.5 SECONDS
+		else if(H.ingested.has_reagent("icetea"))
+			perk_lifetime -= 1 SECONDS
+		else if(H.ingested.has_reagent("tea"))
+			perk_lifetime -= 0.5 SECONDS
+	..()
+
+/datum/perk/cooldown/armor_reduction
+	name = "Armor Reduction"
+	desc = "Something has pointed out the weaknesses in your stance and armor."
+	icon_state = "shield_no"
+	perk_lifetime = 30 SECONDS //recover this quickly its accually deblitating
+	gain_text = "Everything that attacks you knows exactly where to hit."
+	lose_text = "Everything attacking you no longer know exactly where to attack."
+
+/datum/perk/cooldown/armor_up
+	name = "Armor Addition"
+	desc = "Something or someone has increased the protective rating on your baseline resistances to weapons and firearms making you able to take a beating much easier."
+	icon_state = "shield_plus"
+	perk_lifetime = 8 MINUTES //Gives enuff time for folks to make a last stand
+	gain_text = "Everything that hits you seems to have issues inflicting damages."
+	lose_text = "Damages are able to stack up more easily again, whatever was aiding you is no longer active."
+
+/datum/perk/cooldown/armor_up/assign(mob/living/L)
+	..()
+	if(!holder)
+		return
+
+	var/image/I = image(icon ='icons/mob/battle_overlays.dmi', icon_state = "scan_person_alt")
+
+	holder.add_overlay(I)
+
+	addtimer(CALLBACK(holder, TYPE_PROC_REF(/atom, cut_overlay), I), 30)
+
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = L
+		H.punch_damage_increase += 5
+		H.mob_ablative_armor += 30
+		//If we added 30 and still have negitive armor, just set it to 0
+		if(H.mob_ablative_armor <= 0)
+			H.mob_ablative_armor = 0
+
+	if(istype(holder, /mob/living/simple/hostile))
+		var/mob/living/simple/A = L
+		A.melee_damage_lower += 5
+		A.melee_damage_upper += 5
+
+		//Increase bullet/laser and melee armor only
+		for(var/key in A.armor)
+			if(key == "melee")
+				A.armor[key] += 5
+			if(key == "bullet")
+				A.armor[key] += 3
+			if(key == "energy")
+				A.armor[key] += 3
+
+
+	if(issuperioranimal(holder))
+		var/mob/living/carbon/superior/S = L
+		S.melee_damage_lower += 5
+		S.melee_damage_upper += 5
+
+		//Increase bullet and melee armor only
+		for(var/key in S.armor)
+			if(key == "melee")
+				S.armor[key] += 5
+			if(key == "bullet")
+				S.armor[key] += 3
+			if(key == "energy")
+				S.armor[key] += 3
+
+/datum/perk/cooldown/armor_up/remove()
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = holder
+		H.punch_damage_increase -= 5
+		H.mob_ablative_armor -= 30
+		if(H.mob_ablative_armor <= 0)
+			H.mob_ablative_armor = 0
+
+
+	if(istype(holder, /mob/living/simple/hostile))
+		var/mob/living/simple/A = holder
+		A.melee_damage_lower -= 5
+		A.melee_damage_upper -= 5
+
+		//Increase bullet/laser and melee armor only
+		for(var/key in A.armor)
+			if(key == "melee")
+				A.armor[key] -= 5
+			if(key == "bullet")
+				A.armor[key] -= 3
+			if(key == "energy")
+				A.armor[key] -= 3
+
+
+	if(issuperioranimal(holder))
+		var/mob/living/carbon/superior/S = holder
+		S.melee_damage_lower -= 5
+		S.melee_damage_upper -= 5
+
+		//Increase bullet and melee armor only
+		for(var/key in S.armor)
+			if(key == "melee")
+				S.armor[key] -= 5
+			if(key == "bullet")
+				S.armor[key] -= 3
+			if(key == "energy")
+				S.armor[key] -= 3
+
+	..()
+
+/datum/perk/cooldown/judgment_haste
+	name = "Judgment Haste"
+	desc = "A Judgement is required. Let it be delivered with haste."
+	icon_state = "adrenalineburst"
+	perk_lifetime = 2 MINUTES
+	gain_text = "A Judgement is required."
+	lose_text = "Your haste of judgement fades."
+
+/datum/perk/cooldown/judgment_haste/assign(mob/living/carbon/human/H)
+	..()
+	holder.fancy_glide += 6
+
+/datum/perk/cooldown/judgment_haste/remove()
+	holder.fancy_glide -= 6
+
+	..()
+
+/datum/perk/cooldown/stillpoint_rupture
+	name = "Stillpoint Style: Entropy Mark of Rupture"
+	desc = "You where slashed by a Stillpoint weapon that after the timer will deal built up damage all at once."
+	gain_text = "Some slashes phased right into."
+	lose_text = "Slashes that once phased through you start to cut as fresh wounds..."
+	active = FALSE
+	passivePerk = FALSE
+	perk_lifetime = 1 MINUTES
+	var/damage = 0
+
+/datum/perk/cooldown/stillpoint_rupture/remove()
+	holder.adjustBruteLoss(damage)
+	..()
+
+/datum/perk/cooldown/stillpoint_burn
+	name = "Stillpoint Style: Below 0 Entropy Art of Frost"
+	desc = "You where slashed by a Stillpoint weapon that after the timer will deal built up damage and frost base harm."
+	gain_text = "Some slashes phased right into."
+	lose_text = "Slashes that once phased through you start to freeze over..."
+	active = FALSE
+	passivePerk = FALSE
+	perk_lifetime = 1 MINUTES
+	var/damage = 0
+
+/datum/perk/cooldown/stillpoint_burn/remove()
+	holder.adjustFireLoss(damage)
+
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = holder
+		H.frost += 50 + (damage * 10) //This is cracked
+		if(damage > 5)
+			//This can build up fast
+			H.bodytemperature -= ((H.frost + H.bodytemperature) * 0.1) * damage
+			//Trigger this thrice
+			H.handle_frost()
+			H.handle_frost()
+			H.handle_frost()
+	..()
+
+/datum/perk/cooldown/stillpoint_tremer
+	name = "Stillpoint Style: Art of Entropy Overflow Tremors"
+	desc = "You where slashed by a Stillpoint weapon mess with your sences of time and self being."
+	gain_text = "Some slashes phased right into."
+	lose_text = "Slashes that once phased through seem to now show themselfs."
+	active = FALSE
+	passivePerk = FALSE
+	perk_lifetime = 1 MINUTES
+	var/damage = 3
+
+/datum/perk/cooldown/stillpoint_tremer/assign()
+	..()
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = holder
+		H.click_delay_addition += 3
+		H.added_movedelay += 2
+	if(issuperioranimal(holder))
+		var/mob/living/carbon/superior/S = holder
+		S.delayed += 3
+		S.melee_delay += 3
+		S.delay_for_range += 1.5 SECONDS
+		S.delay_for_rapid_range += 0.75 SECONDS
+		S.delay_for_melee += 1 SECONDS
+		S.delay_for_all += 0.5 SECONDS
+
+/datum/perk/cooldown/stillpoint_tremer/remove()
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = holder
+		H.click_delay_addition -= 3
+		H.added_movedelay -= 2
+		H.adjustHalLoss(damage)
+	if(issuperioranimal(holder))
+		var/mob/living/carbon/superior/S = holder
+		S.delayed -= 3
+		S.melee_delay -= 3
+		S.adjustHalLoss(3*damage)
+		S.delay_for_range -= 1.5 SECONDS
+		S.delay_for_rapid_range -= 0.75 SECONDS
+		S.delay_for_melee -= 1 SECONDS
+		S.delay_for_all -= 0.5 SECONDS
+	..()
+
+//Used for teleporting, done like this for timer reasons
+/datum/perk/cooldown/bluespace_bellclock
+	name = "Telebell Rift Link Cave System Unit Link"
+	desc = "Advanced tracking is tooned to you to pull you back from a unfixed location replace after a set timer."
+	icon_state = "ladder"
+	perk_lifetime = 6 MINUTES
+	gain_text = "Telebell has been successfully linked it seems."
+	lose_text = "In a flash you find yourself back from whatever cave was linked."
+	var/turf/linked
+	var/linked_x
+	var/linked_y
+	var/linked_z
+
+	//not really active
+	active = FALSE
+	passivePerk = FALSE
+
+	var/backupcall_parrent = FALSE
+
+//We override parrent do to always ticking down even on death.
+/datum/perk/cooldown/bluespace_bellclock/on_process()
+	SHOULD_CALL_PARENT(TRUE)
+
+	if((timestamp_start + perk_lifetime) < world.time)
+		holder.stats.removePerk(type)
+
+	if(backupcall_parrent)
+		..()
+
+/datum/perk/cooldown/bluespace_bellclock/assign(mob/living/carbon/human/H)
+	..()
+	cooldown_time = world.time + 6 MINUTES + 5 //Little bit added to stop anyone form spam clicking to activate it
+	linked = get_turf(holder)
+	linked_x = holder.x
+	linked_y = holder.y
+	linked_z = holder.z
+
+	if(holder.stats.getPerk(PERK_NO_OBFUSCATION))
+		to_chat(holder, "Going back is easy, the timer is just a suggestion, activating again to teleport early.")
+
+	if(!isturf(linked))
+		message_admins("bluespace_bellclock was unable to get a turf, this is bad!")
+		linked = null
+
+	if(!linked_x || !linked_y || !linked_z)
+		for(var/obj/machinery/mining_bell/MB in range(3, holder))
+			if(MB)
+				linked_x = MB.x
+				linked_y = MB.y
+				linked_z = MB.z
+
+	if(!linked_x || !linked_y || !linked_z)
+		message_admins("bluespace_bellclock was unable to get a proper x/y/z, this is bad! Teleporting person to a pre-coded location, holder is [holder].")
+
+		//Hard set cords that we know are good
+		linked_x = 166
+		linked_y = 146
+		linked_z = 1
+
+/datum/perk/cooldown/bluespace_bellclock/remove()
+	//Prevents teleportation issues that are quite "common"
+	if(istype(holder.loc, /obj/machinery/sleeper))
+		var/obj/machinery/sleeper/S = holder.loc
+		S.go_out()
+	if(istype(holder.loc, /obj/structure/closet))
+		var/obj/structure/closet/C = holder.loc
+		C.break_open()
+	if(istype(holder.loc, /obj/machinery/bodyscanner))
+		var/obj/machinery/bodyscanner/BS = holder.loc
+		BS.go_out()
+
+	if(isturf(linked))
+		go_to_bluespace(holder.loc, 6, TRUE, holder, linked)
+	else
+		holder.on_mob_jump(locate(linked_x,linked_y,linked_z))
+		spawn(1)
+			var/turf/T = get_turf(holder)
+			if(T)
+				bluespace_entropy(12, T)
+			else
+				message_admins("bluespace_bellclock was unable to get a proper x/y/z, or turf or anything, every failsafe has failed, this is bad! Holder is [holder]. May need mannual teleportation")
+
+	linked = null //Avoids hard del
+
+	..()
+
+/datum/perk/cooldown/bluespace_bellclock/activate()
+	var/mob/living/user = usr
+	if(!istype(user))
+		return
+
+	if(user.stats.getPerk(PERK_NO_OBFUSCATION))
+		to_chat(user, "A set time? Nonsence, you can just pull that tiny string linking yourself to that spot a few times to go back on demand!")
+		perk_lifetime -= perk_lifetime - 1
+		return TRUE
+	//We do this second for logical reasoning is weaker then authority
+	if(user.stats.getStat(STAT_COG) >= STAT_LEVEL_MASTER)
+		to_chat(user, "With some understanding on how the Telebell system works or general bluespace tracking comes easy to you, the way to force a pull back is as easy as pulling an invisible string.")
+		perk_lifetime -= perk_lifetime - 1
+		return TRUE
+
+/datum/perk/cooldown/contempt_gaze
+	name = "Contempt Gaze"
+	desc = "A gaze of malice, hatred and blood lust mixed together."
+	icon_state = "gaze"
+	perk_lifetime = 1 MINUTES //Gives enuff time for folks to make a last stand
+	gain_text = "The eyes, the blood lust, and the unrelenting contempt tords you have shaken your core."
+	lose_text = null //No need to tell the player a short debuff is gone
+
+/datum/perk/cooldown/contempt_gaze/on_process()
+	if(ishuman(holder))
+		var/mob/living/carbon/human/H = holder
+		H.recoil += 0.25
+		H.sanity.changeLevel(-0.5)
+	..()
+
+/datum/perk/cooldown/contempt_gaze/assign()
+	..()
+	if(isanimal(holder))
+		var/mob/living/simple/A = holder
+		A.melee_damage_lower -= 2
+		A.melee_damage_upper -= 2
+		A.adjustBruteLoss(5)
+
+	if(issuperioranimal(holder))
+		var/mob/living/carbon/superior/S = holder
+		S.melee_damage_lower -= 2
+		S.melee_damage_upper -= 2
+		S.blocking_slowdown += 1
+		S.adjustBruteLoss(5)
+
+/datum/perk/cooldown/contempt_gaze/remove(mob/living/L)
+	if(isanimal(holder))
+		var/mob/living/simple/A = L
+		A.melee_damage_lower += 2
+		A.melee_damage_upper += 2
+		A.adjustBruteLoss(5)
+
+	if(issuperioranimal(holder))
+		var/mob/living/carbon/superior/S = L
+		S.melee_damage_lower += 2
+		S.melee_damage_upper += 2
+		S.blocking_slowdown -= 1
+		S.adjustBruteLoss(5)
+	..()

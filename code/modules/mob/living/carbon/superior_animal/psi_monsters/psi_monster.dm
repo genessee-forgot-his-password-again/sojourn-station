@@ -2,7 +2,7 @@
 // They tend to favor extremely high health pools but little armor, with most attacks being moderate damage and carrying secondary effects.
 // When killed, they disappear and may spawn a psionic catalyst in there place. -Kaz
 
-/mob/living/carbon/superior_animal/psi_monster
+/mob/living/carbon/superior/psi
 	name = "corrupted devourer"
 	desc = "In the realm of other the other worldly deep maintenance, there are things which should not be. This creature is the result of what a mindless thought can create, familiar and yet \
 	entirely alien."
@@ -13,24 +13,24 @@
 
 	mob_size = MOB_LARGE
 	viewRange = 8
-	armor = list(melee = 20, bullet = 10, energy = 5, bomb = 30, bio = 100, rad = 100)
+	armor = list(melee = 5, bullet = 2, energy = 1, bomb = 30, bio = 100, rad = 100)
 
 	cant_be_pulled = TRUE
-
-	maxHealth = 120
-	health = 120
+	cant_gib = TRUE
+	maxHealth = 100
+	health = 100
 	randpixel = 0
 	attack_sound = list('sound/xenomorph/alien_claw_flesh1.ogg', 'sound/xenomorph/alien_claw_flesh2.ogg', 'sound/xenomorph/alien_claw_flesh3.ogg', 'sound/xenomorph/alien_tail_attack.ogg')
 	var/aggro_noise = 'sound/hallucinations/hell_screech.ogg'
 	attack_sound_chance = 100
-	speak_emote = list("murmurs", "howls", "whispers")
+	speak_emote = list("murmurs...", "howls!", "whispers...")
 	emote_see = list("groans in pain.", "moans in agony.", "chitters madly!")
 	speak_chance = 5
 	deathmessage = "looses a guttural snarl as it crumbles to dust!"
 	overkill_gib = 0 // Set so we don't lose its death dust special clause.
 	overkill_dust = 0
 	contaminant_immunity = TRUE
-	mob_size = 3 // Can't contain that which isn't actually real.
+	never_stimulate_air = TRUE
 
 	move_to_delay = 2
 	turns_per_move = 6
@@ -55,10 +55,12 @@
 	reagent_immune = TRUE
 	toxin_immune = TRUE
 
-	var/poison_per_bite = 0
-	var/poison_type = "mindmelter"
+	poison_per_bite = 0
+	poison_type = "mindmelter"
+
 	var/last_noise = -30000
 	var/chameleon_skill = 10
+	var/phaser = TRUE
 	var/healing_factor = 1
 	var/momento_mori = /obj/effect/decal/cleanable/psi_ash
 	var/death_present = FALSE
@@ -83,7 +85,27 @@
 
 	known_languages = list(LANGUAGE_COMMON)
 
-/mob/living/carbon/superior_animal/psi_monster/New()
+	drop_items = list(/obj/random/psi)
+
+	var/psionic_respawn = TRUE
+	var/fast_respawn = 5 MINUTES
+	var/slow_respawn = 15 MINUTES
+	var/respawn_mob_type = /obj/random/mob/psi_monster/insta_spawn
+	var/affects_chaos = FALSE
+
+	var/leach_on_odds = 0
+	var/can_leach = FALSE
+	var/is_leaching = FALSE
+	var/steal_odds = 0
+	var/stat_to_steal = STAT_VIV
+	var/steal_amount = -1 //Possitive amounts give stats, and lower the health of the leacher
+	var/mob/living/Victim = null
+
+	var/can_leave = FALSE
+	research_value = 500
+
+
+/mob/living/carbon/superior/psi/New()
 	..()
 	if(!icon_living)
 		icon_living = icon_state
@@ -92,19 +114,19 @@
 
 	objectsInView = new
 
-	verbs -= /mob/verb/observe
+	remove_verb(src, /mob/verb/observe)
 	pixel_x = size_pixel_offset_x
 	pixel_y = 0
 
-/mob/living/carbon/superior_animal/psi_monster/slip()
+/mob/living/carbon/superior/psi/slip()
 	return FALSE
 // Can't slip
 
-/mob/living/carbon/superior_animal/psi_monster/start_pulling(var/atom/movable/AM)
+/mob/living/carbon/superior/psi/start_pulling(var/atom/movable/AM)
 	to_chat(src, SPAN_WARNING("Your hand gets stopped preventing you from pulling \the [src]. !"))
 	return
 
-/mob/living/carbon/superior_animal/psi_monster/attack_hand(mob/living/carbon/M as mob)
+/mob/living/carbon/superior/psi/attack_hand(mob/living/carbon/M as mob)
 	..()
 	var/mob/living/carbon/human/H = M
 
@@ -138,7 +160,7 @@
 
 				M.put_in_active_hand(G)
 				G.synch()
-				LAssailant = M
+				LAssailant_weakref = WEAKREF(M)
 
 				M.do_attack_animation(src)
 				playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
@@ -205,6 +227,24 @@
 	to_chat(user, SPAN_NOTICE("[src] sifts through your fingers."))
 	qdel(src)
 
+/obj/effect/decal/cleanable/psi_ash/ponderous
+	name = "strange ashes of ponderous"
+	catalyst_drop = /obj/random/psi_catalyst/ponderous
+	psion_chance = 35
+	normie_chance = 15
+
+/obj/effect/decal/cleanable/psi_ash/flesh_behemoth
+	name = "strange ashes of flesh behemoth"
+	catalyst_drop = /obj/random/psi_catalyst/flesh_behemoth
+	psion_chance = 45
+	normie_chance = 20
+
+/obj/effect/decal/cleanable/psi_ash/debuffer
+	name = "strange ashes of a shallow breather"
+	catalyst_drop = /obj/random/psi_catalyst/debuffer
+	psion_chance = 75
+	normie_chance = 50
+
 /obj/effect/decal/cleanable/psi_ash/king
 	name = "ashes of the throne bound tyrant"
 	desc = "He will be back."
@@ -224,3 +264,12 @@
 	desc = "Something about these ashes feels off, as if an infinite potential exists within the dust, but it is weaker feeling than normal."
 	psion_chance = 10
 	normie_chance = 5
+
+/obj/effect/decal/cleanable/psi_ash/ash_wendigo
+	name = "strange ashes of ash wendigo"
+	desc = "Something about these ashes feels off, as if an infinite potential exists within the dust. \
+	Ashes to Ashes, Dust to Dust, the exists possable form folklore sooth even the dead."
+
+	catalyst_drop = /obj/random/psi_catalyst/ash_wendigo
+	psion_chance = 85
+	normie_chance = 80 //We want to spread are hunger

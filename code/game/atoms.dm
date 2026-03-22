@@ -1,7 +1,7 @@
 /atom
 	layer = TURF_LAYER
 	plane = GAME_PLANE
-	appearance_flags = TILE_BOUND|PIXEL_SCALE|LONG_GLIDE
+	appearance_flags = TILE_BOUND|PIXEL_SCALE|LONG_GLIDE|DEFAULT_APPEARANCE_FLAGS
 	var/level = ABOVE_PLATING_LEVEL
 	var/flags = 0
 	var/list/fingerprints
@@ -13,11 +13,13 @@
 	var/last_bumped = 0
 	var/pass_flags = 0
 	var/throwpass = 0
-	var/germ_level = GERM_LEVEL_AMBIENT // The higher the germ level, the more germ on the atom.
 	var/simulated = TRUE //filter for actions - used by lighting overlays
 	var/fluorescent // Shows up under a UV light.
 	var/allow_spin = TRUE
 	var/used_now = FALSE //For tools system, check for it should forbid to work on atom for more than one user at time
+
+	/// Associative list containing FLAG -> transform_type. Holds all transform_types currently applying their effects to us.
+	var/list/transform_types = null
 
 	///Chemistry.
 	var/reagent_flags = NONE
@@ -41,11 +43,6 @@
 	  */
 	var/list/atom_colours
 
-
-	// over-lays
-	var/tmp/list/our_overlays	//our local copy of (non-priority) overlays without byond magic. Use procs in SSover-lays to manipulate
-	var/tmp/list/priority_overlays	//over-lays that should remain on top and not normally removed when using cut_overlay functions, like c4.
-
 	// All physical objects that exist have a somewhat metaphysical representation of their integrity
 	// Why are areas derived from /atom instead of /datum?  They're abstracts!
 	var/health    = 99999 // RPG boss unless  otherwise defined
@@ -54,6 +51,7 @@
 	var/stat = 0
 
 /atom/proc/update_icon()
+	update_all_transforms()
 	return
 
 /atom/proc/healthCheck()
@@ -68,10 +66,23 @@
 	if(!(stat & BROKEN))
 		stat |= BROKEN
 
+/**
+ * Called when an atom is created in byond (built in engine proc)
+ *
+ * Not a lot happens here in SS13 code, as we offload most of the work to the
+ * [Intialization][/atom/proc/Initialize] proc, mostly we run the preloader
+ * if the preloader is being used and then call [InitAtom][/datum/controller/subsystem/atoms/proc/InitAtom] of which the ultimate
+ * result is that the Intialize proc is called.
+ *
+ * We also generate a tag here if the DF_USE_TAG flag is set on the atom
+ */
 /atom/New(loc, ...)
 	init_plane()
 	update_plane()
 //	init_light()
+
+	if(datum_flags & DF_USE_TAG)
+		GenerateTag()
 
 	var/do_initialize = SSatoms.initialized
 	if(do_initialize != INITIALIZATION_INSSATOMS)
@@ -116,7 +127,7 @@
  */
 /atom/proc/Initialize(mapload, ...)
 	if(initialized)
-		crash_with("Warning: [src]([type]) initialized multiple times!")
+		CRASH("Warning: [src]([type]) initialized multiple times!")
 	initialized = TRUE
 
 	if(light_power && light_range)
@@ -133,6 +144,7 @@
 		for(var/reagent in preloaded_reagents)
 			reagents.add_reagent(reagent, preloaded_reagents[reagent])
 
+	add_initial_transforms()
 
 	return INITIALIZE_HINT_NORMAL
 
@@ -147,7 +159,7 @@
  * that all atoms will actually exist in the "WORLD" at this time and that all their Intialization
  * code has been run
  */
-/atom/proc/LateInitialize()
+/atom/proc/LateInitialize(mapload)
 	set waitfor = FALSE
 
 /**
@@ -164,9 +176,16 @@
 	if(reagents)
 		QDEL_NULL(reagents)
 
+	QDEL_LAZYLIST_ASSOC_VAL(transform_types)
+
 	spawn()
 		update_openspace()
+
 	return ..()
+
+///Generate a tag for this atom
+/atom/proc/GenerateTag()
+	return
 
 /atom/proc/reveal_blood()
 	return
@@ -229,6 +248,55 @@
 	P.on_hit(src, def_zone)
 	. = FALSE
 
+/*
+for copy and paste ablitly
+
+bullet_weaken(P, subtractor_brute = 0, mult_brute = 1, subtractor_burn = 0, mult_burn = 1)
+
+bullet_weaken(P,0,1,0,1)
+
+*/
+/atom/proc/bullet_weaken(obj/item/projectile/P, subtractor_brute = 0, mult_brute = 1, subtractor_burn = 0, mult_burn = 1)
+
+	//We are evil and hecked up, we do subtraction before mult
+
+	if(P.penetrating != 0)
+		//Penitration nips the bud and allows you to regain a lot of bullet damage, AD does not.
+		if(subtractor_brute > 0)
+			subtractor_brute = max(0, subtractor_brute - P.penetrating)
+		if(subtractor_burn > 0)
+			subtractor_burn = max(0, subtractor_burn - P.penetrating)
+
+		//No negitives allowed.
+		if(P.penetrating > 0)
+			if(mult_brute < 1)
+				mult_brute = max(1, mult_brute * P.penetrating)
+				mult_brute = abs(mult_brute)
+			if(mult_burn < 1)
+				mult_burn = max(1, mult_burn * P.penetrating)
+				mult_burn = abs(mult_burn)
+
+	for(var/i in P.damage_types)
+
+		//message_admins("i = [i] internal P.i [P.damage_types[i]] and P = [P]")
+
+
+		if(i == BRUTE || i == HALLOSS || i == CLONE || i == BLAST)
+			P.damage_types[i] = max(0.5, P.damage_types[i] - subtractor_brute)
+			P.damage_types[i] = max(0.5, P.damage_types[i] * mult_brute)
+		if(i == BURN || i == ELECTROCUTE || i == IRRADIATE || i == CLONE || i == TOX)
+			P.damage_types[i] = max(0.5, P.damage_types[i] - subtractor_burn)
+			P.damage_types[i] = max(0.5, P.damage_types[i] * mult_burn)
+
+		//If we are mega fancy then we get both burn and brute weakening
+		if(i == OXY || i == PSY || i == TOX)
+			P.damage_types[i] = max(0.5, P.damage_types[i] - subtractor_brute)
+			P.damage_types[i] = max(0.5, P.damage_types[i] * mult_brute)
+			P.damage_types[i] = max(0.5, P.damage_types[i] - subtractor_burn)
+			P.damage_types[i] = max(0.5, P.damage_types[i] * mult_burn)
+
+		//message_admins("POST NERF: i = [i] internal P.i [P.damage_types[i]] and P = [P]")
+
 /atom/proc/block_bullet(mob/user, var/obj/item/projectile/damage_source, def_zone)
 	return 0
 
@@ -279,7 +347,7 @@ Also, the icon used for the beam will have to be vertical and 32x32.
 The math involved assumes that the icon is vertical to begin with so unless you want to adjust the math,
 its easier to just keep the beam vertical.
 */
-/atom/proc/Beam(atom/BeamTarget, icon_state="b_beam", icon='icons/effects/beam.dmi',time=50, maxdistance=10)
+/atom/proc/Beam(atom/BeamTarget, icon_state="b_beam", icon='icons/effects/beam.dmi',time=50, maxdistance=10, alpha_arg, color_arg)
 	//BeamTarget represents the target for the beam, basically just means the other end.
 	//Time is the duration to draw the beam
 	//Icon is obviously which icon to use for the beam, default is beam.dmi
@@ -304,36 +372,40 @@ its easier to just keep the beam vertical.
 		var/N=0
 		var/length=round(sqrt((DX)**2+(DY)**2))
 		for(N, N<length, N+=32)
-			var/obj/effect/overlay/beam/X=new(loc)
-			X.BeamSource=src
+			var/obj/effect/overlay/beam/beam=new(loc)
+			beam.BeamSource=src
 			if(N+32>length)
 				var/icon/II=new(icon, icon_state)
 				II.DrawBox(null, 1, (length-N), 32, 32)
 				II.Turn(Angle)
-				X.icon=II
-			else X.icon=I
+				beam.icon=II
+			else beam.icon=I
 			var/Pixel_x=round(sin(Angle)+32*sin(Angle)*(N+16)/32)
 			var/Pixel_y=round(cos(Angle)+32*cos(Angle)*(N+16)/32)
 			if(DX==0) Pixel_x=0
 			if(DY==0) Pixel_y=0
 			if(Pixel_x>32)
 				for(var/a=0, a<=Pixel_x, a+=32)
-					X.x++
+					beam.x++
 					Pixel_x-=32
 			if(Pixel_x<-32)
 				for(var/a=0, a>=Pixel_x, a-=32)
-					X.x--
+					beam.x--
 					Pixel_x+=32
 			if(Pixel_y>32)
 				for(var/a=0, a<=Pixel_y, a+=32)
-					X.y++
+					beam.y++
 					Pixel_y-=32
 			if(Pixel_y<-32)
 				for(var/a=0, a>=Pixel_y, a-=32)
-					X.y--
+					beam.y--
 					Pixel_y+=32
-			X.pixel_x=Pixel_x
-			X.pixel_y=Pixel_y
+			beam.pixel_x=Pixel_x
+			beam.pixel_y=Pixel_y
+			if (alpha_arg)
+				beam.alpha = alpha_arg
+			if (color_arg)
+				beam.color = color_arg
 		sleep(3)	//Changing this to a lower value will cause the beam to follow more smoothly with movement, but it will also be more laggy.
 					//I've found that 3 ticks provided a nice balance for my use.
 	for(var/obj/effect/overlay/beam/O in orange(10, src)) if(O.BeamSource==src) qdel(O)
@@ -362,7 +434,10 @@ its easier to just keep the beam vertical.
 
 	if(desc)
 		to_chat(user, desc)
-//Soj Edits
+		var/pref = user.get_preference_value("SWITCHEXAMINE")
+		if(pref == GLOB.PREF_YES)
+			user.client.statpanel = "Examine"
+
 	if(reagents)
 		if(reagent_flags & TRANSPARENT)
 			to_chat(user, SPAN_NOTICE("It contains:"))
@@ -404,6 +479,19 @@ its easier to just keep the beam vertical.
 					to_chat(user, SPAN_NOTICE("[reagents.total_volume] units of what looks like [master_reagent.name]."))
 				else
 					to_chat(user, SPAN_NOTICE("[reagents.total_volume] units of various reagents."))
+
+			var/list/all_taste_tags = list()
+			for(var/datum/reagent/R in reagents.reagent_list)
+				if(islist(R.taste_tag))
+					for(var/tag in R.taste_tag)
+						all_taste_tags |= tag
+				else
+					all_taste_tags |= R.taste_tag
+
+			if(all_taste_tags.len)
+				var/the_final_taste = jointext(all_taste_tags, ", ")
+				to_chat(user, SPAN_NOTICE("A quick waft will tell you it tastes like: [the_final_taste]"))
+
 // End of SoJ changes
 		else
 			if(reagent_flags & AMOUNT_VISIBLE)
@@ -412,12 +500,12 @@ its easier to just keep the beam vertical.
 				else
 					to_chat(user, SPAN_DANGER("It's empty."))
 
-	if(ishuman(user) && user.stats && user.stats.getPerk(/datum/perk/greenthumb))
-		var/datum/perk/greenthumb/P = user.stats.getPerk(/datum/perk/greenthumb)
+	if(ishuman(user) && user.stats && user.stats.getPerk(PERK_GREENTHUMB))
+		var/datum/perk/greenthumb/P = user.stats.getPerk(PERK_GREENTHUMB)
 		var/obj/item/I = P.virtual_scanner
 		I.afterattack(src, user, get_dist(src, user) <= 1)
 
-	SEND_SIGNAL(src, COMSIG_EXAMINE, user, distance)
+	LEGACY_SEND_SIGNAL(src, COMSIG_EXAMINE, user, distance)
 
 	return distance == -1 || (get_dist(src, user) <= distance) || isobserver(user)
 
@@ -627,7 +715,8 @@ its easier to just keep the beam vertical.
 		M.check_dna()
 		if (M.species)
 			blood_color = M.species.blood_color
-	. = TRUE
+			if(!blood_color)
+				return FALSE
 	return TRUE
 
 /atom/proc/add_vomit_floor(mob/living/carbon/M, var/toxvomit = FALSE)
@@ -642,7 +731,6 @@ its easier to just keep the beam vertical.
 	if(!simulated)
 		return
 	fluorescent = 0
-	src.germ_level = 0
 	if(istype(blood_DNA, /list))
 		blood_DNA = null
 		return TRUE
@@ -730,8 +818,7 @@ its easier to just keep the beam vertical.
 
 /atom/Entered(var/atom/movable/AM, var/atom/old_loc, var/special_event)
 	if(loc)
-		for(var/i in AM.contents)
-			var/atom/movable/A = i
+		for(var/atom/movable/A as anything in AM.contents)
 			A.entered_with_container(old_loc)
 		if(MOVED_DROP == special_event)
 			AM.forceMove(loc, MOVED_DROP)
@@ -786,6 +873,8 @@ its easier to just keep the beam vertical.
 	// offset correction
 	BM.pixel_x--
 	BM.pixel_y--
+	BM.serial_type_index = Proj.serial_type_index_bullet //Nothing to nothing shouldnt be an issue
+
 
 	if(Proj.get_structure_damage() >= WEAPON_FORCE_DANGEROUS)//If it does a lot of damage it makes a nice big black hole.
 		BM.icon_state = "scorch"
@@ -804,11 +893,21 @@ its easier to just keep the beam vertical.
 
 
 /atom/proc/get_recursive_contents()
-	var/list/result = list()
-	for (var/atom/a in contents)
-		result += a
-		result |= a.get_recursive_contents()
-	return result
+	. = list()
+	for (var/atom/a as anything in contents)
+		. += a
+		. |= a.get_recursive_contents()
+
+/atom/proc/get_recursive_contents_until(limit = INFINITY, current_recursion = 0)
+	if (limit <= current_recursion)
+		return
+	. = list()
+	current_recursion++
+	for (var/atom/a as anything in contents)
+		. += a
+		var/recursive_contents = a.get_recursive_contents_until(limit, current_recursion)
+		if (!isnull(recursive_contents))
+			. |= recursive_contents
 
 /atom/proc/AllowDrop()
 	return FALSE

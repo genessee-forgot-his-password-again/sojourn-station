@@ -405,7 +405,7 @@
 		if((isobserver(usr) && ckeys_allowed_to_scan[usr.ckey]) || is_admin(usr))
 			if(assembly_components.len)
 				var/saved = "On circuit printers cloning enabled, you may use the code below to clone the circuit:<br><br><code>[SScircuit.save_electronic_assembly(src)]</code>"
-				show_browser(usr, saved, "window=circuit_scan;size=500x600;border=1;can_resize=1;can_close=1;can_minimize=1")
+				show_browser(usr, HTML_SKELETON(saved), "window=circuit_scan;size=500x600;border=1;can_resize=1;can_close=1;can_minimize=1")
 			else
 				to_chat(usr, SPAN_WARNING("The circuit is empty!"))
 		return
@@ -519,12 +519,12 @@
 		icon_state = initial(icon_state) + "-open"
 	else
 		icon_state = initial(icon_state)
-	overlays.Cut()
+	cut_overlays()
 	if(detail_color == COLOR_ASSEMBLY_BLACK) //Black colored overlay looks almost but not exactly like the base sprite, so just cut the overlay and avoid it looking kinda off.
 		return
 	var/image/detail_overlay = image('icons/obj/assemblies/electronic_setups.dmi', src,"[icon_state]-color")
 	detail_overlay.color = detail_color
-	overlays.Add(detail_overlay)
+	add_overlay(detail_overlay)
 
 /obj/item/device/electronic_assembly/proc/return_total_complexity()
 	var/returnvalue = 0
@@ -1104,7 +1104,7 @@
 		mount_assembly(T,user)
 
 /obj/item/device/electronic_assembly/pickup()
-	transform = matrix() //Reset the matrix.
+	remove_all_transforms() //Reset the matrix.
 	..()
 
 /obj/item/device/electronic_assembly/wallmount/proc/mount_assembly(turf/on_wall, mob/user) //Yeah, this is admittedly just an abridged and kitbashed version of the wallframe attach procs.
@@ -1125,24 +1125,24 @@
 		SPAN_NOTICE("You attach [src] to the wall."),
 		SPAN_NOTICE("You hear clicking."))
 	if(user.unEquip(src,T))
-		var/matrix/M = matrix()
+		var/to_turn = 0
 		switch(ndir)
 			if(NORTH)
 				pixel_y = -32
 				pixel_x = 0
-				M.Turn(180)
+				to_turn = 180
 			if(SOUTH)
 				pixel_y = 21
 				pixel_x = 0
 			if(EAST)
 				pixel_x = -27
 				pixel_y = 0
-				M.Turn(270)
+				to_turn = 270
 			if(WEST)
 				pixel_x = 27
 				pixel_y = 0
-				M.Turn(90)
-		transform = M
+				to_turn = 90
+		add_new_transformation(/datum/transform_type/modular, list(rotation = to_turn, flag = WALLMOUNT_PLACED_ROTATION_TRANSFORMATION, priority = WALLMOUNT_PLACED_ROTATION_TRANSFORMATION_PRIORITY))
 
 /obj/item/device/electronic_assembly/implant
 	name = "electronic implant"
@@ -1155,7 +1155,7 @@
 /obj/item/device/electronic_assembly/implant/update_icon()
 	..()
 	implant.icon_state = icon_state
-	implant.overlays = overlays
+	implant.copy_overlays(src)
 
 /obj/item/device/electronic_assembly/implant/save()
 	var/list/saved_data = ..()

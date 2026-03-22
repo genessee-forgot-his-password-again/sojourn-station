@@ -12,7 +12,7 @@ The answer was five and a half years -ZeroBits
 	extended_desc = "This program can be used to view e-books from an external archive."
 	program_icon_state = "word"
 	program_key_state = "atmos_key"
-	program_menu_icon = "note"
+	program_menu_icon = "book"
 	size = 6
 	requires_ntnet = 1
 	available_on_ntnet = 1
@@ -26,7 +26,7 @@ The answer was five and a half years -ZeroBits
 	var/obj/machinery/libraryscanner/scanner
 	var/sort_by = "id"
 
-/datum/nano_module/library/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/topic_state/state = GLOB.default_state)
+/datum/nano_module/library/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS, var/datum/nano_topic_state/state = GLOB.default_state)
 	var/list/data = host.initial_data()
 
 	if(error_message)

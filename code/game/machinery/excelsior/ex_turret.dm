@@ -4,7 +4,7 @@
 
 /obj/machinery/porta_turret/excelsior
 	icon = 'icons/obj/machines/excelsior/turret.dmi'
-	desc = "A fully automated anti infantry platform. Fires 7.5mm rounds."
+	desc = "A fully automated anti infantry platform. Fires 7.62mm rounds."
 	icon_state = "turret_legs"
 	density = TRUE
 	lethal = TRUE
@@ -15,9 +15,14 @@
 	var/ammo = 0 // number of bullets left.
 	var/ammo_max = 160
 	var/working_range = 30 // how far this turret operates from excelsior teleporter
-	health = 160
+	faction_iff = "excelsior"
+	health = 300
+	maxHealth = 300
 	auto_repair = 1
 	shot_delay = 0.3
+
+/obj/machinery/porta_turret/excelsior/preloaded
+	ammo = 160
 
 /obj/machinery/porta_turret/excelsior/proc/has_power_source_nearby()
 	for (var/a in excelsior_teleporters)
@@ -114,6 +119,9 @@
 	if(is_excelsior(L))
 		return TURRET_NOT_TARGET
 
+	if(L.faction == "excelsior") //Dont target colony pets if were allied with them
+		return TURRET_NOT_TARGET
+
 	if(L.lying)
 		return TURRET_SECONDARY_TARGET
 
@@ -148,7 +156,7 @@
 	icon = 'icons/obj/machines/excelsior/turret.dmi'
 	name = "artificer turret"
 	desc = "A fully automated battery powered self-repairing anti-wildlife turret platform built by the Artificer's Guild. It features a three round burst fire automatic and an integrated \
-	non-sapient automated artificial-intelligence diagnostic repair system. In other words, the fanciest bit of forging the guild can make. Fires 7.5mm rounds and holds up to 180."
+	non-sapient automated artificial-intelligence diagnostic repair system. In other words, the fanciest bit of forging the guild can make. Fires 7.62mm rounds and holds up to 180. Capable of IFF."
 	icon_state = "turret_legs"
 	density = TRUE
 	lethal = TRUE
@@ -160,6 +168,7 @@
 	var/ammo = 0 // number of bullets left.
 	var/ammo_max = 180
 	var/obj/item/cell/large/cell = null
+	friendly_to_colony = 1 //Artificers perfection.
 	health = 150
 	auto_repair = 1
 	shot_delay = 3
@@ -263,7 +272,7 @@
 					"<span class='notice'>You begin [anchored ? "un" : ""]securing the turret.</span>" \
 				)
 
-			if(do_after(user, 50, src))
+			if(I.use_tool(user, src, WORKTIME_NORMAL, QUALITY_BOLT_TURNING, FAILCHANCE_NORMAL, required_stat = STAT_MEC))
 				//This code handles moving the turret around. After all, it's a portable turret!
 				if(!anchored)
 					playsound(loc, 'sound/items/Ratchet.ogg', 100, 1)
@@ -295,7 +304,7 @@
 				to_chat(user, "<span class='notice'>You install a cell in \the [src].</span>")
 			return TRUE //No whacking the turret with cells on help intent
 
-		else if(istype(I, ammo_box) && I:stored_ammo.len)
+		else if(istype(I, ammo_box) && I?:stored_ammo?:len)
 			var/obj/item/ammo_magazine/A = I
 			if(ammo >= ammo_max)
 				to_chat(user, SPAN_NOTICE("You cannot load more than [ammo_max] ammo."))
@@ -352,6 +361,9 @@
 	if(L.faction == "neutral")
 		return TURRET_NOT_TARGET
 
+	if(is_excelsior(L))
+		return TURRET_PRIORITY_TARGET
+
 	if(L.lying)
 		return TURRET_SECONDARY_TARGET
 
@@ -397,7 +409,7 @@
 
 /obj/machinery/porta_turret/artificer/opifex
 	name = "opifex scrap turret"
-	desc = "A fully automated battery powered anti-wildlife turret designed by the opifex. It features a three round burst barrel and isn't as sturdy nor as functional as other turrets. Fires 7.5mm rounds and holds only a measly 30 rounds."
+	desc = "A fully automated battery powered anti-wildlife turret designed by the opifex. It features a three round burst barrel and isn't as sturdy nor as functional as other turrets. Fires 7.62mm rounds and holds only a measly 30 rounds."
 	circuit = /obj/item/circuitboard/artificer_turret/opifex
 	ammo_max = 30
 	health = 75
@@ -465,7 +477,7 @@
 				cell = I
 				to_chat(user, "<span class='notice'>You install a cell in \the [src].</span>")
 
-		else if(istype(I, ammo_box) && I:stored_ammo.len)
+		else if(istype(I, ammo_box) && I?:stored_ammo?:len)
 			var/obj/item/ammo_magazine/A = I
 			if(ammo >= ammo_max)
 				to_chat(user, SPAN_NOTICE("You cannot load more than [ammo_max] ammo."))

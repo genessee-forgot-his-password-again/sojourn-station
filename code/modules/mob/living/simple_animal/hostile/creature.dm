@@ -1,4 +1,4 @@
-/mob/living/simple_animal/hostile/creature
+/mob/living/simple/hostile/creature
 	name = "creature"
 	desc = "A sanity-destroying otherthing."
 	icon = 'icons/mob/mobs-monster.dmi'
@@ -12,11 +12,13 @@
 	attack_sound = 'sound/weapons/bite.ogg'
 	faction = "creature"
 	speed = 4
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/human
+	sanity_damage = 2
+	meat_type = /obj/item/reagent_containers/snacks/meat/human
+	research_value = 175
 
-/mob/living/simple_animal/hostile/creature/cult
+/mob/living/simple/hostile/creature/cult
 	faction = "cult"
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/human
+	meat_type = /obj/item/reagent_containers/snacks/meat/human
 	min_oxy = 0
 	max_oxy = 0
 	min_tox = 0
@@ -29,7 +31,17 @@
 
 	supernatural = 1
 
-/mob/living/simple_animal/hostile/retaliate/spaceman
+/mob/living/simple/hostile/creature/tissue
+	name  = "Mutated Tissue"
+	desc = "An amalgamation of flesh and bone"
+	color = "#8B0000"
+	health = 200
+	maxHealth = 200
+	melee_damage_lower = 20
+	melee_damage_upper = 35
+	research_value = 275
+
+/mob/living/simple/hostile/retaliate/spaceman
 	name = "spaceman"
 	desc = "This strange being resembles a human, but is something different entirely."
 	icon = 'icons/mob/mobs-humanoid.dmi'
@@ -43,9 +55,9 @@
 	melee_damage_lower = 5
 	melee_damage_upper = 10
 	attacktext = "hits"
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/human
+	meat_type = /obj/item/reagent_containers/snacks/meat/human
 
-/mob/living/simple_animal/hostile/retaliate/spaceman/leader
+/mob/living/simple/hostile/retaliate/spaceman/leader
 	name = "spaceman leader"
 	desc = "This appears to be an important figure among its strange kind."
 	icon_state = "old2"
@@ -58,9 +70,9 @@
 	melee_damage_lower = 20
 	melee_damage_upper = 40
 	attacktext = "hits"
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/human
+	meat_type = /obj/item/reagent_containers/snacks/meat/human
 
-/mob/living/simple_animal/hostile/madminer
+/mob/living/simple/hostile/madminer
 	name = "thing"
 	desc = "It isn't a person."
 	icon = 'icons/mob/mobs-humanoid.dmi'
@@ -73,27 +85,30 @@
 	melee_damage_lower = 10
 	melee_damage_upper = 15
 	attacktext = "hits"
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/human
+	sanity_damage = 1
+	meat_type = /obj/item/reagent_containers/snacks/meat/human
 	attack_sound = 'sound/weapons/rapierhit.ogg'
 
-/mob/living/simple_animal/hostile/madminer/armed
+/mob/living/simple/hostile/madminer/armed
 	desc = "It isn't a person and its armed."
 	melee_damage_lower = 20
 	melee_damage_upper = 25
 
-/mob/living/simple_animal/hostile/madminer/death(gibbed, deathmessage = "vanishes with a scream of agony!")
+/mob/living/simple/hostile/madminer/death(gibbed, deathmessage = "vanishes with a scream of agony!")
 	..()
 	playsound(src, 'sound/hallucinations/wail.ogg', 75, 1, -3)
 	qdel(src)
 
-/mob/living/simple_animal/hostile/madminer/faceless
+/mob/living/simple/hostile/madminer/faceless
 	name = "faceless"
 	desc = "Nothing is right."
 	icon_state = "faceless"
 	health = 1000
 	maxHealth = 1000
+	sanity_damage = 4
+	research_value = 7750
 
-/mob/living/simple_animal/hostile/madminer/cultist
+/mob/living/simple/hostile/madminer/cultist
 	name = "cultist"
 	desc = "Some things are older than we can ever understand."
 	icon_state = "cultist"
@@ -102,70 +117,25 @@
 	health = 150
 	maxHealth = 150
 
-/mob/living/simple_animal/hostile/sargoyle
+/mob/living/simple/hostile/sargoyle
 	name = "sargoyle"
 	desc = "A large flying creature native to the planet, with leathery wings and a toothy maw. Though blind, this creature uses sonar, making it highly skilled at fighting in the dark ."
 	icon = 'icons/mob/mobs-monster.dmi'
 	speak_emote = list("gibbers")
 	icon_state = "devil"
-	health = 120
-	maxHealth = 120
+	health = 120 * CAVEMOB_HEALTH_MOD
+	maxHealth = 120 * CAVEMOB_HEALTH_MOD
 	melee_damage_lower = 15
 	melee_damage_upper = 20
 	attacktext = "chomped"
 	attack_sound = 'sound/weapons/bite.ogg'
-	faction = "sargoyle"
+	faction = "scarybat"
 	speed = 6
 	has_special_parts = TRUE
-	inherent_mutations = list(MUTATION_BLINDNESS, MUTATION_ECHOLOCATION, MUTATION_TOXIN_RESISTANCE)
-	special_parts = list(/obj/item/animal_part/wolf_tooth,/obj/item/animal_part/wolf_tooth)
-	armor = list(melee = 5, bullet = 10, energy = 0, bomb = 25, bio = 0, rad = 25)
-
-
-/mob/living/simple_animal/hostile/wurm
-	name = "wurm youngling"
-	desc = "A plasma eating wurm capable of firing volatile globs of electric acid if they spot prey. Hated by lonestar miners as many do not know it is there until they are hit by acid. This one is merely a youngling and not nearly as dangerous as an adult."
-	icon = 'icons/mob/mobs-monster.dmi'
-	speak_emote = list("clicks")
-	icon_state = "worm_hiding"
-	health = 80
-	maxHealth = 80
-	melee_damage_lower = 25
-	melee_damage_upper = 30
-	attacktext = "chomped"
-	attack_sound = 'sound/weapons/bite.ogg'
-	faction = "wurm"
-	speed = 2
-	wander = FALSE
-	fire_verb = "spits"
-
-	inherent_mutations = list(MUTATION_BLINDNESS, MUTATION_DWARFISM, MUTATION_NERVOUSNESS, MUTATION_DEAF, MUTATION_IMBECILE)
-	ranged = 1
-	projectilesound = 'sound/effects/creatures/acid_spit.ogg'
-	projectiletype = /obj/item/projectile/goo
-	minimum_distance = 6
-
-/mob/living/simple_animal/hostile/wurm/death(gibbed, deathmessage = "explodes in a shower of ichor and gore!")
-	..()
-	new /obj/effect/gibspawner/generic(src.loc)
-	qdel(src)
-
-/mob/living/simple_animal/hostile/wurm/FindTarget()
-	. = ..()
-	if(.)
-		icon_state = "worm"
-		icon_living = "worm"
-		wander = 1
-
-/mob/living/simple_animal/hostile/wurm/adult
-	name = "wurm"
-	desc = "A plasma eating wurm capable of firing volatile globs of electric acid if they spot prey. Hated by lonestar miners as many do not know it is there until they are hit by acid. This is fully grown, bulging sacks of acidic goo hang from its jaw."
-	icon = 'icons/mob/64x64.dmi'
-	health = 200
-	maxHealth = 200
-	melee_damage_lower = 30
-	melee_damage_upper = 35
-	rapid = 1
+	inherent_mutations = list(MUTATION_BLINDNESS, MUTATION_ECHOLOCATION, MUTATION_TOXIN_RESISTANCE, MUTATION_BLOOD_BANK)
+	special_parts = list(/obj/item/animal_part/sarg_horn, /obj/item/animal_part/sarg_horn)
+	armor = list(melee = 1, bullet = 2, energy = 0, bomb = 25, bio = 0, rad = 25)
+	research_value = 375
 
 /*
 #define MOOK_ATTACK_NEUTRAL 0
@@ -176,7 +146,7 @@
 
 //Fragile but highly aggressive wanderers that pose a large threat in numbers.
 //They'll attempt to leap at their target from afar using their hatchets.
-/mob/living/simple_animal/hostile/mook
+/mob/living/simple/hostile/mook
 	name = "wanderer"
 	desc = "This unhealthy looking primitive is wielding a rudimentary hatchet, swinging it with wild abandon. One isn't much of a threat, but in numbers they can quickly overwhelm a superior opponent."
 	icon = 'icons/mob/64x64.dmi'
@@ -196,19 +166,19 @@
 	var/attack_state = MOOK_ATTACK_NEUTRAL
 	var/struck_target_leap = FALSE
 /*
-/mob/living/simple_animal/hostile/mook/CanAllowThrough(atom/movable/O)
+/mob/living/simple/hostile/mook/CanAllowThrough(atom/movable/O)
 	. = ..()
-	if(istype(O, /mob/living/simple_animal/hostile/mook))
-		var/mob/living/simple_animal/hostile/mook/M = O
+	if(istype(O, /mob/living/simple/hostile/mook))
+		var/mob/living/simple/hostile/mook/M = O
 		if(M.attack_state == MOOK_ATTACK_ACTIVE && M.throwing)
 			return TRUE
 */
-/mob/living/simple_animal/hostile/mook/death()
+/mob/living/simple/hostile/mook/death()
 	playsound(src.loc, 'sound/voice/mook_death.ogg', 100, 1)
 	desc = "A deceased primitive. Upon closer inspection, it was suffering from severe cellular degeneration and its garments are machine made..."//Can you guess the twist
 	return ..()
 
-/mob/living/simple_animal/hostile/mook/AttackingTarget()
+/mob/living/simple/hostile/mook/AttackingTarget()
 	if(isliving(target_mob))
 		if(ranged_cooldown <= world.time && attack_state == MOOK_ATTACK_NEUTRAL)
 			var/mob/living/L = target_mob
@@ -219,39 +189,39 @@
 		return
 	return ..()
 
-/mob/living/simple_animal/hostile/mook/MoveToTarget()
+/mob/living/simple/hostile/mook/MoveToTarget()
 	if(attack_state != MOOK_ATTACK_NEUTRAL)
 		return
 	return ..()
 
-/mob/living/simple_animal/hostile/mook/Move()
+/mob/living/simple/hostile/mook/Move()
 	if(attack_state == MOOK_ATTACK_WARMUP || attack_state == MOOK_ATTACK_RECOVERY)
 		return
 	return ..()
 
-/mob/living/simple_animal/hostile/mook/proc/WarmupAttack(forced_slash_combo = FALSE)
+/mob/living/simple/hostile/mook/proc/WarmupAttack(forced_slash_combo = FALSE)
 	if(attack_state == MOOK_ATTACK_NEUTRAL && target_mob)
 		attack_state = MOOK_ATTACK_WARMUP
 		walk(src,0)
 		update_icons()
 		if(prob(50) && get_dist(src,target_mob) <= 3 || forced_slash_combo)
-			addtimer(CALLBACK(src, .proc/SlashCombo), ATTACK_INTERMISSION_TIME)
+			addtimer(CALLBACK(src, PROC_REF(SlashCombo)), ATTACK_INTERMISSION_TIME)
 			return
-		addtimer(CALLBACK(src, .proc/LeapAttack), ATTACK_INTERMISSION_TIME + rand(0,3))
+		addtimer(CALLBACK(src, PROC_REF(LeapAttack)), ATTACK_INTERMISSION_TIME + rand(0,3))
 		return
 	attack_state = MOOK_ATTACK_RECOVERY
 	ResetNeutral()
 
-/mob/living/simple_animal/hostile/mook/proc/SlashCombo()
+/mob/living/simple/hostile/mook/proc/SlashCombo()
 	if(attack_state == MOOK_ATTACK_WARMUP && !stat)
 		attack_state = MOOK_ATTACK_ACTIVE
 		update_icons()
 		SlashAttack()
-		addtimer(CALLBACK(src, .proc/SlashAttack), 3)
-		addtimer(CALLBACK(src, .proc/SlashAttack), 6)
-		addtimer(CALLBACK(src, .proc/AttackRecovery), 9)
+		addtimer(CALLBACK(src, PROC_REF(SlashAttack)), 3)
+		addtimer(CALLBACK(src, PROC_REF(SlashAttack)), 6)
+		addtimer(CALLBACK(src, PROC_REF(AttackRecovery)), 9)
 
-/mob/living/simple_animal/hostile/mook/proc/SlashAttack()
+/mob/living/simple/hostile/mook/proc/SlashAttack()
 	if(target_mob && !stat && attack_state == MOOK_ATTACK_ACTIVE)
 		melee_damage_lower = 15
 		melee_damage_upper = 15
@@ -273,7 +243,7 @@
 	layer = ABOVE_ALL_MOB_LAYER
 	duration = 4
 
-/mob/living/simple_animal/hostile/mook/proc/LeapAttack()
+/mob/living/simple/hostile/mook/proc/LeapAttack()
 	if(target_mob && !stat && attack_state == MOOK_ATTACK_WARMUP)
 		attack_state = MOOK_ATTACK_ACTIVE
 		density = FALSE
@@ -284,12 +254,12 @@
 		playsound(src, 'sound/weapons/thudswoosh.ogg', 25, TRUE)
 		playsound(src, 'sound/voice/mook_leap_yell.ogg', 100, TRUE)
 		var/target_turf = get_turf(target_mob)
-		throw_at(target_turf, 7, 1, src, FALSE, callback = CALLBACK(src, .proc/AttackRecovery))
+		throw_at(target_turf, 7, 1, src, FALSE, callback = CALLBACK(src, PROC_REF(AttackRecovery)))
 		return
 	attack_state = MOOK_ATTACK_RECOVERY
 	ResetNeutral()
 
-/mob/living/simple_animal/hostile/mook/proc/AttackRecovery()
+/mob/living/simple/hostile/mook/proc/AttackRecovery()
 	if(attack_state == MOOK_ATTACK_ACTIVE && !stat)
 		attack_state = MOOK_ATTACK_RECOVERY
 		density = TRUE
@@ -303,13 +273,13 @@
 				if(isliving(target_mob))
 					var/mob/living/L = target_mob
 					if(L.incapacitated() && L.stat != DEAD)
-						addtimer(CALLBACK(src, .proc/WarmupAttack, TRUE), ATTACK_INTERMISSION_TIME)
+						addtimer(CALLBACK(src, PROC_REF(WarmupAttack), TRUE), ATTACK_INTERMISSION_TIME)
 						return
-			addtimer(CALLBACK(src, .proc/WarmupAttack), ATTACK_INTERMISSION_TIME)
+			addtimer(CALLBACK(src, PROC_REF(WarmupAttack)), ATTACK_INTERMISSION_TIME)
 			return
-		addtimer(CALLBACK(src, .proc/ResetNeutral), ATTACK_INTERMISSION_TIME)
+		addtimer(CALLBACK(src, PROC_REF(ResetNeutral)), ATTACK_INTERMISSION_TIME)
 
-/mob/living/simple_animal/hostile/mook/proc/ResetNeutral()
+/mob/living/simple/hostile/mook/proc/ResetNeutral()
 	if(attack_state == MOOK_ATTACK_RECOVERY)
 		attack_state = MOOK_ATTACK_NEUTRAL
 		ranged_cooldown = world.time + ranged_cooldown_time
@@ -318,7 +288,7 @@
 			update_icons()
 			MoveToTarget(target_mob, move_to_delay, minimum_distance)
 
-/mob/living/simple_animal/hostile/mook/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
+/mob/living/simple/hostile/mook/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
 	. = ..()
 	if(isliving(hit_atom) && attack_state == MOOK_ATTACK_ACTIVE)
 		var/mob/living/L = hit_atom
@@ -342,27 +312,27 @@
 				struck_target_leap = TRUE
 				update_icons()
 				continue
-			if(istype(ML, /mob/living/simple_animal/hostile/mook) && !mook_under_us)//If we land on the same tile as another mook, spread out so we don't stack our sprite on the same tile
-				var/mob/living/simple_animal/hostile/mook/M = ML
+			if(istype(ML, /mob/living/simple/hostile/mook) && !mook_under_us)//If we land on the same tile as another mook, spread out so we don't stack our sprite on the same tile
+				var/mob/living/simple/hostile/mook/M = ML
 				if(!M.stat)
 					mook_under_us = TRUE
 					var/anydir = pick(GLOB.cardinals)
 					Move(get_step(src, anydir), anydir)
 					continue
 /*
-/mob/living/simple_animal/hostile/mook/handle_automated_action()
+/mob/living/simple/hostile/mook/handle_automated_action()
 	if(attack_state)
 		return
 	return ..()
 */
-/mob/living/simple_animal/hostile/mook/OpenFire()
+/mob/living/simple/hostile/mook/OpenFire()
 	if(isliving(target_mob))
 		var/mob/living/L = target_mob
 		if(L.incapacitated())
 			return
 	WarmupAttack()
 
-/mob/living/simple_animal/hostile/mook/update_icons()
+/mob/living/simple/hostile/mook/update_icons()
 	. = ..()
 	if(!stat)
 		switch(attack_state)

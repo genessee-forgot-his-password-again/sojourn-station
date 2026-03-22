@@ -3,68 +3,6 @@
 /obj/structure/catwalk,
 /turf/simulated/floor/plating/under,
 /area/deepmaint)
-"b" = (
-/obj/structure/catwalk,
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
-"c" = (
-/obj/structure/railing{
-	tag = "icon-railing0 (NORTH)";
-	icon_state = "railing0";
-	dir = 1
-	},
-/obj/structure/railing{
-	tag = "icon-railing0 (WEST)";
-	icon_state = "railing0";
-	dir = 8
-	},
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
-"d" = (
-/obj/structure/railing{
-	tag = "icon-railing0 (NORTH)";
-	icon_state = "railing0";
-	dir = 1
-	},
-/obj/random/junk/low_chance,
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
-"e" = (
-/obj/structure/railing{
-	tag = "icon-railing0 (NORTH)";
-	icon_state = "railing0";
-	dir = 1
-	},
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
-"f" = (
-/obj/structure/railing{
-	tag = "icon-railing0 (EAST)";
-	icon_state = "railing0";
-	dir = 4
-	},
-/obj/structure/railing{
-	tag = "icon-railing0 (NORTH)";
-	icon_state = "railing0";
-	dir = 1
-	},
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
 "g" = (
 /obj/structure/railing{
 	tag = "icon-railing0 (WEST)";
@@ -278,31 +216,6 @@
 	icon_state = "railing0";
 	dir = 8
 	},
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
-"F" = (
-/obj/structure/railing,
-/obj/random/junk/low_chance,
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
-"G" = (
-/obj/structure/railing,
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/turf/simulated/floor/plating/under,
-/area/deepmaint)
-"H" = (
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
-	dir = 4
-	},
-/obj/structure/railing,
 /turf/simulated/floor/plating/under,
 /area/deepmaint)
 "I" = (
@@ -310,9 +223,6 @@
 /obj/structure/railing{
 	tag = "icon-railing0 (EAST)";
 	icon_state = "railing0";
-	dir = 4
-	},
-/obj/machinery/atmospherics/pipe/simple/visible/yellow{
 	dir = 4
 	},
 /turf/simulated/floor/plating/under,
@@ -327,6 +237,15 @@
 /obj/random/dungeon_gun_ballistic/low_chance,
 /turf/simulated/floor/tiled/techmaint_perforated,
 /area/deepmaint)
+"Q" = (
+/obj/structure/catwalk,
+/obj/random/mob/psi_monster/low_chance,
+/turf/simulated/floor/plating/under,
+/area/deepmaint)
+"Y" = (
+/obj/random/mob/psi_monster/low_chance,
+/turf/simulated/floor/tiled/techmaint_perforated,
+/area/deepmaint)
 "Z" = (
 /obj/structure/table/standard,
 /obj/random/pack/rare/low_chance,
@@ -337,7 +256,6 @@
 
 (1,1,1) = {"
 a
-b
 a
 a
 a
@@ -345,12 +263,13 @@ a
 a
 a
 a
-b
+a
+a
 a
 "}
 (2,1,1) = {"
-a
-c
+Q
+l
 g
 a
 l
@@ -363,7 +282,7 @@ a
 "}
 (3,1,1) = {"
 a
-d
+D
 h
 a
 m
@@ -371,25 +290,25 @@ r
 x
 a
 C
-F
-a
+i
+Q
 "}
 (4,1,1) = {"
 a
-e
+C
 i
 k
 a
 a
 y
-a
+Q
 D
-G
+h
 a
 "}
 (5,1,1) = {"
 a
-e
+C
 h
 a
 n
@@ -397,25 +316,25 @@ s
 z
 a
 C
-H
+h
 a
 "}
 (6,1,1) = {"
 a
-e
+C
 i
 a
 o
 t
-z
+Y
 a
 C
-F
+i
 a
 "}
 (7,1,1) = {"
 a
-e
+C
 h
 a
 P
@@ -423,25 +342,25 @@ Z
 z
 a
 C
-G
+h
 a
 "}
 (8,1,1) = {"
 a
-e
+C
 i
 k
 a
 a
 y
-a
+Q
 C
-F
+i
 a
 "}
 (9,1,1) = {"
 a
-d
+D
 h
 a
 l
@@ -449,12 +368,12 @@ u
 x
 a
 D
-G
-a
+h
+Q
 "}
 (10,1,1) = {"
-a
-f
+Q
+p
 j
 a
 p
@@ -467,7 +386,6 @@ a
 "}
 (11,1,1) = {"
 a
-b
 a
 a
 a
@@ -475,6 +393,7 @@ a
 a
 a
 a
-b
+a
+a
 a
 "}

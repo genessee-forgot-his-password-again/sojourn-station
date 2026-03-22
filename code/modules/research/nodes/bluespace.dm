@@ -107,7 +107,9 @@
 
 	unlocks_designs = list(	/datum/design/research/item/ano_scanner,
 							/datum/design/research/item/beacon_locator,
-							/datum/design/research/item/gps
+							/datum/design/research/item/gps,
+							/datum/design/research/item/omnitranslator_handheld,
+							/datum/design/research/item/omnitranslator_earpiece
 							)
 
 /datum/technology/bluespace_shield
@@ -205,6 +207,25 @@
 							/datum/design/research/item/oresatchel_holding,
 							/datum/design/research/item/robot_upgrade/satchel_of_holding_for_borgs
 						    )
+
+/datum/technology/bluespace_ammo
+	name = "Bluespace Ammunition"
+	desc = "Application of the bluespace in combat."
+	tech_type = RESEARCH_BLUESPACE
+
+	x = 0.3
+	y = 0.9
+	icon = "submachinegun"
+
+	required_technologies = list()
+	required_tech_levels = list(RESEARCH_BLUESPACE = 7, RESEARCH_COMBAT = 10)
+	cost = 2500
+
+	unlocks_designs = list(	/datum/design/research/item/ammo/bluespace_257,
+							/datum/design/research/item/ammo/bluespace_75,
+							/datum/design/research/item/ammo/bluespace_408
+						    )
+
 
 /*
 /datum/technology/bluespace_rped

@@ -157,16 +157,17 @@
 	..()
 	return
 
-/obj/machinery/bot/mulebot/bullet_act()
-	if(prob(50) && !isnull(load))
-		unload(0)
-	if(prob(25))
-		src.visible_message(SPAN_WARNING("Something shorts out inside [src]!"))
-		var/index = 1<< (rand(0,9))
-		if(wires & index)
-			wires &= ~index
-		else
-			wires |= index
+/obj/machinery/bot/mulebot/bullet_act(var/obj/item/projectile/P)
+	if (!(P.testing))
+		if(prob(50) && !isnull(load))
+			unload(0)
+		if(prob(25))
+			src.visible_message(SPAN_WARNING("Something shorts out inside [src]!"))
+			var/index = 1<< (rand(0,9))
+			if(wires & index)
+				wires &= ~index
+			else
+				wires |= index
 	..()
 
 
@@ -243,7 +244,7 @@
 		else
 			dat += "The bot is in maintenance mode and cannot be controlled.<BR>"
 
-	user << browse("<HEAD><TITLE>Mulebot [suffix ? "([suffix])" : ""]</TITLE></HEAD>[dat]", "window=mulebot;size=350x500")
+	user << browse(HTML_SKELETON_TITLE("Mulebot [suffix ? "([suffix])" : ""]",dat), "window=mulebot;size=350x500")
 	onclose(user, "mulebot")
 	return
 

@@ -4,7 +4,7 @@
 	nanomodule_path = /datum/nano_module/supermatter_monitor/
 	program_icon_state = "smmon_0"
 	program_key_state = "tech_key"
-	program_menu_icon = "notice"
+	program_menu_icon = "radiation"
 	extended_desc = "This program connects to specially calibrated supermatter sensors to provide information on the status of supermatter-based engines."
 	ui_header = "smmon_0.gif"
 	required_access = access_engine
@@ -59,7 +59,7 @@
 	for(var/obj/machinery/power/supermatter/S in supermatters)
 		. = max(., S.get_status())
 
-/datum/nano_module/supermatter_monitor/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS, datum/topic_state/state = GLOB.default_state)
+/datum/nano_module/supermatter_monitor/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS, datum/nano_topic_state/state = GLOB.default_state)
 	var/list/data = host.initial_data()
 	if(istype(active))
 		var/turf/T = get_turf(active)

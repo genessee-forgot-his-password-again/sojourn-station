@@ -1,18 +1,19 @@
 //Fuhrer roach is a colossal, slow moving leader
-/mob/living/carbon/superior_animal/roach/fuhrer
+/mob/living/carbon/superior/roach/fuhrer
 	name = "Fuhrer Roach"
 	desc = "A glorious leader of cockroaches. Literally Hitler."
 	icon_state = "fuhrer"
 
 	turns_per_move = 4
-	maxHealth = 200
-	health = 200
+	maxHealth = 125 * ROACH_HEALTH_MOD
+	health = 125 * ROACH_HEALTH_MOD
 
 	knockdown_odds = 5
 	melee_damage_lower = 15
 	melee_damage_upper = 30
 	move_to_delay = 8
 	mob_size = MOB_MEDIUM
+	get_stat_modifier = TRUE
 	var/distress_level = 0
 	var/distress_calls = 1 //Each fuhrer can only call for help once in its life
 	var/retreat_calls = 1 //Can call for retreat once too
@@ -21,22 +22,26 @@
 
 	flash_resistances = 5 //half stuns by flash, so we can still get up and be in the fight!
 
-	armor = list(melee = 15, bullet = 15, energy = 5, bomb = 5, bio = 20, rad = 0, agony = 0)
+	armor = list(melee = 3, bullet = 1, energy = 0, bomb = 5, bio = 20, rad = 0, agony = 0)
+	armor_divisor = 1.25
 
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/roachmeat/fuhrer
+	meat_type = /obj/item/reagent_containers/snacks/meat/roachmeat/fuhrer
 	meat_amount = 6
 
 	sanity_damage = 1
 
 	inherent_mutations = list(MUTATION_ROACH_BLOOD, MUTATION_ROACH_FRIEND, MUTATION_DEAF, MUTATION_TOURETTES, MUTATION_EPILEPSY)
+	fancy_attack_shading = "#FFFFED"
+	research_value = 150
+	hierarchy = 5
 
 
-
-/mob/living/carbon/superior_animal/roach/fuhrer/bullet_act()
+/mob/living/carbon/superior/roach/fuhrer/bullet_act(var/obj/item/projectile/P)
 	.=..()
-	distress_call()
+	if (!(P.testing))
+		distress_call()
 
-/mob/living/carbon/superior_animal/roach/fuhrer/attackby()
+/mob/living/carbon/superior/roach/fuhrer/attackby()
 	.=..()
 	distress_call()
 
@@ -48,7 +53,7 @@ flood into this room and surrounding ones.
 
 Each leader can only call reinforcements once in its life. But it can also sound an evacuation once. If it has no
 reinforcements left it will attempt to evacuate*/
-/mob/living/carbon/superior_animal/roach/fuhrer/proc/distress_call()
+/mob/living/carbon/superior/roach/fuhrer/proc/distress_call()
 	if(stat != CONSCIOUS) // if the roach is conscious
 		return
 
@@ -89,9 +94,6 @@ reinforcements left it will attempt to evacuate*/
 			for (var/obj/structure/burrow/B in find_nearby_burrows())
 				B.distress(TRUE)
 
-
-
-
 		//If no distress calls available, sound a retreat instead
 		else if (retreat_calls)
 			retreat_calls --
@@ -105,5 +107,5 @@ reinforcements left it will attempt to evacuate*/
 				B.evacuate()
 
 // Fuhrers won't slip over on water or soap.
-/mob/living/carbon/superior_animal/roach/fuhrer/slip(var/slipped_on,stun_duration=8)
+/mob/living/carbon/superior/roach/fuhrer/slip(var/slipped_on,stun_duration=8)
 	return FALSE

@@ -15,6 +15,9 @@
 	)
 	related_stats = list(STAT_MEC, STAT_COG)
 
+/datum/craft_recipe/machinery/wall
+	flags = null
+
 /datum/craft_recipe/machinery/wall/air_alarm
 	name = "air alarm frame"
 	result = /obj/item/frame/air_alarm
@@ -100,6 +103,16 @@
 /datum/craft_recipe/machinery/computer/modularpda
 	name = "modular frame, pda"
 	result = /obj/item/modular_computer/pda
+	icon_state = "electronic"
+	time = 200
+	steps = list(
+		list(CRAFT_MATERIAL, 3, MATERIAL_STEEL),
+		list(CRAFT_MATERIAL, 1, MATERIAL_GLASS)
+	)
+
+/datum/craft_recipe/machinery/computer/modularwrist
+	name = "modular frame, wristmounted"
+	result = /obj/item/modular_computer/wrist
 	icon_state = "electronic"
 	time = 200
 	steps = list(

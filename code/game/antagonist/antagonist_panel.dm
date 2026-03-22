@@ -46,7 +46,7 @@
 		dat += "<br><a href='?src=\ref[src];obj_announce=1'>\[announce objectives\]</a>"
 	dat += "<br><a href='?src=\ref[src];obj_add=1'>\[add\]</a>"
 	dat += "</td></tr>"
-	return dat
+	return HTML_SKELETON(dat)
 
 /datum/antagonist/proc/antagonist_panel()
 	usr << browse(get_panel_entry(),"window=\ref[src]antag")
@@ -169,7 +169,7 @@
 			if(!M.client)      dat += " <i>(logged out)</i>"
 			if(M.stat == DEAD) dat += " <b><font color=red>(DEAD)</font></b>"
 			dat += "</td>"
-			dat += "<td>\[<A href='?src=\ref[caller];priv_msg=\ref[M]'>PM</A>\]\[<A href='?src=\ref[caller];traitor=\ref[M]'>TP</A>\]</td>"
+			dat += "<td>\[<A href='?src=\ref[caller];priv_msg=\ref[M]'>PM</A>\]\[<A href='?src=\ref[caller];contractor=\ref[M]'>TP</A>\]</td>"
 		else
 			dat += "<td><i>Mob not found/([player.key])!</i></td>"
 		dat += "</tr>"

@@ -15,25 +15,95 @@
 	var/mob/pulledby = null
 	var/item_state = null // Used to specify the item state for the on-mob over-lays.
 	var/inertia_dir = 0
+	///Holds information about any movement loops currently running/waiting to run on the movable. Lazy, will be null if nothing's going on
+	var/datum/movement_packet/move_packet
 	var/can_anchor = TRUE
 	var/cant_be_pulled = FALSE //Used for things that cant be anchored, but also shouldnt be pullable
+
+	/// Used in SSmove_manager.move_to. Set to world.time whenever a walk is called that uses temporary_walk = TRUE. Prevents walks that dont respect the override from conflicting with eachother.
+	var/walk_to_initial_time = 0
+
+	/// Used in SSmove_manager.move_to. If something with an override is called, it will set it to world.time + the value of override in the proc, and any walks that respect the override after will return until world.time is more than the var.
+	var/walk_override_timer = 0
 
 	//spawn_values
 	var/price_tag = 0 // The item price in credits. atom/movable so we can also assign a price to animals and other thing.
 	var/surplus_tag = FALSE //If true, attempting to export this will net you a greatly reduced amount of credits, but we don't want to affect the actual price tag for selling to others.
+	var/spawn_tags
 
-/atom/movable/Del()
-	if(isnull(gc_destroyed) && loc)
-		testing("GC: -- [type] was deleted via del() rather than qdel() --")
-		crash_with("GC: -- [type] was deleted via del() rather than qdel() --") // stick a stack trace in the runtime logs
-//	else if(isnull(gcDestroyed))
-//		testing("GC: [type] was deleted via GC without qdel()") //Not really a huge issue but from now on, please qdel()
-//	else
-//		testing("GC: [type] was deleted via GC with qdel()")
-	..()
+	/**
+	 * Associative list. Key should be a typepath of /datum/stat_modifier, and the value should be a weight for use in prob.
+	 *
+	 * NOTE: Arguments may be passed to certain modifiers. To do this, change the value to this: list(prob, ...) where prob is the probability and ... are any arguments you want passed.
+	**/
+	var/list/allowed_stat_modifiers = null
+
+	/// List of all instances of /datum/stat_modifier that have been applied in /datum/stat_modifier/proc/apply_to(). Should never have more instances of one typepath than that typepath's maximum_instances var.
+	var/list/current_stat_modifiers = null
+
+	/// List of all stored prefixes. Used for stat_modifiers, on everything but tools and guns, which use them for attachments.
+	var/list/name_prefixes = null
+
+	var/get_stat_modifier = FALSE
+	var/times_to_get_stat_modifiers = 1
+	var/get_prefix = TRUE
+
+	var/fancy_glide = FALSE //Max is 6
+	var/fancy_glide_colour
+	var/fancy_glide_custom_frames = FALSE
+
+/atom/movable/Initialize()
+	. = ..()
+	init_stat_modifiers()
+
+/atom/movable/proc/init_stat_modifiers()
+	if(get_stat_modifier)
+		for(var/i in 0 to (times_to_get_stat_modifiers - 1))
+			var/list/excavated = list()
+			for(var/entry in allowed_stat_modifiers)
+				var/to_add = allowed_stat_modifiers[entry]
+				if(islist(allowed_stat_modifiers[entry]))
+					var/list/entrylist = allowed_stat_modifiers[entry]
+					to_add = entrylist[1]
+				excavated[entry] = to_add
+
+			var/list/successful_rolls = list()
+			for(var/typepath in excavated)
+				if(prob(excavated[typepath]))
+					successful_rolls += typepath
+
+			var/picked
+			if(LAZYLEN(successful_rolls))
+				picked = pick(successful_rolls)
+
+			if(isnull(picked))
+				continue
+
+			var/list/arguments
+			if(islist(allowed_stat_modifiers[picked]))
+				var/list/nested_list = allowed_stat_modifiers[picked]
+				if(length(nested_list) > 1)
+					arguments = nested_list.Copy(2)
+
+			var/datum/stat_modifier/chosen_modifier = new picked
+			if(!(chosen_modifier.valid_check(src, arguments)))
+				qdel(chosen_modifier)
 
 /atom/movable/Destroy()
+	var/turf/T = loc
+	if(opacity && istype(T))
+		T.reconsider_lights()
+
+	if(move_packet)
+		SSmove_manager.stop_looping(src) // not 1:1 with tg movess, niko todo: replace
+		if(!QDELETED(move_packet))
+			qdel(move_packet)
+		move_packet = null
+
+	QDEL_LAZYLIST(current_stat_modifiers)
+
 	. = ..()
+
 	for(var/atom/movable/AM in contents)
 		qdel(AM)
 
@@ -45,6 +115,24 @@
 		if (pulledby.pulling == src)
 			pulledby.pulling = null
 		pulledby = null
+
+	for (var/datum/movement_handler/handler in movement_handlers)
+		handler.host = null
+		movement_handlers -= handler //likely unneeded but just in case
+
+/atom/movable/examine(mob/user, distance, infix, suffix)
+	. = ..()
+
+//Soj Edits
+	var/list/descriptions_to_print = list()
+	// `in null` is fine, it just won't iterate
+	for(var/datum/stat_modifier/mod in current_stat_modifiers)
+		if(mod.description)
+			if(!(mod.description in descriptions_to_print))
+				descriptions_to_print += mod.description
+	for(var/description in descriptions_to_print)
+		to_chat(user, SPAN_NOTICE(description))
+
 
 /atom/movable/Bump(var/atom/A, yes)
 	if(src.throwing)
@@ -329,7 +417,7 @@
 	// To prevent issues, diagonal movements are broken up into two cardinal movements.
 
 	// Is this a diagonal movement?
-	SEND_SIGNAL(src, COMSIG_MOVABLE_PREMOVE, src)
+	LEGACY_SEND_SIGNAL(src, COMSIG_MOVABLE_PREMOVE, src)
 	if (Dir & (Dir - 1))
 		if (Dir & NORTH)
 			if (Dir & EAST)
@@ -337,31 +425,39 @@
 				// Pretty much exactly the same for all the other cases here.
 				if (step(src, NORTH))
 					step(src, EAST)
+					dir = NORTHEAST
 				else
 					if (step(src, EAST))
 						step(src, NORTH)
+						dir = NORTHEAST
 			else
 				if (Dir & WEST)
 					if (step(src, NORTH))
 						step(src, WEST)
+						dir = NORTHWEST
 					else
 						if (step(src, WEST))
 							step(src, NORTH)
+							dir = NORTHWEST
 		else
 			if (Dir & SOUTH)
 				if (Dir & EAST)
 					if (step(src, SOUTH))
 						step(src, EAST)
+						dir = SOUTHEAST
 					else
 						if (step(src, EAST))
 							step(src, SOUTH)
+							dir = SOUTHEAST
 				else
 					if (Dir & WEST)
 						if (step(src, SOUTH))
 							step(src, WEST)
+							dir = SOUTHWEST
 						else
 							if (step(src, WEST))
 								step(src, SOUTH)
+								dir = SOUTHWEST
 	else
 		var/atom/oldloc = src.loc
 		var/olddir = dir //we can't override this without sacrificing the rest of movable/New()
@@ -381,10 +477,14 @@
 
 		// Only update plane if we're located on map
 		if(isturf(loc))
+
 			// if we wasn't on map OR our Z coord was changed
 			if( !isturf(oldloc) || (get_z(loc) != get_z(oldloc)) )
 				onTransitZ(get_z(oldloc, get_z(loc)))
 				update_plane()
+
+			if(fancy_glide && oldloc)
+				warpping_affect(oldloc)
 
 		SEND_SIGNAL(src, COMSIG_MOVABLE_MOVED, oldloc, loc)
 
@@ -395,7 +495,7 @@
 
 //We're changing zlevel
 /atom/movable/proc/onTransitZ(old_z, new_z)//uncomment when something is receiving this signal
-	/*SEND_SIGNAL(src, COMSIG_MOVABLE_Z_CHANGED, old_z, new_z)
+	/*LEGACY_SEND_SIGNAL(src, COMSIG_MOVABLE_Z_CHANGED, old_z, new_z)
 	for(var/atom/movable/AM in src) // Notify contents of Z-transition. This can be overridden IF we know the items contents do not care.
 		AM.onTransitZ(old_z,new_z)*/
 
@@ -408,5 +508,99 @@
 		registered_z = new_z
 // if this returns true, interaction to turf will be redirected to src instead
 
+///Sets the anchored var and returns if it was sucessfully changed or not. Port from eris since I was getting problems currently only used for the bioreactor
+/atom/movable/proc/bio_anchored(anchorvalue)
+	SHOULD_CALL_PARENT(TRUE)
+	if(anchored == anchorvalue || !can_anchor)
+		return FALSE
+	anchored = anchorvalue
+	LEGACY_SEND_SIGNAL(src, COMSIG_ATOM_UNFASTEN, anchored)
+	. = TRUE
+
 /atom/movable/proc/preventsTurfInteractions()
 	return FALSE
+
+/// First resets the name of the mob to the initial name it had, then adds each prefix in a random order.
+/atom/movable/proc/update_prefixes()
+	name = initial(src.name) //reset the name so we can accurately re-add prefixes without fear of double prefixes
+
+	for (var/prefix in name_prefixes)
+		name = "[prefix] [name]"
+
+//It came to me in a dream, not a 100% sure this can be improved
+/atom/movable/proc/warpping_affect(olden_loc)
+	if(fancy_glide && move_speed > 0 && olden_loc)
+		var/warps //Spefically needs to be zero or more for maths reasons
+		for(warps = 0, warps < fancy_glide, warps++)
+			if(warps > 6)
+				break //Dont do more then 6 as it gets laggy as well as blurry
+			if(!QDELETED(src)) //If we are somehow moving well deleted dont do this
+				var/assumed_dir = dir
+				//Humans can forcefully set face regardless of direction, this ensures that we do the affect in the correct diretion
+				if(ishuman(src))
+					var/mob/living/carbon/human/H = src
+					assumed_dir = H.momentum_dir ?  H.momentum_dir : dir
+				if(IS_CARDINAL(assumed_dir)) //If we are carnial we need to run faster to keep up
+					addtimer(CALLBACK(src, PROC_REF(spawn_warpping_affect), olden_loc, warps), (50 MILLISECONDS * warps))
+				else
+					//We are slowed down by moving diagnally, this timer matches that
+					addtimer(CALLBACK(src, PROC_REF(spawn_warpping_affect), olden_loc, warps), (125 MILLISECONDS * warps))
+
+/atom/movable/proc/spawn_warpping_affect(olden_loc, warps)
+	if(!olden_loc)
+		return
+	//This lets us turn a low aplha icon into a fuller brightness evenly
+	var/aplha_adder = 255 / min(fancy_glide, 6)
+	//This slowly moves us pixel by pixel for a smooth transition, evenly
+	var/offsetter = 32 / min(fancy_glide, 6)
+	//Snowflake temp_visual for are wierdly required timers and lack of spinning
+	var/obj/effect/temp_visual/shorter/S = new(get_turf(olden_loc))
+	var/directional = dir
+	//The magic, this makes it so are image are 1:1 and even reflect it properly if changing icons a lot
+	S.appearance = appearance
+	//Untested, if issues then cry. - Trilby
+	if(fancy_glide_custom_frames)
+		//I.e roach_2 roach_3, note that we never start at 0, 1->6 i.e 6 frames
+		S.appearance = null //So we can override the icon_state and icon
+		S.icon_state = "[icon_state]_[warps]"
+		S.icon = icon
+	//If we set a new colour, use that otherwise use current objects
+	S.color = fancy_glide_colour ? fancy_glide_colour : color
+	S.alpha = aplha_adder * warps
+	S.set_plane(-2) //Dont hide us!
+	S.dir = directional //Helps with keeping us the correct way
+	//Stagger out the removal of the shadows for a cleaner look
+	QDEL_IN(S, 2 + warps)
+
+	//Dont let us click these
+	S.name = null
+	S.desc = null
+	S.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+
+	//Humans can forcefully set face regardless of direction, this ensures that we do the affect in the correct diretion
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		S.dir = H.momentum_dir ?  H.momentum_dir : directional
+
+	switch(directional)
+		if(NORTH)
+			S.pixel_y = 6 + offsetter * warps
+		if(SOUTH)
+			S.pixel_y = -6 + -offsetter * warps
+		if(EAST)
+			S.pixel_x = 6 + offsetter * warps
+		if(WEST)
+			S.pixel_x = -6 + -offsetter * warps
+		if(NORTHEAST)
+			S.pixel_x = 6 + offsetter * warps
+			S.pixel_y = 6 + offsetter * warps
+		if(NORTHWEST)
+			S.pixel_x = -6 + -offsetter * warps
+			S.pixel_y = 6 + offsetter * warps
+		if(SOUTHEAST)
+			S.pixel_x = 6 + offsetter * warps
+			S.pixel_y = -6 + -offsetter * warps
+		if(SOUTHWEST)
+			S.pixel_x = -6 + -offsetter * warps
+			S.pixel_y = -6 + -offsetter * warps
+

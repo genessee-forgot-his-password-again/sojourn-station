@@ -22,21 +22,17 @@
 	suitable_cell = /obj/item/cell/large
 	var/obj/item/cell/cell_type = null
 	cell = null
-
+	var/paddle_type = /obj/item/shockpaddles/linked
 	var/obj/item/shockpaddles/linked/paddles
 
 /obj/item/device/defib_kit/New() //starts without a cell for rnd
 	..()
-	if(ispath(paddles))
-		paddles = new paddles(src, src)
-	else
-		paddles = new(src, src)
+
+	paddles = new paddle_type(src, src)
 
 	if(ispath(cell_type, suitable_cell))
 		cell = new cell_type(src)
 
-	sleep(10)
-	update_icon()
 
 /obj/item/device/defib_kit/Initialize(mapload) //updates mapped items
 	..()
@@ -197,7 +193,7 @@
 /obj/item/device/defib_kit/compact/combat
 	name = "combat defibrillator"
 	desc = "A belt-equipped blood-red defibrillator that can be rapidly deployed. Does not have the restrictions or safeties of conventional defibrillators and can revive through space suits."
-	paddles = /obj/item/shockpaddles/linked/combat
+	paddle_type = /obj/item/shockpaddles/linked/combat
 
 	oxygain = 40
 
@@ -208,7 +204,7 @@
 /obj/item/device/defib_kit/compact/combat/adv
 	name = "advanced defibrillator"
 	desc = "A belt-equipped SI branded defibrillator that can be rapidly deployed. Does not have the restrictions or safeties of conventional defibrillators and can revive through space suits."
-	paddles = /obj/item/shockpaddles/linked/combat/advanced
+	paddle_type = /obj/item/shockpaddles/linked/combat/advanced
 	icon_state = "advdefibcompact"
 
 	oxygain = 40
@@ -329,7 +325,10 @@
 	var/deadtime = world.time - H.timeofdeath
 	if (deadtime > DEFIB_TIME_LIMIT && !H.isSynthetic())
 		return "buzzes: \"Resuscitation failed - Excessive neural degeneration. Further attempts futile.\""
-
+/* commenting this out for now due to it seeming to be a bit *too* sensitive.
+	if(H.getBrainLoss() >= 200)
+		return "buzzes: \"Resuscitation failed - Massive neural damage. Further attempts futile.\""
+*/
 	H.updatehealth()
 
 	if(H.isSynthetic())
@@ -378,7 +377,7 @@
 	if(!H.should_have_process(OP_HEART))
 		return FALSE
 
-	var/obj/item/organ/internal/heart/heart = H.random_organ_by_process(OP_HEART)
+	var/obj/item/organ/internal/vital/heart/heart = H.random_organ_by_process(OP_HEART)
 	if(!heart)
 		return TRUE
 
@@ -477,7 +476,7 @@
 	H.adjustOxyLoss(-defib_oxygain())
 
 	if(H.isSynthetic())
-		H.adjustToxLoss(-H.getToxLoss())
+		H.setToxLoss(0)
 
 	H.apply_damage(burn_damage_amt, BURN, BP_TORSO)
 
@@ -491,6 +490,9 @@
 
 	make_announcement("pings, \"Resuscitation successful.\"", "notice")
 	playsound(get_turf(src), 'sound/machines/defib_success.ogg', 50, 0)
+
+	H.learnt_tasks.attempt_add_task_mastery(/datum/task_master/task/return_to_sender, "RETURN_TO_SENDER", skill_gained = 1, learner = H)
+
 
 	log_and_message_admins("used \a [src] to revive [key_name(H)].")
 
@@ -529,7 +531,7 @@
 	H.stun_effect_act(2, 120, target_zone)
 	var/burn_damage = H.electrocute_act(burn_damage_amt*2, src, def_zone = target_zone)
 	if(burn_damage > 15 && H.can_feel_pain())
-		H.emote("scream")
+		H.emote("painscream")
 
 	log_attack("[user.name]/([user.ckey]) shocked [H.name] ([H.ckey]) using [name]")
 
@@ -551,96 +553,49 @@
 	M.updatehealth()
 	apply_brain_damage(M, deadtime)
 
-	if(!M.stats.getPerk(/datum/perk/rezsickness))
-		var/rngStatRemoved
-		switch(M.stats.getStat(STAT_MEC))
-			if(0 to 40)
-				rngStatRemoved = pick(1,2,3,4,5,6,7,8)
-				M.stats.changeStat(STAT_MEC, -rngStatRemoved)
-			if(40 to 60)
-				rngStatRemoved = pick(8,9,10,11,12)
-				M.stats.changeStat(STAT_MEC, -rngStatRemoved)
-			if(60 to INFINITY)
-				rngStatRemoved = pick(12,13,14,15,16,17,18,19,20)
-				M.stats.changeStat(STAT_MEC, -rngStatRemoved)
-		log_and_message_admins("Removed [-rngStatRemoved] to the MEC stat of [M]")
-		switch(M.stats.getStat(STAT_BIO))
-			if(0 to 40)
-				rngStatRemoved = pick(1,2,3,4,5,6,7,8)
-				M.stats.changeStat(STAT_BIO, -rngStatRemoved)
-			if(40 to 60)
-				rngStatRemoved = pick(8,9,10,11,12)
-				M.stats.changeStat(STAT_BIO, -rngStatRemoved)
-			if(60 to INFINITY)
-				rngStatRemoved = pick(12,13,14,15,16,17,18,19,20)
-				M.stats.changeStat(STAT_BIO, -rngStatRemoved)
-		log_and_message_admins("Removed [-rngStatRemoved] to the BIO stat of [M]")
-		switch(M.stats.getStat(STAT_COG))
-			if(0 to 40)
-				rngStatRemoved = pick(1,2,3,4,5,6,7,8)
-				M.stats.changeStat(STAT_COG, -rngStatRemoved)
-			if(40 to 60)
-				rngStatRemoved = pick(8,9,10,11,12)
-				M.stats.changeStat(STAT_COG, -rngStatRemoved)
-			if(60 to INFINITY)
-				rngStatRemoved = pick(12,13,14,15,16,17,18,19,20)
-				M.stats.changeStat(STAT_COG, -rngStatRemoved)
-		log_and_message_admins("Removed [-rngStatRemoved] to the COG stat of [M]")
-		switch(M.stats.getStat(STAT_ROB))
-			if(0 to 40)
-				rngStatRemoved = pick(1,2,3,4,5,6,7,8)
-				M.stats.changeStat(STAT_ROB, -rngStatRemoved)
-			if(40 to 60)
-				rngStatRemoved = pick(8,9,10,11,12)
-				M.stats.changeStat(STAT_ROB, -rngStatRemoved)
-			if(60 to INFINITY)
-				rngStatRemoved = pick(12,13,14,15,16,17,18,19,20)
-				M.stats.changeStat(STAT_ROB, -rngStatRemoved)
-		log_and_message_admins("Removed [-rngStatRemoved] to the ROB stat of [M]")
-		switch(M.stats.getStat(STAT_TGH))
-			if(0 to 40)
-				rngStatRemoved = pick(1,2,3,4,5,6,7,8)
-				M.stats.changeStat(STAT_TGH, -rngStatRemoved)
-			if(40 to 60)
-				rngStatRemoved = pick(8,9,10,11,12)
-				M.stats.changeStat(STAT_TGH, -rngStatRemoved)
-			if(60 to INFINITY)
-				rngStatRemoved = pick(12,13,14,15,16,17,18,19,20)
-				M.stats.changeStat(STAT_TGH, -rngStatRemoved)
-		log_and_message_admins("Removed [-rngStatRemoved] to the TGH stat of [M]")
-		switch(M.stats.getStat(STAT_VIG))
-			if(0 to 40)
-				rngStatRemoved = pick(1,2,3,4,5,6,7,8)
-				M.stats.changeStat(STAT_VIG, -rngStatRemoved)
-			if(40 to 60)
-				rngStatRemoved = pick(8,9,10,11,12)
-				M.stats.changeStat(STAT_VIG, -rngStatRemoved)
-			if(60 to INFINITY)
-				rngStatRemoved = pick(12,13,14,15,16,17,18,19,20)
-				M.stats.changeStat(STAT_VIG, -rngStatRemoved)
-		log_and_message_admins("Removed [-rngStatRemoved] to the VIG stat of [M]")
+	if(M.stats.getPerk(PERK_REZ_SICKNESS) || M.stats.getPerk(PERK_REZ_SICKNESS_SEVERE) || M.stats.getPerk(PERK_REZ_SICKNESS_FATAL))
+		log_and_message_admins("[M] already had rez sickness! Medical Malpractice or Deathwish?")
+		return
 
 	if(!advanced_pads)
+		stat_changes(M)
+
+	if(!M.stats.getPerk(PERK_REZ_SICKNESS) && !M.stats.getPerk(PERK_REZ_SICKNESS_SEVERE) && !M.stats.getPerk(PERK_REZ_SICKNESS_FATAL))
+		M.stats.addPerk(PERK_REZ_SICKNESS)
+		log_and_message_admins("Added mild rez sickness to [M]. Do to no Rez Sickness being found somehow. This shoudnt be possable!")
+
+/obj/item/shockpaddles/proc/stat_changes(mob/living/carbon/human/M) //This revives the mob
+	for(var/stat_to_change in ALL_STATS_FOR_DEFIBS)
+		var/rngStatRemoved
+		switch(M.stats.getStat(stat_to_change))
+			if(0 to 40)
+				rngStatRemoved = rand(1,8)
+			if(40 to 60)
+				rngStatRemoved = rand(8,12)
+			if(60 to INFINITY)
+				rngStatRemoved = rand(12,20)
+
+		M.stats.changeStat(stat_to_change, -rngStatRemoved)
+		log_and_message_admins("Removed [-rngStatRemoved] to the [stat_to_change] stat of [M.real_name]")
+
+	if(!M.stats.getPerk(PERK_REZ_SICKNESS) && !M.stats.getPerk(PERK_REZ_SICKNESS_SEVERE) && !M.stats.getPerk(PERK_REZ_SICKNESS_FATAL))
 		switch(M.stats.getStat(STAT_TGH))
-			if(-200 to 40)
-				M.stats.addPerk(/datum/perk/rezsickness/severe/fatal)
+			if(-1200 to 40)
+				M.stats.addPerk(PERK_REZ_SICKNESS_FATAL)
 				log_and_message_admins("Added fatal rez sickness to [M].")
 			if(40 to 60)
-				M.stats.addPerk(/datum/perk/rezsickness/severe)
+				M.stats.addPerk(PERK_REZ_SICKNESS_SEVERE)
 				log_and_message_admins("Added severe rez sickness to [M].")
 			if(60 to INFINITY)
-				M.stats.addPerk(/datum/perk/rezsickness)
+				M.stats.addPerk(PERK_REZ_SICKNESS)
 				log_and_message_admins("Added mild rez sickness to [M].")
-	else
-		M.stats.addPerk(/datum/perk/rezsickness)
-		log_and_message_admins("Added mild rez sickness to [M].")
 
 /obj/item/shockpaddles/proc/apply_brain_damage(mob/living/carbon/human/H, var/deadtime)
 	if(deadtime < DEFIB_TIME_LOSS) return
 
 	if(!H.should_have_process(BP_BRAIN)) return //no brain
 
-	var/obj/item/organ/internal/brain/brain = H.random_organ_by_process(BP_BRAIN)
+	var/obj/item/organ/internal/vital/brain/brain = H.random_organ_by_process(BP_BRAIN)
 	if(!brain) return //no brain
 
 	var/brain_damage = CLAMP((deadtime - DEFIB_TIME_LOSS)/(DEFIB_TIME_LIMIT - DEFIB_TIME_LOSS)*brain.max_damage, H.getBrainLoss(), brain.max_damage)
@@ -679,9 +634,11 @@
 	desc = "A pair of advanced shockpaddles powered by a robot's internal power cell, able to penetrate thick clothing."
 	chargecost = 50
 	combat = 1
+	use_on_synthetic = 0
 	icon_state = "defibpaddles0"
 	item_state = "defibpaddles0"
 	cooldowntime = (3 SECONDS)
+	advanced_pads = TRUE
 
 /obj/item/shockpaddles/robot/check_charge(var/charge_amt)
 	if(isrobot(src.loc))
@@ -826,7 +783,7 @@
 	chargetime = (10)
 
 /* From the Bay port, this doesn't seem to have a sprite.
-/obj/item/shockpaddles/standalone/traitor
+/obj/item/shockpaddles/standalone/contractor
 	name = "defibrillator paddles"
 	desc = "A pair of unusual looking paddles powered by an experimental miniaturized reactor. It possesses both the ability to penetrate armor and to deliver powerful shocks."
 	icon = 'icons/obj/weapons.dmi'
@@ -840,11 +797,11 @@
 //FBP Defibs
 /obj/item/device/defib_kit/jumper_kit
 	name = "jumper cable kit"
-	desc = "A device that delivers powerful shocks to detachable jumper cables that are capable of reviving full body prosthetics."
+	desc = "A device that delivers powerful shocks to detachable jumper cables that are capable of reviving prosthetics chests."
 	icon_state = "jumperunit"
 	item_state = "defibunit"
 //	item_state = "jumperunit"
-	paddles = /obj/item/shockpaddles/linked/jumper
+	paddle_type = /obj/item/shockpaddles/linked/jumper
 
 /obj/item/device/defib_kit/jumper_kit/loaded
 	cell_type = /obj/item/cell/large

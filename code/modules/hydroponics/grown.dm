@@ -1,6 +1,6 @@
 //Grown foods.
-/obj/item/reagent_containers/food/snacks/grown
-	name = "fruit"
+/obj/item/reagent_containers/snacks/grown
+	name = "any grown plant"
 	matter = list(MATERIAL_BIOMATTER = 5)
 	icon = 'icons/obj/hydroponics_products.dmi'
 	icon_state = "blank"
@@ -13,7 +13,7 @@
 	var/potency = -1
 
 
-/obj/item/reagent_containers/food/snacks/grown/New(newloc,planttype)
+/obj/item/reagent_containers/snacks/grown/New(newloc,planttype,potency_plus)
 
 	..()
 	if(!dried_type)
@@ -50,7 +50,17 @@
 	if(!seed.chems)
 		return
 
-	potency = seed.get_trait(TRAIT_POTENCY)
+	potency = seed.get_trait(TRAIT_POTENCY) + potency_plus
+
+	var/chem_mult = 1
+	if(seed.get_trait(TRAIT_HARVEST_REPEAT))
+		chem_mult -= 0.25
+	if(seed.get_trait(TRAIT_JUICY))
+		chem_mult += 0.15
+		if(seed.get_trait(TRAIT_JUICY) == 2)
+			chem_mult += 0.10 //25% extra chems
+	if(seed.get_trait(TRAIT_CHEM_PRODUCTION))
+		chem_mult += 0.25
 
 	for(var/rid in seed.chems)
 		var/list/reagent_data = seed.chems[rid]
@@ -61,6 +71,8 @@
 				rtotal += round(potency/reagent_data[2])
 			if(rid == "nutriment")
 				data[seed.seed_name] = max(1,rtotal)
+			rtotal *= chem_mult
+			reagents.maximum_volume += max(1,rtotal)
 			reagents.add_reagent(rid,max(1,rtotal),data)
 	update_desc()
 	if(reagents.total_volume > 0)
@@ -72,10 +84,10 @@
 	if (seed.materials) matter = seed.materials.Copy()
 	if (seed.origin_tech) origin_tech = seed.origin_tech.Copy()
 
-/obj/item/reagent_containers/food/snacks/grown/New()
+/obj/item/reagent_containers/snacks/grown/New()
 	..()
 
-/obj/item/reagent_containers/food/snacks/grown/proc/update_desc()
+/obj/item/reagent_containers/snacks/grown/proc/update_desc()
 
 	if(!seed)
 		return
@@ -112,6 +124,8 @@
 			descriptors |= "hallucinogenic"
 		if(reagents.has_reagent("bicaridine"))
 			descriptors |= "medicinal"
+		if(reagents.has_reagent("sanguinum"))
+			descriptors |= "metallic"
 		if(reagents.has_reagent(MATERIAL_GOLD))
 			descriptors |= "shiny"
 		if(reagents.has_reagent("lube"))
@@ -142,7 +156,7 @@
 		plant_controller.product_descs["[seed.uid]"] = desc
 	desc += ". Delicious! Probably."
 
-/obj/item/reagent_containers/food/snacks/grown/update_icon()
+/obj/item/reagent_containers/snacks/grown/update_icon()
 	if(!seed || !plant_controller || !plant_controller.plant_icon_cache)
 		return
 	cut_overlays()
@@ -162,7 +176,7 @@
 		plant_controller.plant_icon_cache[icon_key] = plant_icon
 	add_overlay(plant_icon)
 
-/obj/item/reagent_containers/food/snacks/grown/Crossed(var/mob/living/M)
+/obj/item/reagent_containers/snacks/grown/Crossed(var/mob/living/M)
 	if(seed && seed.get_trait(TRAIT_JUICY) == 2)
 		if(istype(M))
 
@@ -184,11 +198,11 @@
 			if(src) qdel(src)
 			return
 
-/obj/item/reagent_containers/food/snacks/grown/throw_impact(atom/hit_atom)
+/obj/item/reagent_containers/snacks/grown/throw_impact(atom/hit_atom)
 	if(seed) seed.thrown_at(src,hit_atom)
 	..()
 
-/obj/item/reagent_containers/food/snacks/grown/attackby(var/obj/item/W, var/mob/user)
+/obj/item/reagent_containers/snacks/grown/attackby(var/obj/item/W, var/mob/user)
 
 	if(seed)
 		if(seed.get_trait(TRAIT_PRODUCES_POWER) && istype(W, /obj/item/stack/cable_coil))
@@ -227,19 +241,36 @@
 							to_chat(user, "You add the newly-formed wood to the stack. It now contains [NG.amount] planks.")
 						qdel(src)
 					return
+				else if((QUALITY_CUTTING in W.tool_qualities) && !isnull(seed.chems["clothfiber"]))
+					if(W.use_tool(user, src, WORKTIME_FAST, QUALITY_CUTTING, FAILCHANCE_EASY,  required_stat = STAT_BIO))
+						user.show_message(SPAN_NOTICE("You make cloth out of \the [src]!"), 1)
+						var/flesh_colour = seed.get_trait(TRAIT_FLESH_COLOUR)
+						if(!flesh_colour) flesh_colour = seed.get_trait(TRAIT_PRODUCT_COLOUR)
+						for(var/i=0,i<2,i++)
+							var/obj/item/stack/material/cloth/NG = new (user.loc)
+							if(flesh_colour) NG.color = flesh_colour
+							for (var/obj/item/stack/material/cloth/G in user.loc)
+								if(G==NG)
+									continue
+								if(G.amount>=G.max_amount)
+									continue
+								G.attackby(NG, user)
+							to_chat(user, "You add the newly-made cloth to the stack. It now contains [NG.amount] bolts of cloth.")
+						qdel(src)
+					return
 				else if(!isnull(seed.chems["potato"]))
 					to_chat(user, "You slice \the [src] into sticks.")
-					new /obj/item/reagent_containers/food/snacks/rawsticks(get_turf(src))
+					new /obj/item/reagent_containers/snacks/rawsticks(get_turf(src))
 					qdel(src)
 					return
 				else if(!isnull(seed.chems["carrotjuice"]))
 					to_chat(user, "You slice \the [src] into sticks.")
-					new /obj/item/reagent_containers/food/snacks/carrotfries(get_turf(src))
+					new /obj/item/reagent_containers/snacks/carrotfries(get_turf(src))
 					qdel(src)
 					return
 				else if(!isnull(seed.chems["soymilk"]))
 					to_chat(user, "You roughly chop up \the [src].")
-					new /obj/item/reagent_containers/food/snacks/soydope(get_turf(src))
+					new /obj/item/reagent_containers/snacks/soydope(get_turf(src))
 					qdel(src)
 					return
 				else if(seed.get_trait(TRAIT_FLESH_COLOUR))
@@ -247,13 +278,13 @@
 					var/slices = rand(3,5)
 					var/reagents_to_transfer = round(reagents.total_volume/slices)
 					for(var/i=0; i<=slices; i++)
-						var/obj/item/reagent_containers/food/snacks/fruit_slice/F = new(get_turf(src),seed)
+						var/obj/item/reagent_containers/snacks/fruit_slice/F = new(get_turf(src),seed)
 						if(reagents_to_transfer) reagents.trans_to_obj(F,reagents_to_transfer)
 					qdel(src)
 					return
 	..()
 
-/obj/item/reagent_containers/food/snacks/grown/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone)
+/obj/item/reagent_containers/snacks/grown/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone)
 	. = ..()
 
 	if(seed && seed.get_trait(TRAIT_STINGS))
@@ -270,7 +301,7 @@
 				user.drop_from_inventory(src)
 			qdel(src)
 
-/obj/item/reagent_containers/food/snacks/grown/attack_self(mob/user as mob)
+/obj/item/reagent_containers/snacks/grown/attack_self(mob/user as mob)
 
 	if(!seed)
 		return
@@ -303,62 +334,27 @@
 		return
 
 	if(seed.get_trait(TRAIT_SPREAD) > 0)
-		to_chat(user, SPAN_NOTICE("You plant the [src.name]."))
-		new /obj/machinery/portable_atmospherics/hydroponics/soil/invisible(get_turf(user),src.seed)
-		qdel(src)
-		return
+		var/turf/current_turf = get_turf(user)
+		if(!locate(/obj/machinery/portable_atmospherics/hydroponics/soil/invisible) in current_turf.contents)	// Prevents infinite plant stacking
+			to_chat(user, SPAN_NOTICE("You plant the [src]."))
+			new /obj/machinery/portable_atmospherics/hydroponics/soil/invisible(current_turf, seed)
+			qdel(src)
 
-/obj/item/reagent_containers/food/snacks/grown/pre_pickup(mob/user)
-    if(!seed)
-        return FALSE
-    if(seed.get_trait(TRAIT_STINGS))
-        var/mob/living/carbon/human/H = user
-        if(istype(H) && H.gloves)
-            return  ..()
-        if(!reagents || reagents.total_volume <= 0)
-            return  ..()
-        reagents.remove_any(rand(1,3)) //Todo, make it actually remove the reagents the seed uses.
-        seed.do_thorns(H,src)
-        seed.do_sting(H,src,pick(BP_R_ARM, BP_L_ARM))
-    return ..()
+/obj/item/reagent_containers/snacks/grown/pre_pickup(mob/user)
+	if(!seed)
+		return FALSE
+	if(seed.get_trait(TRAIT_STINGS))
+		var/mob/living/carbon/human/H = user
+		if(istype(H) && H.gloves)
+			return  ..()
+		if(!reagents || reagents.total_volume <= 0)
+			return  ..()
+		reagents.remove_any(rand(1,3)) //Todo, make it actually remove the reagents the seed uses.
+		seed.do_thorns(H,src)
+		seed.do_sting(H,src,pick(BP_R_ARM, BP_L_ARM))
+	return ..()
 
-// Predefined types for placing on the map.
-/obj/plant_spawner
-	name = "plant spawner"
-	var/seedtype = "ambrosia" //default to ambrosia for roach taming
-/*
-/obj/plant_spawner/Initialize(mapload)
-	var/datum/seed/S = plant_controller.seeds[seedtype]
-	S.harvest(loc,0,0,1)
-	spawn(1) if(src) qdel(src)
-*/
-/obj/plant_spawner/New()
-	var/datum/seed/S = plant_controller.seeds[seedtype]
-	S.harvest(loc,0,0,1)
-	spawn(5) if(src) qdel(src)
-
-/obj/plant_spawner/libertycap
-	seedtype = "libertycap"
-
-/obj/plant_spawner/ambrosiavulgaris
-	seedtype = "ambrosia"
-
-/obj/plant_spawner/grass
-	seedtype = "grass"
-
-/obj/plant_spawner/poppy
-	seedtype = "poppies"
-
-/obj/plant_spawner/sunflower
-	seedtype = "sunflowers"
-
-/obj/plant_spawner/harebells
-	seedtype = "harebells"
-
-/obj/plant_spawner/towercaps
-	seedtype = "towercap"
-
-/obj/item/reagent_containers/food/snacks/fruit_slice
+/obj/item/reagent_containers/snacks/fruit_slice
 	name = "fruit slice"
 	desc = "A slice of some tasty fruit."
 	icon = 'icons/obj/hydroponics_misc.dmi'
@@ -366,7 +362,7 @@
 
 var/list/fruit_icon_cache = list()
 
-/obj/item/reagent_containers/food/snacks/fruit_slice/New(var/newloc, var/datum/seed/S)
+/obj/item/reagent_containers/snacks/fruit_slice/New(var/newloc, var/datum/seed/S)
 	..(newloc)
 	// Need to go through and make a general image caching controller. Todo.
 	if(!istype(S))

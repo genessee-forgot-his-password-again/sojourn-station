@@ -12,21 +12,30 @@
 		tally -= chem_effects[CE_SPEEDBOOST]
 	if(CE_SLOWDOWN in chem_effects)
 		tally += chem_effects[CE_SLOWDOWN]
+	if(MOVING_QUICKLY(src))
+		tally -= unique_armor_check(src, src, 0, "shoes")
 	if(isturf(loc))
 		var/turf/T = loc
 		if(T.get_lumcount() < 0.6)
-			if(stats.getPerk(PERK_NIGHTCRAWLER))
-				tally -= 0.5
-			else if(see_invisible != SEE_INVISIBLE_NOLIGHTING)
+			if(see_invisible != SEE_INVISIBLE_NOLIGHTING)
 				tally += 0.5
 	if(stats.getPerk(PERK_FAST_WALKER))
-		tally -= 0.5
-	if(stats.getPerk(PERK_NANITE_MUSCLE))
 		tally -= 0.4
+	if(stats.getPerk(PERK_JUDGMENT_HASTE))
+		tally -= 1
+	if(stats.getPerk(PERK_NANITE_MUSCLE))
+		var/datum/perk/nanite_power/nanite_muscle/P = stats.getPerk(PERK_NANITE_MUSCLE)
+		if(!P.emped)
+			tally -= 0.3
 	if(stats.getPerk(PERK_SCUTTLEBUG))
 		tally -= 0.3
 	if(stats.getPerk(PERK_REZ_SICKNESS))
-		tally += 0.90
+		tally += 0.5
+		//Behing damaged *is* speed
+		if(stats.getPerk(PERK_OVERBREATH))
+			tally -= 0.7
+	if(blocking)
+		tally += 1
 
 	var/obj/item/implant/core_implant/cruciform/C = get_core_implant(/obj/item/implant/core_implant/cruciform)
 	if(C && C.active)
@@ -35,15 +44,28 @@
 			var/obj/item/cruciform_upgrade/speed_of_the_chosen/sotc = upgrade
 			tally -= sotc.speed_increase
 
-	var/health_deficiency = (maxHealth - health)
-	var/hunger_deficiency = (MOB_BASE_MAX_HUNGER - nutrition)
-	if((hunger_deficiency >= 200) && species.reagent_tag != IS_SYNTHETIC)
-		tally += (hunger_deficiency / 100) //If youre starving, movement slowdown can be anything up to 4.
-	if(health_deficiency >= 40)
-		tally += (health_deficiency / 25)
+	//If we are not a synth then we have some movement delays thanks to hunger
+	if(species.reagent_tag != IS_SYNTHETIC)
+		var/health_deficiency = (maxHealth - health)
+		var/hunger_deficiency = (max_nutrition - nutrition)
+		var/hunger_half = max_nutrition * 0.5			//50% of max nutrition
+		var/hunger_one_tenth = max_nutrition * 0.1		//10% of max nutrition
 
-	if (!(species && (species.flags & NO_PAIN)))
-		if(halloss >= 10) tally += (halloss / 20) //halloss shouldn't slow you down if you can't even feel it
+		if(hunger_deficiency >= hunger_half)
+			tally += (hunger_deficiency / 100) //If youre starving, movement slowdown can be anything up to 4.
+		//If you‘re hurt you will be slowed down
+		if(health_deficiency >= hunger_one_tenth)
+			if(stats.getPerk(PERK_OVERBREATH))
+				//Anti-scaling, as with this perk your nullifing slowdown ontop of giving a speed boost
+				if(health_deficiency > 0)
+					//Less scailing but still noticeable
+					tally -= (health_deficiency / 25) * 0.5
+				else
+					//When we are closer to death.
+					tally += (health_deficiency / 25) * 0.75
+			else
+				tally += (health_deficiency / 25)
+
 	if(istype(buckled, /obj/structure/bed/chair/wheelchair))
 		//Not porting bay's silly organ checking code here
 		tally += 1 //Small slowdown so wheelchairs aren't turbospeed
@@ -52,23 +74,62 @@
 			tally += wear_suit.slowdown
 		if(shoes)
 			tally += shoes.slowdown
+		if(back && !src.stats.getPerk(PERK_SECOND_SKIN))
+			tally += back.slowdown
 
-	if(shock_stage >= 10) tally += 3
+		//Boluses dont punish the user if they are getting boons, unlike other perks
+		if(src.stats.getPerk(PERK_BOLUS_EQUI_AID))
+			var/datum/perk/cooldown/bolus_momentiums/TA = stats.getPerk(PERK_BOLUS_EQUI_AID)
+			if(wear_suit && !src.stats.getPerk(PERK_SECOND_SKIN))
+				if(wear_suit.slowdown >= 0.1)
+					tally -= wear_suit.slowdown / TA.stage
+			if(shoes)
+				if(shoes.slowdown >= 0.1)
+					tally -= shoes.slowdown / TA.stage
+			if(back && !src.stats.getPerk(PERK_SECOND_SKIN))
+				if(wear_suit.slowdown >= 0.1)
+					tally -= back.slowdown / TA.stage
+			//Do this here to save on checks
+			if(r_hand?.slowdown_hold + l_hand?.slowdown_hold > 0)
+				tally -= (r_hand?.slowdown_hold + l_hand?.slowdown_hold) /  TA.stage
 
-	//if(stats.getPerk(/datum/perk/timeismoney)?.is_active())
+	//tally += min((shock_stage / 100) * 3, 3) //Scales from 0 to 3 over 0 to 100 shock stage
+	//Soj edit - Are painkillers dont just magically make us faster
+	var/pain_effecting = (get_dynamic_pain() - get_painkiller())
+	if(pain_effecting >= 1)
+		if(stats.getPerk(PERK_OVERBREATH))
+			tally -= min(pain_effecting / 250, 2) // Scales from 0 to 2,
+		else
+			tally += min(pain_effecting / 40, 3) // Scales from 0 to 3,
+
+	//if(stats.getPerk(PERK_TIMEISMONEY)?.is_active())
 		//tally -= 2
 
 	if (bodytemperature < 283.222)
 		tally += (283.222 - bodytemperature) / 10 * 1.75
 	tally += stance_damage // missing/damaged legs or augs affect speed
 
-	if(slowdown)
-		tally += 1
+	tally += slowdown
+
+	tally += added_movedelay
 
 	tally += (r_hand?.slowdown_hold + l_hand?.slowdown_hold)
 
+	tally = clothing_check(tally)
+
 	return tally
 
+/mob/living/carbon/human/proc/clothing_check(tally)
+	if(tally < 0)
+		if(wear_suit)
+			if(istype(wear_suit, /obj/item/clothing/suit))
+				var/obj/item/clothing/suit/S = wear_suit
+				if(S.tally_locking != -100 && S.tally_locking > tally)
+					return S.tally_locking
+
+//	if(tally > 0)
+//
+	return tally
 
 /mob/living/carbon/human/allow_spacemove()
 	//Can we act?
@@ -108,4 +169,34 @@
 	if(shoes && (shoes.item_flags & NOSLIP) && istype(shoes, /obj/item/clothing/shoes/magboots))  //magboots + dense_object = no floating
 		return 1
 	return 0
+
+
+/mob/living/carbon/human/add_momentum(direction)
+	if(momentum_dir == direction)
+		momentum_speed++
+		momentum_speed += momentum_speed_adder
+	else if(momentum_dir == reverse_dir[direction])
+		momentum_speed = 0
+		momentum_dir = direction
+	else
+		momentum_speed--
+		momentum_dir = direction
+	momentum_speed = CLAMP(momentum_speed, 0, 10)
+	update_momentum()
+
+/mob/living/carbon/human/proc/update_momentum()
+	if(momentum_speed)
+		momentum_reduction_timer = addtimer(CALLBACK(src, PROC_REF(calc_momentum)), 1 SECONDS, TIMER_STOPPABLE)
+	else
+		momentum_speed = 0
+		deltimer(momentum_reduction_timer)
+
+/mob/living/carbon/human/proc/calc_momentum()
+	momentum_speed--
+	update_momentum()
+
+
+/mob/living/carbon/human/proc/clear_movement_delay(movement_clearing = 0)
+	added_movedelay -= movement_clearing
+
 

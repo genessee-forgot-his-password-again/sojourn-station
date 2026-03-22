@@ -17,13 +17,13 @@
 /datum/design/research/item/chem_dispenser
 	name = "mounted chemical dispenser"
 	desc = "A complex web of tubing and needles suitable for hardsuit use."
-	build_path = /obj/item/rig_module/chem_dispenser
+	build_path = /obj/item/rig_module/modular_injector
 	category = "RIG"
 
 /datum/design/research/item/chem_injector
 	name = "mounted chemical injector"
 	desc = "A complex web of tubing and needles suitable for hardsuit use."
-	build_path = /obj/item/rig_module/chem_dispenser/injector
+	build_path = /obj/item/rig_module/modular_injector/medical
 	materials = list(MATERIAL_STEEL = 15, MATERIAL_GLASS = 10, MATERIAL_PLASTIC = 10, MATERIAL_GOLD = 1, MATERIAL_SILVER = 1, MATERIAL_DIAMOND = 1)
 	category = "RIG"
 
@@ -36,7 +36,7 @@
 /datum/design/research/item/combat_injector
 	name = "mounted combat injector"
 	desc = "A complex web of tubing and needles suitable for hardsuit use."
-	build_path = /obj/item/rig_module/chem_dispenser/combat
+	build_path = /obj/item/rig_module/modular_injector/combat
 	materials = list(MATERIAL_STEEL = 25, MATERIAL_GLASS = 15, MATERIAL_PLASTIC = 15, MATERIAL_GOLD = 2, MATERIAL_SILVER = 2, MATERIAL_DIAMOND = 1)
 	category = "RIG"
 
@@ -87,10 +87,38 @@
 //MISC and odds and sods for hardsuits/rigs
 
 /datum/design/research/item/storage
-	name = "hardsuit integrated storage"
+	name = "hardsuit storage system"
 	desc = "A storage case that has been integrated into a hardsuit."
 	build_path = /obj/item/rig_module/storage
 	materials = list(MATERIAL_STEEL = 45, MATERIAL_PLASTIC = 25)
+	category = "RIG"
+
+/datum/design/research/item/storage/large
+	name = "hardsuit distributed storage system"
+	desc = "A system of pouches that has been integrated into a hardsuit."
+	build_path = /obj/item/rig_module/storage/large
+	materials = list(MATERIAL_STEEL = 60, MATERIAL_PLASTIC = 40)
+	category = "RIG"
+
+/datum/design/research/item/storagemed
+	name = "hardsuit medical storage system"
+	desc = "A system of various storage solutions for a RIG. This one is designed for medicine."
+	build_path = /obj/item/rig_module/storage/med
+	materials = list(MATERIAL_STEEL = 20, MATERIAL_PLASTIC = 15)
+	category = "RIG"
+
+/datum/design/research/item/storagetac
+	name = "hardsuit tactical  storage system"
+	desc = "A system of various storage solutions for a RIG. This one is designed for munitions."
+	build_path = /obj/item/rig_module/storage/combat
+	materials = list(MATERIAL_STEEL = 20, MATERIAL_PLASTIC = 15)
+	category = "RIG"
+
+/datum/design/research/item/storageengi
+	name = "hardsuit engineering  storage system"
+	desc = "A system of various storage solutions for a RIG. This one is designed for tools.."
+	build_path = /obj/item/rig_module/storage/engi
+	materials = list(MATERIAL_STEEL = 20, MATERIAL_PLASTIC = 15)
 	category = "RIG"
 
 /datum/design/research/item/ai_container
@@ -166,4 +194,25 @@
 	name = "Advanced AMI control module"
 	build_path = /obj/item/rig/advhazmat
 	build_type = MECHFAB
+	category = "RIG"
+
+//misc rig things
+/datum/design/research/item/riggrapple
+	name = "hardsuit integrated grappler"
+	desc = "Integrated grappling hook into a hardsuit."
+	build_path = /obj/item/rig_module/grappler
+	materials = list(MATERIAL_STEEL = 15, MATERIAL_PLASTIC = 50)
+	category = "RIG"
+
+/datum/design/research/item/rig_clamp
+	name = "hardsuit integrated cargo clamp"
+	desc = "Integrated cargo handling system into a hardsuit."
+	build_path = /obj/item/rig_module/cargo_clamp
+	materials = list(MATERIAL_STEEL = 15, MATERIAL_PLASTIC = 15)
+	category = "RIG"
+
+/datum/design/research/item/ion_jaunt
+	name = "Ion Jaunt"
+	desc = "A special device designed to reduce the impact of EMPs on electrical systems."
+	build_path = /obj/item/robot_parts/robot_component/ion_jaunt
 	category = "RIG"

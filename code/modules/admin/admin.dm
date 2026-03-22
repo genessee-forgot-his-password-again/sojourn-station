@@ -9,16 +9,16 @@ var/global/floorIsLava = 0
 #define ADMIN_PP_DISPLAY(user,display) "<a href='?_src_=holder;adminplayeropts=\ref[user]'>[display]</a>"
 #define ADMIN_VV_DISPLAY(atom,display) "<a href='?_src_=vars;Vars=\ref[atom]'>[display]</a>"
 #define ADMIN_SM_DISPLAY(user,display) "<a href='?_src_=holder;subtlemessage=\ref[user]'>[display]</a>"
-#define ADMIN_TP_DISPLAY(user,display) "<a href='?_src_=holder;traitor=\ref[user]'>[display]</a>"
+#define ADMIN_TP_DISPLAY(user,display) "<a href='?_src_=holder;contractor=\ref[user]'>[display]</a>"
 
 ////////////////////////////////
-/proc/message_admins(var/msg, tag = "admin_log", tagtext = "ADMIN LOG")
+/proc/message_admins(var/msg, tag = "admin_log", tagtext = "ADMIN LOG", mod_send_message = FALSE)
 	lobby_message(message = msg, color = "#FFA500")
 	var/m = "<span class=\"log_message\"><span class=\"prefix\">[tagtext]:</span> <span class=\"message\">[msg]</span></span>"
 	log_adminwarn(m)
 	for(var/client/C in admins)
-		m = "<span class=\"log_message\"><span class=\"prefix\">[create_text_tag(tag, "[tagtext]:", C)]</span> <span class=\"message\">[msg]</span></span>"
-		if(check_rights(R_ADMIN, 0, C.mob))
+		m = "<span class=\"log_message\"><span class=\"message\">[msg]</span></span>"
+		if(check_rights(R_ADMIN, 0, C.mob) || (mod_send_message && check_rights(R_MOD, 0, C.mob)))
 			to_chat(C, m)
 
 /proc/msg_admin_attack(var/text, tag = "attack", tagtext = "ATTACK:") //Toggleable Attack Messages
@@ -84,7 +84,7 @@ var/global/floorIsLava = 0
 		to_chat(usr, "Error: you are not an admin!")
 		return
 
-	var/body = "<html><head><title>Log Panel of [M.real_name]</title></head>"
+	var/body = ""
 	body += "<body><center>Logs of <b>[M]</b><br>"
 	body += "<a href='?src=\ref[src];viewlogs=\ref[M]'>REFRESH</a></center><br>"
 
@@ -94,7 +94,7 @@ var/global/floorIsLava = 0
 		body += M.attack_log[i] + "<br>"
 		i--
 
-	usr << browse(body, "window=\ref[M]logs;size=500x500")
+	usr << browse(HTML_SKELETON_TITLE("Log Panel of [M.real_name]", body), "window=\ref[M]logs;size=500x500")
 
 
 
@@ -115,7 +115,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/show_player_panel, null, TRUE)
 		to_chat(usr, "Error: you are not an admin!")
 		return
 
-	var/body = "<html><head><title>Options for [M.key]</title></head>"
+	var/body = ""
 	body += "<body>Options panel for <b>[M]</b>"
 
 	if(M.client)
@@ -141,7 +141,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/show_player_panel, null, TRUE)
 	body += {"
 		<br><br>\[
 		<a href='?_src_=vars;Vars=\ref[M]'>VV</a> -
-		<a href='?src=\ref[src];traitor=\ref[M]'>TP</a> -
+		<a href='?src=\ref[src];contractor=\ref[M]'>TP</a> -
 		<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a> -
 		<a href='?src=\ref[src];subtlemessage=\ref[M]'>SM</a> -
 		[admin_jump_link(M, src)] -
@@ -171,7 +171,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/show_player_panel, null, TRUE)
 		<A href='?src=\ref[src];jumpto=\ref[M]'><b>Jump to</b></A> |
 		<A href='?src=\ref[src];getmob=\ref[M]'>Get</A>
 		<br><br>
-		[check_rights(R_ADMIN|R_MOD,0) ? "<A href='?src=\ref[src];traitor=\ref[M]'>Traitor panel</A> | " : "" ]
+		[check_rights(R_ADMIN|R_MOD,0) ? "<A href='?src=\ref[src];contractor=\ref[M]'>contractor panel</A> | " : "" ]
 		<A href='?src=\ref[src];narrateto=\ref[M]'>Narrate to</A> |
 		<A href='?src=\ref[src];subtlemessage=\ref[M]'>Subtle message</A>
 	"}
@@ -259,7 +259,8 @@ ADMIN_VERB_ADD(/datum/admins/proc/show_player_panel, null, TRUE)
 	body += {"<br><br>
 			<b>Other actions:</b>
 			<br>
-			<A href='?src=\ref[src];forcespeech=\ref[M]'>Forcesay</A>
+			<A href='?src=\ref[src];forcespeech=\ref[M]'>Forcesay</A> |
+			<A href='?src=\ref[src];forcesanity=\ref[M]'>Sanity Break</A>
 			"}
 	body += "<br><br><b>Languages:</b><br>"
 	var/f = 1
@@ -274,10 +275,9 @@ ADMIN_VERB_ADD(/datum/admins/proc/show_player_panel, null, TRUE)
 				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[html_encode(k)]' style='color:#ff0000'>[k]</a>"
 
 	body += {"<br>
-		</body></html>
 	"}
 
-	usr << browse(body, "window=adminplayeropts;size=550x515")
+	usr << browse(HTML_SKELETON_TITLE("Options for [M.key]", body), "window=adminplayeropts;size=550x515")
 
 
 
@@ -289,7 +289,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/show_player_panel, null, TRUE)
 ADMIN_VERB_ADD(/datum/admins/proc/access_news_network, R_ADMIN, FALSE)
 //allows access of newscasters
 /datum/admins/proc/access_news_network() //MARKER
-	set category = "Fun"
+	set category = "Admin.Events"
 	set name = "Access Newscaster Network"
 	set desc = "Allows you to view, add and edit news feeds."
 
@@ -299,7 +299,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/access_news_network, R_ADMIN, FALSE)
 		to_chat(usr, "Error: you are not an admin!")
 		return
 	var/dat
-	dat = text("<HEAD><TITLE>Admin Newscaster</TITLE></HEAD><H3>Admin Newscaster Unit</H3>")
+	dat = text("<H3>Admin Newscaster Unit</H3>")
 
 	switch(admincaster_screen)
 		if(0)
@@ -525,11 +525,11 @@ ADMIN_VERB_ADD(/datum/admins/proc/access_news_network, R_ADMIN, FALSE)
 				<BR><A href='?src=\ref[src];admincaster=setScreen;setScreen=[0]'>Return</A><BR>
 			"}
 		else
-			dat+="I'm sorry to break your immersion. This shit's bugged. Report this bug to Agouri, polyxenitopalidou@gmail.com"
+			dat+="I'm sorry to break your immersion. This shit's bugged. Report this bug to code staff"
 
 	//world << "Channelname: [src.admincaster_feed_channel.channel_name] [src.admincaster_feed_channel.author]"
 	//world << "Msg: [src.admincaster_feed_message.author] [src.admincaster_feed_message.body]"
-	usr << browse(dat, "window=admincaster_main;size=400x600")
+	usr << browse(HTML_SKELETON_TITLE("Admin Newscaster",dat), "window=admincaster_main;size=400x600")
 	onclose(usr, "admincaster_main")
 
 
@@ -545,7 +545,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/access_news_network, R_ADMIN, FALSE)
 			r = copytext( r, 1, findtext(r,"##") )//removes the description
 		dat += text("<tr><td>[t] (<A href='?src=\ref[src];removejobban=[r]'>unban</A>)</td></tr>")
 	dat += "</table>"
-	usr << browse(dat, "window=ban;size=400x400")
+	usr << browse(HTML_SKELETON(dat), "window=ban;size=400x400")
 
 /datum/admins/proc/Game()
 	if(!check_rights(0))
@@ -568,7 +568,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/access_news_network, R_ADMIN, FALSE)
 		<A href='?src=\ref[src];vsc=default'>Choose a default ZAS setting</A><br>
 		"}
 
-	usr << browse(dat, "window=admin2;size=210x280")
+	usr << browse(HTML_SKELETON(dat), "window=admin2;size=210x280")
 	return
 
 /datum/admins/proc/Secrets()
@@ -587,7 +587,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/access_news_network, R_ADMIN, FALSE)
 				continue
 			dat += "<A href='?src=\ref[src];admin_secrets=\ref[item]'>[item.name()]</A><BR>"
 		dat += "<BR>"
-	usr << browse(dat, "window=secrets")
+	usr << browse(HTML_SKELETON(dat), "window=secrets")
 	return
 
 
@@ -618,7 +618,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/restart, R_SERVER, FALSE)
 ADMIN_VERB_ADD(/datum/admins/proc/announce, R_ADMIN, FALSE)
 //priority announce something to all clients.
 /datum/admins/proc/announce()
-	set category = "Special Verbs"
+	set category = "Admin.Special"
 	set name = "Announce"
 	set desc="Announce your desires to the world"
 	if(!check_rights(0))
@@ -777,22 +777,37 @@ ADMIN_VERB_ADD(/datum/admins/proc/delay, R_SERVER, FALSE)
 /datum/admins/proc/delay()
 	set category = "Server"
 	set desc="Delay the game start/end"
-	set name="Delay"
+	set name="Start/End Delay"
 
 	if(!check_rights(R_SERVER))
 		return
 	if (SSticker.current_state != GAME_STATE_PREGAME && SSticker.current_state != GAME_STATE_STARTUP)
-		SSticker.delay_end = !SSticker.delay_end
-		log_admin("[key_name(usr)] [SSticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
-		message_admins("\blue [key_name(usr)] [SSticker.delay_end ? "delayed the round end" : "has made the round end normally"].", 1)
+		SSticker.delay_end = TRUE
+		log_admin("[key_name(usr)] delayed the round end")
+		message_admins("\blue [key_name(usr)] delayed the round end.", 1)
 		return
-	round_progressing = !round_progressing
-	if (!round_progressing)
-		to_chat(world, "<b>The game start has been delayed.</b>")
-		log_admin("[key_name(usr)] delayed the game.")
-	else
-		to_chat(world, "<b>The game will start soon.</b>")
-		log_admin("[key_name(usr)] removed the delay.")
+
+	round_progressing = FALSE
+	to_chat(world, "<b>The game start has been delayed.</b>")
+	log_admin("[key_name(usr)] delayed the game.")
+
+
+ADMIN_VERB_ADD(/datum/admins/proc/resume, R_SERVER, FALSE)
+/datum/admins/proc/resume()
+	set category = "Server"
+	set desc="Resume the game start/end"
+	set name="Start/End Resume"
+
+	if(!check_rights(R_SERVER))
+		return
+	if (SSticker.current_state != GAME_STATE_PREGAME && SSticker.current_state != GAME_STATE_STARTUP)
+		SSticker.delay_end = FALSE
+		log_admin("[key_name(usr)] has made the round end normally.")
+		message_admins("\blue [key_name(usr)] has made the round end normally.", 1)
+		return
+	round_progressing = TRUE
+	to_chat(world, "<b>The game will start soon.</b>")
+	log_admin("[key_name(usr)] removed the delay.")
 
 ADMIN_VERB_ADD(/datum/admins/proc/adjump, R_SERVER, FALSE)
 /datum/admins/proc/adjump()
@@ -849,7 +864,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/immreboot, R_SERVER, FALSE)
 
 	if(isrobot(M))
 		var/mob/living/silicon/robot/R = M
-		if(R.emagged)
+		if(R.HasTrait(CYBORG_TRAIT_EMAGGED))
 			return ANTAG
 
 	return NO_ANTAG
@@ -871,7 +886,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/spawn_fruit, R_DEBUG, FALSE)
 	if(!seedtype || !plant_controller.seeds[seedtype])
 		return
 	var/datum/seed/S = plant_controller.seeds[seedtype]
-	S.harvest(usr,0,0,1)
+	S.harvest(usr,get_turf(usr),0,0,0,1)
 	log_admin("[key_name(usr)] spawned [seedtype] fruit at ([usr.x],[usr.y],[usr.z])")
 
 ADMIN_VERB_ADD(/datum/admins/proc/spawn_custom_item, R_DEBUG, FALSE)
@@ -975,14 +990,88 @@ ADMIN_VERB_ADD(/datum/admins/proc/spawn_atom, R_DEBUG, FALSE)
 
 	log_and_message_admins("spawned [chosen] at ([usr.x],[usr.y],[usr.z])")
 
+ADMIN_VERB_ADD(/datum/admins/proc/remove_var_copy, R_ADMIN|R_DEBUG|R_FUN, TRUE)
+/**
+ * Removes a var copy from the global list that contains them, effectively the same as deletion.
+ * Automatically executes if a text argument is given, assuming it is the name of the copy to delete.
+ *
+ * Args:
+ * target_copy: Text. The proc will assume this is the key, or the name, of the var copy, and will search GLOB.var_copies for it's value.
+**/
+/datum/admins/proc/remove_var_copy(var/target_copy as text)
+	set name = "Remove Copy"
+	set desc = "Remove a vareditted var template"
+	set category = "Admin.Events"
+
+	if(!check_rights(R_ADMIN | R_DEBUG | R_FUN))
+		return
+
+	if (!(length(target_copy) > 0)) //did they send anything?
+		target_copy = stripped_input(usr, "What is the name of the slot you want to delete?")
+	if (target_copy in GLOB.var_copies)
+		GLOB.var_copies -= target_copy
+		to_chat(usr, "<span class='warning'>[target_copy] deleted.</span>")
+		log_and_message_admins("<span class='notice'> deleted a var copy, named [target_copy].</span>")
+	else
+		to_chat(usr, "<span class='warning'>[target_copy] does not exist. Did you type it correctly?</span>")
+
+ADMIN_VERB_ADD(/datum/admins/proc/spawn_var_copy, R_ADMIN|R_DEBUG|R_FUN, TRUE)
+/**
+ * Spawns a atom on the location of the user, using the type variable within GLOB.var_copies[target_copy], using the target_copy argument.
+ * Then searches said list for any variables. If any variables are present, they will be applied to the newly created atom.
+ *
+ * Automatically executes if a text argument is given, assuming it is the name of the copy to delete.
+ *
+ * Args:
+ * target_copy: Text. The proc will assume this is the key, or the name, of the var copy, and will search GLOB.var_copies for it's value.
+**/
+/datum/admins/proc/spawn_var_copy(var/target_copy as text)
+	set name = "Spawn Copy"
+	set desc = "Spawn a atom with a vareditted var template"
+	set category = "Admin.Events"
+
+	if(!check_rights(R_ADMIN | R_DEBUG | R_FUN))
+		return
+
+	if (!(length(target_copy) > 0)) //did they send anything?
+		target_copy = stripped_input(usr, "What is the name of the copy you want to spawn?")
+	if (target_copy in GLOB.var_copies)
+		var/list/spawn_variables = GLOB.var_copies[target_copy]
+		var/atom/spawn_target = spawn_variables["type"]
+
+		var/atom/newItem = new spawn_target(usr.loc)
+
+		for(var/variable in newItem.vars)
+			if (variable == "type") //type is read-only, we will runtime if we don't have this check
+				continue
+			if (variable in GLOB.banned_vars) // these vars must never be applied
+				continue
+			if (variable in spawn_variables) // if a var exists in this, an admin wanted it to be carried over, so let's apply it
+				newItem.vars[variable] = spawn_variables[variable]
+	else
+		to_chat(usr, "<span class='warning'>[target_copy] does not exist. Did you type it correctly?</span>")
+
+ADMIN_VERB_ADD(/datum/admins/proc/list_var_copies, R_ADMIN|R_DEBUG|R_FUN, TRUE)
+/// Will list the keys/names of all var copies currently saved into the GLOB.var_copies.
+/datum/admins/proc/list_var_copies()
+	set name = "List Copy Names"
+	set desc = "List the names of all currently saved var copies"
+	set category = "Admin.Events"
+
+	if(!check_rights(R_ADMIN | R_DEBUG | R_FUN))
+		return
+
+	to_chat(usr, "<b>Names of all var copies currently saved:</b>")
+	for (var/key_to_print in GLOB.var_copies)
+		to_chat(usr, key_to_print) //prints the keys, not the values
 
 // -Removed due to rare practical use. Moved to debug verbs ~Errorage,
-//ADMIN_VERB_ADD(/datum/admins/proc/show_traitor_panel, R_ADMIN, TRUE)
+//ADMIN_VERB_ADD(/datum/admins/proc/show_contractor_panel, R_ADMIN, TRUE)
 //interface which shows a mob's mind
-/datum/admins/proc/show_traitor_panel(var/mob/M in SSmobs.mob_list)
+/datum/admins/proc/show_contractor_panel(var/mob/M in SSmobs.mob_list)
 	set category = "Admin"
 	set desc = "Edit mobs's memory and role"
-	set name = "Show Traitor Panel"
+	set name = "Show contractor Panel"
 
 	if(!istype(M))
 		to_chat(usr, "This can only be used on instances of type /mob")
@@ -1024,7 +1113,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/show_game_mode, R_ADMIN, FALSE)
 		out += " None."
 	out += " <a href='?src=\ref[SSticker.mode];add_antag_type=1'>\[+\]</a><br/>"
 
-	usr << browse(out, "window=edit_mode[src]")
+	usr << browse(HTML_SKELETON(out), "window=edit_mode[src]")
 */
 
 
@@ -1143,7 +1232,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/toggleguests, R_ADMIN, FALSE)
 		return //Extra sanity check to make sure only observers are shoved into things
 
 	//Same as assume-direct-control perm requirements.
-	if (!check_rights(R_ADMIN|R_DEBUG,0))
+	if (!check_rights(R_ADMIN|R_MOD|R_DEBUG,0))
 		return 0
 	if (!frommob.ckey)
 		return 0
@@ -1177,7 +1266,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/force_mode_latespawn, R_ADMIN, FALSE)
 /datum/admins/proc/force_mode_latespawn()
 	set category = "Admin"
 	set name = "Force Mode Spawn"
-	set desc = "Force autotraitor to proc."
+	set desc = "Force autocontractor to proc."
 
 	if (!istype(src,/datum/admins))
 		src = usr.client.holder
@@ -1195,7 +1284,7 @@ ADMIN_VERB_ADD(/datum/admins/proc/force_mode_latespawn, R_ADMIN, FALSE)
 
 ADMIN_VERB_ADD(/datum/admins/proc/paralyze_mob, R_ADMIN, FALSE)
 /datum/admins/proc/paralyze_mob(mob/living/H as mob)
-	set category = "Fun"
+	set category = "Admin.Events"
 	set name = "Toggle Paralyze"
 	set desc = "Paralyzes a player. Or unparalyses them."
 

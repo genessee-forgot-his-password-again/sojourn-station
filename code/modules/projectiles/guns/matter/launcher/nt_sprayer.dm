@@ -1,6 +1,6 @@
 /obj/item/gun/matter/launcher/nt_sprayer
 	name = "cleansing carbine"
-	desc = "\"Old Testament\" brand cleansing carbine. Uses solid biomass as ammo and dispense cleansing liquid on hit. Despite many attempts, nobody is quite sure how it works."
+	desc = "\"Old Testament\" brand cleansing carbine. Uses solid biomass as ammo and dispense cleansing liquid on hit. Despite many attempts to reverse-engineer it, nobody outside of the Numericals is quite sure how it works."
 	icon_state = "nt_sprayer"
 	icon = 'icons/obj/guns/matter/nt_sprayer.dmi'
 	slot_flags = SLOT_BACK|SLOT_BELT
@@ -12,9 +12,13 @@
 	projectile_type = /obj/item/arrow/cleansing
 
 	init_firemodes = list(
-		list(mode_name="small", mode_desc="Samll short lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing, fire_sound='sound/weapons/Genhit.ogg', fire_delay=14, icon="toxin", projectile_cost = 0.5),
-		list(mode_name="large", mode_desc="Samll long lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing/bigger, fire_sound='sound/weapons/Genhit.ogg', fire_delay=25, icon="toxin", projectile_cost = 1.5),
+		list(mode_name="normal", mode_desc="Small short lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing, fire_sound='sound/weapons/Genhit.ogg', fire_delay=14, icon="toxin", projectile_cost = 0.5),
+		list(mode_name="stronger", mode_desc="Small long lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing/bigger, fire_sound='sound/weapons/Genhit.ogg', fire_delay=25, icon="toxin", projectile_cost = 1.5),
 	)
+	serial_type = "Absolute"
+
+/obj/item/arrow
+	var/recoil = 2  // Light recoil, it's just some cleaning stuff
 
 /obj/item/arrow/cleansing
 	icon = 'icons/obj/projectiles.dmi'
@@ -34,7 +38,7 @@
 
 /obj/item/gun/matter/launcher/nt_sprayer/mini
 	name = "\"Spot\" cleaning pistol"
-	desc = "The janitor's choice of cleaner. Uses cellulose based solution to clean upto 99% of dirt grime and oil, even comes with a sling to fit on your back."
+	desc = "The janitor's choice of cleaner. Uses cellulose based solution to clean upto 99% of dirt grime and oil, even comes with a sling to fit on your back. Legally distinct from the Old Testament's cleansing carbine."
 	icon_state = "si_sprayer"
 	icon = 'icons/obj/guns/matter/nt_sprayer.dmi'
 	w_class = ITEM_SIZE_NORMAL
@@ -43,6 +47,7 @@
 	origin_tech = list(TECH_COMBAT = 1, TECH_MATERIAL = 1, TECH_BIO = 2)
 	matter = list(MATERIAL_PLASTEEL = 5, MATERIAL_WOOD = 3, MATERIAL_PLASTIC = 15)
 	matter_type = MATERIAL_WOOD
+	serial_type = "SI"
 
 	max_stored_matter = 3 //Annoying to use do to low ammo
 
@@ -50,8 +55,8 @@
 	projectile_cost = 1
 
 	init_firemodes = list(
-		list(mode_name="small", mode_desc="Samll short lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing, fire_sound='sound/weapons/Genhit.ogg', fire_delay=14, icon="toxin", projectile_cost = 1),
-		list(mode_name="large", mode_desc="Samll long lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing/bigger, fire_sound='sound/weapons/Genhit.ogg', fire_delay=25, icon="toxin", projectile_cost = 3),
+		list(mode_name="normal", mode_desc="Small short lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing, fire_sound='sound/weapons/Genhit.ogg', fire_delay=14, icon="toxin", projectile_cost = 1),
+		list(mode_name="stronger", mode_desc="Small long lasting cleansing bolt that cleans a few tiles", projectile_type=/obj/item/arrow/cleansing/bigger, fire_sound='sound/weapons/Genhit.ogg', fire_delay=25, icon="toxin", projectile_cost = 3),
 	)
 
 /obj/item/arrow/cleansing/bigger

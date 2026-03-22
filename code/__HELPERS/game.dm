@@ -1,11 +1,5 @@
 //This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:31
 
-#define RANGE_TURFS(RADIUS, CENTER) \
-  block( \
-    locate(max(CENTER.x-(RADIUS),1),          max(CENTER.y-(RADIUS),1),          CENTER.z), \
-    locate(min(CENTER.x+(RADIUS),world.maxx), min(CENTER.y+(RADIUS),world.maxy), CENTER.z) \
-  )
-
 /proc/dopage(src, target)
 	var/href_list
 	var/href
@@ -25,16 +19,17 @@
 			return A
 	return 0
 
+// get the area's name
+/proc/get_area_name_litteral(atom/X, format_text = FALSE)
+	var/area/A = isarea(X) ? X : get_area(X)
+	if(!A)
+		return null
+	return format_text ? format_text(A.name) : A.name
+
 /proc/get_area_master(const/O)
 	var/area/A = get_area(O)
 	if (isarea(A))
 		return A
-
-/proc/in_range(source, user)
-	if(get_dist(source, user) <= 1)
-		return 1
-
-	return 0 //not in range and not telekinetic
 
 // Like view but bypasses luminosity check
 
@@ -45,16 +40,31 @@
 	var/list/heard = view(range, source)
 	var/list/extra_heard = view(range+3, source) - heard
 	if(extra_heard.len)
-		for(var/ear in extra_heard)
-			if(!ishuman(ear))
-				continue
-			var/mob/living/carbon/human/H = ear
+		for(var/mob/living/carbon/human/H in extra_heard)
 			if(!H.stats.getPerk(PERK_EAR_OF_QUICKSILVER))
 				continue
-			heard += ear
+			heard += H
 	source.luminosity = lum
 
 	return heard
+
+/proc/hear_movables(range, atom/source)
+
+	. = list()
+
+	var/lum = source.luminosity
+	source.luminosity = world.view
+	for (var/atom/movable/AM in view(range+3, source))
+		if ((get_dist(AM, source) > range))
+			if (ishuman(AM))
+				var/mob/living/carbon/human/H = AM
+				if(!H.stats.getPerk(PERK_EAR_OF_QUICKSILVER))
+					continue
+				. += H
+		else
+			. += AM
+
+	source.luminosity = lum
 
 /proc/circlerange(center=usr, radius=3)
 
@@ -225,7 +235,7 @@
 		if(Y1==Y2)
 			return 1 //Light cannot be blocked on same tile
 		else
-			var/s = SIGN(Y2-Y1)
+			var/s = sign(Y2-Y1)
 			Y1+=s
 			while(Y1!=Y2)
 				T=locate(X1, Y1, Z)
@@ -235,8 +245,8 @@
 	else
 		var/m=(32*(Y2-Y1)+(PY2-PY1))/(32*(X2-X1)+(PX2-PX1))
 		var/b=(Y1+PY1/32-0.015625)-m*(X1+PX1/32-0.015625) //In tiles
-		var/signX = SIGN(X2-X1)
-		var/signY = SIGN(Y2-Y1)
+		var/signX = sign(X2-X1)
+		var/signY = sign(Y2-Y1)
 		if(X1<X2)
 			b+=m
 		while(X1!=X2 || Y1!=Y2)
@@ -566,14 +576,45 @@
 	if (L.len)
 		return pick(L)
 
-//Tells everyone thats living and is a SSmobs to wake up their AI when aplicable
-/proc/activate_mobs_in_range(atom/caller , distance)
-	var/turf/starting_point = get_turf(caller)
+//Tells everyone thats living to awaken, if in range.
+//If you run this proc a lot use orgin = TRUE as an optimization
+/proc/activate_mobs_in_range(atom/orgin , distance, care_about_sightline = TRUE)
+	var/turf/starting_point = get_turf(orgin)
 	if(!starting_point)
 		return FALSE
-	for(var/mob/living/potential_attacker in SSmobs.mob_living_by_zlevel[starting_point.z])
-		if(!(potential_attacker.stat < DEAD))
+	if(!care_about_sightline)
+		for(var/mob/living/potential_attacker in orange(distance, starting_point))
+			if(potential_attacker == orgin)
+				continue
+			if(potential_attacker.stat == DEAD)
+				continue
+			potential_attacker.try_activate_ai()
+	else
+		for(var/mob/living/potential_attacker in ohearers(distance, starting_point))
+			if(potential_attacker == orgin)
+				continue
+			if(potential_attacker.stat == DEAD)
+				continue
+			potential_attacker.try_activate_ai()
+
+///Get active players who are playing in the round
+/proc/get_active_player_count(alive_check = FALSE, afk_check = FALSE, human_check = FALSE)
+	var/active_players = 0
+	for(var/i = 1; i <= GLOB.player_list.len; i++)
+		var/mob/player_mob = GLOB.player_list[i]
+		if(!player_mob?.client)
 			continue
-		if(!(get_dist(starting_point, potential_attacker) <= distance))
+		if(alive_check && player_mob.stat)
 			continue
-		potential_attacker.try_activate_ai()
+		else if(afk_check && player_mob.client.is_afk())
+			continue
+		else if(human_check && !ishuman(player_mob))
+			continue
+		else if(isnewplayer(player_mob)) // exclude people in the lobby
+			continue
+		else if(isobserver(player_mob)) // Ghosts are fine if they were playing once (didn't start as observers)
+			var/mob/observer/ghost/ghost_player = player_mob
+			if(ghost_player.started_as_observer) // Exclude people who started as observers
+				continue
+		active_players++
+	return active_players

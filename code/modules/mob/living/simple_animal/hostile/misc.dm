@@ -1,5 +1,5 @@
 // Xenoarch aliens.
-/mob/living/simple_animal/hostile/samak
+/mob/living/simple/hostile/samak
 	name = "samak"
 	desc = "A tough, armoured predator accustomed to hiding and ambushing in cold terrain."
 	faction = "samak"
@@ -19,12 +19,13 @@
 	emote_see = list("paws the ground.","shakes its mane.","stomps.")
 	emote_hear = list("snuffles")
 	meat_amount = 3
-	mob_size = 10
+	mob_size = MOB_MEDIUM
 	resistance = 8
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
+	research_value = 75
 
-/mob/living/simple_animal/hostile/diyaab
+/mob/living/simple/hostile/diyaab
 	name = "diyaab"
 	desc = "A small pack animal. Although omnivorous, it will hunt meat on occasion."
 	faction = "diyaab"
@@ -45,13 +46,14 @@
 	emote_hear = list("snuffles")
 	pass_flags = PASSTABLE
 	density = 0
-	mob_size = 3
+	mob_size = MOB_SMALL
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
 	clone_difficulty = CLONE_EASY
 	inherent_mutations = list(MUTATION_DWARFISM, MUTATION_EPILEPSY, MUTATION_UNBALANCED, MUTATION_IMBECILE)
+	research_value = 75
 
-/mob/living/simple_animal/hostile/shantak
+/mob/living/simple/hostile/shantak
 	name = "shantak"
 	desc = "A piglike creature with a bright iridiscent mane that sparkles as though lit by an inner light. Don't be fooled by its beauty though."
 	faction = "shantak"
@@ -69,31 +71,35 @@
 	speak_chance = 5
 	speak = list("Shuhn","Shrunnph?","Shunpf")
 	emote_see = list("scratches the ground.","shakes out it's mane.","tinkles gently.")
-	mob_size = 5
+	mob_size = MOB_MEDIUM
 	resistance = 3
+	meat_type = /obj/item/reagent_containers/snacks/meat/pork
 	meat_amount = 6 //Pigs are known for giving meat
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
+	research_value = 275
 
-/mob/living/simple_animal/yithian
+/mob/living/simple/yithian
 	name = "yithian"
 	desc = "A friendly creature vaguely resembling an oversized snail without a shell."
 	icon_state = "yithian"
 	icon_living = "yithian"
 	icon_dead = "yithian_dead"
 	density = 0
-	mob_size = 2
+	mob_size = MOB_TINY
+	sanity_damage = -1
 
-/mob/living/simple_animal/tindalos
+/mob/living/simple/tindalos
 	name = "tindalos"
 	desc = "It looks like a large, flightless grasshopper."
 	icon_state = "tindalos"
 	icon_living = "tindalos"
 	icon_dead = "tindalos_dead"
 	density = 0
-	mob_size = 1.5
+	mob_size = MOB_TINY
+	sanity_damage = -1
 
-/mob/living/simple_animal/schlorgo
+/mob/living/simple/schlorgo
 	name = "schlorgo"
 	desc = "A friendly creature vaguely resembling a squat fat penguin with no feathers and a bulbous nose."
 	icon = 'icons/mob/mobs-domestic.dmi'
@@ -102,11 +108,12 @@
 	icon_dead = "schlorgo_dead"
 	pass_flags = PASSTABLE
 	density = 0
-	mob_size = 2
+	mob_size = MOB_SMALL
 	//Schlorgo is a fucking mess
 	inherent_mutations = list(MUTATION_DWARFISM, MUTATION_NO_PAIN, MUTATION_UNBALANCED, MUTATION_IMBECILE, MUTATION_TOURETTES)
+	sanity_damage = -1
 
-/mob/living/simple_animal/hostile/snake
+/mob/living/simple/hostile/snake
 	name = "viper"
 	desc = "A ferocious, fang-bearing creature that resembles a snake. Rather calm, unless you get close."
 	icon = 'icons/mob/mobs-domestic.dmi'
@@ -116,7 +123,7 @@
 	layer = HIDE_LAYER
 	density = 0
 	turns_per_move = 5
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/carp
+	meat_type = /obj/item/reagent_containers/snacks/meat/carp
 	response_help = "pets the"
 	response_disarm = "gently pushes aside the"
 	response_harm = "hits the"
@@ -137,14 +144,16 @@
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
 	inherent_mutations = list(MUTATION_NEARSIGHTED, MUTATION_TOXIN_RESISTANCE, MUTATION_UNBALANCED, MUTATION_CLUMSY)
 
-/mob/living/simple_animal/hostile/snake/AttackingTarget()
+/mob/living/simple/hostile/snake/AttackingTarget()
+	var/atom/targetted_mob = (target_mob?.resolve())
+
 	. = ..()
-	if(attack_reagent && . && isliving(target_mob))
-		var/mob/living/L = target_mob
+	if(attack_reagent && . && isliving(targetted_mob))
+		var/mob/living/L = targetted_mob
 		if(L.reagents)
 			L.reagents.add_reagent(attack_reagent, rand(3,5))
 
-/mob/living/simple_animal/hostile/dsnake
+/mob/living/simple/hostile/dsnake
 	name = "Snek"
 	desc = "A domesticated snake that was altered to make it easily seen as friendly. Seems to have fairly high intelligence as no one can seem to keep it contained for very long."
 	icon = 'icons/mob/mobs-domestic.dmi'
@@ -154,7 +163,7 @@
 	layer = HIDE_LAYER
 	density = 0
 	turns_per_move = 2
-	meat_type = /obj/item/reagent_containers/food/snacks/meat/carp
+	meat_type = /obj/item/reagent_containers/snacks/meat/carp
 	response_help = "boops the"
 	response_disarm = "gently pushes aside the"
 	response_harm = "hits the"
@@ -174,15 +183,9 @@
 	var/attack_reagent = "toxin"
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
+	sanity_damage = -1
 
-/mob/living/simple_animal/hostile/snake/AttackingTarget()
-	. = ..()
-	if(attack_reagent && . && isliving(target_mob))
-		var/mob/living/L = target_mob
-		if(L.reagents)
-			L.reagents.add_reagent(attack_reagent, rand(3,5))
-
-/mob/living/simple_animal/hostile/tengbrute
+/mob/living/simple/hostile/tengbrute
 	name = "tengolo brute"
 	desc = "One of the local fauna native to the planet, peaceful except around insects and insectile creatures. This is one of the males, it looks like a four-eyed monkey mixed with a warthog."
 	faction = "tengo"
@@ -205,15 +208,17 @@
 	speak = list("Hruuugh!","Hrunnph")
 	emote_see = list("paws the ground.","shakes its mane.","stomps.")
 	emote_hear = list("snuffles")
+	meat_type = /obj/item/reagent_containers/snacks/meat/pork // Since half warthog.
 	meat_amount = 3
-	mob_size = 10
+	mob_size = MOB_MEDIUM
 	resistance = 5
 	leather_amount = 4
 	bones_amount = 4
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
+	research_value = 375
 
-/mob/living/simple_animal/hostile/tengstalker
+/mob/living/simple/hostile/tengstalker
 	name = "tengolo stalker"
 	desc = "One of the local fauna native to the planet, peaceful except around insects and insectile creatures. This is one of the males, it looks like a large cat-like creature."
 	faction = "tengo"
@@ -237,15 +242,16 @@
 	emote_see = list("paws the ground.","shakes its mane.","stomps.")
 	emote_hear = list("snuffles")
 	meat_amount = 3
-	mob_size = 10
+	mob_size = MOB_MEDIUM
 	resistance = 5
 	pixel_x = -16
 	leather_amount = 4
 	bones_amount = 4
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
+	research_value = 575
 
-/mob/living/simple_animal/hostile/tengcharge
+/mob/living/simple/hostile/tengcharge
 	name = "tengolo charger"
 	desc = "One of the local fauna native to the planet, peaceful except around insects and insectile creatures. This is one of the females, it looks like an elk mixed with a warthog."
 	faction = "tengo"
@@ -268,15 +274,17 @@
 	speak = list("Hruuugh!","Hrunnph")
 	emote_see = list("paws the ground.","shakes its mane.","stomps.")
 	emote_hear = list("snuffles")
+	meat_type = /obj/item/reagent_containers/snacks/meat/pork // Since half warthog, and its evolutions are pig-oriented. Don't make me code/sprite venison meat next, please... - Seb
 	meat_amount = 3
-	mob_size = 10
+	mob_size = MOB_MEDIUM
 	resistance = 3
 	leather_amount = 4
 	bones_amount = 4
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/wolf_tooth)
+	research_value = 200
 
-/mob/living/simple_animal/hostile/helldiver
+/mob/living/simple/hostile/helldiver
 	name = "hell diver"
 	desc = "One of the local fauna native to the planet, nicknamed hell diver by lonestar miners. They're usually friendly and highly valued by \
 	miners as potential companions as they don't mind being led around, love food, and tend to rush after hostile life before a miner can see it. They have \
@@ -303,9 +311,11 @@
 	speak = list("chitters!","chitter")
 	emote_see = list("scratches at the ground.","gives a small snuffle.","hops back and forth.")
 	emote_hear = list("chitters.")
-	meat_amount = 2
-	mob_size = 5
+	meat_type = /obj/item/reagent_containers/snacks/meat/pork
+	meat_amount = 2 // Undomesticated, and underfed compared to a lodge cerberus, thus less meat.
+	mob_size = MOB_SMALL
 	resistance = 10
+	sanity_damage = -1
 	//Feed to lead
 	hunger_enabled = 1//If set to 0, a creature ignores hunger
 	metabolic_factor = 0.5//A multiplier on how fast nutrition is lost. used to tweak the rates on a per-animal basis
@@ -316,14 +326,16 @@
 	bones_amount = 6
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/helldiver_tooth)
+	inherent_mutations = list(MUTATION_MKNEWAIFUHAIR)
+	research_value = 750
 
-/mob/living/simple_animal/hostile/helldiver/FindTarget()
+/mob/living/simple/hostile/helldiver/FindTarget()
 	. = ..()
 	if(.)
 		visible_emote("lets out a gutteral chitter in warning!")
 		playsound(src, 'sound/voice/hiss4.ogg', 50, 1, -3)
 
-/mob/living/simple_animal/hostile/retaliate/hakhma
+/mob/living/simple/hostile/retaliate/hakhma
 	name = "hakhma beetle"
 	desc = "One of the local fauna native to the planet, a large ornery beetle who doesn't get along with anything but roaches. Mostly peaceful, unless you give it a reason to be hostile."
 	faction = "roach"
@@ -347,11 +359,11 @@
 	emote_see = list("flutters its wings.","twitches its antenna.","stomps.")
 	emote_hear = list("gronks.")
 	meat_amount = 3
-	mob_size = 20
+	mob_size = MOB_MEDIUM
 	resistance = 15
 
 // Credit to scar#1579 for the sprite.
-/mob/living/simple_animal/hostile/retaliate/tahca
+/mob/living/simple/hostile/retaliate/tahca
 	name = "tahca"
 	desc = "A cervine creature, surprisingly native to this planet, that resembles a two-headed deer. Despite what one would expect, while docile in nature, it is more than willing to fight if attacked. Hunters value \
 	these beasts for their antlers, both as trophies of value and for medicine."
@@ -378,6 +390,7 @@
 	meat_amount = 3
 	leather_amount = 6
 	bones_amount = 6
-	mob_size = 20
+	mob_size = MOB_MEDIUM
 	has_special_parts = TRUE
 	special_parts = list(/obj/item/animal_part/tahca_antler)
+	research_value = 500

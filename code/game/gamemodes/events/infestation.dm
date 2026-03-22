@@ -19,16 +19,17 @@ It focuses on spawning large numbers of moderate-to-weak monsters, and includes 
 //============================================
 
 
-#define INFESTATION_MICE "mice"
-#define INFESTATION_LIZARDS "lizards"
+//#define INFESTATION_MICE "mice"
+//#define INFESTATION_LIZARDS "lizards"
 #define INFESTATION_SPACE_BATS "bats"
 #define INFESTATION_SPIDERLINGS "spiderlings"
 #define INFESTATION_SPIDERS "spider"
 #define INFESTATION_ROACHES "large insects"
+#define INFESTATION_TERMIE "large burrowing insects"
 #define INFESTATION_HIVEBOTS "ancient synthetics"
 #define INFESTATION_SLIMES "slimes"
-#define INFESTATION_YITHIAN "yithian"
-#define INFESTATION_TINDALOS "tindalos"
+//#define INFESTATION_YITHIAN "yithian"
+//#define INFESTATION_TINDALOS "tindalos"
 #define INFESTATION_DIYAAB "diyaab"
 #define INFESTATION_SAMAK "samak"
 #define INFESTATION_SHANTAK "shantak"
@@ -46,21 +47,22 @@ It focuses on spawning large numbers of moderate-to-weak monsters, and includes 
 	var/infestation_time = 3 MINUTES
 	var/list/chosen_mob_classification = list()
 	var/list/possible_mobs_mundane = list(
-		INFESTATION_MICE = 17,
-		INFESTATION_LIZARDS = 12,
-		INFESTATION_SPIDERLINGS = 8,
-		INFESTATION_YITHIAN = 6,
-		INFESTATION_TINDALOS = 6,
+//		INFESTATION_MICE = 17,
+//		INFESTATION_LIZARDS = 12,
+		INFESTATION_SPIDERLINGS = 10,
+//		INFESTATION_YITHIAN = 6,
+//		INFESTATION_TINDALOS = 6,
 		INFESTATION_DIYAAB = 6,
-		INFESTATION_SPACE_BATS = 7
+		INFESTATION_SPACE_BATS = 7,
+		INFESTATION_TERMIE = 12
 	)
 
 	var/possible_mobs_moderate = list(
 		INFESTATION_SPACE_BATS = 10,
 		INFESTATION_SAMAK = 5,
 		INFESTATION_SHANTAK = 7,
-		INFESTATION_SPIDERS = 7,//This is a combination of spiderlings and adult spiders
-		INFESTATION_ROACHES = 7
+		INFESTATION_SPIDERS = 10,//This is a combination of spiderlings and adult spiders
+		INFESTATION_ROACHES = 14
 	)
 
 	var/possible_mobs_major = list(
@@ -149,20 +151,22 @@ It focuses on spawning large numbers of moderate-to-weak monsters, and includes 
 		if(INFESTATION_HIVEBOTS)
 			event_name = "Minor Hivebot Invasion"
 			chosen_verb = "have invaded"
-			chosen_mob_classification += /mob/living/simple_animal/hostile/hivebot
-			chosen_mob_classification += /mob/living/simple_animal/hostile/hivebot/range
+			chosen_mob_classification += /mob/living/simple/hostile/hivebot
+			chosen_mob_classification += /mob/living/simple/hostile/hivebot/range
 		if(INFESTATION_SPACE_BATS)
 			event_name = "Bat Roost"
 			chosen_verb = "have been roosting in"
-			chosen_mob_classification += /mob/living/simple_animal/hostile/scarybat
+			chosen_mob_classification += /mob/living/simple/hostile/scarybat
+			/*
 		if(INFESTATION_LIZARDS)
 			event_name = "Lizard Nest"
 			chosen_verb = "have been breeding in"
-			chosen_mob_classification += /mob/living/simple_animal/lizard
+			chosen_mob_classification += /mob/living/simple/lizard
 		if(INFESTATION_MICE)
 			event_name = "Mouse Nest"
 			chosen_verb = "have been breeding in"
-			chosen_mob_classification += /mob/living/simple_animal/mouse //Mice pick random colors on spawn
+			chosen_mob_classification += /mob/living/simple/mouse //Mice pick random colors on spawn
+			*/
 		if(INFESTATION_SLIMES)
 			event_name = "Slime Leak"
 			chosen_verb = "have leaked into"
@@ -172,6 +176,7 @@ It focuses on spawning large numbers of moderate-to-weak monsters, and includes 
 			chosen_verb = "have burrowed into"
 			chosen_mob_classification[/obj/effect/spider/spiderling] = 1
 			chosen_mob_classification[/obj/effect/spider/eggcluster] = 0.2
+			chosen_mob_classification[/obj/structure/spider_nest] = 0.1
 		if(INFESTATION_SPIDERS)
 			event_name = "Spider Infestation"
 			chosen_verb = "have burrowed into"
@@ -180,21 +185,25 @@ It focuses on spawning large numbers of moderate-to-weak monsters, and includes 
 			event_name = "Giant Roach Infestation"
 			chosen_verb = "have burrowed into"
 			chosen_mob_classification += /obj/random/mob/roaches
-		if(INFESTATION_YITHIAN)
+		if(INFESTATION_TERMIE)
+			event_name = "Giant Termite Infestation"
+			chosen_verb = "have burrowed into"
+			chosen_mob_classification += /obj/random/mob/termite_no_despawn
+/*		if(INFESTATION_YITHIAN)
 			unidentified = TRUE
-			chosen_mob_classification += /mob/living/simple_animal/yithian
+			chosen_mob_classification += /mob/living/simple/yithian
 		if(INFESTATION_TINDALOS)
 			unidentified = TRUE
-			chosen_mob_classification += /mob/living/simple_animal/tindalos
+			chosen_mob_classification += /mob/living/simple/tindalos*/
 		if(INFESTATION_SAMAK)
 			unidentified = TRUE
-			chosen_mob_classification += /mob/living/simple_animal/hostile/samak
+			chosen_mob_classification += /mob/living/simple/hostile/samak
 		if(INFESTATION_SHANTAK)
 			unidentified = TRUE
-			chosen_mob_classification += /mob/living/simple_animal/hostile/shantak
+			chosen_mob_classification += /mob/living/simple/hostile/shantak
 		if(INFESTATION_DIYAAB)
 			unidentified = TRUE
-			chosen_mob_classification += /mob/living/simple_animal/hostile/diyaab
+			chosen_mob_classification += /mob/living/simple/hostile/diyaab
 
 	//Chance for identification to fail even for normal mobs, to frustrate metagamers
 	if (prob(15))

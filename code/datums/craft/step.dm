@@ -15,7 +15,8 @@
 	var/end_msg = ""
 	var/tool_name
 	var/list/craft_items = list()
-
+	/// gets set during asset init
+	var/iconfile = ""
 
 /datum/craft_step/New(list/params, datum/craft_recipe/parent)
 	var/max_params = 2
@@ -61,7 +62,24 @@
 	else if(reqed_material)
 		var/material/M = get_material_by_name("[reqed_material]")
 		tool_name = "units of [M.display_name]"
-	make_desc()
+
+/datum/craft_step/ui_data(mob/user)
+	var/list/data = list()
+
+	data["amt"] = req_amount
+	data["tool_name"] = tool_name
+	data["reqed_material"] = reqed_material
+
+	data["icon"] = null
+	if(reqed_type)
+		var/datum/asset/spritesheet/crafting/sprites = get_asset_datum(/datum/asset/spritesheet/crafting)
+		data["icon"] = sprites.icon_class_name(sanitize_css_class_name("[reqed_type]"))
+	else if(reqed_material)
+		var/material/M = get_material_by_name("[reqed_material]")
+		var/datum/asset/spritesheet_batched/materials/sprites = get_asset_datum(/datum/asset/spritesheet_batched/materials)
+		data["icon"] = sprites.icon_class_name(sanitize_css_class_name("[M.stack_type]"))
+
+	return data
 
 /datum/craft_step/proc/make_desc(obj/item/craft/C)
 	var/amt = req_amount
@@ -70,6 +88,18 @@
 			craft_items[C] = req_amount
 		amt = craft_items[C]
 
+	var/icon = ""
+	if(SSassets.initialized)
+		if(reqed_type)
+			var/datum/asset/spritesheet/crafting/sprites = get_asset_datum(/datum/asset/spritesheet/crafting)
+			var/css = sprites.icon_class_name(sanitize_css_class_name("[reqed_type]"))
+			icon = " <span style=\"margin-bottom:-8px\" class=\"[css]\" height=\"24\" width=\"24\"></span>"
+		else if(reqed_material)
+			var/material/M = get_material_by_name("[reqed_material]")
+			var/datum/asset/spritesheet_batched/materials/sprites = get_asset_datum(/datum/asset/spritesheet_batched/materials)
+			var/css = sprites.icon_class_name(sanitize_css_class_name("[M.stack_type]"))
+			icon = " <span style=\"margin-bottom:-8px\" class=\"[css]\" height=\"24\" width=\"24\"></span>"
+
 	switch(amt)
 		if(0)
 			desc = "Apply [tool_name]"
@@ -77,13 +107,13 @@
 			end_msg = "%USER% applied %ITEM% to %TARGET%"
 		if(1)
 			if(reqed_material)
-				desc = "Attach [amt] [tool_name] <img style='margin-bottom:-8px' src= [sanitizeFileName("[material_stack_type(reqed_material)].png")] height=24 width=24>"
+				desc = "Attach [amt] [tool_name][icon]"
 			else
-				desc = "Attach [tool_name] <img style='margin-bottom:-8px' src= [sanitizeFileName("[reqed_type].png")] height=24 width=24>"
+				desc = "Attach [tool_name][icon]"
 			start_msg = "%USER% starts attaching %ITEM% to %TARGET%"
 			end_msg = "%USER% attached %ITEM% to %TARGET%"
 		else
-			desc = "Attach [amt] [tool_name] <img style='margin-bottom:-8px' src= [reqed_type ? sanitizeFileName("[reqed_type].png") : sanitizeFileName("[material_stack_type(reqed_material)].png")] height=24 width=24>"
+			desc = "Attach [amt] [tool_name][icon]"
 			start_msg = "%USER% starts attaching %ITEM% to %TARGET%"
 			end_msg = "%USER% attached %ITEM% to %TARGET%"
 
@@ -137,6 +167,14 @@
 			building = FALSE
 			return
 
+		//Prevents folks deleting closets to get around opening them
+		if(istype(I, /obj/structure/closet))
+			var/obj/structure/closet/C = I
+			if(!C.opened)
+				to_chat(user, SPAN_WARNING("[I] must be opened to craft with!"))
+				building = FALSE
+				return
+
 		if(req_amount && istype(I, /obj/item/stack))
 			var/obj/item/stack/S = I
 			if(S.get_amount() < req_amount)
@@ -152,7 +190,7 @@
 			return
 
 	else if(reqed_quality)
-		if(!istype(I,/obj/item/tool))
+		if(!istype(I,/obj/item/tool) && !istype(I,/obj/item/mecha_parts/mecha_equipment)) //Making it so mech equipment can also craft
 			to_chat(user, SPAN_WARNING("You need to use a tool to complete this step."))
 			building = FALSE
 			return
@@ -163,7 +201,7 @@
 			return
 		if(target)
 			announce_action(start_msg, user, I, target)
-		if(!I.use_tool(user, target || user, time, reqed_quality, FAILCHANCE_NORMAL, list(STAT_MEC, STAT_COG)))
+		if(!I.use_tool(user, target || user, time, reqed_quality, FAILCHANCE_NORMAL, list(STAT_MEC, STAT_COG))) //FIXME: up here we pass a list down to getStat, which expects no list
 			to_chat(user, SPAN_WARNING("Work aborted"))
 			building = FALSE
 			return

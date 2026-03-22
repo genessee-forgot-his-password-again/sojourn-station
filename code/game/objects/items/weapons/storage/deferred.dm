@@ -51,13 +51,13 @@
 	populate_contents()
 	. = ..()
 
-
 /obj/item/storage/deferred/rations //DO this before merging
 	name = "infantryman's rations kit"
 	icon_state = "irp_box"
 	item_state = "irp_box"
 	w_class = ITEM_SIZE_HUGE
 	desc = "A box of preserved, ready-to-eat food for soldiers and spacefarers on the go."
+	can_hold = list(/obj/item/storage/ration_pack)
 	initial_contents = list(/obj/item/storage/ration_pack = 7)
 
 
@@ -65,6 +65,7 @@
 	name = "tool modifications kit"
 	desc = "A sturdy container full of contraptions, bits of material, components and add-ons for modifying tools."
 	icon_state = "box_tools"
+	can_hold = list(/obj/random/tool_upgrade, /obj/random/tool_upgrade/rare)
 	initial_contents = list(/obj/random/tool_upgrade = 12,
 	/obj/random/tool_upgrade/rare = 3)
 
@@ -72,24 +73,29 @@
 /obj/item/storage/deferred/pouches
 	name = "uniform modification kit"
 	desc = "A box full of hard-wearing pouches designed for easy attachment to clothing and armor. Good for carrying extra ammo or tools in the field."
+	can_hold = list(/obj/random/pouch, /obj/item/storage/pouch/pistol_holster)
 	initial_contents = list(/obj/random/pouch = 8, /obj/item/storage/pouch/pistol_holster = 1)
 	//One guaranteed holster and plenty of randoms
 
 /obj/item/storage/deferred/comms
 	name = "communications kit"
 	desc = "A box full of radios and beacons"
+	can_hold = list(/obj/item/device/radio/beacon, /obj/item/device/radio)
 	initial_contents = list(/obj/item/device/radio/beacon = 6, /obj/item/device/radio = 6)
 
 /obj/item/storage/deferred/lights
 	name = "illumination kit"
 	desc = "A box of flares and flashlights"
+	can_hold = list(/obj/item/device/lighting/glowstick/flare, /obj/item/device/lighting/toggleable/flashlight/heavy)
 	initial_contents = list(/obj/item/device/lighting/glowstick/flare = 20, /obj/item/device/lighting/toggleable/flashlight/heavy = 6)
 
 /obj/item/storage/deferred/music
 	name = "morale kit"
 	desc = "All that's required to unite nation, compacted within single box."
 	icon_state = "box_serbian"
+	can_hold = list(/obj/item/device/synthesized_instrument/trumpet)
 	initial_contents = list(/obj/item/device/synthesized_instrument/trumpet = 1) //TODO: Add an accordian to this, sprites already made.
+
 
 //Medical
 /obj/item/storage/deferred/surgery
@@ -98,15 +104,16 @@
 	icon_state = "combat_surgery_kit"
 	item_state = "combat_surgery_kit"
 	initial_contents = list(
-		/obj/item/tool/bonesetter,
+		/obj/item/tool/bonesetter/adv,
 		/obj/item/tool/saw/circular/medical,
 		/obj/item/tool/hemostat/adv,
 		/obj/item/tool/retractor/adv,
 		/obj/item/tool/scalpel/laser,
 		/obj/item/tool/tape_roll/bonegel,
+		/obj/item/tool/surgicaldrill/adv,
 		/obj/item/reagent_containers/syringe/stim/ultra_surgeon,
 		/obj/item/storage/pill_bottle/tramadol,
-		/obj/item/stack/medical/advanced/bruise_pack
+		/obj/item/stack/medical/bruise_pack/advanced
 		)
 	can_hold = list(
 		/obj/item/tool/bonesetter,
@@ -114,10 +121,11 @@
 		/obj/item/tool/hemostat,
 		/obj/item/tool/retractor,
 		/obj/item/tool/scalpel,
+		/obj/item/tool/surgicaldrill,
 		/obj/item/tool/tape_roll/bonegel,
 		/obj/item/reagent_containers/syringe, //We hold any syringe.
 		/obj/item/storage/pill_bottle, //We hold pill bottles as well
-		/obj/item/stack/medical/advanced/bruise_pack
+		/obj/item/stack/medical/bruise_pack/advanced
 		)
 
 /obj/item/storage/deferred/meds
@@ -128,9 +136,10 @@
 	initial_contents = list(/obj/item/storage/pill_bottle/bicaridine,
 	/obj/item/storage/pill_bottle/dermaline,
 	/obj/item/storage/pill_bottle/dexalin_plus,
-	/obj/item/storage/pill_bottle/dylovene,
+	/obj/item/storage/pill_bottle/carthatoline,
 	/obj/item/storage/pill_bottle/tramadol,
 	/obj/item/storage/pill_bottle/spaceacillin,
+	/obj/item/reagent_containers/hypospray/autoinjector/sanguinum,
 	/obj/item/stack/medical/splint)
 
 //Crates
@@ -149,7 +158,7 @@
 
 /obj/item/storage/deferred/crate/saw
 	name = "infantry support crate"
-	desc = "A crate containing two Pulemyot Kalashnikova light machine guns, and 640 rounds of 7.5mm ammunition."
+	desc = "A crate containing two Pulemyot Kalashnikova light machine guns, and 640 rounds of 7.62mm ammunition."
 	icon_state = "serbcrate_deferred_green"
 	initial_contents = list(/obj/item/gun/projectile/automatic/lmg/pk = 2,
 	/obj/item/ammo_magazine/rifle_75_linked_box = 8)
@@ -174,7 +183,8 @@
 	name = "demolitions crate"
 	icon_state = "serbcrate_deferred_black"
 	desc = "A crate containing one \"RPG-7\" launcher, and twelve 40mm PG-7VL warheads."
-	initial_contents = list(/obj/item/ammo_casing/rocket = 12,
+	initial_contents = list(/obj/item/ammo_casing/rocket = 9,
+	/obj/item/ammo_casing/rocket/emp = 3,
 	/obj/item/storage/pouch/tubular = 1,
 	/obj/item/gun/projectile/rpg = 1,
 	/obj/item/storage/pouch/tubular = 1)
@@ -198,9 +208,9 @@
 
 /obj/item/storage/deferred/crate/sidearm
 	name = "sidearm crate"
-	desc = "A crate containing six Makarov .35 pistols, 200 rounds of ammunition, and six fixed-blade combat knives."
+	desc = "A crate containing six Makarov 9mm pistols, 200 rounds of ammunition, and six fixed-blade combat knives."
 	icon_state = "serbcrate_deferred_green"
-	initial_contents = list(/obj/item/gun/projectile/clarissa/makarov = 6,
+	initial_contents = list(/obj/item/gun/projectile/makarov = 6,
 	/obj/item/ammo_magazine/highcap_pistol_35  = 20,
 	/obj/item/tool/knife/boot = 6)
 
@@ -216,7 +226,24 @@
 	icon_state = "serbcrate_deferred_worn"
 	initial_contents = list(/obj/random/booze = 10,
 	/obj/random/booze/low_chance = 10,
-	/obj/item/reagent_containers/food/drinks/bottle/vodka = 3)
+	/obj/item/reagent_containers/drinks/bottle/vodka = 3)
+
+//SERBIAN-YUNANI UNIFORM CRATES
+
+/obj/item/storage/deferred/crate/uniform_mardinat
+	name = "worn uniform kit"
+	desc = "A moderately sized crate full of clothes. Hastily painted green stripes adorn the box."
+	icon_state = "mardcrate_deferred"
+	initial_contents = list(
+	/obj/item/clothing/under/serbiansuit/brown = 1,
+	/obj/item/clothing/head/soft/tan2soft = 1,
+	/obj/item/clothing/suit/armor/platecarrier = 1,
+	/obj/item/clothing/head/helmet/faceshield/altyn/mardinat_yunan = 1,
+	/obj/item/clothing/mask/balaclava/tactical = 1,
+	/obj/item/clothing/shoes/jackboots = 1,
+	/obj/item/clothing/gloves/fingerless = 1,
+	/obj/item/clothing/accessory/passcard/mardinat_yunan = 1,
+	/obj/item/clothing/accessory/flag/mardinat_yunan = 1)
 
 /obj/item/storage/deferred/crate/uniform_green
 	name = "green uniform kit"
@@ -225,7 +252,7 @@
 	initial_contents = list(
 	/obj/item/clothing/under/serbiansuit = 1,
 	/obj/item/clothing/head/soft/green2soft = 1,
-	/obj/item/clothing/suit/armor/platecarrier/green = 1,
+	/obj/item/clothing/suit/armor/platecarrier = 1,
 	/obj/item/clothing/head/helmet/faceshield/altyn = 1,
 	/obj/item/clothing/mask/balaclava/tactical = 1,
 	/obj/item/clothing/shoes/jackboots = 1,
@@ -238,8 +265,8 @@
 	initial_contents = list(
 	/obj/item/clothing/under/serbiansuit/brown = 1,
 	/obj/item/clothing/head/soft/tan2soft = 1,
-	/obj/item/clothing/suit/armor/platecarrier/tan = 1,
-	/obj/item/clothing/head/helmet/faceshield/altyn/brown = 1,
+	/obj/item/clothing/suit/armor/platecarrier = 1,
+	/obj/item/clothing/head/helmet/faceshield/altyn = 1,
 	/obj/item/clothing/mask/balaclava/tactical = 1,
 	/obj/item/clothing/shoes/jackboots = 1,
 	/obj/item/clothing/gloves/fingerless = 1)
@@ -251,11 +278,11 @@
 	initial_contents = list(
 	/obj/item/clothing/under/serbiansuit/black = 1,
 	/obj/item/clothing/suit/armor/platecarrier = 1,
-	/obj/item/clothing/head/helmet/faceshield/altyn/black = 1,
+	/obj/item/clothing/head/helmet/faceshield/altyn = 1,
 	/obj/item/clothing/mask/balaclava/tactical = 1,
 	/obj/item/clothing/shoes/jackboots = 1,
 	/obj/item/clothing/gloves/fingerless = 1,
-	/obj/item/reagent_containers/food/drinks/bottle/vodka = 1)
+	/obj/item/reagent_containers/drinks/bottle/vodka = 1)
 
 /obj/item/storage/deferred/crate/uniform_flak
 	name = "flak serbian uniform crate"
@@ -263,7 +290,7 @@
 	icon_state = "serbcrate_deferred_worn"
 	initial_contents = list(
 	/obj/item/clothing/under/serbiansuit = 1,
-	/obj/item/clothing/suit/armor/flackvest/green = 1,
+	/obj/item/clothing/suit/armor/flakvest = 1,
 	/obj/item/clothing/head/helmet/faceshield/altyn/maska = 1,
 	/obj/item/clothing/mask/balaclava/tactical = 1,
 	/obj/item/clothing/shoes/jackboots = 1,
@@ -277,7 +304,7 @@
 	initial_contents = list(
 	/obj/item/clothing/under/serbiansuit = 1,
 	/obj/item/clothing/head/soft/green2soft = 1,
-	/obj/item/clothing/suit/armor/flackvest = 1,
+	/obj/item/clothing/suit/armor/flakvest = 1,
 	/obj/item/clothing/head/helmet/steelpot = 1,
 	/obj/item/clothing/shoes/jackboots = 1,
 	/obj/item/clothing/gloves/fingerless = 1,
@@ -300,7 +327,7 @@
 	name = "excelsior crate"
 	desc = "A crate containing everything you need for the revolution."
 	icon_state = "exc_deferred"
-	initial_contents = list(/obj/item/gun/projectile/clarissa/makarov = 2,
+	initial_contents = list(/obj/item/gun/projectile/makarov = 2,
 	/obj/item/ammo_magazine/highcap_pistol_35  = 4,
 	/obj/item/tool/knife/boot = 1,
 	/obj/item/circuitboard/excelsior_teleporter = 1,
@@ -312,7 +339,6 @@
 	/obj/item/clothing/under/excelsior = 1,
 	/obj/item/gun/matter/launcher/reclaimer = 1,
 	/obj/item/storage/toolbox/syndicate = 1,
-	/obj/item/device/radio/headset/uplink = 1,
 	/obj/item/storage/toolbox/electrical = 1,
 	/obj/item/clothing/shoes/combat = 1,
 	/obj/item/clothing/gloves/thick/combat = 1,
@@ -322,47 +348,19 @@
 	/obj/item/storage/backpack = 1,
 	/obj/item/storage/backpack/satchel = 1)
 
-// Lunchboxes
-// These will be later used for the Lemniscate abilities that will be added. They do not have icon sprites yet however. - Kaz
-/obj/item/storage/deferred/meatbox
-	name = "lunchbox: Pork Katsu"
-	desc = "A hand-made lunch box, locally sourced from the colony's gardens. This one is painted with a very happy looking pig. "
-	icon_state = "box_meat"
-	initial_contents = list(/obj/item/reagent_containers/food/snacks/katsudon = 1,
-	/obj/item/reagent_containers/food/snacks/tossedsalad = 1,
-	/obj/item/reagent_containers/food/drinks/cans/cahors = 1)
-
-/obj/item/storage/deferred/mushbox
-	name = "lunchbox: Mushroom Suprise"
-	desc = "A hand made lunch box, locally sourced from the colony's gardens. This one is painted with a field of purple mushrooms. "
-	icon_state = "box_mushroom"
-	initial_contents = list(/obj/item/reagent_containers/food/snacks/plumphelmetbiscuit = 1,
-	/obj/item/reagent_containers/food/snacks/mushroomsoup = 1,
-	/obj/item/reagent_containers/food/drinks/cans/cahors = 1)
-
-/obj/item/storage/deferred/grainbox
-	name = "lunchbox: Bread and Cheese"
-	desc = "A hand made lunch box, locally sourced from the colony's gardens. This one is painted with rolling fields of grain. "
-	icon_state = "box_veg"
-	initial_contents = list(/obj/item/reagent_containers/food/snacks/cheesewedge = 1,
-	/obj/item/reagent_containers/food/snacks/baguette = 1,
-	/obj/item/reagent_containers/food/drinks/cans/cahors = 1)
-
 
 // TRADE
 
-// Gambling - markup = 10
+// Gambling
 /obj/item/storage/deferred/disks
 	name = "autolathe disk box"
 	desc = "A small collection of autolathe disks"
 	initial_contents = list(/obj/random/lathe_disk = 7)
-	price_tag = 300
 
-///obj/item/storage/deferred/gun_parts
-//	name = "gun part box"
-//	desc = "Uppers, lowers, and everything in between"
-//	initial_contents = list(/obj/spawner/gun_parts = 7)
-//	price_tag = 300
+/obj/item/storage/deferred/gun_parts
+	name = "gun part box"
+	desc = "Uppers, lowers, and everything in between"
+	initial_contents = list(/obj/random/gun_parts = 7)
 
 /obj/item/storage/deferred/powercells
 	name = "powercell box"
@@ -370,15 +368,95 @@
 	initial_contents = list(/obj/random/powercell/large_safe = 2,
 							/obj/random/powercell/medium_safe = 2,
 							/obj/random/powercell/small_safe = 3)
-	price_tag = 500
 
 /obj/item/storage/deferred/electronics
 	name = "circuit board box"
 	desc = "A small collection of circuit boards"
 	initial_contents = list(/obj/random/circuitboard = 7)
-	price_tag = 500
 
-// Kitchen supply - markup = 1.2
+/obj/item/storage/deferred/science
+	name = "scientific things box"
+	desc = "A small collection of scientific items."
+	initial_contents = list(/obj/random/science = 7)
+
+/obj/item/storage/deferred/rig
+	name = "hardsuit box"
+	desc = "They put a RIG in a box."
+	price_tag = 200 //*5 at casino beacon
+	initial_contents = list(/obj/random/rig = 1)
+
+/obj/item/storage/deferred/toolmods
+	name = "toolmod box"
+	desc = "An assortment of some toolmods."
+	price_tag = 150
+	initial_contents = list(/obj/random/tool_upgrade = 5)
+
+/obj/item/storage/deferred/medical
+	name = "medical supply box"
+	desc = "An assortment of some bandages, medicines."
+	initial_contents = list(/obj/random/medical/always_spawn = 7)
+
+/obj/item/storage/deferred/tools
+	name = "tools box"
+	desc = "A small collection of tools."
+	price_tag = 120
+	initial_contents = list(/obj/random/tool = 7)
+
+// Trade, but specified
+// Med
+/obj/item/storage/deferred/triage
+	name = "triage autoinjector kit"
+	desc = "An assorted container of useful medical autoinjectors meant to alleviate minor wounds."
+	initial_contents = list(/obj/item/reagent_containers/hypospray/autoinjector/bicaridine = 2,
+	/obj/item/reagent_containers/hypospray/autoinjector/kelotane = 2,
+	/obj/item/reagent_containers/hypospray/autoinjector/antitoxin = 2,
+	/obj/item/reagent_containers/hypospray/autoinjector/dexalin = 2
+	)
+
+/obj/item/storage/deferred/bandages
+	name = "box of bandages"
+	desc = "A container packed with gauze, for packing wounds with gauze."
+	initial_contents = list(/obj/item/stack/medical/bruise_pack = 6)
+
+/obj/item/storage/deferred/ointment
+	name = "box of ointment"
+	desc = "A container filled with tubes of ointment."
+	initial_contents = list(/obj/item/stack/medical/ointment = 6)
+
+//Gear (Emergency supplies), as an "Oh fuck a [insert threat] appeared and absolutely no one is prepared to fight it." response by Lonestar. Alternatively, could probably be used to gear up prospies that manage to lose their gear.
+/obj/item/storage/deferred/crate/infantry_rifle
+	name = "infantry rifle kit"
+	desc = "A (relatively) lightweight crate containing everything to arm a colonist (to the bare minimum.)"
+	initial_contents = list(/obj/item/gun/projectile/boltgun/lever,
+	/obj/item/ammo_magazine/ammobox/magnum_40 = 2
+	) // No magnum rifle speedloaders, just throwing an extra box in there.
+
+/obj/item/storage/deferred/crate/infantry_armor
+	name = "infantry armor kit"
+	desc = "A (relatively) lightweight crate containing everything to armor a colonist (to the bare minimum.)"
+	initial_contents = list(/obj/item/clothing/suit/armor/vest,
+	/obj/item/clothing/gloves/thick/handmade,
+	/obj/item/clothing/shoes/jackboots,
+	/obj/item/clothing/head/helmet
+	)
+
+/obj/item/storage/deferred/crate/infantry_erifle // Kind of goofy how the most common laser rifle in the galaxy is locked behind S.I. or buying it very late stage Trade beacon DIRECTLY from G.P.
+	name = "infantry energy rifle kit"
+	desc = "A (relatively) lightweight crate containing everything to arm a colonist. With lasers (to the bare minimum.)"
+	initial_contents = list(/obj/item/gun/energy/cog,
+	/obj/item/cell/medium = 2 // Leave 'em craving literally anything better
+	)
+
+/obj/item/storage/deferred/havelock_box
+	name = "havelock personal defense kit"
+	desc = "Everything you need to technically be armed."
+	initial_contents = list(/obj/item/gun/projectile/revolver/detective,
+	/obj/item/ammo_magazine/speed_loader_pistol_35,
+	/obj/item/ammo_magazine/speed_loader_pistol_35/rubber,
+	/obj/item/ammo_magazine/ammobox/pistol_35,
+	/obj/item/ammo_magazine/ammobox/pistol_35/rubber
+	)
+// Kitchen supply
 /obj/item/storage/deferred/kitchen
 	name = "galley supply box"
 	desc = "A small collection of kitchen essentials"
@@ -387,14 +465,13 @@
 		/obj/item/tool/knife/butch = 1,
 		/obj/item/material/kitchen/rollingpin = 1,
 		/obj/item/packageWrap = 1,
-		/obj/item/reagent_containers/food/condiment/saltshaker = 1,
-		/obj/item/reagent_containers/food/condiment/peppermill = 1,
-		/obj/item/reagent_containers/food/condiment/cookingoil = 1,
-		/obj/item/reagent_containers/food/condiment/sugar = 1
+		/obj/item/reagent_containers/condiment/saltshaker = 1,
+		/obj/item/reagent_containers/condiment/peppermill = 1,
+		/obj/item/reagent_containers/condiment/cookingoil = 1,
+		/obj/item/reagent_containers/condiment/sugar = 1
 	)
-	price_tag = 350
 
-// MoeSci supply - markup = 3.6
+// MoeSci supply
 /obj/item/storage/deferred/slime
 	name = "slime supply box"
 	desc = "A slime startup kit"
@@ -403,7 +480,6 @@
 		/obj/item/extinguisher = 1,
 		/obj/item/storage/box/monkeycubes = 1
 	)
-	price_tag = 5000
 
 /obj/item/storage/deferred/xenobotany
 	name = "xenobotany supply box"
@@ -411,33 +487,29 @@
 	initial_contents = list(
 		/obj/item/seeds/random = 7
 	)
-	price_tag = 200
 
 /obj/item/storage/deferred/rnd
 	name = "research box"
 	desc = "A small collection of intellectual curiosities"
 	initial_contents = list(
-		/obj/item/computer_hardware/hard_drive/portable/research_points = 3,
-		/obj/item/computer_hardware/hard_drive/portable/research_points/rare = 1
+		/obj/item/pc_part/drive/disk/research_points/rare = 1
 	)
-	price_tag = 10000
 
-// Trapper - markup = 4.8
+// Trapper
 /obj/item/storage/deferred/roacheggs
 	name = "roach egg box"
 	desc = "A carton for eggs of the roach variety"
+	icon = 'icons/obj/food.dmi'
+	icon_state = "eggbox"
 	initial_contents = list(
 		/obj/item/roach_egg = 12
 	)
-	price_tag = 100
 
-// Serb - markup = 3.6
+// Serb
 /obj/item/storage/deferred/serb_rifle
 	name = "SA rifle pack"
 	desc = "A small collection of SA disks"
 	initial_contents = list(
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/sts40 = 1,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/sa_kalashnikov = 1,
-		/obj/item/computer_hardware/hard_drive/portable/design/guns/sa_pk = 1
+		/obj/item/pc_part/drive/disk/design/guns/sa_kalashnikov = 1,
+		/obj/item/pc_part/drive/disk/design/guns/sa_pk = 1
 	)
-	price_tag = 9000

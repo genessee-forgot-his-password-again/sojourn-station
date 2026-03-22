@@ -1,6 +1,6 @@
 /obj/item/gun/projectile/automatic/pitbull
 	name = "\"Pitbull\" carbine"
-	desc = "The M7 Pitbull is an older bullpup rifle model manufactured by \"Holland & Sullivan\" primarily for planetary defense forces and private military firms. It includes an underbarrel grenade launcher which is compatible with most modern grenade types. Uses .257 Carbine rounds."
+	desc = "The M7 Pitbull was an older bullpup rifle model manufactured by \"Sol Federation\" primarily for planetary defense forces and private military firms. It includes an underbarrel grenade launcher which is compatible with most modern grenade types. Uses 6.5mm Carbine rounds."
 	icon = 'icons/obj/guns/projectile/pitbull.dmi'
 	icon_state = "pitbull"
 	item_state = "pitbull"
@@ -12,17 +12,18 @@
 	price_tag = 1600
 	fire_sound = 'sound/weapons/guns/fire/batrifle_fire.ogg'
 	slot_flags = SLOT_BACK
-	load_method = MAGAZINE
-	mag_well = MAG_WELL_STANMAG
+	load_method = SINGLE_CASING|MAGAZINE
+	mag_well = MAG_WELL_RIFLE
 	unload_sound 	= 'sound/weapons/guns/interact/batrifle_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/batrifle_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/batrifle_cock.ogg'
-	recoil_buildup = 6
+	init_recoil = CARBINE_RECOIL(1)
 	penetration_multiplier = 1
 	damage_multiplier = 1.1
-	zoom_factor = 0.2
-	one_hand_penalty = 10 //bullpup rifle level
+	zoom_factors = list(0.2)
+	gun_parts = list(/obj/item/part/gun/frame/bulldog = 1, /obj/item/part/gun/grip/serb = 1, /obj/item/part/gun/mechanism/autorifle = 1, /obj/item/part/gun/barrel/srifle = 1)
 	gun_tags = list(GUN_PROJECTILE, GUN_MAGWELL)
+	serial_type = "Sol Fed"
 
 	init_firemodes = list(
 		SEMI_AUTO_NODELAY,
@@ -60,6 +61,18 @@
 	else
 		..()
 
+/obj/item/gun/projectile/automatic/pitbull/Initialize()
+	. = ..()
+	update_icon()
+
+
+/obj/item/gun/projectile/automatic/pitbull/examine(mob/user)
+	..()
+	if(launcher.loaded.len)
+		to_chat(user, "\The [launcher] has \a [launcher.chambered] loaded.")
+	else
+		to_chat(user, "\The [launcher] is empty.")
+
 /obj/item/gun/projectile/automatic/pitbull/update_icon()
 	..()
 
@@ -74,6 +87,11 @@
 
 	if(wielded)
 		itemstring += "_doble"
+
+	if (silenced)
+		iconstring += "_s"
+		itemstring += "_s"
+
 	icon_state = iconstring
 	set_item_state(itemstring)
 
@@ -81,10 +99,3 @@
 	. = ..()
 	update_icon()
 
-
-/obj/item/gun/projectile/automatic/pitbull/examine(mob/user)
-	..()
-	if(launcher.loaded.len)
-		to_chat(user, "\The [launcher] has \a [launcher.chambered] loaded.")
-	else
-		to_chat(user, "\The [launcher] is empty.")

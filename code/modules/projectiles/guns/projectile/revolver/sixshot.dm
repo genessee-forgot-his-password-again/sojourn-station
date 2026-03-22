@@ -9,15 +9,29 @@
 	caliber = CAL_SHOTGUN
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 2)
 	max_shells = 6
-	fire_sound = 'sound/weapons/guns/fire/shotgunp_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
 	matter = list(MATERIAL_PLASTEEL = 20, MATERIAL_WOOD = 15, MATERIAL_STEEL = 5)
 	price_tag = 500
 	damage_multiplier = 0.8
-	recoil_buildup = 15
-	one_hand_penalty = 30
+	init_recoil = RIFLE_RECOIL(2)
 	saw_off = TRUE
 	sawn = /obj/item/gun/projectile/revolver/sixshot/sawn
 	gun_tags = list(GUN_PROJECTILE, GUN_INTERNAL_MAG, GUN_REVOLVER)
+	serial_type = "SA"
+
+	wield_delay = 1 SECOND
+	wield_delay_factor = 0.4 // 40 vig
+	gun_parts = list(/obj/item/part/gun/frame/sixshot = 1, /obj/item/part/gun/grip/wood = 1, /obj/item/part/gun/mechanism/revolver = 1, /obj/item/part/gun/barrel/shotgun = 1)
+
+/obj/item/part/gun/frame/sixshot
+	name = "Six-Shot frame"
+	desc = "A Six-Shot revolving shotgun frame. Classy."
+	icon_state = "frame_revolver"
+	result = /obj/item/gun/projectile/revolver/sixshot
+	resultvars = list(/obj/item/gun/projectile/revolver/sixshot)
+	gripvars = list(/obj/item/part/gun/grip/wood)
+	mechanismvar = /obj/item/part/gun/mechanism/revolver
+	barrelvars = list(/obj/item/part/gun/barrel/shotgun)
 
 /obj/item/gun/projectile/revolver/sixshot/conversion
 	name = "\"Ten-Shot\" conversion shotgun"
@@ -28,9 +42,9 @@
 	max_shells = 10
 	matter = list(MATERIAL_PLASTEEL = 24, MATERIAL_WOOD = 15, MATERIAL_STEEL = 5)
 	price_tag = 600
-	recoil_buildup = 12 // Added weight for better control.
-	one_hand_penalty = 50 // But now its unwieldy as fuck. -Kaz
+	init_recoil = RIFLE_RECOIL(3)
 	saw_off = FALSE
+	serial_type = "AG"
 
 /obj/item/gun/projectile/revolver/sixshot/update_icon()
 	var/iconstring = initial(icon_state)
@@ -53,5 +67,9 @@
 	price_tag = 250
 	damage_multiplier = 0.7
 	penetration_multiplier = 0.8
-	recoil_buildup = 20 //Still a shotgun
-	one_hand_penalty = 26
+	init_recoil = RIFLE_RECOIL(2.3)
+
+	wield_delay = 0.8 SECOND
+	wield_delay_factor = 0.6 // 60 vig
+	gun_parts = list( /obj/item/part/gun/grip/wood = 1, /obj/item/part/gun/mechanism/revolver = 1, /obj/item/stack/material/plasteel = 2)
+
