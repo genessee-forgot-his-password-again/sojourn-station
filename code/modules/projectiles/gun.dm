@@ -329,7 +329,7 @@
 				qdel(src)
 			return FALSE
 
-	if(excelsior)
+/*	if(excelsior)
 		if(!is_excelsior(M) && prob(60 - min(user.stat_check(STAT_COG), 59)))
 			var/obj/P = consume_next_projectile()
 			if(P)
@@ -344,7 +344,7 @@
 				if(prob(60 - user.stat_check(STAT_COG)))
 					explosion(get_turf(src), 1, 2, 3, 3)
 					qdel(src)
-			return FALSE
+			return FALSE */
 
 	return TRUE
 

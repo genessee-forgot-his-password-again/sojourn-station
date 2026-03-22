@@ -414,7 +414,7 @@ var/global/excelsior_last_draft = 0
 	if(excelsior_energy < reinforcements_cost)
 		return FALSE
 	return TRUE
-	
+
 /obj/machinery/complant_teleporter/admin
 	name = "bluespace remnants general auto-synth"
 	desc = "A fabricator which creates a variety of general-use objects for a few volts of energy. This machine is a very advanced - and very valuable - technology."
@@ -426,7 +426,7 @@ var/global/excelsior_last_draft = 0
 
 	max_energy = 1000
 	energy_gain = 100
-	
+
 	materials_list = list(
 		MATERIAL_STEEL = list("amount" = 500, "price" = 1),
 		MATERIAL_WOOD = list("amount" = 500, "price" = 1),
@@ -454,9 +454,9 @@ var/global/excelsior_last_draft = 0
 		/obj/item/storage/firstaid/toxin = 1,
 		/obj/item/storage/firstaid/adv = 1,
 		/obj/item/storage/firstaid/surgery/traitor = 1,
-		/obj/item/computer_hardware/hard_drive/portable/design/onestar/stockparts = 1,
-		/obj/item/computer_hardware/hard_drive/portable/design/ex_parts = 1,
-		/obj/item/computer_hardware/hard_drive/portable/design/ex_cells = 1,
+		/obj/item/pc_part/drive/disk/design/onestar/stockparts = 1,
+		/obj/item/pc_part/drive/disk/design/ex_parts = 1,
+		/obj/item/pc_part/drive/disk/design/ex_cells = 1,
 		/obj/item/storage/backpack/holding/bst = 1,
 		/obj/item/storage/belt/holding = 1,
 		/obj/item/storage/pouch/holding = 1,
@@ -472,16 +472,16 @@ var/global/excelsior_last_draft = 0
 		/obj/item/tool/shovel/onestar_shovel = 1
 		)
 	entropy_value = 0
-	
+
 /obj/machinery/complant_teleporter/admin/armory
 	name = "bluespace remnants armory synthesizer"
 	desc = "A fabricator which creates various military equipment in exchange for a few volts of energy. This machine is a very advanced - and very valuable - technology."
-	
+
 	materials_list = list(
 		)
 
 	parts_list = list(
-		/obj/item/computer_hardware/hard_drive/portable/design/excelsior_weapons = 1,
+		/obj/item/pc_part/drive/disk/design/excelsior_weapons = 1,
 		/obj/item/tool/knife/boot = 1,
 		/obj/item/tool/knife/tacknife = 1,
 		/obj/item/tool/knife/dagger = 1,
@@ -493,7 +493,7 @@ var/global/excelsior_last_draft = 0
 		/obj/item/grenade/flashbang = 1,
 		/obj/item/gun/projectile/shotgun/pump/combat = 1,
 		/obj/item/gun/projectile/shotgun/pump = 1,
-		/obj/item/gun/projectile/automatic/riot_autoshotgun = 1,
+		/obj/item/gun/projectile/shotgun/riot = 1,
 		/obj/item/gun/projectile/shotgun/doublebarrel = 1,
 		/obj/item/gun/projectile/shotgun/pump/gladstone = 1,
 		/obj/item/gun/projectile/automatic/c20r = 1,
@@ -501,7 +501,7 @@ var/global/excelsior_last_draft = 0
 		/obj/item/gun/projectile/automatic/nordwind = 1,
 		/obj/item/gun/projectile/automatic/nordwind/strelki = 1,
 		/obj/item/gun/projectile/automatic/luger = 1,
-		/obj/item/gun/projectile/automatic/straylight = 1,
+		/obj/item/gun/projectile/automatic/buckler = 1,
 		/obj/item/gun/projectile/automatic/slaught_o_matic = 1,
 		/obj/item/gun/projectile/mk58 = 1,
 		/obj/item/gun/projectile/colt = 1,
