@@ -323,8 +323,8 @@
 	throw_away_wrapper = TRUE
 
 /obj/item/reagent_containers/snacks/openable/os_soypack
-	name = "GP portable SoyPack."
-	desc = "GP portable SoyPack."
+	name = "GP portable SoyPack"
+	desc = "GP portable SoyPack"
 	alt_desc = "GP portable SoyPack."
 	icon_state = "soylent_orange"
 	taste_tag = list(UMAMI_FOOD)

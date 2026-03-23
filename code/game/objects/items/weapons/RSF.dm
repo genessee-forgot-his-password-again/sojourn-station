@@ -31,6 +31,11 @@ RSF
 			to_chat(user, "<span class='notice'>You load [amount] Compressed Matter into \the [src].</span>. The RSF now holds [stored_matter]/30 matter-units.")
 		if (M.use(amount) && stored_matter >= max_stored_matter)
 			to_chat(user, "<span class='notice'>The RSF is full.")
+	else if(istype(/obj/item/reagent_containers/snacks/meat))
+			stored_matter += 10
+			to_chat(user, "<span class='notice'>You load a slab of meat into \the [src].</span>. The RSF now holds [stored_matter]/30 matter-units.")
+		if (stored_matter >= max_stored_matter-9)
+			to_chat(user, "<span class='notice'>The RSF is full.")
 	else
 		..()
 
@@ -92,6 +97,83 @@ RSF
 		if(5)
 			product = new /obj/item/storage/pill_bottle/dice()
 			used_energy = 200
+
+	to_chat(user, "Dispensing [product ? product : "product"]...")
+	product.loc = get_turf(A)
+
+	if(isrobot(user))
+		var/mob/living/silicon/robot/R = user
+		if(R.cell)
+			R.cell.use(used_energy)
+	else
+		stored_matter--
+		to_chat(user, "The RSF now holds [stored_matter]/30 fabrication-units.")
+
+// greyson foodfab
+
+/obj/item/rsf/os
+	name = "\improper GP Rapid-Ration-Fabricator"
+	desc = "A proprietary Greyson device used to synthesize rations from compressed matter."
+	icon_state = "rcd"
+
+/obj/item/rsf/os/attack_self(mob/user as mob)
+	playsound(src.loc, 'sound/effects/pop.ogg', 50, 0)
+	if (mode == 1)
+		mode = 2
+		to_chat(user, "Changed dispensing mode to 'Hot Bun'. This will use 1 point of charge per fabrication.")
+		return
+	if (mode == 2)
+		mode = 3
+		to_chat(user, "Changed dispensing mode to 'Nutrient Paste' This will use 2 points of charge per fabrication.")
+		return
+	if (mode == 3)
+		mode = 4
+		to_chat(user, "Changed dispensing mode to 'Noodles' This will use 2 points of charge per fabrication.")
+		return
+	if (mode == 4)
+		mode = 5
+		to_chat(user, "Changed dispensing mode to 'Morale Bar' This will use 2 points of charge per fabrication.")
+		return
+	if (mode == 5)
+		mode = 1
+		to_chat(user, "Changed dispensing mode to 'SoyPak' This will use 3 points of charge per fabrication.")
+		return
+
+/obj/item/rsf/afterattack(atom/A, mob/user as mob, proximity)
+
+	if(!proximity) return
+
+	if(isrobot(user))
+		var/mob/living/silicon/robot/R = user
+		if(R.stat || !R.cell || R.cell.charge <= 0)
+			return
+	else
+		if(stored_matter <= 0)
+			return
+
+	if(!istype(A, /obj/structure/table) && !istype(A, /turf/simulated/floor))
+		return
+
+	playsound(src.loc, 'sound/machines/click.ogg', 10, 1)
+	var/used_energy = 0
+	var/obj/product
+
+	switch(mode)
+		if(1)
+			product = new /obj/item/reagent_containers/snacks/openable/os_soypack()
+			used_energy = 3
+		if(2)
+			product = new /obj/item/reagent_containers/snacks/openable/os_bun()
+			used_energy = 1
+		if(3)
+			product = new /obj/item/reagent_containers/snacks/os_paste()
+			used_energy = 2
+		if(4)
+			product = new /obj/item/reagent_containers/snacks/openable/mre/os()
+			used_energy = 2
+		if(5)
+			product = new /obj/item/reagent_containers/snacks/openable/candy/os()
+			used_energy = 2
 
 	to_chat(user, "Dispensing [product ? product : "product"]...")
 	product.loc = get_turf(A)
