@@ -306,3 +306,16 @@
 
 	build_eff = man_rating
 	eat_eff = bin_rating
+
+/obj/machinery/biogenerator/os
+	name = "Greyson Positronics biogenerator"
+	desc = "A machine for processing biomass. This one is capable of converting biomass into synthesized meals."
+	circuit = /obj/item/circuitboard/biogenerator
+recipes = list(
+		"Food",
+			list(name="SoyPak", cost=10, path=/obj/item/reagent_containers/snacks/openable/os_soypack),
+			list(name="Hot Bun", cost=3, path=/obj/item/reagent_containers/snacks/openable/os_bun),
+			list(name="Nutrient Paste", cost=5, path=/obj/item/reagent_containers/snacks/os_paste),
+			list(name="Noodles", cost=4, path=/obj/item/reagent_containers/snacks/openable/mre/os),
+			list(name="Morale Bar", cost=4, path=/obj/item/reagent_containers/snacks/openable/candy/os)
+	)

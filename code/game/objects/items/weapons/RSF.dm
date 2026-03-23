@@ -32,14 +32,6 @@ RSF
 		if (M.use(amount) && stored_matter >= max_stored_matter)
 			to_chat(user, "<span class='notice'>The RSF is full.")
 	else
-		if(istype(/obj/item/reagent_containers/snacks/meat))
-				if(stored_matter < max_stored_matter-9)
-					stored_matter += 10
-					playsound(src.loc, 'sound/machines/click.ogg', 10, 1)
-					to_chat(user, "<span class='notice'>You load a slab of meat into \the [src].</span>. The RSF now holds [stored_matter]/30 matter-units.")
-				if (stored_matter >= max_stored_matter-9)
-					to_chat(user, "<span class='notice'>The RSF is full.")
-	else
 		..()
 
 /obj/item/rsf/attack_self(mob/user as mob)

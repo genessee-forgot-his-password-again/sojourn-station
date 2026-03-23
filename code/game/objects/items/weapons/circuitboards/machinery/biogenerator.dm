@@ -8,6 +8,11 @@
 		/obj/item/stock_parts/manipulator = 1
 	)
 
+/obj/item/circuitboard/biogenerator/os
+	build_name = "greyson biogenerator"
+	build_path = /obj/machinery/biogenerator/os
+	origin_tech = list(TECH_DATA = 4, TECH_ENGINEERING = 1)
+
 /obj/item/circuitboard/bullet_fab
 	build_name = "bullet fabricator"
 	build_path = /obj/machinery/bulletfabricator
