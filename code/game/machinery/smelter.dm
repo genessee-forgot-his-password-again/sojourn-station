@@ -384,3 +384,8 @@
 			refuse_output_side = text2dir(params["side"])
 			. = TRUE
 
+/obj/machinery/smelter/debug
+	name = "bluespace smelter"
+	forbidden_materials = list()
+	scrap_multiplier = 120
+
