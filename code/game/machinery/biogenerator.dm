@@ -310,8 +310,8 @@
 /obj/machinery/biogenerator/os
 	name = "Greyson Positronics biogenerator"
 	desc = "A machine for processing biomass. This one is capable of converting biomass into synthesized meals."
-	circuit = /obj/item/circuitboard/biogenerator
-recipes = list(
+	circuit = /obj/item/circuitboard/biogenerator/os
+	recipes = list(
 		"Food",
 			list(name="SoyPak", cost=10, path=/obj/item/reagent_containers/snacks/openable/os_soypack),
 			list(name="Hot Bun", cost=3, path=/obj/item/reagent_containers/snacks/openable/os_bun),
