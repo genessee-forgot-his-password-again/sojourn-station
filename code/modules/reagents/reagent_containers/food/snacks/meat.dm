@@ -86,6 +86,7 @@
 	icon_state = "xenomeat"
 	filling_color = "#E2FFDE"
 	preloaded_reagents = list("protein" = 5, "hclacid" = 4, "sacid" = 4, "phosphorus" = 8)
+	price_tag = 50
 	//Todo make each termite meat have their ground up mineral inside
 	// IDK if anyone is ever going to do this, so, adding some of the otherwise unobtainable ghetto chems to it - obey
 
@@ -93,6 +94,7 @@
 	desc = "A slab of sickly-green bubbling meat cut from a giant roach."
 	icon_state = "xenomeat"
 	filling_color = "#E2FFDE"
+	price_tag = 50
 
 	bitesize = 6
 	preloaded_reagents = list("protein" = 4, "blattedin" = 8, "diplopterum" = 7)
@@ -130,6 +132,7 @@
 	desc = "A bloated slab of sickly-green meat cut from a spider."
 	icon_state = "xenomeat"
 	filling_color = "#E2FFDE"
+	price_tag = 50
 	bitesize = 6
 	preloaded_reagents = list("protein" = 7, "pararein" = 12, "ammonia" = 4)
 
