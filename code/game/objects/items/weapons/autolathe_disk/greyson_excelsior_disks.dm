@@ -390,3 +390,88 @@
 		/datum/design/autolathe/ammo/pistol_35_drum/lethal,
 		/datum/design/autolathe/container/ammocan_excel
 		)
+
+// bluespace league disks
+
+/obj/item/pc_part/drive/disk/design/league_weapons
+	name = "Bluespace League Munitions Factory"
+	icon_state = "onestar"
+
+	license = -1
+	designs = list(
+	designs = list(
+		/datum/design/autolathe/gun/makarov,						//guns
+		/datum/design/autolathe/gun/drozd,
+		/datum/design/autolathe/gun/vintorez,
+		/datum/design/autolathe/gun/boltgun,
+		/datum/design/autolathe/gun/ak47,
+		/datum/design/autolathe/gun/ak47_saiga,
+		/datum/design/autolathe/gun/maxim,
+		/datum/design/autolathe/gun/ppsh,
+		/datum/design/autolathe/gun/greyson_cog,
+		/datum/design/autolathe/gun/rivet,
+		/datum/design/autolathe/gun/spring,
+		/datum/design/autolathe/gun/rebar,
+		/datum/design/autolathe/gun/scaffold,
+		/datum/design/autolathe/gun/nail_gun,
+		/datum/design/autolathe/gun/trouble_shooter,
+		/datum/design/autolathe/ammo/c10x24,
+		/datum/design/autolathe/ammo/box_10x24,
+		/datum/design/autolathe/ammo/kurtz,
+		/datum/design/autolathe/ammo/kurtz_ammobox,
+		/datum/design/autolathe/ammo/magnum,
+		/datum/design/autolathe/ammo/magnum_ammobox,
+		/datum/design/autolathe/ammo/pistol,				//makarov ammo
+		/datum/design/autolathe/ammo/pistol_ammobox,
+		/datum/design/autolathe/ammo/smg,							//drozd ammo
+		/datum/design/autolathe/ammo/lrifle,							//vintorez ammo
+		/datum/design/autolathe/ammo/lrifle_ammobox,
+		/datum/design/autolathe/ammo/sl_rifle,						//boltgun ammo
+		/datum/design/autolathe/ammo/rifle,						//AK ammo
+		/datum/design/autolathe/ammo/rifle_ammobox,
+		/datum/design/autolathe/ammo/pistol_35_drum,				//ppsh
+		/datum/design/autolathe/ammo/sbaw_slug,						//saiga ammo
+		/datum/design/autolathe/ammo/sbaw_pellet,
+		/datum/design/autolathe/ammo/maxim,							//maxim ammo
+		/datum/design/autolathe/cell/large/excelsior,				//power cells
+		/datum/design/autolathe/cell/medium/excelsior,
+		/datum/design/autolathe/cell/medium/high,
+		/datum/design/autolathe/cell/small/excelsior,
+		/datum/design/autolathe/clothing/excelsior_armor
+	)
+
+/obj/item/pc_part/drive/disk/design/league_tools
+	name = "Bluespace League Tool Factory"
+	icon_state = "onestar"
+
+	license = -1
+	designs = list(
+	designs = list(
+		/datum/design/autolathe/cell/large/excelsior,				//power cells
+		/datum/design/autolathe/cell/medium/excelsior,
+		/datum/design/autolathe/cell/medium/high,
+		/datum/design/autolathe/cell/small/excelsior,
+		/datum/design/autolathe/excelsior/laser,
+		/datum/design/autolathe/excelsior/matter,
+		/datum/design/autolathe/excelsior/module,
+		/datum/design/autolathe/excelsior/capacitor,
+		/datum/design/autolathe/excelsior/manipulator,
+		/datum/design/autolathe/greyson/laser,
+		/datum/design/autolathe/greyson/matter,
+		/datum/design/autolathe/greyson/module,
+		/datum/design/autolathe/greyson/capacitor,
+		/datum/design/autolathe/greyson/manipulator,
+		/datum/design/autolathe/tool/crowbar_onestar,
+		/datum/design/autolathe/tool/combi_driver_onestar,
+		/datum/design/autolathe/tool/weldertool_onestar,
+		/datum/design/autolathe/tool/onestar_saw,
+		/datum/design/autolathe/tool/multitool/multitool_onestar,
+		/datum/design/autolathe/tool/hammer_onestar,
+		/datum/design/autolathe/tool/omni_surgery_onestar,
+		/datum/design/autolathe/tool/onestar_pliers,
+		/datum/design/autolathe/tool/pickaxe_onestar,
+		/datum/design/autolathe/tool/onestar_shovel,
+		/datum/design/autolathe/tool/jackhammer_onestar,
+		/datum/design/autolathe/tool/drill_onestar,
+		/datum/design/autolathe/part/greyson/ai
+	)
