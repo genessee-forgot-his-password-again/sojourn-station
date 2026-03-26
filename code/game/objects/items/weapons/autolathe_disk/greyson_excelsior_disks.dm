@@ -399,7 +399,6 @@
 
 	license = -1
 	designs = list(
-	designs = list(
 		/datum/design/autolathe/gun/makarov,						//guns
 		/datum/design/autolathe/gun/drozd,
 		/datum/design/autolathe/gun/vintorez,
