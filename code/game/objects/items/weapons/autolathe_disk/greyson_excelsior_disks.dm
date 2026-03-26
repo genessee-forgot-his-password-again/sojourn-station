@@ -445,7 +445,6 @@
 
 	license = -1
 	designs = list(
-	designs = list(
 		/datum/design/autolathe/cell/large/excelsior,				//power cells
 		/datum/design/autolathe/cell/medium/excelsior,
 		/datum/design/autolathe/cell/medium/high,
