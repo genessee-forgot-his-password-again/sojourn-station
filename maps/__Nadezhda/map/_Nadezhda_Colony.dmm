@@ -7521,6 +7521,10 @@
 "buW" = (
 /turf/simulated/floor/carpet,
 /area/nadezhda/pros/foreman)
+"buZ" = (
+/obj/effect/window_lwall_spawn,
+/turf/simulated/floor/wood_old,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "bva" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
@@ -10919,6 +10923,13 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/industrial/bricks,
 /area/nadezhda/maintenance/surfaceeast)
+"cbR" = (
+/obj/machinery/light/small{
+	dir = 1
+	},
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/industrial/bricks,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "cce" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 10
@@ -38622,6 +38633,15 @@
 /area/nadezhda/maintenance{
 	name = "Residential District Maintenance"
 	})
+"hiK" = (
+/obj/structure/bed/padded,
+/obj/item/bedsheet/brown,
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 1
+	},
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "hiM" = (
 /obj/structure/closet/wall_mounted/firecloset{
 	pixel_y = -32
@@ -43710,6 +43730,17 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel/orangecorner,
 /area/nadezhda/security/prisoncells)
+"icH" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/steeldecal/steel_decals10{
+	dir = 10
+	},
+/obj/effect/floor_decal/spline/wood{
+	dir = 10
+	},
+/obj/structure/cyberplant,
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "icL" = (
 /obj/machinery/light{
 	dir = 1
@@ -43978,6 +44009,13 @@
 	temperature = 80
 	},
 /area/nadezhda/command/tcommsat/computer)
+"ieY" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 4
+	},
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "ieZ" = (
 /turf/simulated/wall/r_wall,
 /area/nadezhda/command/merchant)
@@ -47836,6 +47874,16 @@
 	},
 /turf/simulated/floor/plating,
 /area/nadezhda/engineering/foyer)
+"iQw" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 4
+	},
+/obj/structure/table/standard,
+/obj/machinery/smartfridge/disk,
+/obj/item/pc_part/drive/disk/design/misc,
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "iQx" = (
 /obj/structure/flora/ausbushes/brflowers,
 /turf/simulated/floor/asteroid/grass,
@@ -51418,6 +51466,17 @@
 	},
 /turf/simulated/floor/industrial/grey_slates_long,
 /area/nadezhda/maintenance/undergroundfloor1north)
+"jzR" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood,
+/obj/structure/closet/secure_closet/personal,
+/obj/item/tool/crowbar/improvised,
+/obj/item/device/lighting/glowstick/random,
+/obj/item/device/lighting/glowstick/random,
+/obj/item/device/lighting/glowstick/random,
+/obj/item/tool/shovel/improvised,
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "jzW" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 5
@@ -54919,6 +54978,11 @@
 /area/nadezhda/maintenance{
 	name = "Residential District Maintenance"
 	})
+"kiI" = (
+/obj/machinery/door/airlock/maintenance_common,
+/obj/structure/barricade,
+/turf/simulated/floor/industrial/grey_slates_long,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "kiU" = (
 /obj/structure/catwalk,
 /obj/structure/cable/cyan{
@@ -76231,6 +76295,16 @@
 /obj/machinery/light,
 /turf/simulated/floor/tiled/dark/bluecorner,
 /area/nadezhda/security/sechall)
+"ofr" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 4
+	},
+/obj/structure/bed/chair/comfy/black{
+	dir = 1
+	},
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "ofs" = (
 /obj/structure/railing{
 	dir = 8
@@ -78205,6 +78279,14 @@
 	},
 /turf/simulated/floor/tiled/dark/panels,
 /area/nadezhda/engineering/atmos)
+"oyg" = (
+/obj/structure/table/standard,
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 4
+	},
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "oyk" = (
 /obj/machinery/door/airlock/maintenance_common{
 	req_access = list(12)
@@ -82501,6 +82583,14 @@
 /obj/structure/table/woodentable,
 /turf/simulated/floor/wood,
 /area/nadezhda/maintenance/undergroundfloor1north)
+"pnG" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 4
+	},
+/obj/machinery/autolathe,
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "pnI" = (
 /obj/structure/table/standard,
 /obj/machinery/power/apc{
@@ -83137,6 +83227,11 @@
 	},
 /turf/simulated/floor/tiled/dark/gray_perforated,
 /area/nadezhda/security/armory)
+"ptr" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/random/closet_maintloot,
+/turf/simulated/floor/industrial/grey_slates_long,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "ptw" = (
 /obj/effect/decal/cleanable/rubble,
 /obj/item/stack/rods/random,
@@ -85925,6 +86020,13 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel/cyancorner,
 /area/nadezhda/hallway/side/f2section1)
+"pTe" = (
+/obj/machinery/light/small{
+	dir = 4
+	},
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/industrial/bricks,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "pTl" = (
 /obj/machinery/power/nt_obelisk,
 /turf/simulated/floor/tiled/dark/golden,
@@ -110520,6 +110622,13 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/industrial/green_large_slates,
 /area/nadezhda/maintenance/undergroundfloor1east)
+"uuX" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 8
+	},
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "uvb" = (
 /obj/random/scrap/dense_weighted,
 /obj/effect/decal/cleanable/dirt,
@@ -120946,6 +121055,10 @@
 /obj/machinery/portable_atmospherics/hydroponics/soil,
 /turf/simulated/floor/asteroid/dirt/dark/plough,
 /area/nadezhda/crew_quarters/hydroponics/garden)
+"woG" = (
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/industrial/grey_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "woI" = (
 /obj/structure/flora/big/bush1{
 	pixel_y = -10
@@ -130870,6 +130983,13 @@
 /area/nadezhda/maintenance{
 	name = "Residential District Maintenance"
 	})
+"ygl" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/spline/wood{
+	dir = 9
+	},
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "ygn" = (
 /obj/structure/flora/ausbushes/genericbush,
 /obj/structure/flora/ausbushes/leafybush,
@@ -131337,6 +131457,11 @@
 	},
 /turf/simulated/floor/tiled/steel/techfloor_grid,
 /area/nadezhda/engineering/atmos/storage)
+"ylI" = (
+/obj/machinery/light/small,
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/industrial/bricks,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "ylM" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -180287,12 +180412,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+jdE
+jdE
+jdE
+jdE
+jdE
 jdE
 aGj
 oIL
@@ -180489,12 +180614,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+oyg
+ofr
+ieY
+iQw
+pnG
 jdE
 aGj
 mGZ
@@ -180691,12 +180816,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+cbR
+bli
+bli
+bli
+ylI
 jdE
 fMv
 gRx
@@ -180893,12 +181018,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+icH
+bli
+ygl
+uuX
+uuX
 jdE
 dkX
 big
@@ -181095,12 +181220,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
 jdE
+buZ
+dMP
+buZ
 jdE
+kiI
 jdE
 jdE
 jdE
@@ -181297,14 +181422,14 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
 jdE
-vWG
+jzR
+pTe
+hiK
+jdE
+woG
 ehj
-ehj
+ptr
 yaJ
 ehj
 ehj
