@@ -6293,6 +6293,12 @@
 /area/nadezhda/maintenance{
 	name = "Residential District Maintenance"
 	})
+"bju" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/industrial/warning,
+/obj/effect/decal/cleanable/rubble,
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "bjv" = (
 /obj/structure/bed/chair/wood{
 	dir = 4
@@ -8745,6 +8751,15 @@
 /obj/effect/floor_decal/spline/plain,
 /turf/simulated/floor/tiled/white,
 /area/nadezhda/crew_quarters/pool)
+"bGr" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/industrial/warning{
+	dir = 1
+	},
+/obj/effect/decal/cleanable/rubble,
+/obj/random/scrap/sparse_even/low_chance,
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "bGt" = (
 /obj/effect/window_lwall_spawn/reinforced,
 /turf/simulated/floor/tiled/dark/gray_platform,
@@ -23694,6 +23709,12 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/dark/techfloor_grid,
 /area/nadezhda/maintenance/undergroundfloor1west)
+"eue" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/decal/cleanable/rubble,
+/obj/random/scrap/sparse_even,
+/turf/simulated/floor/plating/under,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "euf" = (
 /turf/simulated/floor/carpet/blucarpet,
 /area/nadezhda/command/swo/quarters)
@@ -29796,6 +29817,19 @@
 "fzI" = (
 /turf/simulated/wall/church_reinforced,
 /area/nadezhda/absolutism/skyyard)
+"fzL" = (
+/obj/machinery/light/small{
+	dir = 4;
+	pixel_y = 8
+	},
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/table/rack/shelf,
+/obj/effect/floor_decal/industrial/warning{
+	dir = 5
+	},
+/obj/effect/decal/cleanable/rubble,
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "fzQ" = (
 /obj/structure/bed/chair/office/dark{
 	dir = 1
@@ -32807,6 +32841,11 @@
 	},
 /turf/simulated/floor/asteroid/dirt,
 /area/nadezhda/outside/inside_colony)
+"gek" = (
+/obj/machinery/door/airlock/maintenance_common,
+/obj/structure/barricade,
+/turf/simulated/floor/tiled/techmaint_perforated,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "gel" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
@@ -40596,6 +40635,12 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/dark/bluecorner,
 /area/nadezhda/security/sechall)
+"hAZ" = (
+/obj/structure/table/steel_reinforced,
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/industrial/warning,
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "hBa" = (
 /obj/structure/extinguisher_cabinet{
 	pixel_x = 24
@@ -47177,6 +47222,13 @@
 	},
 /turf/simulated/floor/tiled/techmaint_panels,
 /area/nadezhda/engineering/atmos/surface)
+"iJm" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/bed/chair{
+	dir = 1
+	},
+/turf/simulated/floor/tiled/white/techfloor,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "iJo" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -47804,6 +47856,11 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/dark,
 /area/nadezhda/command/hallway)
+"iPU" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/decal/cleanable/rubble,
+/turf/simulated/floor/tiled/white/techfloor,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "iPV" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
@@ -47882,6 +47939,7 @@
 /obj/structure/table/standard,
 /obj/machinery/smartfridge/disk,
 /obj/item/pc_part/drive/disk/design/misc,
+/obj/item/pc_part/drive/disk/design/adv_tools,
 /turf/simulated/floor/wood/wild3,
 /area/nadezhda/maintenance/undergroundfloor2north)
 "iQx" = (
@@ -51469,12 +51527,10 @@
 "jzR" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/floor_decal/spline/wood,
-/obj/structure/closet/secure_closet/personal,
 /obj/item/tool/crowbar/improvised,
-/obj/item/device/lighting/glowstick/random,
-/obj/item/device/lighting/glowstick/random,
-/obj/item/device/lighting/glowstick/random,
 /obj/item/tool/shovel/improvised,
+/obj/item/soap,
+/obj/structure/closet,
 /turf/simulated/floor/wood/wild3,
 /area/nadezhda/maintenance/undergroundfloor2north)
 "jzW" = (
@@ -52209,6 +52265,10 @@
 /obj/random/scrap/dense_weighted/low_chance,
 /turf/simulated/floor/industrial/bricks,
 /area/nadezhda/maintenance/undergroundfloor1north)
+"jHb" = (
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/white/techfloor,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "jHi" = (
 /obj/structure/cable/yellow{
 	d1 = 1;
@@ -55406,6 +55466,14 @@
 "kmz" = (
 /turf/simulated/floor/wood/wild3,
 /area/nadezhda/pros/foreman)
+"kmA" = (
+/obj/structure/table/steel_reinforced,
+/obj/machinery/smartfridge/disk,
+/obj/item/pc_part/drive/disk/design/misc,
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/industrial/warning,
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "kmB" = (
 /obj/structure/flora/ausbushes/brflowers,
 /obj/structure/flora/big/bush2,
@@ -60092,7 +60160,20 @@
 /turf/simulated/floor/tiled/white/brown_platform,
 /area/nadezhda/crew_quarters/kitchen)
 "lhN" = (
-/turf/simulated/floor/rock,
+/obj/machinery/light/small{
+	dir = 8
+	},
+/obj/structure/closet,
+/obj/effect/decal/cleanable/dirt,
+/obj/item/tool/shovel/improvised,
+/obj/item/tool/crowbar/improvised,
+/obj/item/device/lighting/glowstick/random,
+/obj/item/device/lighting/glowstick/random,
+/obj/item/device/lighting/glowstick/random,
+/obj/effect/floor_decal/industrial/warning{
+	dir = 1
+	},
+/turf/simulated/floor/industrial/navy_slates,
 /area/nadezhda/maintenance/undergroundfloor2north)
 "lhP" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -71106,6 +71187,11 @@
 "nkI" = (
 /turf/unsimulated/mineral,
 /area/nadezhda/outside/dcave)
+"nkK" = (
+/obj/machinery/door/airlock/glass,
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/techmaint_perforated,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "nkL" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 5
@@ -103970,6 +104056,19 @@
 	},
 /turf/simulated/floor/tiled/steel/bar_dance,
 /area/turret_protected/ai)
+"tlb" = (
+/obj/machinery/light/small{
+	dir = 8
+	},
+/obj/item/bedsheet/red,
+/obj/structure/bed/psych{
+	desc = "It can be a bit noisy, but still serves well.";
+	name = "old bed"
+	},
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/industrial/warning,
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "tlc" = (
 /obj/structure/flora/small/grassb4,
 /obj/structure/flora/ausbushes/ywflowers,
@@ -107975,6 +108074,14 @@
 /obj/machinery/light/small,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/maintenance/undergroundfloor1west)
+"tWQ" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/table/rack/shelf,
+/obj/effect/floor_decal/industrial/warning{
+	dir = 1
+	},
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "tWS" = (
 /obj/structure/table/woodentable,
 /obj/machinery/light{
@@ -109639,6 +109746,10 @@
 	},
 /turf/simulated/floor/tiled/steel/techfloor_grid,
 /area/nadezhda/rnd/research)
+"ule" = (
+/obj/effect/window_lwall_spawn,
+/turf/simulated/floor/plating,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "ulj" = (
 /obj/effect/window_lwall_spawn/reinforced,
 /obj/machinery/door/blast/shutters{
@@ -121445,6 +121556,15 @@
 	},
 /turf/simulated/floor/plating/under,
 /area/nadezhda/command/hallway)
+"wqD" = (
+/obj/machinery/light/small{
+	dir = 4;
+	pixel_y = 8
+	},
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/boulder,
+/turf/simulated/floor/plating/under,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "wqK" = (
 /obj/structure/table/woodentable,
 /obj/random/lathe_disk/low_chance,
@@ -121838,6 +121958,12 @@
 	},
 /turf/simulated/floor/carpet/bcarpet,
 /area/nadezhda/command/prime)
+"wuz" = (
+/obj/machinery/autolathe,
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/industrial/warning,
+/turf/simulated/floor/industrial/navy_slates,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "wuC" = (
 /turf/simulated/floor/bluegrid{
 	name = "Server Base";
@@ -130988,6 +131114,7 @@
 /obj/effect/floor_decal/spline/wood{
 	dir = 9
 	},
+/obj/structure/cyberplant,
 /turf/simulated/floor/wood/wild3,
 /area/nadezhda/maintenance/undergroundfloor2north)
 "ygn" = (
@@ -131460,6 +131587,9 @@
 "ylI" = (
 /obj/machinery/light/small,
 /obj/effect/decal/cleanable/dirt,
+/obj/effect/floor_decal/steeldecal/steel_decals_central6{
+	pixel_y = -7
+	},
 /turf/simulated/floor/industrial/bricks,
 /area/nadezhda/maintenance/undergroundfloor2north)
 "ylM" = (
@@ -187503,10 +187633,10 @@ aIL
 kLb
 mqL
 jdE
-cZb
-cZb
-cZb
-cZb
+tlb
+jHb
+lhN
+jdE
 cZb
 cZb
 cZb
@@ -187705,10 +187835,10 @@ aIL
 kLb
 itA
 jdE
-cZb
-cZb
-cZb
-cZb
+ule
+nkK
+ule
+jdE
 cZb
 cZb
 cZb
@@ -187907,10 +188037,10 @@ aIL
 kLb
 tHq
 jdE
-cZb
-cZb
-cZb
-cZb
+bju
+wOL
+gfo
+jdE
 cZb
 cZb
 cZb
@@ -188108,11 +188238,11 @@ lSS
 aIL
 kLb
 kiU
+iss
+hAZ
+iJm
+eue
 jdE
-cZb
-cZb
-cZb
-cZb
 cVs
 sTL
 cZb
@@ -188310,11 +188440,11 @@ lSS
 aIL
 kLb
 kiU
-jdE
-cZb
-cZb
-cZb
-cZb
+iss
+kmA
+jHb
+bGr
+jWM
 sTL
 bRx
 bRx
@@ -188512,11 +188642,11 @@ lPz
 itl
 nYA
 kiU
+iss
+wuz
+iPU
+tWQ
 jdE
-cZb
-cZb
-cZb
-cZb
 bRx
 bRx
 bRx
@@ -188715,10 +188845,10 @@ qVC
 qVC
 kiU
 jdE
-cZb
-cZb
-cZb
-cVs
+wqD
+jHb
+fzL
+jdE
 bRx
 bRx
 bRx
@@ -188918,11 +189048,11 @@ jdE
 jxb
 jdE
 jdE
-jdE
+gek
 jdE
 jdE
 weg
-lhN
+cVs
 bRx
 wId
 cZb
