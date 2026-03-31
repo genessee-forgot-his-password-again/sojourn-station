@@ -1726,6 +1726,7 @@
 #include "code\modules\asset_cache\asset_cache_client.dm"
 #include "code\modules\asset_cache\asset_cache_item.dm"
 #include "code\modules\asset_cache\asset_list.dm"
+#include "code\modules\asset_cache\icon_ref_map.dm"
 #include "code\modules\asset_cache\assets\crafting.dm"
 #include "code\modules\asset_cache\assets\icon_ref_map.dm"
 #include "code\modules\asset_cache\assets\nano.dm"

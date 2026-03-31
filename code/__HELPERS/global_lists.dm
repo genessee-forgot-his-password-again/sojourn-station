@@ -409,6 +409,9 @@ var/global/list/paramslist_cache = list()
 		L[i] = text2num(L[i])
 	return L
 
+//list of all currently accessed stashes. Used to prevent opening multiple stashes and for saving opened stashes on round end
+GLOBAL_LIST_EMPTY(accessed_stashes)
+
 
 //Soj changes
 //bee foods
