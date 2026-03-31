@@ -473,3 +473,31 @@
 		/datum/design/autolathe/tool/drill_onestar,
 		/datum/design/autolathe/part/greyson/ai
 	)
+
+/obj/item/pc_part/drive/disk/design/league_meds
+	name = "Bluespace League Medicine Factory"
+	icon_state = "onestar"
+
+	license = -1
+	designs = list(
+		/datum/design/bioprinter/medical/bruise,
+		/datum/design/bioprinter/medical/bruise/soteria,
+		/datum/design/bioprinter/medical/advanced/bruise,
+		/datum/design/bioprinter/medical/advanced/bruise/nt,
+		/datum/design/bioprinter/medical/bruise/greyson,
+		/datum/design/bioprinter/medical/ointment,
+		/datum/design/bioprinter/medical/ointment/soteria,
+		/datum/design/bioprinter/medical/advanced/ointment,
+		/datum/design/bioprinter/medical/advanced/ointment/nt,
+		/datum/design/bioprinter/medical/ointment/greyson,
+		/datum/design/bioprinter/medical/splints,
+		/datum/design/autolathe/firstaid,
+		/datum/design/autolathe/firstaid/nt,
+		/datum/design/autolathe/firstaid/adv,
+		/datum/design/autolathe/firstaid/toxin,
+		/datum/design/autolathe/firstaid/burn,
+		/datum/design/autolathe/firstaid/o2,
+		/datum/design/autolathe/firstaid/combat,
+		/datum/design/autolathe/firstaid/os_brute,
+		/datum/design/autolathe/firstaid/os_burn
+	)

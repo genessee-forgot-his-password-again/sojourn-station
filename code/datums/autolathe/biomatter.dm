@@ -282,6 +282,14 @@
 	name = "Roll of gauze"
 	build_path = /obj/item/stack/medical/bruise_pack
 
+/datum/design/bioprinter/medical/bruise/soteria
+	name = "Soteria gauze"
+	build_path = /obj/item/stack/medical/bruise_pack/soteria
+
+/datum/design/bioprinter/medical/bruise/os
+	name = "Greyson advanced treatment pack"
+	build_path = /obj/item/stack/medical/bruise_pack/greyson
+
 /datum/design/bioprinter/medical/splints
 	name = "Medical splints"
 	build_path = /obj/item/stack/medical/splint
@@ -289,6 +297,14 @@
 /datum/design/bioprinter/medical/ointment
 	name = "Ointment"
 	build_path = /obj/item/stack/medical/ointment
+
+/datum/design/bioprinter/medical/ointment/soteria
+	name = "Soteria ointment"
+	build_path = /obj/item/stack/medical/ointment/soteria
+
+/datum/design/bioprinter/medical/ointment
+	name = "Greyson advanced burn-treatment pack"
+	build_path = /obj/item/stack/medical/ointment/greyson
 
 /datum/design/bioprinter/medical/advanced
 	materials = list("biomatter" = 2)
@@ -312,6 +328,38 @@
 /datum/design/autolathe/firstaid/nt
 	name = "Absolutism Medkit"
 	build_path = /obj/item/storage/firstaid/nt
+
+/datum/design/autolathe/firstaid
+	name = "Basic Medkit"
+	build_path = /obj/item/storage/firstaid/regular
+
+/datum/design/autolathe/firstaid/adv
+	name = "Advanced Medkit"
+	build_path = /obj/item/storage/firstaid/adv
+
+/datum/design/autolathe/firstaid/burn
+	name = "Burn Medkit"
+	build_path = /obj/item/storage/firstaid/fire
+
+/datum/design/autolathe/firstaid/toxin
+	name = "Toxin Medkit"
+	build_path = /obj/item/storage/firstaid/toxin
+
+/datum/design/autolathe/firstaid/o2
+	name = "Oxyloss Medkit"
+	build_path = /obj/item/storage/firstaid/o2
+
+/datum/design/autolathe/firstaid/combat
+	name = "Combat Medkit"
+	build_path = /obj/item/storage/firstaid/combat
+
+/datum/design/autolathe/firstaid/os_brute
+	name = "Greyson Field Abrasion Kit"
+	build_path = /obj/item/storage/firstaid/greyson
+
+/datum/design/autolathe/firstaid/os_burn
+	name = "Greyson Field Scorch Kit"
+	build_path = /obj/item/storage/firstaid/greyson/burn
 
 //[/IMPLANTS]
 
