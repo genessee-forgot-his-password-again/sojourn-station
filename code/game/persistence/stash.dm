@@ -181,10 +181,10 @@
 		if(islist(item_template[key]))
 
 			if(key == "attachments")
-				var/obj/item/weapon/gun/gun = loaded_item
+				var/obj/item/gun/gun = loaded_item
 				for(var/I in 1 to gun.attachments.len)
 					var/obj/item/attachable/attachment = gun.attachments[gun.attachments[I]]
-					attachment.Detach(null, gun, drop_attachment = FALSE)
+//					attachment.Detach(null, gun, drop_attachment = FALSE)
 			else
 				loaded_item.vars[key] = list() //wipes the list on the freshly initialized object
 
@@ -207,13 +207,13 @@
 
 					if("attachments")
 						var/obj/item/attachable/attachment = locate_item(loaded_item, text2path(list_var_template[list_var_template[index]]))
-						var/obj/item/weapon/gun/gun = loaded_item
-						attachment.Attach(loaded_item)
-						gun.update_attachables()
+						var/obj/item/gun/gun = loaded_item
+//						attachment.Attach(loaded_item)
+	//					gun.update_attachables()
 
 					if("holstered_guns")
-						var/obj/item/weapon/gun/holstered = locate_item(loaded_item, text2path(list_var_template[list_var_template[index]]))
-						var/obj/item/storage/belt/gun/belt = loaded_item
+//						var/obj/item/gun/holstered = locate_item(loaded_item, text2path(list_var_template[list_var_template[index]]))
+//						var/obj/item/storage/belt/gun/belt = loaded_item
 						belt.vars[key] += holstered
 						belt.holster_slots["1"]["gun"] = holstered
 
@@ -223,11 +223,17 @@
 							continue
 						loaded_item.vars[key] = list_var_template[list_var_template[index]]
 
-		else if(key == "current_mag")
+		else if(key == "ammo_magazine")
 			if(isnull(item_template[key]) || !(loaded_item.vars[key] = locate_item(loaded_item, text2path(item_template[key]))))
 				loaded_item.vars[key] = null
-			var/obj/item/weapon/gun/gun = loaded_item
-			gun.replace_ammo(null, gun.current_mag)
+			var/obj/item/gun/gun = loaded_item
+			gun.replace_ammo(null, gun.ammo_magazine)
+
+		else if(key == "loaded")
+			if(isnull(item_template[key]) || !(loaded_item.vars[key] = locate_item(loaded_item, text2path(item_template[key]))))
+				loaded_item.vars[key] = null
+			var/obj/item/gun/gun = loaded_item
+			gun.replace_ammo(null, gun.loaded)
 
 
 		else if(key == "stored_item")
