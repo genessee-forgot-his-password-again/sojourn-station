@@ -109,7 +109,7 @@
 			return FALSE
 
 	if(user)
-		user.drop_held_item(item, src)
+		user.drop_item(item, src)
 	item.forceMove(src)
 
 	stored_items[index] = list()
@@ -182,8 +182,8 @@
 
 			if(key == "attachments")
 				var/obj/item/gun/gun = loaded_item
-				for(var/I in 1 to gun.attachments.len)
-					var/obj/item/attachable/attachment = gun.attachments[gun.attachments[I]]
+//				for(var/I in 1 to gun.attachments.len)
+//					var/obj/item/attachable/attachment = gun.attachments[gun.attachments[I]]
 //					attachment.Detach(null, gun, drop_attachment = FALSE)
 			else
 				loaded_item.vars[key] = list() //wipes the list on the freshly initialized object
