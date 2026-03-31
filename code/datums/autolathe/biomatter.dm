@@ -302,7 +302,7 @@
 	name = "Soteria ointment"
 	build_path = /obj/item/stack/medical/ointment/soteria
 
-/datum/design/bioprinter/medical/ointment
+/datum/design/bioprinter/medical/ointment/os
 	name = "Greyson advanced burn-treatment pack"
 	build_path = /obj/item/stack/medical/ointment/greyson
 
