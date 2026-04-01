@@ -471,7 +471,8 @@
 		/datum/design/autolathe/tool/onestar_shovel,
 		/datum/design/autolathe/tool/jackhammer_onestar,
 		/datum/design/autolathe/tool/drill_onestar,
-		/datum/design/autolathe/part/greyson/ai
+		/datum/design/autolathe/part/greyson/ai,
+		/datum/design/autolathe/part/greyson/ai/excel
 	)
 
 /obj/item/pc_part/drive/disk/design/league_meds

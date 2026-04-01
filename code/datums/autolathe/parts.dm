@@ -180,6 +180,10 @@
 	name = "nano-integrated AI"
 	build_path = /obj/item/tool_upgrade/augment/ai_tool
 
+/datum/design/autolathe/part/greyson/ai/excel
+	name = "excelsior nano-integrated AI"
+	build_path = /obj/item/tool_upgrade/augment/ai_tool_excelsior
+
 /datum/design/autolathe/greyson/laser
 	name = "greyson positronic micro-laser"
 	build_path = /obj/item/stock_parts/micro_laser/one_star
