@@ -457,3 +457,41 @@
 		return TRUE
 	to_chat(user, SPAN_NOTICE("You don't know how to make the [src] work, you lack the training or mechanical skill."))
 	return FALSE
+
+/obj/machinery/bulletfabricator/bio
+	name = "Biological Synthesizer"
+	desc = "A heavily modified church bioprinter that takes materials and produces a variety of medical supplies. It can also produce food and drinks."
+	icon_state = "bioprinter"
+	recipes = list(
+		"Basic Treatment",
+			list(name="Gauze", cost=30, path=/obj/item/stack/medical/bruise_pack),
+			list(name="Soteria Gauze", cost=50, path=/obj/item/stack/medical/bruise_pack/soteria),
+			list(name="Trauma Kit", cost=60, path=/obj/item/stack/medical/bruise_pack/advanced),
+			list(name="Trauma Kit, Large", cost=100, path=/obj/item/stack/medical/bruise_pack/advanced/large),
+			list(name="Greyson Treatment Pack", cost=80, path=/obj/item/stack/medical/bruise_pack/greyson),
+			list(name="Ointment", cost=30, path=/obj/item/stack/medical/ointment),
+			list(name="Soteria Ointment", cost=50, path=/obj/item/stack/medical/ointment/soteria),
+			list(name="Burn Kit", cost=60, path=/obj/item/stack/medical/ointment/advanced),
+			list(name="Burn Kit, Large", cost=100, path=/obj/item/stack/medical/ointment/advanced/large),
+			list(name="Greyson Burn-Treatment Pack", cost=100, path=/obj/item/stack/medical/ointment/greyson),
+			list(name="Splints", cost=40, path=/obj/item/stack/medical/splint),
+		"First-Aid Kits",
+			list(name="First Aid Kit (Standard)", cost=200, path=/obj/item/storage/firstaid/regular),
+			list(name="First Aid Kit (Soteria)", cost=250, path=/obj/item/storage/firstaid/regular/si),
+			list(name="First Aid Kit (Advanced)", cost=300, path=/obj/item/storage/firstaid/adv),
+			list(name="First Aid Kit (Combat)", cost=350, path=/obj/item/storage/firstaid/combat),
+			list(name="Greyson Treatment Kit (Brute)", cost=400, path=/obj/item/storage/firstaid/greyson),
+			list(name="First Aid Kit (Burn)", cost=250, path=/obj/item/storage/firstaid/fire),
+			list(name="Greyson Treatment Kit (Burn)", cost=400, path=/obj/item/storage/firstaid/greyson/burn),
+			list(name="First Aid Kit (Toxin)", cost=250, path=/obj/item/storage/firstaid/toxin),
+			list(name="First Aid Kit (Oxyloss)", cost=250, path=/obj/item/storage/firstaid/o2),
+			list(name="First Aid Kit (Radiation)", cost=250, path=/obj/item/storage/firstaid/radiation),
+		"Rations",
+			list(name="MRE", cost=20, path=/obj/item/reagent_containers/snacks/openable/mre),
+			list(name="Morale Bar)", cost=15, path=/obj/item/reagent_containers/snacks/openable/candy),
+			list(name="Ration Can", cost=18, path=/obj/item/reagent_containers/snacks/openable/can),
+			list(name="Twinkie", cost=10, path= /obj/item/reagent_containers/snacks/openable/spacetwinkie),
+			list(name="SoyPak", cost=20, path= /obj/item/reagent_containers/snacks/openable/os_soypack),
+			list(name="Chips", cost=12, path=/obj/item/reagent_containers/snacks/openable/chips),
+			list(name="LiquidFood", cost=15, path=/obj/item/reagent_containers/snacks/openable/liquidfood),
+	)

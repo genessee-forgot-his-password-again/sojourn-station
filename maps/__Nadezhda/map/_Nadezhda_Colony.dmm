@@ -4102,6 +4102,18 @@
 /obj/item/stack/medical/bruise_pack/greyson,
 /obj/item/storage/firstaid/greyson/burn,
 /obj/item/storage/firstaid/combat,
+/obj/item/storage/firstaid/greyson,
+/obj/item/storage/firstaid/regular,
+/obj/item/storage/firstaid/regular,
+/obj/item/storage/firstaid/regular,
+/obj/item/storage/firstaid/regular,
+/obj/item/storage/pill_bottle/tramadol,
+/obj/item/stack/medical/bruise_pack/soteria,
+/obj/item/reagent_containers/hypospray/autoinjector/tricordrazine,
+/obj/item/reagent_containers/hypospray/autoinjector/tricordrazine,
+/obj/item/reagent_containers/hypospray/autoinjector/tricordrazine,
+/obj/item/reagent_containers/hypospray/autoinjector/quickhealbrute,
+/obj/item/reagent_containers/hypospray/autoinjector/quickhealburn,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "aOs" = (
@@ -5892,7 +5904,6 @@
 /area/nadezhda/security/maingate)
 "bgd" = (
 /obj/structure/table/rack/shelf,
-/obj/item/part/gun/barrel/clrifle,
 /obj/item/part/gun/mechanism/revolver,
 /obj/item/part/gun/mechanism/revolver,
 /obj/item/part/gun/grip/wood,
@@ -7258,7 +7269,9 @@
 "bsm" = (
 /obj/machinery/door/airlock/vault/bolted,
 /obj/structure/table/steel,
-/obj/machinery/door/blast/shutters,
+/obj/machinery/door/blast/shutters{
+	name = "shutters"
+	},
 /obj/random/credits/c100,
 /obj/effect/spider/stickyweb,
 /obj/random/spider_trap/low_chance,
@@ -7563,7 +7576,7 @@
 /area/nadezhda/pros/foreman)
 "buZ" = (
 /obj/effect/window_lwall_spawn,
-/turf/simulated/floor/wood_old,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/maintenance/undergroundfloor2north)
 "bva" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -9858,6 +9871,11 @@
 /area/nadezhda/maintenance{
 	name = "Residential District Maintenance"
 	})
+"bRE" = (
+/obj/structure/table/standard,
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/dark/brown_platform,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "bRF" = (
 /obj/structure/barricade,
 /obj/effect/decal/cleanable/dirt,
@@ -11474,6 +11492,11 @@
 /obj/item/stock_parts/micro_laser,
 /obj/item/stock_parts/micro_laser/high,
 /obj/item/stock_parts/scanning_module,
+/obj/item/stock_parts/matter_bin,
+/obj/item/pc_part/drive/disk/design/components,
+/obj/item/pc_part/drive/disk/design/guns/survivalrifle,
+/obj/item/pc_part/drive/disk/design/nonlethal_ammo,
+/obj/item/pc_part/drive/disk/design/lethal_ammo,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "chX" = (
@@ -11913,6 +11936,13 @@
 /obj/item/storage/hcases/engi,
 /obj/item/storage/hcases/med,
 /obj/item/storage/hcases/engi/scrap,
+/obj/item/tool/knife/tacknife,
+/obj/item/beartrap,
+/obj/item/tool/knife/shiv,
+/obj/item/tool/screwdriver/improvised,
+/obj/item/beartrap/makeshift,
+/obj/item/device/scanner/health,
+/obj/item/tool/weldingtool,
 /obj/item/tool/knife/tacknife,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
@@ -14328,16 +14358,6 @@
 /area/nadezhda/maintenance{
 	name = "Residential District Maintenance"
 	})
-"cIT" = (
-/obj/machinery/matter_nanoforge{
-	desc = "It consumes items and produces compressed matter. Objects produced by it are made up of compressed matter that can not be broken back down for their material value. This one is an older model that was acquired (or 'acquired') from the Guild.";
-	name = "worn NanoForge"
-	},
-/obj/effect/floor_decal/industrial/danger{
-	dir = 9
-	},
-/turf/simulated/floor/plating/under,
-/area/nadezhda/quartermaster/hangarsupply)
 "cIX" = (
 /obj/structure/table/standard,
 /obj/item/tool/multitool,
@@ -16363,6 +16383,11 @@
 	},
 /turf/simulated/floor/tiled/white/gray_platform,
 /area/nadezhda/quartermaster/disposaldrop)
+"dck" = (
+/obj/structure/bed/double,
+/obj/item/bedsheet/browndouble,
+/turf/simulated/floor/carpet/purcarpet,
+/area/nadezhda/quartermaster/hangarsupply)
 "dct" = (
 /obj/structure/filingcabinet/medical,
 /obj/machinery/light/small,
@@ -18099,7 +18124,9 @@
 /turf/simulated/floor/industrial/black_large_slates,
 /area/nadezhda/maintenance/undergroundfloor1south)
 "dtT" = (
-/obj/machinery/door/blast/shutters,
+/obj/machinery/door/blast/shutters{
+	name = "shutters"
+	},
 /obj/random/credits/c100,
 /obj/effect/spider/stickyweb,
 /turf/simulated/floor/industrial/sierra,
@@ -19675,6 +19702,14 @@
 /obj/machinery/door/firedoor,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/command/panic_room)
+"dHK" = (
+/obj/machinery/button/remote/blast_door{
+	id = "hideout";
+	name = "hideout shutter control";
+	pixel_y = 32
+	},
+/turf/simulated/floor/tiled/dark/gray_platform,
+/area/nadezhda/quartermaster/hangarsupply)
 "dHL" = (
 /obj/structure/flora/ausbushes/reedbush,
 /obj/random/flora/small_jungle_tree,
@@ -23223,6 +23258,11 @@
 	},
 /turf/simulated/floor/carpet/bcarpet,
 /area/nadezhda/security/barracks)
+"eoR" = (
+/obj/effect/floor_decal/steeldecal/steel_decals_central7,
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/dark/brown_platform,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "eoV" = (
 /obj/random/lowkeyrandom,
 /obj/structure/table/standard,
@@ -24419,6 +24459,10 @@
 	},
 /turf/simulated/floor/rock,
 /area/nadezhda/outside/forest)
+"ezZ" = (
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/dark/brown_perforated,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "eAe" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
@@ -33555,6 +33599,14 @@
 	name = "massive roll of package wrapper"
 	},
 /obj/item/reagent_containers/drinks/mug,
+/obj/machinery/door/blast/shutters{
+	density = 0;
+	dir = 2;
+	icon_state = "shutter0";
+	id = "hideout";
+	name = "shutters";
+	opacity = 0
+	},
 /turf/simulated/floor/tiled/steel/techfloor_grid,
 /area/nadezhda/quartermaster/hangarsupply)
 "gjL" = (
@@ -42816,6 +42868,11 @@
 	},
 /turf/simulated/floor/tiled/steel/cyancorner,
 /area/nadezhda/hallway/side/f2section1)
+"hUm" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/structure/bed/chair,
+/turf/simulated/floor/tiled/dark/brown_platform,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "hUo" = (
 /obj/effect/floor_decal/border/carpet/lightblue,
 /obj/structure/bed/chair/sofa/black/left{
@@ -43440,6 +43497,13 @@
 /obj/structure/flora/ausbushes/sparsegrass,
 /turf/simulated/floor/asteroid/grass,
 /area/nadezhda/outside/forest)
+"hYR" = (
+/obj/machinery/light/small{
+	dir = 8
+	},
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/dark/brown_perforated,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "hYS" = (
 /obj/structure/cable/green{
 	d1 = 4;
@@ -48906,6 +48970,20 @@
 	},
 /turf/simulated/floor/plating,
 /area/nadezhda/absolutism/vectorrooms)
+"jay" = (
+/obj/item/cell/medium/greyson,
+/obj/item/cell/small/greyson,
+/obj/item/tool_upgrade/augment/ai_tool_excelsior,
+/obj/item/tool_upgrade/productivity/whetstone,
+/obj/item/tool_upgrade/productivity/diamond_blade,
+/obj/item/tool_upgrade/augment/ai_tool,
+/obj/item/tool_upgrade/augment/ai_tool,
+/obj/item/tool_upgrade/augment/ai_tool_excelsior,
+/obj/item/tool_upgrade/augment/ai_tool_excelsior,
+/obj/item/tool_upgrade/augment/ai_tool_excelsior,
+/obj/structure/table/rack/shelf,
+/turf/simulated/floor/tiled/dark/techfloor_grid,
+/area/nadezhda/quartermaster/hangarsupply)
 "jaB" = (
 /obj/structure/boulder{
 	pixel_x = -1
@@ -50719,6 +50797,16 @@
 	},
 /turf/simulated/floor/tiled/techmaint,
 /area/nadezhda/rnd/xenobiology)
+"jqP" = (
+/obj/machinery/matter_nanoforge{
+	desc = "It consumes items and produces compressed matter. Objects produced by it are made up of compressed matter that can not be broken back down for their material value. This one is an older model that was acquired (or 'acquired') from the Guild.";
+	name = "worn NanoForge"
+	},
+/obj/effect/floor_decal/industrial/danger{
+	dir = 9
+	},
+/turf/simulated/floor/plating/under,
+/area/nadezhda/quartermaster/hangarsupply)
 "jqQ" = (
 /turf/simulated/floor/rock/manmade/ruin3,
 /area/nadezhda/maintenance{
@@ -50999,6 +51087,45 @@
 /obj/item/reagent_containers/snacks/openable/os_soypack,
 /obj/item/reagent_containers/snacks/openable/os_soypack,
 /obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/snacks/openable/os_soypack,
+/obj/item/reagent_containers/drinks/bottle/whiskey,
+/obj/item/reagent_containers/drinks/coffee,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "jsU" = (
@@ -55097,8 +55224,8 @@
 	density = 0;
 	dir = 2;
 	icon_state = "shutter0";
-	id = "lonestar_lobby";
-	name = "Office Shutters";
+	id = "hideout";
+	name = "shutters";
 	opacity = 0
 	},
 /turf/simulated/floor/plating/under,
@@ -58352,6 +58479,17 @@
 /obj/machinery/power/nt_obelisk,
 /turf/simulated/floor/tiled/dark/techfloor_grid,
 /area/nadezhda/command/prime)
+"kNy" = (
+/obj/machinery/light/small{
+	dir = 8
+	},
+/obj/item/tool/shovel/combat,
+/obj/item/tool/screwdriver/combi_driver/onestar,
+/obj/item/tool/multitool/advanced/onestar,
+/obj/item/tool/weldingtool/onestar,
+/obj/structure/table/rack/shelf,
+/turf/simulated/floor/tiled/dark/techfloor_grid,
+/area/nadezhda/quartermaster/hangarsupply)
 "kNM" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/machinery/media/jukebox,
@@ -61038,6 +61176,12 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel/cyancorner,
 /area/nadezhda/hallway/side/f2section1)
+"lqt" = (
+/obj/structure/table/standard,
+/obj/effect/decal/cleanable/dirt,
+/obj/item/storage/firstaid/outsider,
+/turf/simulated/floor/tiled/dark/brown_platform,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "lqH" = (
 /obj/structure/flora/ausbushes/ywflowers,
 /turf/simulated/floor/asteroid/grass,
@@ -61927,6 +62071,15 @@
 /obj/random/spider_trap_burrowing/low_chance,
 /turf/simulated/floor/asteroid/dirt,
 /area/nadezhda/outside/inside_colony)
+"lzp" = (
+/obj/effect/floor_decal/spline/wood,
+/obj/machinery/light/small{
+	dir = 1
+	},
+/obj/structure/cyberplant,
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "lzr" = (
 /obj/structure/shuttle_part/science{
 	icon_state = "0,4"
@@ -66770,6 +66923,14 @@
 /area/nadezhda/pros/shuttle)
 "mtg" = (
 /obj/effect/window_lwall_spawn/smartspawn,
+/obj/machinery/door/blast/shutters{
+	density = 0;
+	dir = 2;
+	icon_state = "shutter0";
+	id = "hideout";
+	name = "shutters";
+	opacity = 0
+	},
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "mtj" = (
@@ -75287,6 +75448,7 @@
 /obj/structure/table/rack/shelf,
 /obj/item/oddity/common/redbrick,
 /obj/item/oddity/common/old_newspaper,
+/obj/item/oddity/common/blueprint,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "nTD" = (
@@ -75421,7 +75583,9 @@
 /area/nadezhda/medical/sleeper)
 "nUP" = (
 /obj/machinery/door/airlock/vault/bolted,
-/obj/machinery/door/blast/shutters,
+/obj/machinery/door/blast/shutters{
+	name = "shutters"
+	},
 /obj/effect/spider/stickyweb,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/spider_trap/low_chance,
@@ -82921,7 +83085,6 @@
 /obj/item/stack/material/glass/plasmaglass/full,
 /obj/item/stack/material/glass/full,
 /obj/item/stack/material/gold/full,
-/obj/item/stack/material/osmium/full,
 /obj/item/stack/material/cardboard/full,
 /obj/item/stack/material/uranium/full,
 /obj/item/stack/material/diamond/full,
@@ -83180,6 +83343,495 @@
 /obj/item/stack/material/glass/full,
 /obj/item/stack/material/glass/full,
 /obj/item/stack/material/glass/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/biomatter/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/plastic/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/rods/full,
+/obj/item/stack/material/glass/full,
+/obj/item/stack/material/steel/full,
+/obj/item/stack/material/glass/plasmarglass/full,
+/obj/item/stack/material/compressed_matter/full,
+/obj/item/stack/material/compressed_matter/full,
+/obj/item/stack/material/plasteel/full,
+/obj/item/stack/material/wood/full,
+/obj/item/stack/material/plasma/full,
+/obj/item/stack/material/silver/full,
+/obj/item/stack/material/silver/full,
+/obj/item/stack/material/silver/full,
+/obj/item/stack/material/steel/full,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "pnI" = (
@@ -90808,6 +91460,19 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/industrial/navy_large_slates,
 /area/nadezhda/maintenance/undergroundfloor2north)
+"qGp" = (
+/obj/structure/closet/secure_closet/freezer{
+	name = "medical cooler"
+	},
+/obj/item/reagent_containers/snacks/openable/can,
+/obj/item/reagent_containers/snacks/openable/spacetwinkie,
+/obj/item/reagent_containers/drinks/cans/iced_tea,
+/obj/effect/decal/cleanable/dirt,
+/obj/item/stack/medical/bruise_pack/handmade,
+/obj/item/stack/medical/bruise_pack/handmade,
+/obj/item/stack/medical/ointment/handmade,
+/turf/simulated/floor/tiled/dark/brown_perforated,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "qGr" = (
 /obj/structure/disposalpipe/segment{
 	dir = 8
@@ -94202,6 +94867,10 @@
 /obj/effect/window_lwall_spawn/smartspawn,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/miningdock)
+"ron" = (
+/obj/structure/table/rack/shelf,
+/turf/simulated/floor/tiled/dark/techfloor_grid,
+/area/nadezhda/quartermaster/hangarsupply)
 "roo" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 6
@@ -96877,6 +97546,9 @@
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel/gray_perforated,
 /area/nadezhda/hallway/surface/section1)
+"rPj" = (
+/turf/simulated/floor/carpet/bcarpet,
+/area/nadezhda/quartermaster/hangarsupply)
 "rPm" = (
 /obj/structure/table/standard,
 /obj/item/clothing/mask/vape,
@@ -98665,6 +99337,11 @@
 /obj/machinery/suit_storage_unit/nt/custodian,
 /turf/simulated/floor/tiled/steel/cyancorner,
 /area/nadezhda/crew_quarters/janitor)
+"sfi" = (
+/obj/effect/floor_decal/spline/wood,
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/wood/wild3,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "sfk" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
@@ -101695,6 +102372,13 @@
 	name = "murky water"
 	},
 /area/nadezhda/maintenance/undergroundfloor1north)
+"sId" = (
+/obj/effect/floor_decal/spline/wood{
+	dir = 1
+	},
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/dark/brown_perforated,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "sIn" = (
 /obj/machinery/door/airlock/vault{
 	name = "Lonestar Vault";
@@ -105519,23 +106203,11 @@
 /turf/simulated/floor/beach/water/shallow,
 /area/nadezhda/crew_quarters)
 "tvn" = (
-/obj/structure/closet/secure_closet/personal,
-/obj/item/tool_upgrade/augment/ai_tool_excelsior,
-/obj/item/tool_upgrade/productivity/whetstone,
-/obj/item/tool_upgrade/productivity/diamond_blade,
-/obj/item/tool/shovel/combat,
-/obj/item/clothing/suit/space/void/SCAF,
-/obj/item/clothing/mask/gas,
-/obj/item/gun/energy/centurio,
-/obj/item/tool_upgrade/augment/ai_tool,
-/obj/item/cell/medium/greyson,
-/obj/item/oddity/ls/manual{
-	oddity_stats = list("Cognition" = 50, "Mechanical" = 50, "Biology" = 50, "Toughness" = 50, "Vigilance" = 50, "Robustness" = 50);
-	name = "Michael's journal";
-	desc = "A blue-covered book that shows signs of age. Contained within is information that you cannot hope to comprehend -- data from other dimensions and places. What the hell is a 'Robert's Raider'?";
-	perk = /datum/perk/handyman;
-	prob_perk = 100
+/obj/machinery/light/small{
+	dir = 8
 	},
+/obj/structure/closet,
+/obj/item/spacecash/bundle/c200,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/nadezhda/quartermaster/hangarsupply)
 "tvq" = (
@@ -106692,6 +107364,9 @@
 /obj/structure/table/rack/shelf,
 /obj/item/clothing/gloves/insulated,
 /obj/item/clothing/accessory/holster/armpit,
+/obj/item/clothing/suit/space/void/medical/equipped,
+/obj/item/clothing/suit/storage/vest/scav,
+/obj/item/rig/hazard/steward,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "tFr" = (
@@ -110415,6 +111090,18 @@
 	},
 /turf/simulated/floor/tiled/techmaint,
 /area/nadezhda/maintenance/substation/medical)
+"ulR" = (
+/obj/machinery/door/airlock/glass,
+/obj/machinery/door/blast/shutters{
+	density = 0;
+	dir = 2;
+	icon_state = "shutter0";
+	id = "hideout";
+	name = "shutters";
+	opacity = 0
+	},
+/turf/simulated/floor/tiled/steel/techfloor_grid,
+/area/nadezhda/quartermaster/hangarsupply)
 "umh" = (
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/white/brown_perforated,
@@ -117515,12 +118202,10 @@
 /turf/simulated/floor/tiled/dark/techfloor,
 /area/nadezhda/pros/shuttle)
 "vBc" = (
-/obj/machinery/autolathe/bioprinter{
-	name = "jailbroken bioprinter"
-	},
 /obj/effect/floor_decal/industrial/danger{
 	dir = 9
 	},
+/obj/machinery/bulletfabricator/bio,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "vBh" = (
@@ -120169,6 +120854,14 @@
 /obj/item/cell/small,
 /obj/item/cell/medium/high,
 /obj/item/cell/medium,
+/obj/item/cell/small/super,
+/obj/item/cell/medium,
+/obj/item/cell/small,
+/obj/item/cell/small,
+/obj/item/cell/small/moebius/super,
+/obj/item/cell/small/moebius/high,
+/obj/item/cell/medium/moebius/high,
+/obj/item/cell/medium/psionic,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "vYu" = (
@@ -121458,6 +122151,9 @@
 /obj/item/tool_upgrade/reinforcement/guard,
 /obj/item/tool_upgrade/augment/dampener,
 /obj/item/tool_upgrade/augment/dampener,
+/obj/item/tool_upgrade/refinement/ported_barrel,
+/obj/item/tool_upgrade/productivity/ratchet,
+/obj/item/tool_upgrade/augment/spikes,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "wll" = (
@@ -121686,6 +122382,11 @@
 /obj/item/ammo_magazine/highcap_pistol_35/rubber,
 /obj/item/ammo_magazine/ammobox/pistol_35/rubber,
 /obj/item/ammo_magazine/pistol_35/rubber,
+/obj/item/ammo_magazine/pistol_35/rubber,
+/obj/item/ammo_magazine/highcap_pistol_35/rubber,
+/obj/item/ammo_magazine/highcap_pistol_35/rubber,
+/obj/item/ammo_magazine/highcap_pistol_35/rubber,
+/obj/item/ammo_magazine/ammobox/pistol_35/rubber,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "wnt" = (
@@ -123192,7 +123893,9 @@
 /turf/simulated/floor/tiled/steel/golden,
 /area/nadezhda/hallway/surface/section1)
 "wAm" = (
-/obj/machinery/door/blast/shutters,
+/obj/machinery/door/blast/shutters{
+	name = "shutters"
+	},
 /obj/effect/spider/stickyweb,
 /turf/simulated/floor/industrial/sierra,
 /area/nadezhda/maintenance/undergroundfloor1west)
@@ -123773,6 +124476,12 @@
 "wGM" = (
 /obj/structure/table/rack/shelf,
 /obj/item/gun/projectile/clarissa,
+/obj/item/gun/projectile/clarissa,
+/obj/item/gun/energy/shrapnel,
+/obj/item/gun/energy/sst,
+/obj/machinery/light/small{
+	dir = 8
+	},
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "wGV" = (
@@ -124584,6 +125293,13 @@
 /obj/random/mob/render/low_chance,
 /turf/simulated/floor/rock,
 /area/nadezhda/maintenance/undergroundfloor1east)
+"wOf" = (
+/obj/machinery/light/small{
+	dir = 4
+	},
+/obj/effect/decal/cleanable/dirt,
+/turf/simulated/floor/tiled/dark/brown_perforated,
+/area/nadezhda/maintenance/undergroundfloor2north)
 "wOj" = (
 /obj/machinery/atmospherics/unary/vent_scrubber{
 	dir = 4
@@ -126839,8 +127555,8 @@
 	density = 0;
 	dir = 2;
 	icon_state = "shutter0";
-	id = "lonestar_lobby";
-	name = "Office Shutters";
+	id = "hideout";
+	name = "shutters";
 	opacity = 0
 	},
 /turf/simulated/floor/tiled/white/gray_platform,
@@ -132208,6 +132924,29 @@
 	},
 /turf/simulated/floor/tiled/dark/techfloor_grid,
 /area/nadezhda/security/armory_blackshield)
+"yle" = (
+/obj/item/storage/backpack/holding/bst,
+/obj/item/storage/pouch/holding,
+/obj/item/storage/pouch/holding,
+/obj/item/storage/belt/holding,
+/obj/item/oddity/ls/manual{
+	oddity_stats = list("Cognition" = 50, "Mechanical" = 50, "Biology" = 50, "Toughness" = 50, "Vigilance" = 50, "Robustness" = 50);
+	name = "Michael's journal";
+	desc = "A blue-covered book that shows signs of age. Contained within is information that you cannot hope to comprehend -- data from other dimensions and places. What the hell is a 'Robert's Raider'?";
+	perk = /datum/perk/handyman;
+	prob_perk = 100
+	},
+/obj/item/tool_upgrade/augment/ai_tool,
+/obj/item/gun/energy/centurio,
+/obj/item/cell/medium/greyson,
+/obj/item/clothing/mask/gas,
+/obj/item/clothing/suit/space/void/SCAF,
+/obj/structure/closet/secure_closet/personal,
+/obj/machinery/light/small{
+	dir = 8
+	},
+/turf/simulated/floor/tiled/dark/techfloor_grid,
+/area/nadezhda/quartermaster/hangarsupply)
 "ylh" = (
 /obj/structure/cable/green{
 	d1 = 4;
@@ -180184,7 +180923,7 @@ jdE
 jdE
 jdE
 jdE
-fTV
+jdE
 jdE
 jdE
 msL
@@ -180381,12 +181120,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+oyg
+ofr
+ieY
+iQw
+pnG
 jdE
 jdE
 dAn
@@ -180583,12 +181322,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+cbR
+bli
+bli
+bli
+ylI
 jdE
 jdE
 jdE
@@ -180785,12 +181524,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+icH
+bli
+ygl
+uuX
+uuX
 jdE
 nCS
 gPj
@@ -180987,12 +181726,12 @@ cZb
 cZb
 cZb
 cZb
-cZb
-cZb
-cZb
-cZb
-cZb
-cZb
+jdE
+jdE
+dMP
+jdE
+buZ
+jdE
 jdE
 aGj
 cQF
@@ -181190,11 +181929,11 @@ cZb
 cZb
 cZb
 jdE
-jdE
-jdE
-jdE
-jdE
-jdE
+lzp
+bli
+sId
+hYR
+qGp
 jdE
 aGj
 oIL
@@ -181392,11 +182131,11 @@ cZb
 cZb
 cZb
 jdE
-oyg
-ofr
-ieY
-iQw
-pnG
+sfi
+bli
+sId
+hUm
+bRE
 jdE
 aGj
 mGZ
@@ -181594,11 +182333,11 @@ cZb
 cZb
 cZb
 jdE
-cbR
+sfi
 bli
-bli
-bli
-ylI
+sId
+eoR
+lqt
 jdE
 fMv
 gRx
@@ -181796,11 +182535,11 @@ cZb
 cZb
 cZb
 jdE
-icH
+lzp
 bli
-ygl
-uuX
-uuX
+sId
+wOf
+ezZ
 jdE
 dkX
 big
@@ -193791,10 +194530,10 @@ sdr
 xSF
 wIQ
 kMg
-cZb
-cZb
-cZb
-cZb
+yle
+rPj
+kNy
+tug
 cZb
 cZb
 cZb
@@ -193993,10 +194732,10 @@ byu
 olf
 sxJ
 kMg
-cZb
-cZb
-cZb
-cZb
+rPj
+rPj
+ron
+tug
 cZb
 cZb
 cZb
@@ -194195,10 +194934,10 @@ rev
 lzW
 tnt
 kMg
-cZb
-cZb
-cZb
-cZb
+dck
+rPj
+jay
+tug
 cZb
 cZb
 cZb
@@ -194398,7 +195137,7 @@ vzr
 iSn
 kMg
 kFn
-kFn
+cDK
 kFn
 kFn
 kFn
@@ -194600,7 +195339,7 @@ kMg
 kMg
 kMg
 tvn
-efp
+iQf
 wGM
 wnp
 vYp
@@ -195003,7 +195742,7 @@ fyk
 rQI
 dlz
 tug
-lhN
+dHK
 iQf
 clR
 tFq
@@ -195212,7 +195951,7 @@ lhN
 lhN
 lhN
 iQf
-cIT
+jqP
 kFn
 rWi
 muP
@@ -195608,7 +196347,7 @@ wLl
 fyk
 vNS
 jue
-cDK
+ulR
 iQf
 iQf
 iQf
