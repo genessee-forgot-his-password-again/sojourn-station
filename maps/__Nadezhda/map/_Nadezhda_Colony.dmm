@@ -4102,7 +4102,7 @@
 /obj/item/stack/medical/bruise_pack/greyson,
 /obj/item/storage/firstaid/greyson/burn,
 /obj/item/storage/firstaid/combat,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "aOs" = (
 /obj/effect/floor_decal/industrial/loading/white,
@@ -5900,7 +5900,7 @@
 /obj/item/part/gun/barrel/magnum,
 /obj/item/part/gun/barrel/lrifle,
 /obj/item/part/gun/mechanism/pistol,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "bge" = (
 /obj/structure/cable/green{
@@ -11474,7 +11474,7 @@
 /obj/item/stock_parts/micro_laser,
 /obj/item/stock_parts/micro_laser/high,
 /obj/item/stock_parts/scanning_module,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "chX" = (
 /obj/structure/disposalpipe/segment{
@@ -11914,7 +11914,7 @@
 /obj/item/storage/hcases/med,
 /obj/item/storage/hcases/engi/scrap,
 /obj/item/tool/knife/tacknife,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "clU" = (
 /obj/effect/window_lwall_spawn,
@@ -14328,6 +14328,16 @@
 /area/nadezhda/maintenance{
 	name = "Residential District Maintenance"
 	})
+"cIT" = (
+/obj/machinery/matter_nanoforge{
+	desc = "It consumes items and produces compressed matter. Objects produced by it are made up of compressed matter that can not be broken back down for their material value. This one is an older model that was acquired (or 'acquired') from the Guild.";
+	name = "worn NanoForge"
+	},
+/obj/effect/floor_decal/industrial/danger{
+	dir = 9
+	},
+/turf/simulated/floor/plating/under,
+/area/nadezhda/quartermaster/hangarsupply)
 "cIX" = (
 /obj/structure/table/standard,
 /obj/item/tool/multitool,
@@ -50989,7 +50999,7 @@
 /obj/item/reagent_containers/snacks/openable/os_soypack,
 /obj/item/reagent_containers/snacks/openable/os_soypack,
 /obj/item/reagent_containers/snacks/openable/os_soypack,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "jsU" = (
 /turf/unsimulated/mineral,
@@ -67935,6 +67945,9 @@
 /obj/item/pc_part/drive/disk/design/league_tools,
 /obj/item/pc_part/drive/disk/design/league_weapons,
 /obj/item/pc_part/drive/disk/design/gun_parts/marshal,
+/obj/item/pc_part/drive/disk/design/league_meds,
+/obj/item/pc_part/drive/disk/design/excelsior_weapons,
+/obj/item/pc_part/drive/disk/design/cargo,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "mDn" = (
@@ -75274,7 +75287,7 @@
 /obj/structure/table/rack/shelf,
 /obj/item/oddity/common/redbrick,
 /obj/item/oddity/common/old_newspaper,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "nTD" = (
 /obj/structure/sign/directions/generic{
@@ -83167,7 +83180,7 @@
 /obj/item/stack/material/glass/full,
 /obj/item/stack/material/glass/full,
 /obj/item/stack/material/glass/full,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "pnI" = (
 /obj/structure/table/standard,
@@ -88361,7 +88374,9 @@
 /area/nadezhda/medical/genetics)
 "qjr" = (
 /obj/machinery/bulletfabricator,
-/obj/effect/floor_decal/industrial/danger/full,
+/obj/effect/floor_decal/industrial/danger{
+	dir = 5
+	},
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "qju" = (
@@ -105517,7 +105532,9 @@
 /obj/item/oddity/ls/manual{
 	oddity_stats = list("Cognition" = 50, "Mechanical" = 50, "Biology" = 50, "Toughness" = 50, "Vigilance" = 50, "Robustness" = 50);
 	name = "Michael's journal";
-	desc = "A blue-covered book that shows signs of age. Contained within is information that you cannot hope to comprehend -- data from other dimensions and places. What the hell is a 'Robert's Raider'?"
+	desc = "A blue-covered book that shows signs of age. Contained within is information that you cannot hope to comprehend -- data from other dimensions and places. What the hell is a 'Robert's Raider'?";
+	perk = /datum/perk/handyman;
+	prob_perk = 100
 	},
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/nadezhda/quartermaster/hangarsupply)
@@ -106675,7 +106692,7 @@
 /obj/structure/table/rack/shelf,
 /obj/item/clothing/gloves/insulated,
 /obj/item/clothing/accessory/holster/armpit,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "tFr" = (
 /obj/structure/flora/ausbushes/sparsegrass,
@@ -120152,7 +120169,7 @@
 /obj/item/cell/small,
 /obj/item/cell/medium/high,
 /obj/item/cell/medium,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "vYu" = (
 /obj/effect/decal/cleanable/rubble,
@@ -121441,7 +121458,7 @@
 /obj/item/tool_upgrade/reinforcement/guard,
 /obj/item/tool_upgrade/augment/dampener,
 /obj/item/tool_upgrade/augment/dampener,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "wll" = (
 /obj/structure/catwalk,
@@ -121669,7 +121686,7 @@
 /obj/item/ammo_magazine/highcap_pistol_35/rubber,
 /obj/item/ammo_magazine/ammobox/pistol_35/rubber,
 /obj/item/ammo_magazine/pistol_35/rubber,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "wnt" = (
 /obj/structure/cable/cyan{
@@ -123756,7 +123773,7 @@
 "wGM" = (
 /obj/structure/table/rack/shelf,
 /obj/item/gun/projectile/clarissa,
-/turf/simulated/floor/tiled/dark/gray_platform,
+/turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "wGV" = (
 /obj/structure/bed/chair,
@@ -195195,7 +195212,7 @@ lhN
 lhN
 lhN
 iQf
-lhN
+cIT
 kFn
 rWi
 muP
