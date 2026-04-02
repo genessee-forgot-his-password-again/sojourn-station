@@ -475,6 +475,7 @@
 			list(name="Burn Kit, Large", cost=100, path=/obj/item/stack/medical/ointment/advanced/large),
 			list(name="Greyson Burn-Treatment Pack", cost=100, path=/obj/item/stack/medical/ointment/greyson),
 			list(name="Splints", cost=40, path=/obj/item/stack/medical/splint),
+			list(name="Nanopaste", cost=100, path=/obj/item/stack/nanopaste),
 		"First-Aid Kits",
 			list(name="First Aid Kit (Standard)", cost=200, path=/obj/item/storage/firstaid/regular),
 			list(name="First Aid Kit (Soteria)", cost=250, path=/obj/item/storage/firstaid/regular/si),
@@ -495,3 +496,10 @@
 			list(name="Chips", cost=12, path=/obj/item/reagent_containers/snacks/openable/chips),
 			list(name="LiquidFood", cost=15, path=/obj/item/reagent_containers/snacks/openable/liquidfood),
 	)
+
+/obj/machinery/bulletfabricator/bio/update_icon()
+	if(!processing)
+		icon_state = "bioprinter"
+	else
+		icon_state = "bioprinter_work"
+	return
