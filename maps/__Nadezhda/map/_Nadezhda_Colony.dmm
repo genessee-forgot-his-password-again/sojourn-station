@@ -12159,6 +12159,14 @@
 /obj/item/storage/toolbox/electrical,
 /obj/item/storage/box/matches,
 /obj/item/flame/lighter,
+/obj/item/tool/pickaxe,
+/obj/item/storage/hcases/ammo/scrap,
+/obj/item/tool/retractor,
+/obj/item/tool/knife/tacknife,
+/obj/item/mine,
+/obj/item/mine,
+/obj/item/mine/improvised,
+/obj/item/mine/improvised,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "clU" = (
@@ -51409,6 +51417,7 @@
 /obj/item/reagent_containers/snacks/openable/spacetwinkie,
 /obj/item/reagent_containers/snacks/openable/tastybread,
 /obj/item/storage/box/donkpockets,
+/obj/item/storage/box/donkpockets,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "jsU" = (
@@ -75749,6 +75758,7 @@
 /obj/item/oddity/common/coin,
 /obj/item/oddity/common/device,
 /obj/item/oddity/common/redbrick,
+/obj/item/oddity/common/old_newspaper,
 /obj/item/oddity/common/old_newspaper,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
@@ -107287,6 +107297,15 @@
 /obj/item/spacecash/bundle/c20,
 /obj/item/spacecash/bundle/c20,
 /obj/item/spacecash/bundle/c200,
+/obj/item/spacecash/bundle/c100,
+/obj/item/spacecash/bundle/c50,
+/obj/item/spacecash/bundle/c20,
+/obj/item/spacecash/bundle/c20,
+/obj/item/spacecash/bundle/c1,
+/obj/item/spacecash/bundle/c1,
+/obj/item/spacecash/bundle/c1,
+/obj/item/spacecash/bundle/c1,
+/obj/item/spacecash/bundle/c1,
 /turf/simulated/floor/tiled/dark/gray_platform,
 /area/nadezhda/quartermaster/hangarsupply)
 "tvq" = (
@@ -122025,6 +122044,8 @@
 /obj/item/cell/medium,
 /obj/item/cell/large,
 /obj/item/cell/large,
+/obj/item/cell/medium,
+/obj/item/cell/small,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "vYu" = (
@@ -123649,6 +123670,7 @@
 /obj/item/ammo_magazine/pistol_35/rubber,
 /obj/item/ammo_magazine/ammobox/pistol_35/rubber,
 /obj/item/ammo_magazine/ammobox/pistol_35/scrap,
+/obj/item/ammo_magazine/highcap_pistol_35/rubber,
 /turf/simulated/floor/plating/under,
 /area/nadezhda/quartermaster/hangarsupply)
 "wnt" = (
